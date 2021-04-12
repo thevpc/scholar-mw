@@ -1,6 +1,6 @@
 package net.thevpc.scholar.mentoring.extra
 
-import net.thevpc.common.util.Chronometer
+import net.thevpc.common.time.Chronometer
 import net.thevpc.scholar.hadrumaths.MathScala._
 import net.thevpc.scholar.hadruwaves.Physics._
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector

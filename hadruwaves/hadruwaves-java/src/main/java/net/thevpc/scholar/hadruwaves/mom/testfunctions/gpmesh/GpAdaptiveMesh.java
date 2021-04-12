@@ -4,7 +4,7 @@ import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonObjectBuilder;
 import net.thevpc.tson.TsonObjectContext;
 import net.thevpc.scholar.hadrumaths.Domain;
-import net.thevpc.common.util.MapUtils;
+import net.thevpc.common.collections.MapUtils;
 import net.thevpc.scholar.hadrumaths.geom.*;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.symbolic.double2vector.DefaultDoubleToVector;

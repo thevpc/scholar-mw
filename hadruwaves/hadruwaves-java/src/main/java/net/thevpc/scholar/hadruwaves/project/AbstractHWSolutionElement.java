@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadruwaves.project;
 
-import net.thevpc.common.props.PValue;
+import net.thevpc.common.props.ObservableValue;
 import net.thevpc.common.props.Props;
-import net.thevpc.common.props.WritablePValue;
+import net.thevpc.common.props.WritableValue;
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshAlgoType;
 import net.thevpc.scholar.hadrumaths.units.UnitType;
@@ -21,33 +21,33 @@ public abstract class AbstractHWSolutionElement implements HWSolutionElement {
         UnitType.createEnum(Boundary.class,"Boundary");
     }
 
-    private WritablePValue<String> name = Props.of("name").valueOf(String.class, null);
-    private WritablePValue<String> description = Props.of("description").valueOf(String.class, null);
+    private WritableValue<String> name = Props.of("name").valueOf(String.class, null);
+    private WritableValue<String> description = Props.of("description").valueOf(String.class, null);
 
 
-    protected WritablePValue<String> parentPath = Props.of("parentPath").valueOf(String.class, null);
-    protected WritablePValue<HWSolution> solution = Props.of("solution").valueOf(HWSolution.class, null);
-    protected WritablePValue<HWSolutionFolder> parent = Props.of("parent").valueOf(HWSolutionFolder.class, null);
+    protected WritableValue<String> parentPath = Props.of("parentPath").valueOf(String.class, null);
+    protected WritableValue<HWSolution> solution = Props.of("solution").valueOf(HWSolution.class, null);
+    protected WritableValue<HWSolutionFolder> parent = Props.of("parent").valueOf(HWSolutionFolder.class, null);
 
     @Override
-    public WritablePValue<String> name() {
+    public WritableValue<String> name() {
         return name;
     }
 
     @Override
-    public WritablePValue<String> description() {
+    public WritableValue<String> description() {
         return description;
     }
 
-    public WritablePValue<String> parentPath() {
+    public WritableValue<String> parentPath() {
         return parentPath;
     }
 
-    public PValue<HWSolution> solution() {
+    public ObservableValue<HWSolution> solution() {
         return solution.readOnly();
     }
 
-    public PValue<HWSolutionFolder> parent() {
+    public ObservableValue<HWSolutionFolder> parent() {
         return parent.readOnly();
     }
 

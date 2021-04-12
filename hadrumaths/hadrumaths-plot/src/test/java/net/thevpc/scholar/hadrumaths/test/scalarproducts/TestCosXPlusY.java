@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadrumaths.test.scalarproducts;
 
 import junit.framework.Assert;
-import net.thevpc.common.util.Chronometer;
+import net.thevpc.common.time.Chronometer;
 
 import static net.thevpc.scholar.hadrumaths.io.HadrumathsIOUtils.*;
 import org.junit.jupiter.api.Test;

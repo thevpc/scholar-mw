@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.logs;
 
-import net.thevpc.common.props.PList;
+import net.thevpc.common.props.ObservableList;
 import net.thevpc.common.props.PropertyEvent;
 import net.thevpc.common.props.PropertyListener;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.HadruwavesStudio;
@@ -39,7 +39,7 @@ public class HWSLogTool extends AbstractToolWindowPanel {
         });
     }
 
-    private void updateAll(PList<Message> m) {
+    private void updateAll(ObservableList<Message> m) {
         StringBuilder text = new StringBuilder();
         for (Message appMessage : m) {
             if (text.length() > 0) {

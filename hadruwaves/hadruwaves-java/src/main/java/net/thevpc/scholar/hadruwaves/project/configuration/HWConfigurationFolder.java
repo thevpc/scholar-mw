@@ -1,13 +1,13 @@
 package net.thevpc.scholar.hadruwaves.project.configuration;
 
-import net.thevpc.common.props.WritablePLMap;
+import net.thevpc.common.props.WritableLiMap;
 
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import net.thevpc.common.props.PropertyEvent;
 import net.thevpc.common.props.PropertyListener;
-import net.thevpc.common.props.WritablePValue;
+import net.thevpc.common.props.WritableValue;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonObjectContext;
@@ -24,19 +24,19 @@ public class HWConfigurationFolder extends AbstractHWConfigurationElement {
             public void propertyUpdated(PropertyEvent event) {
                 Object ov = event.getOldValue();
                 if (ov instanceof AbstractHWConfigurationElement) {
-                    WritablePValue<HWProject> p = (WritablePValue<HWProject>) (((AbstractHWConfigurationElement) ov).project());
+                    WritableValue<HWProject> p = (WritableValue<HWProject>) (((AbstractHWConfigurationElement) ov).project());
                     p.set(null);
                 }
                 Object nv = event.getNewValue();
                 if (nv instanceof AbstractHWConfigurationElement) {
-                    WritablePValue<HWProject> p = (WritablePValue<HWProject>) (((AbstractHWConfigurationElement) nv).project());
+                    WritableValue<HWProject> p = (WritableValue<HWProject>) (((AbstractHWConfigurationElement) nv).project());
                     p.set(project().get());
                 }
             }
         });
     }
 
-    public WritablePLMap<String, HWConfigurationElement> children() {
+    public WritableLiMap<String, HWConfigurationElement> children() {
         return childrenHelper.children();
     }
 

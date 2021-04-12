@@ -10,7 +10,7 @@ import java.awt.Paint;
 import net.thevpc.common.props.PropertyListeners;
 import net.thevpc.common.props.Props;
 import net.thevpc.common.props.WithListeners;
-import net.thevpc.common.props.WritablePValue;
+import net.thevpc.common.props.WritableValue;
 import net.thevpc.common.props.impl.PropertyListenersImpl;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.core.ExtraPrefs;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.core.Preferences;
@@ -34,48 +34,48 @@ public class PropPreferences implements WithListeners {
     /*
      * ClipSettings
      */
-    private WritablePValue<Box3D> clipBox = Props.of("clipBox").valueOf(Box3D.class, null);
+    private WritableValue<Box3D> clipBox = Props.of("clipBox").valueOf(Box3D.class, null);
 
     /*
      * Renderer Settings
      */
-    private WritablePValue<Boolean> antiAliasingEnabled = Props.of("antiAliasingEnabled").valueOf(Boolean.class, false);
-    private WritablePValue<Boolean> perspectiveEnabled = Props.of("perspectiveEnabled").valueOf(Boolean.class, false);
-    private WritablePValue<Boolean> steroscopyEnabled = Props.of("steroscopyEnabled").valueOf(Boolean.class, false);
-    private WritablePValue<Integer> steroscopicMode = Props.of("steroscopicMode").valueOf(Integer.class, 0);
-    private WritablePValue<Paint> backColor = Props.of("backColor").valueOf(Paint.class, Color.red);
-    private WritablePValue<Boolean> fogEnabled = Props.of("fogEnabled").valueOf(Boolean.class, false);
-    private WritablePValue<Boolean> light1Enabled = Props.of("light1Enabled").valueOf(Boolean.class, false);
-    private WritablePValue<Boolean> light2Enabled = Props.of("light2Enabled").valueOf(Boolean.class, false);
-    private WritablePValue<Boolean> light3Enabled = Props.of("light3Enabled").valueOf(Boolean.class, false);
+    private WritableValue<Boolean> antiAliasingEnabled = Props.of("antiAliasingEnabled").valueOf(Boolean.class, false);
+    private WritableValue<Boolean> perspectiveEnabled = Props.of("perspectiveEnabled").valueOf(Boolean.class, false);
+    private WritableValue<Boolean> steroscopyEnabled = Props.of("steroscopyEnabled").valueOf(Boolean.class, false);
+    private WritableValue<Integer> steroscopicMode = Props.of("steroscopicMode").valueOf(Integer.class, 0);
+    private WritableValue<Paint> backColor = Props.of("backColor").valueOf(Paint.class, Color.red);
+    private WritableValue<Boolean> fogEnabled = Props.of("fogEnabled").valueOf(Boolean.class, false);
+    private WritableValue<Boolean> light1Enabled = Props.of("light1Enabled").valueOf(Boolean.class, false);
+    private WritableValue<Boolean> light2Enabled = Props.of("light2Enabled").valueOf(Boolean.class, false);
+    private WritableValue<Boolean> light3Enabled = Props.of("light3Enabled").valueOf(Boolean.class, false);
 
     /*
      * Axis Settings
      */
-    private WritablePValue<Boolean> xAxisVisible = Props.of("xAxisVisible").valueOf(Boolean.class, false);
-    private WritablePValue<Boolean> yAxisVisible = Props.of("yAxisVisible").valueOf(Boolean.class, false);
-    private WritablePValue<Boolean> zAxisVisible = Props.of("zAxisVisible").valueOf(Boolean.class, false);
-    private WritablePValue<Boolean> xyGridVisible = Props.of("xyGridVisible").valueOf(Boolean.class, false);
-    private WritablePValue<Box3D> axesBox = Props.of("axesBox").valueOf(Box3D.class, null);
-    private WritablePValue<Integer> axisTicks = Props.of("axisTicks").valueOf(Integer.class, 0);
-    private WritablePValue<Integer> axisWidth = Props.of("axisWidth").valueOf(Integer.class, 0);
-    private WritablePValue<Color> axisColor = Props.of("axisColor").valueOf(Color.class, Color.black);
+    private WritableValue<Boolean> xAxisVisible = Props.of("xAxisVisible").valueOf(Boolean.class, false);
+    private WritableValue<Boolean> yAxisVisible = Props.of("yAxisVisible").valueOf(Boolean.class, false);
+    private WritableValue<Boolean> zAxisVisible = Props.of("zAxisVisible").valueOf(Boolean.class, false);
+    private WritableValue<Boolean> xyGridVisible = Props.of("xyGridVisible").valueOf(Boolean.class, false);
+    private WritableValue<Box3D> axesBox = Props.of("axesBox").valueOf(Box3D.class, null);
+    private WritableValue<Integer> axisTicks = Props.of("axisTicks").valueOf(Integer.class, 0);
+    private WritableValue<Integer> axisWidth = Props.of("axisWidth").valueOf(Integer.class, 0);
+    private WritableValue<Color> axisColor = Props.of("axisColor").valueOf(Color.class, Color.black);
     /*
      * Box Settings
      */
-    private WritablePValue<Boolean> gridsVisible = Props.of("gridsVisible").valueOf(Boolean.class, false);
-    private WritablePValue<Boolean> planesVisible = Props.of("planesVisible").valueOf(Boolean.class, false);
-    private WritablePValue<Boolean> labelsVisible = Props.of("labelsVisible").valueOf(Boolean.class, false);
-    private WritablePValue<Boolean> boxVisible = Props.of("boxVisible").valueOf(Boolean.class, false);
-    private WritablePValue<Boolean> ticksVisible = Props.of("ticksVisible").valueOf(Boolean.class, false);
+    private WritableValue<Boolean> gridsVisible = Props.of("gridsVisible").valueOf(Boolean.class, false);
+    private WritableValue<Boolean> planesVisible = Props.of("planesVisible").valueOf(Boolean.class, false);
+    private WritableValue<Boolean> labelsVisible = Props.of("labelsVisible").valueOf(Boolean.class, false);
+    private WritableValue<Boolean> boxVisible = Props.of("boxVisible").valueOf(Boolean.class, false);
+    private WritableValue<Boolean> ticksVisible = Props.of("ticksVisible").valueOf(Boolean.class, false);
 
-    private WritablePValue<Boolean> ticks = Props.of("ticks").valueOf(Boolean.class, false);
-    private WritablePValue<Integer> divisions = Props.of("divisions").valueOf(Integer.class, 0);
-    private WritablePValue<Integer> subDivisions = Props.of("subDivisions").valueOf(Integer.class, 0);
+    private WritableValue<Boolean> ticks = Props.of("ticks").valueOf(Boolean.class, false);
+    private WritableValue<Integer> divisions = Props.of("divisions").valueOf(Integer.class, 0);
+    private WritableValue<Integer> subDivisions = Props.of("subDivisions").valueOf(Integer.class, 0);
 
-    private WritablePValue<Double> fov = Props.of("fov").valueOf(Double.class, 0.0);
-    private WritablePValue<Boolean> axisVisible = Props.of("axisVisible").valueOf(Boolean.class, true);
-    private WritablePValue<Boolean> gridXYVisible = Props.of("gridXYVisible").valueOf(Boolean.class, true);
+    private WritableValue<Double> fov = Props.of("fov").valueOf(Double.class, 0.0);
+    private WritableValue<Boolean> axisVisible = Props.of("axisVisible").valueOf(Boolean.class, true);
+    private WritableValue<Boolean> gridXYVisible = Props.of("gridXYVisible").valueOf(Boolean.class, true);
 
     public PropPreferences() {
         listeners.addDelegate(axisVisible);
@@ -122,119 +122,119 @@ public class PropPreferences implements WithListeners {
         return extra;
     }
 
-    public WritablePValue<Box3D> clipBox() {
+    public WritableValue<Box3D> clipBox() {
         return clipBox;
     }
 
-    public WritablePValue<Boolean> antiAliasingEnabled() {
+    public WritableValue<Boolean> antiAliasingEnabled() {
         return antiAliasingEnabled;
     }
 
-    public WritablePValue<Boolean> perspectiveEnabled() {
+    public WritableValue<Boolean> perspectiveEnabled() {
         return perspectiveEnabled;
     }
 
-    public WritablePValue<Boolean> steroscopyEnabled() {
+    public WritableValue<Boolean> steroscopyEnabled() {
         return steroscopyEnabled;
     }
 
-    public WritablePValue<Integer> steroscopicMode() {
+    public WritableValue<Integer> steroscopicMode() {
         return steroscopicMode;
     }
 
-    public WritablePValue<Paint> backColor() {
+    public WritableValue<Paint> backColor() {
         return backColor;
     }
 
-    public WritablePValue<Boolean> fogEnabled() {
+    public WritableValue<Boolean> fogEnabled() {
         return fogEnabled;
     }
 
-    public WritablePValue<Boolean> light1Enabled() {
+    public WritableValue<Boolean> light1Enabled() {
         return light1Enabled;
     }
 
-    public WritablePValue<Boolean> light2Enabled() {
+    public WritableValue<Boolean> light2Enabled() {
         return light2Enabled;
     }
 
-    public WritablePValue<Boolean> light3Enabled() {
+    public WritableValue<Boolean> light3Enabled() {
         return light3Enabled;
     }
 
-    public WritablePValue<Boolean> xAxisVisible() {
+    public WritableValue<Boolean> xAxisVisible() {
         return xAxisVisible;
     }
 
-    public WritablePValue<Boolean> yAxisVisible() {
+    public WritableValue<Boolean> yAxisVisible() {
         return yAxisVisible;
     }
 
-    public WritablePValue<Boolean> zAxisVisible() {
+    public WritableValue<Boolean> zAxisVisible() {
         return zAxisVisible;
     }
 
-    public WritablePValue<Boolean> xyGridVisible() {
+    public WritableValue<Boolean> xyGridVisible() {
         return xyGridVisible;
     }
 
-    public WritablePValue<Box3D> axesBox() {
+    public WritableValue<Box3D> axesBox() {
         return axesBox;
     }
 
-    public WritablePValue<Integer> axisTicks() {
+    public WritableValue<Integer> axisTicks() {
         return axisTicks;
     }
 
-    public WritablePValue<Integer> axisWidth() {
+    public WritableValue<Integer> axisWidth() {
         return axisWidth;
     }
 
-    public WritablePValue<Color> axisColor() {
+    public WritableValue<Color> axisColor() {
         return axisColor;
     }
 
-    public WritablePValue<Boolean> gridsVisible() {
+    public WritableValue<Boolean> gridsVisible() {
         return gridsVisible;
     }
 
-    public WritablePValue<Boolean> planesVisible() {
+    public WritableValue<Boolean> planesVisible() {
         return planesVisible;
     }
 
-    public WritablePValue<Boolean> labelsVisible() {
+    public WritableValue<Boolean> labelsVisible() {
         return labelsVisible;
     }
 
-    public WritablePValue<Boolean> boxVisible() {
+    public WritableValue<Boolean> boxVisible() {
         return boxVisible;
     }
 
-    public WritablePValue<Boolean> ticksVisible() {
+    public WritableValue<Boolean> ticksVisible() {
         return ticksVisible;
     }
 
-    public WritablePValue<Boolean> ticks() {
+    public WritableValue<Boolean> ticks() {
         return ticks;
     }
 
-    public WritablePValue<Integer> divisions() {
+    public WritableValue<Integer> divisions() {
         return divisions;
     }
 
-    public WritablePValue<Integer> subDivisions() {
+    public WritableValue<Integer> subDivisions() {
         return subDivisions;
     }
 
-    public WritablePValue<Double> fov() {
+    public WritableValue<Double> fov() {
         return fov;
     }
 
-    public WritablePValue<Boolean> axisVisible() {
+    public WritableValue<Boolean> axisVisible() {
         return axisVisible;
     }
 
-    public WritablePValue<Boolean> gridXYVisible() {
+    public WritableValue<Boolean> gridXYVisible() {
         return gridXYVisible;
     }
 

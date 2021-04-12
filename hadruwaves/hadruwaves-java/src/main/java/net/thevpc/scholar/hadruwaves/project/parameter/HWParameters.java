@@ -17,7 +17,7 @@ import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 
 public class HWParameters implements TsonSerializable, WithListeners {
 
-    protected WritablePValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
+    protected WritableValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
     private HWParameterFolderHelper childrenHelper = new HWParameterFolderHelper(null, () -> project().get());
     private PropertyListenersImpl listeners = new PropertyListenersImpl(this);
 
@@ -26,7 +26,7 @@ public class HWParameters implements TsonSerializable, WithListeners {
         listeners.addDelegate(childrenHelper.children());
     }
 
-    public PValue<HWProject> project() {
+    public ObservableValue<HWProject> project() {
         return project;
     }
 
@@ -35,7 +35,7 @@ public class HWParameters implements TsonSerializable, WithListeners {
         return listeners;
     }
 
-    public WritablePLMap<String, HWParameterElement> children() {
+    public WritableLiMap<String, HWParameterElement> children() {
         return childrenHelper.children();
     }
 
@@ -97,7 +97,7 @@ public class HWParameters implements TsonSerializable, WithListeners {
                     }
                 }
             } else if (a instanceof HWParameterFolder) {
-                for (PMapEntry<String, HWParameterElement> c : ((HWParameterFolder) a).children()) {
+                for (MapEntry<String, HWParameterElement> c : ((HWParameterFolder) a).children()) {
                     stack.push(c.getValue());
                 }
             } else {

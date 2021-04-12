@@ -4,7 +4,7 @@ import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.common.mon.ProgressMonitorFactory;
 import net.thevpc.common.mon.ProgressMonitors;
 import net.thevpc.tson.*;
-import net.thevpc.common.util.Chronometer;
+import net.thevpc.common.time.Chronometer;
 import net.thevpc.scholar.hadrumaths.Vector;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.cache.CacheKey;

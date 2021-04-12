@@ -6,7 +6,7 @@
 package net.thevpc.scholar.hadruwaves.project.scene;
 
 import net.thevpc.scholar.hadruwaves.project.HWProjectComponent;
-import net.thevpc.common.props.WritablePValue;
+import net.thevpc.common.props.WritableValue;
 import net.thevpc.scholar.hadruwaves.project.WritableSelectable;
 
 /**
@@ -15,7 +15,7 @@ import net.thevpc.scholar.hadruwaves.project.WritableSelectable;
  */
 public interface HWProjectPiece extends HWProjectComponent, WritableSelectable {
 
-    WritablePValue<Element3DTemplate> geometry();
+    WritableValue<Element3DTemplate> geometry();
 
-    WritablePValue<HWMaterialTemplate> material();
+    WritableValue<HWMaterialTemplate> material();
 }

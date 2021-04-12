@@ -6,7 +6,7 @@
 package net.thevpc.scholar.hadruwaves.mom.solver.test;
 
 import java.util.ArrayList;
-import net.thevpc.common.props.WritablePValue;
+import net.thevpc.common.props.WritableValue;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadruwaves.project.Props2;
@@ -19,7 +19,7 @@ import net.thevpc.scholar.hadruwaves.props.WritablePExpression;
  */
 public class ParamSeqTemplate {
 
-    private WritablePValue<String> name = Props2.of("name").valueOf(String.class, null);
+    private WritableValue<String> name = Props2.of("name").valueOf(String.class, null);
     private WritablePExpression<Expr> from = Props2.of("from").exprOf(Maths.expr(0));
     private WritablePExpression<Expr> to = Props2.of("to").exprOf(Maths.expr(0));
     private WritablePExpression<Expr> condition = Props2.of("condition").exprOf(Maths.expr(1));
@@ -38,7 +38,7 @@ public class ParamSeqTemplate {
         this.condition.set(cond);
     }
 
-    public WritablePValue<String> name() {
+    public WritableValue<String> name() {
         return name;
     }
 

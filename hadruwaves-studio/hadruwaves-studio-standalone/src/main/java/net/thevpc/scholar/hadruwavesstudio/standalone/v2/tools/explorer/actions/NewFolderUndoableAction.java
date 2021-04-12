@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import net.thevpc.common.props.Props;
-import net.thevpc.common.props.WritablePNamedNode;
+import net.thevpc.common.props.WritableNamedNode;
 import net.thevpc.echo.AppEvent;
 import net.thevpc.common.msg.JFormattedMessage;
 import net.thevpc.echo.UndoableAction;
@@ -57,8 +57,8 @@ public class NewFolderUndoableAction extends AppUndoableAction {
                         ((HWSolution) parent.getItemValue()).children().add(added);
                         return new JFormattedMessage(Level.INFO, "New Solution Folder {0}", new Object[]{folderName});
                     } else if (parent.getItemValue() instanceof DefaultHWSolutionFolder) {
-                        WritablePNamedNode<HWSolutionElement> newNode = Props.of(folderName).nnodeOf(HWSolutionElement.class, added);
-                        WritablePNamedNode<HWSolutionElement> parentNode = (WritablePNamedNode<HWSolutionElement>) parent.getItem();
+                        WritableNamedNode<HWSolutionElement> newNode = Props.of(folderName).nnodeOf(HWSolutionElement.class, added);
+                        WritableNamedNode<HWSolutionElement> parentNode = (WritableNamedNode<HWSolutionElement>) parent.getItem();
                         parentNode.children().put(folderName, newNode);
                         return new JFormattedMessage(Level.INFO, "New Solution Folder {0}", new Object[]{folderName});
                     }
@@ -72,7 +72,7 @@ public class NewFolderUndoableAction extends AppUndoableAction {
                 if (parent.getItemValue() instanceof HWSolution) {
                     ((HWSolution) parent.getItemValue()).children().remove(folderName);
                 } else if (parent.getItemValue() instanceof DefaultHWSolutionFolder) {
-                    WritablePNamedNode<HWSolutionElement> parentNode = (WritablePNamedNode<HWSolutionElement>) parent.getItem();
+                    WritableNamedNode<HWSolutionElement> parentNode = (WritableNamedNode<HWSolutionElement>) parent.getItem();
                     parentNode.children().remove(folderName);
                 }
                 explorer.refreshTools();
@@ -83,8 +83,8 @@ public class NewFolderUndoableAction extends AppUndoableAction {
                 if (parent.getItemValue() instanceof HWSolution) {
                     ((HWSolution) parent.getItemValue()).children().add(added);
                 } else if (parent.getItemValue() instanceof DefaultHWSolutionFolder) {
-                    WritablePNamedNode<HWSolutionElement> newNode = Props.of(folderName).nnodeOf(HWSolutionElement.class, added);
-                    WritablePNamedNode<HWSolutionElement> parentNode = (WritablePNamedNode<HWSolutionElement>) parent.getItem();
+                    WritableNamedNode<HWSolutionElement> newNode = Props.of(folderName).nnodeOf(HWSolutionElement.class, added);
+                    WritableNamedNode<HWSolutionElement> parentNode = (WritableNamedNode<HWSolutionElement>) parent.getItem();
                     parentNode.children().put(folderName, newNode);
                 }
             }

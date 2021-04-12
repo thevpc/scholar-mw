@@ -7,7 +7,7 @@ package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.trees;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.thevpc.common.props.PMapEntry;
+import net.thevpc.common.props.MapEntry;
 import net.thevpc.echo.Application;
 import net.thevpc.echo.swing.core.DefaultPropertiesNodeFolder;
 import net.thevpc.echo.swing.core.PValueViewProperty;
@@ -110,7 +110,7 @@ public class HWProjectConfigurationPropertiesAware extends DefaultHWPropertiesTr
                         tf.add(new PValueViewPropertyE("property", tf2.condition()));
                         DefaultPropertiesNodeFolder psfolder = tf.addFolder("folder", "Params");
                         int index = 0;
-                        for (PMapEntry<String, ParamSeqTemplate> param : tf2.params()) {
+                        for (MapEntry<String, ParamSeqTemplate> param : tf2.params()) {
                             DefaultPropertiesNodeFolder pfolder = psfolder.addFolder("MomSolverTestTemplateSeqParam", param.getValue().name().get());
                             pfolder.putUserObject("index", index);
                             pfolder.putUserObject("name", param.getValue().name().get());

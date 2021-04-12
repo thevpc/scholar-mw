@@ -1,13 +1,13 @@
 package net.thevpc.scholar.hadruwaves.project.scene;
 
 import net.thevpc.scholar.hadruwaves.project.HWProjectComponent;
-import net.thevpc.common.props.WritablePLMap;
+import net.thevpc.common.props.WritableLiMap;
 
 import java.util.List;
 import java.util.function.Predicate;
 
 public interface HWProjectComponentGroup extends HWProjectComponent{
-    WritablePLMap<String,HWProjectComponent> children();
+    WritableLiMap<String,HWProjectComponent> children();
 
     //    @Override
     HWProjectComponent findElement(String path);

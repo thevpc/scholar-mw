@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import net.thevpc.common.props.PMapEntry;
+import net.thevpc.common.props.MapEntry;
 import net.thevpc.common.props.Props;
-import net.thevpc.common.props.WritablePLMap;
+import net.thevpc.common.props.WritableLiMap;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadruwaves.mom.solver.AbstractMomSolverTestTemplate;
@@ -26,7 +26,7 @@ import net.thevpc.scholar.hadruwaves.props.WritablePExpression;
 public class MomSolverTestTemplateSeq extends AbstractMomSolverTestTemplate {
 
     private final WritablePExpression<Expr> expr = Props2.of("expr").exprOf(Maths.expr(0));
-    private final WritablePLMap<String, ParamSeqTemplate> params = Props.of("params").lmapOf(String.class, ParamSeqTemplate.class, x -> x.name().get());
+    private final WritableLiMap<String, ParamSeqTemplate> params = Props.of("params").lmapOf(String.class, ParamSeqTemplate.class, x -> x.name().get());
     private final WritablePExpression<Expr> condition = Props2.of("condition").exprOf(Maths.expr(1));
 
     public MomSolverTestTemplateSeq() {
@@ -41,7 +41,7 @@ public class MomSolverTestTemplateSeq extends AbstractMomSolverTestTemplate {
         return expr;
     }
 
-    public WritablePLMap<String, ParamSeqTemplate> params() {
+    public WritableLiMap<String, ParamSeqTemplate> params() {
         return params;
     }
 
@@ -53,7 +53,7 @@ public class MomSolverTestTemplateSeq extends AbstractMomSolverTestTemplate {
     public Expr[] generate(HWSolverMoM solver) {
 
         List<BoundValue<Double>> a = new ArrayList<>();
-        for (PMapEntry<String, ParamSeqTemplate> param : params()) {
+        for (MapEntry<String, ParamSeqTemplate> param : params()) {
             BoundValue<Double>[] next = param.getValue().evalBoundValues(solver.configuration());
             if (a.isEmpty()) {
                 a.addAll(Arrays.asList(next));

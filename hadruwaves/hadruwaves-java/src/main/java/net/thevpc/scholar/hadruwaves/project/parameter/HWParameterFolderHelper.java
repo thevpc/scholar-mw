@@ -11,7 +11,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class HWParameterFolderHelper {
-    protected WritablePLMap<String, HWParameterElement> children = Props.of("children").lmap2Of(String.class, HWParameterElement.class, x -> x.name());
+    protected WritableLiMap<String, HWParameterElement> children = Props.of("children").lmap2Of(String.class, HWParameterElement.class, x -> x.name());
     private HWParameterFolder thisAsParent;
 
     public HWParameterFolderHelper(HWParameterFolder thisAsParent, Supplier<HWProject> prj) {
@@ -38,7 +38,7 @@ public class HWParameterFolderHelper {
         });
     }
 
-    public WritablePLMap<String, HWParameterElement> children() {
+    public WritableLiMap<String, HWParameterElement> children() {
         return children;
     }
 

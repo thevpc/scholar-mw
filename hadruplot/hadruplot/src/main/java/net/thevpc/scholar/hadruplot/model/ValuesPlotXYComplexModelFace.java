@@ -3,7 +3,7 @@ package net.thevpc.scholar.hadruplot.model;
 
 import net.thevpc.scholar.hadruplot.model.ValuesPlotModel;
 import net.thevpc.common.util.ArrayUtils;
-import net.thevpc.common.util.DoubleArrayList;
+import net.thevpc.common.collections.DoubleArrayList;
 import net.thevpc.scholar.hadruplot.util.PlotModelUtils;
 import net.thevpc.scholar.hadruplot.util.PlotUtils;
 

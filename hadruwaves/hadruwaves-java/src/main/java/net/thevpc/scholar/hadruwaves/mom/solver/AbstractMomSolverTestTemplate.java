@@ -5,8 +5,8 @@
  */
 package net.thevpc.scholar.hadruwaves.mom.solver;
 
-import net.thevpc.common.props.WritablePList;
-import net.thevpc.common.props.WritablePValue;
+import net.thevpc.common.props.WritableList;
+import net.thevpc.common.props.WritableValue;
 import net.thevpc.scholar.hadruwaves.project.Props2;
 import net.thevpc.scholar.hadruwaves.project.scene.HWProjectPolygon;
 
@@ -16,22 +16,22 @@ import net.thevpc.scholar.hadruwaves.project.scene.HWProjectPolygon;
  */
 public abstract class AbstractMomSolverTestTemplate implements MomSolverTestTemplate {
 
-    private final WritablePValue<String> name = Props2.of("name").valueOf(String.class, null);
-    private final WritablePValue<String> description = Props2.of("description").valueOf(String.class, null);
-    private final WritablePList<HWProjectPolygon> polygons = Props2.of("polygons").listOf(HWProjectPolygon.class);
+    private final WritableValue<String> name = Props2.of("name").valueOf(String.class, null);
+    private final WritableValue<String> description = Props2.of("description").valueOf(String.class, null);
+    private final WritableList<HWProjectPolygon> polygons = Props2.of("polygons").listOf(HWProjectPolygon.class);
 
     @Override
-    public WritablePValue<String> name() {
+    public WritableValue<String> name() {
         return name;
     }
 
     @Override
-    public WritablePValue<String> description() {
+    public WritableValue<String> description() {
         return description;
     }
 
     @Override
-    public WritablePList<HWProjectPolygon> polygons() {
+    public WritableList<HWProjectPolygon> polygons() {
         return polygons;
     }
 

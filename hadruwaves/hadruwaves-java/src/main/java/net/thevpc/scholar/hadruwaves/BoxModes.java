@@ -1,6 +1,5 @@
 package net.thevpc.scholar.hadruwaves;
 
-import net.thevpc.common.util.Chronometer;
 import net.thevpc.common.mon.ProgressMonitors;
 import net.thevpc.common.mon.VoidMonitoredAction;
 import net.thevpc.scholar.hadrumaths.*;
@@ -10,6 +9,7 @@ import net.thevpc.scholar.hadruwaves.mom.BoxSpace;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import net.thevpc.common.time.Chronometer;
 
 import static net.thevpc.scholar.hadrumaths.Maths.*;
 

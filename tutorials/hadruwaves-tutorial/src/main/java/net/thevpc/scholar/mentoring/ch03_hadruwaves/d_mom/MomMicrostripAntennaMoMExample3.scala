@@ -9,7 +9,7 @@ package net.thevpc.scholar.mentoring.ch0x.s4
 import net.thevpc.scholar.hadrumaths.MathScala._
 import net.thevpc.scholar.hadrumaths._
 import net.thevpc.scholar.hadruwaves.mom._
-import net.thevpc.common.util.Chronometer
+import net.thevpc.common.time.Chronometer
 import net.thevpc.common.mon.{ProgressMonitor, ProgressMonitors}
 import net.thevpc.scholar.hadruwaves.{Material, WallBorders}
 import net.thevpc.scholar.hadruwaves.mom.modes.BoxModeFunctions

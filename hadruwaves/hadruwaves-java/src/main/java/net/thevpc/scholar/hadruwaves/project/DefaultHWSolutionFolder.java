@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadruwaves.project;
 
-import net.thevpc.common.props.WritablePLMap;
+import net.thevpc.common.props.WritableLiMap;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -13,7 +13,7 @@ public class DefaultHWSolutionFolder extends AbstractHWSolutionElement implement
     }
 
     @Override
-    public WritablePLMap<String, HWSolutionElement> children() {
+    public WritableLiMap<String, HWSolutionElement> children() {
         return childrenHelper.children();
     }
 

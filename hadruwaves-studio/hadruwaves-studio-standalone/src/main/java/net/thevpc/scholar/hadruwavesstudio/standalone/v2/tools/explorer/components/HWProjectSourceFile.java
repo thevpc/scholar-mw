@@ -2,7 +2,7 @@ package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer.compone
 
 import net.thevpc.common.props.FileObject;
 import net.thevpc.common.props.Props;
-import net.thevpc.common.props.WritablePValue;
+import net.thevpc.common.props.WritableValue;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 
 import java.io.File;
@@ -12,30 +12,30 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class HWProjectSourceFile extends HWProjectSource implements FileObject {
-    private final WritablePValue<Boolean> modified = Props.of("modified").valueOf(Boolean.class, false);
-    private final WritablePValue<String> filePath = Props.of("filePath").valueOf(String.class, null);
-    private final WritablePValue<String> content = Props.of("content").valueOf(String.class, "");
-    private WritablePValue<String> name = Props.of("name").valueOf(String.class, null);
+    private final WritableValue<Boolean> modified = Props.of("modified").valueOf(Boolean.class, false);
+    private final WritableValue<String> filePath = Props.of("filePath").valueOf(String.class, null);
+    private final WritableValue<String> content = Props.of("content").valueOf(String.class, "");
+    private WritableValue<String> name = Props.of("name").valueOf(String.class, null);
     public HWProjectSourceFile(String path, HWProject project, File file) {
         super(path, project, file);
         filePath.set(file.toPath().toString());
         name.set(file.getName());
     }
 
-    public WritablePValue<String> content() {
+    public WritableValue<String> content() {
         return content;
     }
 
-    public WritablePValue<Boolean> modified() {
+    public WritableValue<Boolean> modified() {
         return modified;
     }
 
-    public WritablePValue<String> name() {
+    public WritableValue<String> name() {
         return name;
     }
 
     @Override
-    public WritablePValue<String> filePath() {
+    public WritableValue<String> filePath() {
         return filePath;
     }
 

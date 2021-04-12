@@ -25,7 +25,7 @@ class ActionLocksDefaultTableCellRenderer extends DefaultTableCellRenderer {
                 hasFocus, row, column);
         if(column==4){
             super.setIcon(
-                    app.iconSet().icon("Delete").get()
+                    app.iconSets().icon("Delete").get()
             );
         }
         return c;

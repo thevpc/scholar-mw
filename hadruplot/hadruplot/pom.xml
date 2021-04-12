@@ -4,7 +4,7 @@
 
     <groupId>net.thevpc.scholar</groupId>
     <artifactId>hadruplot</artifactId>
-    <name>net.thevpc.scholar.hadruplot</name>
+    <name>net.thevpc.scholar.hadruplot.hadruplot</name>
     <version>3.2.0</version> <!--updated-->
     <packaging>jar</packaging>
 
@@ -41,7 +41,7 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>net.thevpc</groupId>
+            <groupId>net.thevpc.tson</groupId>
             <artifactId>tson</artifactId>
             <version>1.0.0</version>
         </dependency>
@@ -53,7 +53,17 @@
         <dependency>
             <groupId>net.thevpc.common</groupId>
             <artifactId>thevpc-common-utils</artifactId>
-            <version>1.23.0</version>
+            <version>1.23.1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.thevpc.common</groupId>
+            <artifactId>thevpc-common-time</artifactId>
+            <version>1.23.1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.thevpc.common</groupId>
+            <artifactId>thevpc-common-collections</artifactId>
+            <version>1.23.1</version>
         </dependency>
         <dependency>
             <groupId>net.thevpc.common</groupId>
@@ -63,7 +73,7 @@
         <dependency>
             <groupId>net.thevpc.common</groupId>
             <artifactId>thevpc-common-io</artifactId>
-            <version>1.3.12</version>
+            <version>1.3.13</version>
         </dependency>
         <dependency>
             <groupId>net.thevpc.common</groupId>
@@ -78,13 +88,8 @@
         <dependency>
             <groupId>net.thevpc.common</groupId>
             <artifactId>thevpc-common-strings</artifactId>
-            <version>1.2.18</version>
+            <version>1.2.19</version>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>net.thevpc.common</groupId>-->
-        <!--<artifactId>thevpc-common-mvn</artifactId>-->
-        <!--<version>1.1.1</version>-->
-        <!--</dependency>-->
     </dependencies>
     <build>
         <plugins>

@@ -31,7 +31,7 @@ public class ConsoleActionCubesPlot implements ConsoleAction {
         }
         plotter.getPlotConsoleFrame().getWindow(preferredPath)
                 .addChild(
-                        "/" + plotTitle,
+                        PlotPath.of(plotTitle),
                         Plot.create(
                                 new PlotHyperCubePlotModel()
                                        // .setLibraries(libraries)

@@ -60,7 +60,7 @@ public class ConsoleActionPlot implements ConsoleAction {
                 JComponent pageComponent = list.getPageComponent(plotGroup);
                 if (pageComponent == null) {
                     pageComponent = (JComponent) Plot.create(new ValuesPlotModel().setPlotType(new LibraryPlotType(PlotType.CURVE,library)), Plot.getDefaultWindowManager());
-                    window.addChild(plotGroup, pageComponent);
+                    window.addChild(PlotPath.of(plotGroup), pageComponent);
                 }
                 ValuesPlotModel model = (ValuesPlotModel) ((ValuesPlotPanel) pageComponent).getModel();
                 model.setConverter(toDoubleConverter);
@@ -75,7 +75,7 @@ public class ConsoleActionPlot implements ConsoleAction {
             }
             case HEATMAP: {
                 plotter.getPlotConsoleFrame().getWindow(preferredPath).addChild(
-                        plotTitle,
+                        PlotPath.of(plotTitle),
                         (JComponent) Plot.create(new ValuesPlotModel(
                                 plotTitle,
                                 null, null, null, yvalues.getRows(), yvalues.getColumns(), yvalues.getMatrix(),
@@ -86,7 +86,7 @@ public class ConsoleActionPlot implements ConsoleAction {
             case MESH: {
                 plotter.getPlotConsoleFrame().getWindow(preferredPath)
                         .addChild(
-                                plotTitle,
+                                PlotPath.of(plotTitle),
                                 (JComponent) Plot.create(new ValuesPlotModel(
                                         plotTitle,
                                         null, null, null, yvalues.getRows(), yvalues.getColumns(), yvalues.getMatrix(),

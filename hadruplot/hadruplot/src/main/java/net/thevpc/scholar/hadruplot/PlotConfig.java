@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadruplot;
 
-import net.thevpc.common.util.ClassMap;
+import net.thevpc.common.collections.ClassMap;
 import net.thevpc.scholar.hadruplot.console.PlotManager;
 
 import java.util.function.Function;

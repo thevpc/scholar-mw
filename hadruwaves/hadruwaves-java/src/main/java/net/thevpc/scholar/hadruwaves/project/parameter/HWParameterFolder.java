@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadruwaves.project.parameter;
 
-import net.thevpc.common.props.WritablePLMap;
+import net.thevpc.common.props.WritableLiMap;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -17,7 +17,7 @@ public class HWParameterFolder extends AbstractHWParameterElement {
     }
 
 
-    public WritablePLMap<String, HWParameterElement> children() {
+    public WritableLiMap<String, HWParameterElement> children() {
         return childrenHelper.children;
     }
 

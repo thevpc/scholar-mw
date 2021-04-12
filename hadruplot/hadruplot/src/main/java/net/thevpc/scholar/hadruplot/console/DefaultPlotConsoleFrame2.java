@@ -17,7 +17,7 @@ import java.io.File;
 import net.thevpc.echo.AppTools;
 import net.thevpc.echo.AppWindowState;
 import net.thevpc.echo.Application;
-import net.thevpc.echo.swing.Applications;
+import net.thevpc.echo.swing.SwingApplications;
 
 public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
     public static int openFrames = 0;
@@ -32,9 +32,9 @@ public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
 
     public DefaultPlotConsoleFrame2(PlotConsole console, String title) throws HeadlessException {
         this.console = console;
-        app = Applications.Apps.Default();
+        app = SwingApplications.Apps.Default();
         UIPlafManager.INSTANCE.apply("FlatLight");
-        app.builder().mainWindowBuilder().get().workspaceFactory().set(Applications.Workspaces.Default(wins.getDesktop()));
+        app.builder().mainWindowBuilder().get().workspaceFactory().set(SwingApplications.Workspaces.Default(wins.getDesktop()));
         app.i18n().bundles().add(new I18nResourceBundle("net.thevpc.scholar.hadruplot.console.HadrumathsPlot"));
         app.start();
 
@@ -116,9 +116,9 @@ public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
         tools.addSeparator("/mainWindow/menuBar/File/Sep1");
         tools.addAction(new CloseAction(this), "/mainWindow/menuBar/File/CloseAction");
         tools.addAction(new ExitAction(this), "/mainWindow/menuBar/File/ExitAction");
-        Applications.Helper.addViewActions(app);
+        SwingApplications.Helper.addViewActions(app);
 
-        Applications.Helper.addWindowsActions(app,wins.getDesktop());
+        SwingApplications.Helper.addWindowsActions(app,wins.getDesktop());
         tools.addSeparator("/mainWindow/menuBar/Windows/Separator");
 
 //        recentFilesMenu = new RecentFilesMenu("Recent Files", new RecentFilesPropertiesModel(new File(System.getProperty("user.dir") + "/.java/plotconsole.xml")));

@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths.interop.matlab;
 
-import net.thevpc.common.util.ClassMap;
+import net.thevpc.common.collections.ClassMap;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.interop.matlab.impl.*;
 import net.thevpc.scholar.hadrumaths.interop.matlab.params.*;

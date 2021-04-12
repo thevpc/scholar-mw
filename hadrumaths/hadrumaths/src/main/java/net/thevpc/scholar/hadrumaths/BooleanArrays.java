@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadrumaths;
 
 import net.thevpc.scholar.hadrumaths.symbolic.Range;
-import net.thevpc.common.util.BitSet2;
+import net.thevpc.common.collections.BitSet2;
 
 /**
  * Created by vpc on 4/7/17.

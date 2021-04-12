@@ -16,11 +16,11 @@ import net.thevpc.tson.TsonObjectContext;
 public class DefaultHWSolution implements HWSolution {
 
     private String uuid;
-    private WritablePValue<String> filePath = Props.of("path").valueOf(String.class, null);
-    private WritablePValue<Boolean> modified = Props.of("modified").valueOf(Boolean.class, false);
-    private WritablePValue<String> name = Props.of("name").valueOf(String.class, null);
-    private WritablePValue<String> description = Props.of("description").valueOf(String.class, null);
-    private WritablePValue<HWProject> activeProject = Props.of("activeProject").valueOf(HWProject.class, null);
+    private WritableValue<String> filePath = Props.of("path").valueOf(String.class, null);
+    private WritableValue<Boolean> modified = Props.of("modified").valueOf(Boolean.class, false);
+    private WritableValue<String> name = Props.of("name").valueOf(String.class, null);
+    private WritableValue<String> description = Props.of("description").valueOf(String.class, null);
+    private WritableValue<HWProject> activeProject = Props.of("activeProject").valueOf(HWProject.class, null);
     private PropertyListenersImpl listeners = new PropertyListenersImpl(this);
     private HWSolutionFolderHelper childrenHelper = new HWSolutionFolderHelper(null, () -> this);
 
@@ -51,17 +51,17 @@ public class DefaultHWSolution implements HWSolution {
     }
 
     @Override
-    public WritablePValue<HWProject> activeProject() {
+    public WritableValue<HWProject> activeProject() {
         return activeProject;
     }
 
     @Override
-    public WritablePValue<String> description() {
+    public WritableValue<String> description() {
         return description;
     }
 
     @Override
-    public WritablePLMap<String, HWSolutionElement> children() {
+    public WritableLiMap<String, HWSolutionElement> children() {
         return childrenHelper.children();
     }
 
@@ -111,16 +111,16 @@ public class DefaultHWSolution implements HWSolution {
     }
 
     @Override
-    public WritablePValue<String> name() {
+    public WritableValue<String> name() {
         return name;
     }
 
     @Override
-    public WritablePValue<Boolean> modified() {
+    public WritableValue<Boolean> modified() {
         return modified;
     }
 
-    public WritablePValue<String> filePath() {
+    public WritableValue<String> filePath() {
         return filePath;
     }
 

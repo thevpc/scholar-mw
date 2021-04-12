@@ -5,8 +5,8 @@
  */
 package net.thevpc.scholar.hadruwaves.mom.solver;
 
-import net.thevpc.common.props.WritablePList;
-import net.thevpc.common.props.WritablePValue;
+import net.thevpc.common.props.WritableList;
+import net.thevpc.common.props.WritableValue;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadruwaves.project.scene.HWProjectPolygon;
 
@@ -16,11 +16,11 @@ import net.thevpc.scholar.hadruwaves.project.scene.HWProjectPolygon;
  */
 public interface MomSolverTestTemplate {
 
-    WritablePValue<String> name();
+    WritableValue<String> name();
 
-    WritablePValue<String> description();
+    WritableValue<String> description();
 
-    WritablePList<HWProjectPolygon> polygons();
+    WritableList<HWProjectPolygon> polygons();
 
     Expr[] generate(HWSolverMoM solver);
 }

@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.messages;
 
-import net.thevpc.common.props.PList;
+import net.thevpc.common.props.ObservableList;
 import net.thevpc.common.props.PropertyEvent;
 import net.thevpc.common.props.PropertyListener;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.HadruwavesStudio;
@@ -39,7 +39,7 @@ public class HWSMessageTools extends AbstractToolWindowPanel {
         });
     }
 
-    private void updateAll(PList<Message> m) {
+    private void updateAll(ObservableList<Message> m) {
         StringBuilder text = new StringBuilder();
         if (m != null) {
             for (Message appMessage : m) {

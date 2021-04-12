@@ -1,9 +1,9 @@
 package net.thevpc.scholar.hadrumaths.test.symbolic;
 
-import net.thevpc.common.util.Chronometer;
-import net.thevpc.common.util.Collections2;
-import net.thevpc.common.util.DatePart;
-import net.thevpc.common.util.ListValueMap;
+import net.thevpc.common.time.Chronometer;
+import net.thevpc.common.collections.Collections2;
+import net.thevpc.common.time.DatePart;
+import net.thevpc.common.collections.ListValueMap;
 import net.thevpc.scholar.hadrumaths.transform.ExprRewriteCounter;
 import net.thevpc.scholar.hadrumaths.transform.ExprRewriteLogger;
 import net.thevpc.scholar.hadrumaths.transform.ExpressionRewriter;

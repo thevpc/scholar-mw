@@ -3,7 +3,7 @@ package net.thevpc.scholar.hadruwaves.project;
 import net.thevpc.common.props.PropertyEvent;
 import net.thevpc.common.props.PropertyListener;
 import net.thevpc.common.props.Props;
-import net.thevpc.common.props.WritablePLMap;
+import net.thevpc.common.props.WritableLiMap;
 import net.thevpc.scholar.hadrumaths.util.PlatformUtils;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 import net.thevpc.scholar.hadruwaves.project.scene.HWProjectComponentGroup;
 
 public class HWProjectFolderHelper {
-    protected WritablePLMap<String, HWProjectComponent> children = Props.of("children").lmap2Of(String.class, HWProjectComponent.class, x -> x.name());
+    protected WritableLiMap<String, HWProjectComponent> children = Props.of("children").lmap2Of(String.class, HWProjectComponent.class, x -> x.name());
     private HWProjectComponentGroup thisAsParent;
 
     public HWProjectFolderHelper(HWProjectComponentGroup thisAsParent, Supplier<HWSolution> solution) {
@@ -43,7 +43,7 @@ public class HWProjectFolderHelper {
         });
     }
 
-    public WritablePLMap<String, HWProjectComponent> children() {
+    public WritableLiMap<String, HWProjectComponent> children() {
         return children;
     }
 

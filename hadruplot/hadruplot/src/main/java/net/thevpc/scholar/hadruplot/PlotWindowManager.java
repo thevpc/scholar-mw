@@ -12,7 +12,7 @@ import net.thevpc.scholar.hadruplot.console.PlotComponentDisplayer;
  * @author vpc
  */
 public interface PlotWindowManager extends PlotComponentDisplayer {
-    void add(PlotComponent component, String path);
+    void add(PlotComponent component, PlotPath path);
 
     void add(PlotComponent component);
 

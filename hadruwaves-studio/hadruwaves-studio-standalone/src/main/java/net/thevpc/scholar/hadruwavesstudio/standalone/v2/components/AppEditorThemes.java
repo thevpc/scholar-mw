@@ -1,16 +1,17 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.components;
 
 import net.thevpc.common.props.Props;
-import net.thevpc.common.props.WritablePLMap;
-import net.thevpc.common.props.WritablePList;
-import net.thevpc.common.props.WritablePValue;
+import net.thevpc.common.props.WritableLiMap;
+import net.thevpc.common.props.WritableValue;
+//import net.thevpc.common.props.WritableLiMap;
+//import net.thevpc.common.props.WritableValue;
 
 public class AppEditorThemes {
-    private WritablePLMap<String, HWTextEditorTheme> editorThemes = Props.of("editorThemes").lmapOf(String.class, HWTextEditorTheme.class,
+    private WritableLiMap<String, HWTextEditorTheme> editorThemes = Props.of("editorThemes").lmapOf(String.class, HWTextEditorTheme.class,
             x -> x.getId()
     );
-    private WritablePValue<String> editorTheme = Props.of("editorTheme").valueOf(String.class, "Default");
-    private WritablePValue<Boolean> usePlaf = Props.of("usePlaf").valueOf(Boolean.class, false);
+    private WritableValue<String> editorTheme = Props.of("editorTheme").valueOf(String.class, "Default");
+    private WritableValue<Boolean> usePlaf = Props.of("usePlaf").valueOf(Boolean.class, false);
 
     public AppEditorThemes() {
         editorThemes.add(new HWTextEditorTheme("default", "Default", "org/fife/ui/rsyntaxtextarea/themes/default.xml"));
@@ -21,15 +22,15 @@ public class AppEditorThemes {
         editorThemes.add(new HWTextEditorTheme("vs", "Visual Studio", "org/fife/ui/rsyntaxtextarea/themes/vs.xml"));
     }
 
-    public WritablePLMap<String, HWTextEditorTheme> editorThemes() {
+    public WritableLiMap<String, HWTextEditorTheme> editorThemes() {
         return editorThemes;
     }
 
-    public WritablePValue<String> id() {
+    public WritableValue<String> id() {
         return editorTheme;
     }
 
-    public WritablePValue<Boolean> usePlaf() {
+    public WritableValue<Boolean> usePlaf() {
         return usePlaf;
     }
 }

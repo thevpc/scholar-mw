@@ -11,6 +11,7 @@ import net.thevpc.common.swing.win.WindowPath;
 
 import javax.swing.*;
 import net.thevpc.scholar.hadruplot.LibraryPlotType;
+import net.thevpc.scholar.hadruplot.PlotPath;
 import net.thevpc.scholar.hadruplot.console.PlotConfigManager;
 
 
@@ -41,7 +42,7 @@ public class FunctionsXYPlotConsoleAction implements ConsoleAction {
                 .setPlotType(plotType)
         ;
         plotter.getPlotConsoleFrame().getWindow(preferredPath).addChild(
-                title, (JComponent) Plot.create(m, Plot.getDefaultWindowManager())
+                PlotPath.of(title), (JComponent) Plot.create(m, Plot.getDefaultWindowManager())
         );
     }
 }

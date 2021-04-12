@@ -5,7 +5,7 @@
  */
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results.customresults;
 
-import net.thevpc.common.props.PValue;
+import net.thevpc.common.props.ObservableValue;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results.actions.HWSolverActionNode;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results.results.HWSolverResult;
 
@@ -15,5 +15,5 @@ import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results.results.H
  */
 public interface HWSolverCustomResultValue extends HWSolverActionNode {
 
-    PValue<HWSolverResult> value();
+    ObservableValue<HWSolverResult> value();
 }

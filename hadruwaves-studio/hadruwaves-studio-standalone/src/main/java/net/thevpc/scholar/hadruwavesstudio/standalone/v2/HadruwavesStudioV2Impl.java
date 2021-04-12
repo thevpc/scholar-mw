@@ -1,18 +1,16 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2;
 
 import net.thevpc.echo.*;
-import net.thevpc.echo.swing.Applications;
 import net.thevpc.echo.swing.actions.RedoAction;
 import net.thevpc.echo.swing.actions.UndoAction;
 import net.thevpc.echo.swing.core.swing.JFrameAppWindow;
 import net.thevpc.common.i18n.I18nResourceBundle;
-import net.thevpc.common.iconset.ResourcesIconSet;
 import net.thevpc.common.msg.Message;
 import net.thevpc.common.msg.StringMessage;
 import net.thevpc.common.props.FileObject;
 import net.thevpc.common.props.PropertyEvent;
 import net.thevpc.common.props.PropertyListener;
-import net.thevpc.common.props.WritablePList;
+import net.thevpc.common.props.WritableList;
 import net.thevpc.common.strings.StringUtils;
 import net.thevpc.scholar.hadruwaves.SolverBuildResult;
 import net.thevpc.scholar.hadruwaves.project.*;
@@ -49,6 +47,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import net.thevpc.common.iconset.DefaultIconSet;
+import net.thevpc.echo.swing.SwingApplications;
 import net.thevpc.echo.swing.mydoggy.MyDoggyAppDockingWorkspace;
 import net.thevpc.echo.swing.swingx.AppSwingxConfigurator;
 
@@ -265,7 +265,6 @@ public class HadruwavesStudioV2Impl implements HadruwavesStudio {
         return (AppDockingWorkspace) application.mainWindow().get().workspace().get();
     }
 
-
     @Override
     public void openSourceFile(HWProjectSourceFile s) {
         if (HWTextEditor.isSupportedFile(s.file)) {
@@ -274,13 +273,14 @@ public class HadruwavesStudioV2Impl implements HadruwavesStudio {
             SourceFileEditor sfe = null;
             if (content == null) {
                 sfe = new SourceFileEditor(this);
-                content = ws.addContent("SourceEditor", s.file.getName(), null, sfe);
+                content = ws.addContent("SourceEditor", sfe);
+                content.title().set(s.file.getName());
                 content.closable().set(false);
             } else {
                 sfe = (SourceFileEditor) content.component().get();
             }
             content.title().set(s.file.getName());
-            content.icon().set(app().iconSet().iconIdForFile(s.file,false,false));
+            content.icon().set(app().iconSets().iconForFile(s.file, false, false).get());
             sfe.loadFile(s);
             content.active().set(true);
         } else {
@@ -317,27 +317,27 @@ public class HadruwavesStudioV2Impl implements HadruwavesStudio {
         });
         proc().demoSolution();
 
-        final Application app = Applications.Apps.Default();
+        final Application app = SwingApplications.Apps.Default();
         UIPlafManager.INSTANCE.apply("FlatLight");
-        app.iconSet().resolver().set(new HWAppIconResolver());
+        app.iconSets().resolver().set(new HWAppIconResolver());
         app.i18n().bundles().add(new I18nResourceBundle("net.thevpc.scholar.hadruwavesstudio.standalone.v2.messages.HadruwavesStudio"));
         application = app;
         app.builder().mainWindowBuilder().get().workspaceFactory().set(MyDoggyAppDockingWorkspace.factory());
 
         app.start();
 
-        app.iconSets().add(new ResourcesIconSet("Material-Neron-16", 16, 16, "/net/thevpc/scholar/hadruwavesstudio/standalone/v2/images/material-mono", "png", getClass().getClassLoader()));
-        app.iconSets().add(new ResourcesIconSet("Material-Neron-32", 32, 32, "/net/thevpc/scholar/hadruwavesstudio/standalone/v2/images/material-mono", "png", getClass().getClassLoader()));
-        app.iconSets().add(new ResourcesIconSet("Icon8-Simple-16", 16, 16, "/net/thevpc/scholar/hadruwavesstudio/standalone/v2/images/icons8-color", "png", getClass().getClassLoader()));
-        app.iconSets().add(new ResourcesIconSet("Icon8-Simple-32", 32, 32, "/net/thevpc/scholar/hadruwavesstudio/standalone/v2/images/icons8-color", "png", getClass().getClassLoader()));
-        app.iconSet().id().set("Icon8-Simple-16");
+        app.iconSets().add(new DefaultIconSet("Material-Neron", "/net/thevpc/scholar/hadruwavesstudio/standalone/v2/images/material-mono", getClass().getClassLoader()));
+        app.iconSets().add(new DefaultIconSet("Material-Neron", "/net/thevpc/scholar/hadruwavesstudio/standalone/v2/images/material-mono", getClass().getClassLoader()));
+        app.iconSets().add(new DefaultIconSet("Icon8-Simple", "/net/thevpc/scholar/hadruwavesstudio/standalone/v2/images/icons8-color", getClass().getClassLoader()));
+        app.iconSets().add(new DefaultIconSet("Icon8-Simple", "/net/thevpc/scholar/hadruwavesstudio/standalone/v2/images/icons8-color", getClass().getClassLoader()));
+        app.iconSets().id().set("Icon8-Simple-16");
 //        for (Class cls : ClassPathUtils.resolveContextClasses()) {
 //
 //        }
         prepareWorkspace();
         prepareMenu();
         app.mainWindow().get().title().set("Hadruwaves Studio - v2.0");
-        app.iconSet().icon("App").bind(app.mainWindow().get().icon());
+        app.iconSets().icon("App").bind(app.mainWindow().get().icon());
         SwingUtilities.invokeLater(() -> ((JFrameAppWindow) app.mainWindow().get()).getFrame().setSize(1024, 800));
         swingx.confirmExit().set(() -> confirmSaveCurrent());
         swingx.configure(app);
@@ -384,7 +384,6 @@ public class HadruwavesStudioV2Impl implements HadruwavesStudio {
         tools.addSeparator("/mainWindow/menuBar/File/Separator3");
         tools.addAction(new ExitAction(application, this), "/mainWindow/menuBar/File/Exit");
 
-
     }
 
     protected void prepareMenu_Edit() {
@@ -399,41 +398,41 @@ public class HadruwavesStudioV2Impl implements HadruwavesStudio {
         tools.addAction(new RedoAction(application), "/mainWindow/menuBar/Edit/Redo", "/mainWindow/toolBar/Default/Redo");
 
         tools.addSeparator("/mainWindow/toolBar/Default/Separator2");
-        tools.addTool(AppToolComponent.of(new CustomAppTool("GREEK"), "/mainWindow/toolBar/Default/GREEK", 0,
+        tools.addCustomTool("/mainWindow/toolBar/Default/GREEK",
                 context -> {
                     return CharactersTableComponent.createComponents(sourceEditorCharTableListener,
                             CharactersTableComponent.Family.GREEK_LOWER, CharactersTableComponent.Family.GREEK_UPPER)
                             .get(0);
                 }
-        ));
-        tools.addTool(AppToolComponent.of(new CustomAppTool("OPERATORS"), "/mainWindow/toolBar/Default/OPERATORS", 0,
+        );
+        tools.addCustomTool("/mainWindow/toolBar/Default/OPERATORS",
                 context -> {
                     return CharactersTableComponent.createComponents(sourceEditorCharTableListener,
                             CharactersTableComponent.Family.OPERATORS)
                             .get(0);
                 }
-        ));
-        tools.addTool(AppToolComponent.of(new CustomAppTool("SYMBOLS"), "/mainWindow/toolBar/Default/SYMBOLS", 0,
+        );
+        tools.addCustomTool("/mainWindow/toolBar/Default/SYMBOLS",
                 context -> {
                     return CharactersTableComponent.createComponents(sourceEditorCharTableListener,
                             CharactersTableComponent.Family.SYMBOLS)
                             .get(0);
                 }
-        ));
-        tools.addTool(AppToolComponent.of(new CustomAppTool("CONSTANTS"), "/mainWindow/toolBar/Default/CONSTANTS", 0,
+        );
+        tools.addCustomTool("/mainWindow/toolBar/Default/CONSTANTS",
                 context -> {
                     return CharactersTableComponent.createComponents(sourceEditorCharTableListener,
                             CharactersTableComponent.Family.CONSTANTS)
                             .get(0);
                 }
-        ));
-        tools.addTool(AppToolComponent.of(new CustomAppTool("TRIGO"), "/mainWindow/toolBar/Default/TRIGO", 0,
+        );
+        tools.addCustomTool("/mainWindow/toolBar/Default/TRIGO",
                 context -> {
                     return CharactersTableComponent.createComponents(sourceEditorCharTableListener,
                             CharactersTableComponent.Family.TRIGO)
                             .get(0);
                 }
-        ));
+        );
 
         //        tools.addAction("/mainWindow/menuBar/Edit/Macros/StartMacroRecording");
 //        tools.addAction("/mainWindow/menuBar/Edit/Macros/StopMacroRecording");
@@ -446,28 +445,28 @@ public class HadruwavesStudioV2Impl implements HadruwavesStudio {
     }
 
     protected void prepareMenu_View() {
-        Applications.Helper.addViewToolActions(application);
+        SwingApplications.Helper.addViewToolActions(application);
         AppTools tools = application.tools();
-        Applications.Helper.addViewPlafActions(application);
+        SwingApplications.Helper.addViewPlafActions(application);
         tools.addFolder("/mainWindow/menuBar/View/Editor Themes");
         for (HWTextEditorTheme theme : editorThemes.editorThemes().values()) {
-            tools.addAction(new EditorThemeAction(this, theme.getId()),"/mainWindow/menuBar/View/Editor Themes/" + theme.getName());
+            tools.addAction(new EditorThemeAction(this, theme.getId()), "/mainWindow/menuBar/View/Editor Themes/" + theme.getName());
         }
         tools.addSeparator("/mainWindow/menuBar/View/Editor Themes/Separator1");
-        tools.addCheck("MaximizeLaF", editorThemes.usePlaf(), "/mainWindow/menuBar/View/Editor Themes/Maximize L&F");
+        tools.addCheck(editorThemes.usePlaf(), "/mainWindow/menuBar/View/Editor Themes/Maximize L&F");
 
-        Applications.Helper.addViewIconActions(application);
-        Applications.Helper.addViewAppearanceActions(application);
+        SwingApplications.Helper.addViewIconActions(application);
+        SwingApplications.Helper.addViewAppearanceActions(application);
 
         tools.addSeparator("/mainWindow/toolBar/Default/Separator3");
         tools.addAction(new ZoomInAction(application, "ZoomIn", this), "/mainWindow/menuBar/View/3DView/ZoomIn", "/mainWindow/toolBar/Default/ZoomIn");
         tools.addAction(new ZoomOutAction(application, "ZoomOut", this), "/mainWindow/menuBar/View/3DView/ZoomIn", "/mainWindow/toolBar/Default/ZoomOut");
         tools.addAction(new ResetCameraAction(application, "ResetCamera", this), "/mainWindow/menuBar/View/3DView/ResetCamera", "/mainWindow/toolBar/Default/ResetCamera");
-        tools.addCheck("BoxVisible", ws3DView.getPreferences().boxVisible(), "/mainWindow/menuBar/View/3DView/AxisVisible", "/mainWindow/toolBar/Default/BoxVisible");
-        tools.addCheck("AxisVisible", ws3DView.getPreferences().axisVisible(), "/mainWindow/menuBar/View/3DView/AxisVisible", "/mainWindow/toolBar/Default/AxisVisible");
-        tools.addCheck("GridXYVisible", ws3DView.getPreferences().gridXYVisible(), "/mainWindow/menuBar/View/3DView/GridXYVisible", "/mainWindow/toolBar/Default/GridXYVisible");
-        tools.addCheck("PerspectiveEnabled", ws3DView.getPreferences().perspectiveEnabled(), "/mainWindow/menuBar/View/3DView/PerspectiveEnabled", "/mainWindow/toolBar/Default/PerspectiveEnabled");
-        tools.addCheck("StereoscopeEnabled", ws3DView.getPreferences().steroscopyEnabled(), "/mainWindow/menuBar/View/3DView/StereoscopeEnabled", "/mainWindow/toolBar/Default/StereoscopeEnabled");
+        tools.addCheck(ws3DView.getPreferences().boxVisible(), "/mainWindow/menuBar/View/3DView/AxisVisible", "/mainWindow/toolBar/Default/BoxVisible");
+        tools.addCheck(ws3DView.getPreferences().axisVisible(), "/mainWindow/menuBar/View/3DView/AxisVisible", "/mainWindow/toolBar/Default/AxisVisible");
+        tools.addCheck(ws3DView.getPreferences().gridXYVisible(), "/mainWindow/menuBar/View/3DView/GridXYVisible", "/mainWindow/toolBar/Default/GridXYVisible");
+        tools.addCheck(ws3DView.getPreferences().perspectiveEnabled(), "/mainWindow/menuBar/View/3DView/PerspectiveEnabled", "/mainWindow/toolBar/Default/PerspectiveEnabled");
+        tools.addCheck(ws3DView.getPreferences().steroscopyEnabled(), "/mainWindow/menuBar/View/3DView/StereoscopeEnabled", "/mainWindow/toolBar/Default/StereoscopeEnabled");
     }
 
     protected void prepareMenu() {
@@ -479,22 +478,22 @@ public class HadruwavesStudioV2Impl implements HadruwavesStudio {
 
     private void prepareWorkspace() {
         AppDockingWorkspace ws = workspace();
-        ws.addTool("Solution", "", null, wsSolutionExplorer = new HWSSolutionExplorerTool(this), AppToolWindowAnchor.LEFT);
-        ws.addTool("Parameters", "", null, wsParameters = new HWSProjectParametersTool(this), AppToolWindowAnchor.BOTTOM);
-        ws.addTool("UI Dev", "", null, new HWSUIPropsTool(this), AppToolWindowAnchor.BOTTOM);
-        ws.addTool("Properties", "", null, wsProperties = new HWSProjectPropertiesTool(this), AppToolWindowAnchor.RIGHT);
-        ws.addTool("History", "", null, wsHistory = new HWSProjectHistoryTool(this), AppToolWindowAnchor.LEFT);
-        ws.addTool("Files", "", null, wsFiles = new HWSFileExplorerTool(this), AppToolWindowAnchor.LEFT);
-        ws.addTool("Library", "", null, wsLibraries = new HWSLibraryExplorerTool(this), AppToolWindowAnchor.LEFT);
-        ws.addTool("Cache", "", null, wsCache = new HWSCacheExplorerTool(this), AppToolWindowAnchor.RIGHT);
-        ws.addTool("Results", "", null, wsResults = new HWSProjectResultsTool(this), AppToolWindowAnchor.RIGHT);
-        ws.addTool("Tasks", "", null, wsTasks = new HWSTasksTool(this), AppToolWindowAnchor.BOTTOM);
-        ws.addTool("Locks", "", null, wsLocks = new HWSLocksTool(this), AppToolWindowAnchor.BOTTOM);
-        ws.addTool("Log", "", null, wsLog = new HWSLogTool(this), AppToolWindowAnchor.BOTTOM);
-        ws.addTool("Console", "", null, wsConsole = new HWSConsoleTool(this), AppToolWindowAnchor.BOTTOM);
-        ws.addTool("Messages", "", null, wsMessages = new HWSMessageTools(this), AppToolWindowAnchor.BOTTOM);
-        ws.addContent("3DView", "3D View", null, ws3DView = new HWS3DView(this));
-        ws.addContent("JTextArea", "JTextArea", null, new JScrollPane(new JTextArea()));
+        ws.addTool("Solution", wsSolutionExplorer = new HWSSolutionExplorerTool(this), AppToolWindowAnchor.LEFT);
+        ws.addTool("Parameters", wsParameters = new HWSProjectParametersTool(this), AppToolWindowAnchor.BOTTOM);
+        ws.addTool("UI Dev", new HWSUIPropsTool(this), AppToolWindowAnchor.BOTTOM);
+        ws.addTool("Properties", wsProperties = new HWSProjectPropertiesTool(this), AppToolWindowAnchor.RIGHT);
+        ws.addTool("History", wsHistory = new HWSProjectHistoryTool(this), AppToolWindowAnchor.LEFT);
+        ws.addTool("Files", wsFiles = new HWSFileExplorerTool(this), AppToolWindowAnchor.LEFT);
+        ws.addTool("Library", wsLibraries = new HWSLibraryExplorerTool(this), AppToolWindowAnchor.LEFT);
+        ws.addTool("Cache", wsCache = new HWSCacheExplorerTool(this), AppToolWindowAnchor.RIGHT);
+        ws.addTool("Results", wsResults = new HWSProjectResultsTool(this), AppToolWindowAnchor.RIGHT);
+        ws.addTool("Tasks", wsTasks = new HWSTasksTool(this), AppToolWindowAnchor.BOTTOM);
+        ws.addTool("Locks", wsLocks = new HWSLocksTool(this), AppToolWindowAnchor.BOTTOM);
+        ws.addTool("Log", wsLog = new HWSLogTool(this), AppToolWindowAnchor.BOTTOM);
+        ws.addTool("Console", wsConsole = new HWSConsoleTool(this), AppToolWindowAnchor.BOTTOM);
+        ws.addTool("Messages", wsMessages = new HWSMessageTools(this), AppToolWindowAnchor.BOTTOM);
+        ws.addContent("3DView", ws3DView = new HWS3DView(this));
+        ws.addContent("JTextArea", new JScrollPane(new JTextArea()));
     }
 
     public static class ProjectBuildProducer implements AppMessageProducer {
@@ -507,7 +506,7 @@ public class HadruwavesStudioV2Impl implements HadruwavesStudio {
         }
 
         @Override
-        public void produceMessages(Application application, WritablePList<Message> messages) {
+        public void produceMessages(Application application, WritableList<Message> messages) {
             for (Message message : this.messages) {
                 messages.add(message);
             }
@@ -526,13 +525,14 @@ public class HadruwavesStudioV2Impl implements HadruwavesStudio {
         }
     }
 
-    private JFileChooser createJFileChooser(){
-        JFileChooser jfc=new JFileChooser();
+    private JFileChooser createJFileChooser() {
+        JFileChooser jfc = new JFileChooser();
         jfc.setFileView(new HWFileView(this));
         return jfc;
     }
 
     private class SourceEditorCharTableListener implements CharTableListener {
+
         @Override
         public void onChar(CharEvent event) {
             AppDockingWorkspace ws = workspace();

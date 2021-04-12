@@ -6,8 +6,8 @@
 package net.thevpc.scholar.hadruwaves.mom.solver;
 
 import net.thevpc.common.mon.ProgressMonitorFactory;
-import net.thevpc.common.props.WritablePList;
-import net.thevpc.common.props.WritablePList;
+import net.thevpc.common.props.WritableList;
+import net.thevpc.common.props.WritableList;
 import net.thevpc.scholar.hadruwaves.mom.CircuitType;
 import net.thevpc.scholar.hadruwaves.project.Props2;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
@@ -24,7 +24,7 @@ public class HWSolverTemplateMoM extends AbstractHWSolverTemplate {
     private WritablePExpression<Integer> modesCount = Props2.of("modesCount").exprIntOf(1000);
     private WritablePExpression<Double> frequency = Props2.of("frequency").exprFreqOf(1.0);
     private WritablePExpression<CircuitType> circuitType = Props2.of("circuitType").exprEnumOf(CircuitType.class, CircuitType.SERIAL);
-    private WritablePList<MomSolverTestTemplate> testFunctions = Props2.of("testFunctions").listOf(MomSolverTestTemplate.class);
+    private WritableList<MomSolverTestTemplate> testFunctions = Props2.of("testFunctions").listOf(MomSolverTestTemplate.class);
 
     public HWSolverTemplateMoM() {
         name().set("Method of Moments Solver");
@@ -42,7 +42,7 @@ public class HWSolverTemplateMoM extends AbstractHWSolverTemplate {
         return m;
     }
 
-    public WritablePList<MomSolverTestTemplate> testFunctions() {
+    public WritableList<MomSolverTestTemplate> testFunctions() {
         return testFunctions;
     }
 

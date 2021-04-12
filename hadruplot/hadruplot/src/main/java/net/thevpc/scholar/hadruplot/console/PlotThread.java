@@ -3,7 +3,7 @@ package net.thevpc.scholar.hadruplot.console;
 import net.thevpc.common.mon.AbstractProgressMonitor;
 import net.thevpc.common.swing.SwingUtilities3;
 import net.thevpc.common.swing.win.WindowPath;
-import net.thevpc.common.util.Chronometer;
+import net.thevpc.common.time.Chronometer;
 import net.thevpc.scholar.hadruplot.console.params.ParamSet;
 import net.thevpc.scholar.hadruplot.console.yaxis.PlotAxis;
 import net.thevpc.scholar.hadruplot.console.yaxis.YType;

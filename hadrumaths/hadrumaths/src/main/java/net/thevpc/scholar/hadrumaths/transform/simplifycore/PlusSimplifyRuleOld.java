@@ -5,8 +5,8 @@
  */
 package net.thevpc.scholar.hadrumaths.transform.simplifycore;
 
-import net.thevpc.common.util.ClassMap;
-import net.thevpc.common.util.ClassPairMapList;
+import net.thevpc.common.collections.ClassMap;
+import net.thevpc.common.collections.ClassPairMapList;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.ExprType;
 import net.thevpc.scholar.hadrumaths.symbolic.double2complex.DefaultComplexValue;

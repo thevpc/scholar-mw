@@ -20,8 +20,8 @@ import net.thevpc.scholar.hadruwaves.project.scene.HWProjectComponentGroup;
 
 public class DefaultHWcene implements HWProjectScene {
 
-    private WritablePValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
-    private WritablePList<HWProjectComponent> components = Props.of("components").listOf(HWProjectComponent.class);
+    private WritableValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
+    private WritableList<HWProjectComponent> components = Props.of("components").listOf(HWProjectComponent.class);
     private DomainTemplate domain = new DomainTemplate();
 
     public DefaultHWcene(HWProject project) {
@@ -33,7 +33,7 @@ public class DefaultHWcene implements HWProjectScene {
             }
             if (x.getNewValue() instanceof HWProjectComponentGroup) {
                 for (HWProjectComponent child : ((HWProjectComponentGroup) x).children().values().toList()) {
-                    WritablePList<HWProjectComponent> components = x.getProperty();
+                    WritableList<HWProjectComponent> components = x.getProperty();
                     components.remove(child);
                 }
             }
@@ -41,12 +41,12 @@ public class DefaultHWcene implements HWProjectScene {
     }
 
     @Override
-    public PValue<HWProject> project() {
+    public ObservableValue<HWProject> project() {
         return project.readOnly();
     }
 
     @Override
-    public PValue<HWSolution> solution() {
+    public ObservableValue<HWSolution> solution() {
         return project.get().solution();
     }
 
@@ -73,7 +73,7 @@ public class DefaultHWcene implements HWProjectScene {
     }
 
     @Override
-    public WritablePList<HWProjectComponent> components() {
+    public WritableList<HWProjectComponent> components() {
         return components;
     }
 

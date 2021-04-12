@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths.plot;
 
-import net.thevpc.common.util.CollectionUtils;
+import net.thevpc.common.collections.CollectionUtils;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.geom.Point;
 import net.thevpc.scholar.hadrumaths.symbolic.ExprType;

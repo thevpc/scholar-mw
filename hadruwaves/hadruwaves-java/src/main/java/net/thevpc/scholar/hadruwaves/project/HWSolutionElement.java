@@ -1,18 +1,18 @@
 package net.thevpc.scholar.hadruwaves.project;
 
-import net.thevpc.common.props.PValue;
-import net.thevpc.common.props.WritablePValue;
+import net.thevpc.common.props.ObservableValue;
+import net.thevpc.common.props.WritableValue;
 import net.thevpc.tson.TsonSerializable;
 
 public interface HWSolutionElement extends TsonSerializable{
-    WritablePValue<String> name();
+    WritableValue<String> name();
 
-    WritablePValue<String> description();
+    WritableValue<String> description();
 
-    WritablePValue<String> parentPath();
+    WritableValue<String> parentPath();
 
-    PValue<HWSolution> solution();
+    ObservableValue<HWSolution> solution();
 
-    PValue<HWSolutionFolder> parent();
+    ObservableValue<HWSolutionFolder> parent();
 
 }

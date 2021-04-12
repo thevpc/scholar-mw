@@ -1,10 +1,10 @@
 package net.thevpc.scholar.hadruwaves.project;
 
-import net.thevpc.common.props.WritablePValue;
+import net.thevpc.common.props.WritableValue;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.elements.Element3D;
 
 import java.util.List;
-import net.thevpc.common.props.PValue;
+import net.thevpc.common.props.ObservableValue;
 import net.thevpc.scholar.hadrumaths.plot.d3.BoundDomain;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 import net.thevpc.scholar.hadruwaves.project.scene.HWProjectComponentGroup;
@@ -12,17 +12,17 @@ import net.thevpc.scholar.hadruwaves.props.WritablePExpression;
 
 public interface HWProjectComponent extends HWProjectElement{
 
-    PValue<HWProjectComponentGroup> parent();
+    ObservableValue<HWProjectComponentGroup> parent();
 
-    PValue<String> parentPath();
+    ObservableValue<String> parentPath();
 
-    WritablePValue<String> description();
+    WritableValue<String> description();
 
-    WritablePValue<Boolean> selected();
+    WritableValue<Boolean> selected();
 
     WritablePExpression<Boolean> enabled();
 
-    WritablePValue<Boolean> visible();
+    WritableValue<Boolean> visible();
 
     List<Element3D> toElements3D(HWConfigurationRun configuration);
 

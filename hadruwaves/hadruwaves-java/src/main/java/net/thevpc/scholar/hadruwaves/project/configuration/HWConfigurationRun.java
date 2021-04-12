@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadruwaves.project.configuration;
 
 import net.thevpc.common.props.Props;
-import net.thevpc.common.props.WritablePMap;
-import net.thevpc.common.props.WritablePValue;
+import net.thevpc.common.props.WritableMap;
+import net.thevpc.common.props.WritableValue;
 import net.thevpc.common.strings.StringConverter;
 import net.thevpc.common.strings.StringUtils;
 import net.thevpc.tson.Tson;
@@ -29,8 +29,8 @@ public class HWConfigurationRun extends AbstractHWConfigurationElement {
     /**
      * name to expression map
      */
-    private WritablePMap<String, String> parameters = Props.of("parameters").mapOf(String.class, String.class);
-    private WritablePValue<HWSolverTemplate> solver = Props.of("solver").valueOf(HWSolverTemplate.class, null);
+    private WritableMap<String, String> parameters = Props.of("parameters").mapOf(String.class, String.class);
+    private WritableValue<HWSolverTemplate> solver = Props.of("solver").valueOf(HWSolverTemplate.class, null);
     private Map<String, Object> cachedExpressions = new HashMap<>();
     private Domain cachedDomain = null;
 
@@ -41,11 +41,11 @@ public class HWConfigurationRun extends AbstractHWConfigurationElement {
         name().set(name);
     }
 
-    public WritablePMap<String, String> parameters() {
+    public WritableMap<String, String> parameters() {
         return parameters;
     }
 
-    public WritablePValue<HWSolverTemplate> solver() {
+    public WritableValue<HWSolverTemplate> solver() {
         return solver;
     }
 

@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadruwaves.project;
 
-import net.thevpc.common.props.PMapEntry;
-import net.thevpc.common.props.WritablePLMap;
+import net.thevpc.common.props.MapEntry;
+import net.thevpc.common.props.WritableLiMap;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.elements.Element3D;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class DefaultHWProjectComponentGroup extends AbstractHWProjectComponent i
     }
 
     @Override
-    public WritablePLMap<String, HWProjectComponent> children() {
+    public WritableLiMap<String, HWProjectComponent> children() {
         return childrenHelper.children();
     }
 
@@ -58,7 +58,7 @@ public class DefaultHWProjectComponentGroup extends AbstractHWProjectComponent i
     @Override
     public List<Element3D> toElements3DImpl(HWConfigurationRun configuration) {
         List<Element3D> g = new ArrayList<>();
-        for (PMapEntry<String, HWProjectComponent> child : children()) {
+        for (MapEntry<String, HWProjectComponent> child : children()) {
             g.addAll(child.getValue().toElements3D(configuration));
         }
         return g;

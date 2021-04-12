@@ -1,6 +1,8 @@
 package net.thevpc.scholar.hadruplot.model.value;
 
 
+import net.thevpc.scholar.hadruplot.console.PlotConfigManager;
+
 import java.util.*;
 
 public class PlotValueTypeFactory {
@@ -52,30 +54,34 @@ public class PlotValueTypeFactory {
     }
 
     public void registerType(PlotValueType type) {
-        registry.put(type.getName(), type);
+        synchronized (PlotConfigManager.class) {
+            registry.put(type.getName(), type);
+        }
     }
 
     public PlotValueType findType(String name) {
-        PlotValueType found = registry.get(name);
-        if (found != null) {
-            return found;
-        }
-        if (name.endsWith("[]")) {
-            PlotValueType dataType = findType(name.substring(0,name.length() - 2));
-            if (dataType == null) {
-                return null;
+        synchronized (PlotConfigManager.class) {
+            PlotValueType found = registry.get(name);
+            if (found != null) {
+                return found;
             }
-            int dim = 0;
-            if (dataType instanceof PlotValueArrayType) {
-                dim = ((PlotValueArrayType) dataType).getDimension();
-                found = new DefaultPlotValueArrayType(((PlotValueArrayType) dataType).getRootComponentType(), dim + 1);
-            } else {
-                found = new DefaultPlotValueArrayType(dataType, 1);
+            if (name.endsWith("[]")) {
+                PlotValueType dataType = findType(name.substring(0, name.length() - 2));
+                if (dataType == null) {
+                    return null;
+                }
+                int dim = 0;
+                if (dataType instanceof PlotValueArrayType) {
+                    dim = ((PlotValueArrayType) dataType).getDimension();
+                    found = new DefaultPlotValueArrayType(((PlotValueArrayType) dataType).getRootComponentType(), dim + 1);
+                } else {
+                    found = new DefaultPlotValueArrayType(dataType, 1);
+                }
+                registry.put(name, found);
+                return found;
             }
-            registry.put(name, found);
-            return found;
+            return null;
         }
-        return null;
     }
 
     public PlotValueType getType(String name) {

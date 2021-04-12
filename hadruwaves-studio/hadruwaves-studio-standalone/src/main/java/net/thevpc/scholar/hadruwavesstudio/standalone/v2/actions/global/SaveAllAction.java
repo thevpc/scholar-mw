@@ -6,10 +6,10 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.actions.global;
 
 import java.awt.event.ActionEvent;
-import net.thevpc.common.props.PMapEntry;
+import net.thevpc.common.props.MapEntry;
 import net.thevpc.common.props.PropertyEvent;
 import net.thevpc.common.props.PropertyListener;
-import net.thevpc.common.props.WritablePNamedNode;
+import net.thevpc.common.props.WritableNamedNode;
 import net.thevpc.echo.AbstractAppAction;
 import net.thevpc.echo.Application;
 import net.thevpc.scholar.hadruwaves.project.HWSolution;

@@ -3,11 +3,11 @@ package net.thevpc.scholar.hadruwaves;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonObjectContext;
-import net.thevpc.common.util.LRUMap;
 import net.thevpc.scholar.hadrumaths.HSerializable;
 import net.thevpc.scholar.hadrumaths.Maths;
 
 import java.io.ObjectStreamException;
+import net.thevpc.common.collections.LRUMap;
 
 public final class ModeIndex implements HSerializable {
     public final ModeType mtype;

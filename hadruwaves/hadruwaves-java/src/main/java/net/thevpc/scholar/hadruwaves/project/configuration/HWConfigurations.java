@@ -16,8 +16,8 @@ import net.thevpc.scholar.hadruwaves.project.HWSolution;
 public class HWConfigurations implements TsonSerializable, WithListeners {
 
     private HWConfigurationFolderHelper childrenHelper = new HWConfigurationFolderHelper(null, () -> project().get());
-    private WritablePValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
-    private WritablePValue<HWConfigurationRun> activeConfiguration = Props.of("activeConfiguration")
+    private WritableValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
+    private WritableValue<HWConfigurationRun> activeConfiguration = Props.of("activeConfiguration")
             .adjust(new PropertyAdjuster() {
                 @Override
                 public Object adjustNewValue(PropertyEvent event) {
@@ -36,7 +36,7 @@ public class HWConfigurations implements TsonSerializable, WithListeners {
         listeners.addDelegate(childrenHelper.children);
         listeners.addDelegate(activeConfiguration);
         HWConfigurationRun aDefault = new HWConfigurationRun("default");
-        ((WritablePValue<HWProject>) aDefault.project()).set(project.get());
+        ((WritableValue<HWProject>) aDefault.project()).set(project.get());
         aDefault.name().vetos().add(new PropertyVeto() {
             @Override
             public void vetoableChange(PropertyEvent event) {
@@ -57,7 +57,7 @@ public class HWConfigurations implements TsonSerializable, WithListeners {
             public void vetoableChange(PropertyEvent event) {
                 switch (event.getAction()) {
                     case REMOVE: {
-                        WritablePNamedNode<HWConfigurationElement> oldValue = event.getOldValue();
+                        WritableNamedNode<HWConfigurationElement> oldValue = event.getOldValue();
                         if ("default".equals(oldValue.get().name().get())) {
                             throw new IllegalArgumentException("Default Configuration cannot be removed");
                         }
@@ -70,23 +70,23 @@ public class HWConfigurations implements TsonSerializable, WithListeners {
             public void propertyUpdated(PropertyEvent event) {
                 Object ov = event.getOldValue();
                 if (ov instanceof AbstractHWConfigurationElement) {
-                    WritablePValue<HWProject> p = (WritablePValue<HWProject>) (((AbstractHWConfigurationElement) ov).project());
+                    WritableValue<HWProject> p = (WritableValue<HWProject>) (((AbstractHWConfigurationElement) ov).project());
                     p.set(null);
-                    WritablePValue<HWSolution> s = (WritablePValue<HWSolution>) (((AbstractHWConfigurationElement) ov).solution());
+                    WritableValue<HWSolution> s = (WritableValue<HWSolution>) (((AbstractHWConfigurationElement) ov).solution());
                     s.set(project.get().solution().get());
                 }
                 Object nv = event.getNewValue();
                 if (nv instanceof AbstractHWConfigurationElement) {
-                    WritablePValue<HWProject> p = (WritablePValue<HWProject>) (((AbstractHWConfigurationElement) nv).project());
+                    WritableValue<HWProject> p = (WritableValue<HWProject>) (((AbstractHWConfigurationElement) nv).project());
                     p.set(project.get());
-                    WritablePValue<HWSolution> s = (WritablePValue<HWSolution>) (((AbstractHWConfigurationElement) nv).solution());
+                    WritableValue<HWSolution> s = (WritableValue<HWSolution>) (((AbstractHWConfigurationElement) nv).solution());
                     s.set(project.get().solution().get());
                 }
             }
         });
     }
 
-    public PValue<HWProject> project() {
+    public ObservableValue<HWProject> project() {
         return project.readOnly();
     }
 
@@ -111,11 +111,11 @@ public class HWConfigurations implements TsonSerializable, WithListeners {
         return childrenHelper.findRuns();
     }
 
-    public WritablePValue<HWConfigurationRun> activeConfiguration() {
+    public WritableValue<HWConfigurationRun> activeConfiguration() {
         return activeConfiguration;
     }
 
-    public WritablePLMap<String, HWConfigurationElement> children() {
+    public WritableLiMap<String, HWConfigurationElement> children() {
         return childrenHelper.children();
     }
 

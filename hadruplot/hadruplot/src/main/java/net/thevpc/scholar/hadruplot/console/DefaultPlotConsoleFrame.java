@@ -97,12 +97,12 @@ public class DefaultPlotConsoleFrame extends JFrame implements PlotConsoleFrame{
 
         fileMenu.add(new JMenuItem(new LoadAction(this)));
         fileMenu.addSeparator();
-        recentFilesMenu = new RecentFilesMenu("Recent Files", new RecentFilesPropertiesModel(new File(System.getProperty("user.dir") + "/.java/plotconsole.xml")));
+        recentFilesMenu = new RecentFilesMenu("Recent Files", new RecentFilesPropertiesModel((System.getProperty("user.dir") + "/.java/plotconsole.xml")));
         recentFilesMenu.addFileSelectedListener(
                 new FileSelectedListener() {
-                    public void fileSelected(FileEvent event) {
+                    public void fileSelected(RecentFileEvent event) {
                         try {
-                            console.loadFile(event.getFile());
+                            console.loadFile(new File(event.getFile()));
                             recentFilesMenu.addFile(event.getFile());
                         } catch (Throwable e1) {
                             JOptionPane.showMessageDialog(DefaultPlotConsoleFrame.this, e1);
@@ -360,7 +360,7 @@ public class DefaultPlotConsoleFrame extends JFrame implements PlotConsoleFrame{
 
     @Override
     public void addRecentFile(File selectedFile) {
-        recentFilesMenu.addFile(selectedFile);
+        recentFilesMenu.addFile(selectedFile.getPath());
     }
 
     public JInternalFrame addToolsFrame(WindowInfo fino) {

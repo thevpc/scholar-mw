@@ -5,10 +5,10 @@ import net.thevpc.scholar.hadrumaths.util.internal.DoubleValidator;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceExprType;
 import net.thevpc.scholar.hadrumaths.util.internal.IgnoreRandomGeneration;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
-import net.thevpc.common.util.AcceptDenyClassSet;
-import net.thevpc.common.util.Chronometer;
-import net.thevpc.common.util.ClassMap;
-import net.thevpc.common.util.ClassMapList;
+import net.thevpc.common.collections.AcceptDenyClassSet;
+import net.thevpc.common.time.Chronometer;
+import net.thevpc.common.collections.ClassMap;
+import net.thevpc.common.collections.ClassMapList;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.util.RandomList;
 
@@ -18,7 +18,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class RandomObjectGenerator<B extends RandomObjectGenerator> {
     protected ClassMap<Generator> generators = new ClassMap<Generator>(null, Generator.class);

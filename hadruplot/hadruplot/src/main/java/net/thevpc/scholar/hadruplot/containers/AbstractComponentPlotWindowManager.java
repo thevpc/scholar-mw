@@ -7,6 +7,7 @@ package net.thevpc.scholar.hadruplot.containers;
 
 import net.thevpc.scholar.hadruplot.PlotComponent;
 import net.thevpc.scholar.hadruplot.PlotContainer;
+import net.thevpc.scholar.hadruplot.PlotPath;
 
 /**
  * @author vpc
@@ -22,15 +23,16 @@ public abstract class AbstractComponentPlotWindowManager extends AbstractPlotWin
 
     public abstract PlotContainer getRootContainer();
 
-    public PlotContainer getContainer(String[] path) {
-        if (path.length == 0) {
+    public PlotContainer getContainer(PlotPath path) {
+        path=PlotPath.nonnull(path);
+        if (path.isRoot()) {
             return getRootContainer();
         }
-        return findOrCreateContainer(path, 0, getRootContainer());
+        return findOrCreateContainer(path, getRootContainer());
     }
 
-    private PlotContainer findOrCreateContainer(String[] path, int index, PlotContainer parent) {
-        String name = path[index];
+    private PlotContainer findOrCreateContainer(PlotPath path, PlotContainer parent) {
+        String name = path.get(0);
         int childIndex = parent.indexOfPlotComponent(name);
         PlotContainer p = null;
         if (childIndex < 0) {
@@ -43,10 +45,10 @@ public abstract class AbstractComponentPlotWindowManager extends AbstractPlotWin
                 p = parent.add(childIndex, name);
             }
         }
-        if (index == path.length - 1) {
+        if (path.size()==1) {
             return p;
         }
-        return findOrCreateContainer(path, index + 1, p);
+        return findOrCreateContainer(path.removeFirst(), p);
 //
 //        if (HadrumathsStringUtils.isInt(name)) {
 //
@@ -70,7 +72,7 @@ public abstract class AbstractComponentPlotWindowManager extends AbstractPlotWin
         getRootContainer().remove(component);
     }
 
-    public void addPlotComponentImpl(PlotComponent component, String[] path) {
+    public void addPlotComponentImpl(PlotComponent component, net.thevpc.scholar.hadruplot.PlotPath path) {
         getContainer(path).add(component);
     }
 

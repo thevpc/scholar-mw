@@ -42,7 +42,8 @@ public class PlotResult extends AbstractHWSolverActionResult {
             AppDockingWorkspace ws = context.studio().workspace();
             AppContentWindow plot = ws.getContent("Plot");
             if (plot == null) {
-                plot = ws.addContent("Plot", "Plot " + defaultName(), null, r.toComponent());
+                plot = ws.addContent("Plot", r.toComponent());
+                plot.title().set("Plot " + defaultName());
                 plot.closable().set(false);
                 plot.active().set(true);
             } else {

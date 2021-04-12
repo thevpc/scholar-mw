@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadruwaves.project.scene;
 
 import net.thevpc.common.props.Props;
-import net.thevpc.common.props.WritablePValue;
+import net.thevpc.common.props.WritableValue;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.elements.Element3D;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.thevpc.Element3DRenderPrefs;
 import net.thevpc.scholar.hadruwaves.project.AbstractHWProjectComponent;
@@ -14,7 +14,7 @@ import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 
 public class HWModalPort extends AbstractHWProjectComponent implements HWProjectPort {
 
-    private WritablePValue<Element3DTemplate> geometry = Props.of("geometry").valueOf(Element3DTemplate.class, null);
+    private WritableValue<Element3DTemplate> geometry = Props.of("geometry").valueOf(Element3DTemplate.class, null);
 
     public HWModalPort(Element3DTemplate geometry, String name) {
         this.geometry.set(geometry);
@@ -37,7 +37,7 @@ public class HWModalPort extends AbstractHWProjectComponent implements HWProject
         return e;
     }
 
-    public WritablePValue<Element3DTemplate> geometry() {
+    public WritableValue<Element3DTemplate> geometry() {
         return geometry;
     }
 

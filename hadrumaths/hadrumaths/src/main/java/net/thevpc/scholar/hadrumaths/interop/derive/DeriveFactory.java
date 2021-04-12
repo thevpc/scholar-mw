@@ -5,7 +5,7 @@
 
 package net.thevpc.scholar.hadrumaths.interop.derive;
 
-import net.thevpc.common.util.ClassMap;
+import net.thevpc.common.collections.ClassMap;
 import net.thevpc.scholar.hadrumaths.AbstractFactory;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.ComplexMatrix;

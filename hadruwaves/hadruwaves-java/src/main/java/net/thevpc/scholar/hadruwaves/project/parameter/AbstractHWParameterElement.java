@@ -1,36 +1,36 @@
 package net.thevpc.scholar.hadruwaves.project.parameter;
 
-import net.thevpc.common.props.PValue;
+import net.thevpc.common.props.ObservableValue;
 import net.thevpc.common.props.Props;
-import net.thevpc.common.props.WritablePValue;
+import net.thevpc.common.props.WritableValue;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 
 public class AbstractHWParameterElement implements HWParameterElement{
-    protected WritablePValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
-    protected WritablePValue<HWParameterFolder> parent = Props.of("parent").valueOf(HWParameterFolder.class, null);
-    protected WritablePValue<String> parentPath = Props.of("parentPath").valueOf(String.class, null);
-    private WritablePValue<String> description = Props.of("description").valueOf(String.class, null);
-    private WritablePValue<String> name = Props.of("name").valueOf(String.class, null);
+    protected WritableValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
+    protected WritableValue<HWParameterFolder> parent = Props.of("parent").valueOf(HWParameterFolder.class, null);
+    protected WritableValue<String> parentPath = Props.of("parentPath").valueOf(String.class, null);
+    private WritableValue<String> description = Props.of("description").valueOf(String.class, null);
+    private WritableValue<String> name = Props.of("name").valueOf(String.class, null);
 
     @Override
-    public PValue<HWProject> project() {
+    public ObservableValue<HWProject> project() {
         return project;
     }
 
     @Override
-    public PValue<HWParameterFolder> parent() {
+    public ObservableValue<HWParameterFolder> parent() {
         return parent;
     }
 
-    public PValue<String> parentPath() {
+    public ObservableValue<String> parentPath() {
         return parentPath;
     }
 
-    public WritablePValue<String> description() {
+    public WritableValue<String> description() {
         return description;
     }
 
-    public WritablePValue<String> name() {
+    public WritableValue<String> name() {
         return name;
     }
 

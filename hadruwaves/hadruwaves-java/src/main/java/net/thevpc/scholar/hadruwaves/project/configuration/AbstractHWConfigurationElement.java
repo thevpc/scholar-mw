@@ -1,21 +1,21 @@
 package net.thevpc.scholar.hadruwaves.project.configuration;
 
-import net.thevpc.common.props.PValue;
+import net.thevpc.common.props.ObservableValue;
 import net.thevpc.common.props.Props;
 import net.thevpc.common.props.UserObjects;
 import net.thevpc.common.props.UserObjectsImpl;
-import net.thevpc.common.props.WritablePValue;
+import net.thevpc.common.props.WritableValue;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 import net.thevpc.scholar.hadruwaves.project.HWSolution;
 
 public class AbstractHWConfigurationElement implements HWConfigurationElement {
 
-    protected final WritablePValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
-    protected final WritablePValue<HWSolution> solution = Props.of("solution").valueOf(HWSolution.class, null);
-    protected final WritablePValue<HWConfigurationFolder> parent = Props.of("parent").valueOf(HWConfigurationFolder.class, null);
-    protected final WritablePValue<String> parentPath = Props.of("parentPath").valueOf(String.class, null);
-    private final WritablePValue<String> description = Props.of("description").valueOf(String.class, null);
-    private final WritablePValue<String> name = Props.of("name").valueOf(String.class, null);
+    protected final WritableValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
+    protected final WritableValue<HWSolution> solution = Props.of("solution").valueOf(HWSolution.class, null);
+    protected final WritableValue<HWConfigurationFolder> parent = Props.of("parent").valueOf(HWConfigurationFolder.class, null);
+    protected final WritableValue<String> parentPath = Props.of("parentPath").valueOf(String.class, null);
+    private final WritableValue<String> description = Props.of("description").valueOf(String.class, null);
+    private final WritableValue<String> name = Props.of("name").valueOf(String.class, null);
     private final UserObjects userObjects = new UserObjectsImpl();
 
     @Override
@@ -24,29 +24,29 @@ public class AbstractHWConfigurationElement implements HWConfigurationElement {
     }
 
     @Override
-    public PValue<HWProject> project() {
+    public ObservableValue<HWProject> project() {
         return project;
     }
 
     @Override
-    public PValue<HWSolution> solution() {
+    public ObservableValue<HWSolution> solution() {
         return solution;
     }
 
     @Override
-    public PValue<HWConfigurationFolder> parent() {
+    public ObservableValue<HWConfigurationFolder> parent() {
         return parent;
     }
 
-    public PValue<String> parentPath() {
+    public ObservableValue<String> parentPath() {
         return parentPath;
     }
 
-    public WritablePValue<String> description() {
+    public WritableValue<String> description() {
         return description;
     }
 
-    public WritablePValue<String> name() {
+    public WritableValue<String> name() {
         return name;
     }
 

@@ -55,14 +55,14 @@
             <version>3.2.0</version>
         </dependency>
         <dependency>
-            <groupId>net.thevpc</groupId>
+            <groupId>net.thevpc.tson</groupId>
             <artifactId>tson</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>net.thevpc.common</groupId>
             <artifactId>thevpc-common-utils</artifactId>
-            <version>1.23.0</version>
+            <version>1.23.1</version>
         </dependency>
     </dependencies>
 

@@ -44,7 +44,7 @@ public class HWFileView extends FileView {
         if(f==null){
             return null;
         }
-        return studio.app().iconSet().iconForFile(f,false,false).get();
+        return studio.app().iconSets().iconForFile(f,false,false).get();
     }
 
     /**

@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadruplot;
 
 import net.thevpc.common.util.ArrayUtils;
-import net.thevpc.common.util.DoubleArrayList;
+import net.thevpc.common.collections.DoubleArrayList;
 import net.thevpc.common.util.TypeReference;
 import net.thevpc.scholar.hadruplot.console.PlotConfigManager;
 import net.thevpc.scholar.hadruplot.util.PlotUtils;

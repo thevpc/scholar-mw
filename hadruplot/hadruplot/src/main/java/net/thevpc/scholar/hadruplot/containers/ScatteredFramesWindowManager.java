@@ -6,7 +6,6 @@
 package net.thevpc.scholar.hadruplot.containers;
 
 import net.thevpc.scholar.hadruplot.PlotContainer;
-import net.thevpc.scholar.hadruplot.containers.FramePlotContainer;
 
 /**
  * @author vpc

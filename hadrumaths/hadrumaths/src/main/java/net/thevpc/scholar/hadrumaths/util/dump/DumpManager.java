@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths.util.dump;
 
-import net.thevpc.common.util.ClassMap;
+import net.thevpc.common.collections.ClassMap;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.FormatFactory;
 import net.thevpc.scholar.hadrumaths.format.ObjectFormatParamSet;

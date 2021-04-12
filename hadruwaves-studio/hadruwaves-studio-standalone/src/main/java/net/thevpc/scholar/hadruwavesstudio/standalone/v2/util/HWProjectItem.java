@@ -12,7 +12,7 @@ import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.trees.HWPro
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.trees.HWSolutionPropertiesAware;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.trees.HWProjectPropertiesAware;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.trees.HWSolutionElementPropertiesAware;
-import net.thevpc.common.props.PValue;
+import net.thevpc.common.props.ObservableValue;
 import net.thevpc.scholar.hadruwaves.Material;
 import net.thevpc.scholar.hadruwaves.project.*;
 import net.thevpc.scholar.hadruwaves.project.scene.HWMaterialTemplate;
@@ -49,8 +49,8 @@ public class HWProjectItem {
 
     public Object getItemValue() {
         Object item = this.item;
-        if (item instanceof PValue) {
-            item = ((PValue) item).get();
+        if (item instanceof ObservableValue) {
+            item = ((ObservableValue) item).get();
         }
         return item;
     }
@@ -81,8 +81,8 @@ public class HWProjectItem {
 
     public AppPropertiesTree toPropertiesAware() {
         Object item = this.item;
-        if (item instanceof PValue) {
-            item = ((PValue) item).get();
+        if (item instanceof ObservableValue) {
+            item = ((ObservableValue) item).get();
         }
         if (item instanceof HWProject) {
             HWProject wp = (HWProject) item;

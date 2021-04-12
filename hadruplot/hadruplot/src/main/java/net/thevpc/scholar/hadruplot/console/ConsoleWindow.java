@@ -17,5 +17,5 @@ public interface ConsoleWindow {
 
     void setTitle(String title);
 
-    void addChild(String title, JComponent component);
+    void addChild(net.thevpc.scholar.hadruplot.PlotPath path, JComponent component);
 }

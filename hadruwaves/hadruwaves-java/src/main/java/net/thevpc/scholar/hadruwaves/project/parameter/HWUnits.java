@@ -23,19 +23,19 @@ import net.thevpc.scholar.hadruwaves.project.HWProject;
 
 public class HWUnits implements TsonSerializable, WithListeners {
 
-    protected WritablePValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
+    protected WritableValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
     private PropertyListenersImpl listeners = new PropertyListenersImpl(this);
-    private final WritablePValue<LengthUnit> lengthUnit = Props.of("lengthUnit").valueOf(LengthUnit.class, LengthUnit.mm);
-    private final WritablePValue<FrequencyUnit> frequencyUnit = Props.of("frequencyUnit").valueOf(FrequencyUnit.class, FrequencyUnit.GHz);
-    private final WritablePValue<CapacitanceUnit> capacitanceUnit = Props.of("capacitanceUnit").valueOf(CapacitanceUnit.class, CapacitanceUnit.SI_UNIT);
-    private final WritablePValue<ConductanceUnit> conductanceUnit = Props.of("conductanceUnit").valueOf(ConductanceUnit.class, ConductanceUnit.SI_UNIT);
-    private final WritablePValue<CurrentUnit> currentUnit = Props.of("currentUnit").valueOf(CurrentUnit.class, CurrentUnit.SI_UNIT);
-    private final WritablePValue<InductanceUnit> inductanceUnit = Props.of("inductanceUnit").valueOf(InductanceUnit.class, InductanceUnit.SI_UNIT);
-    private final WritablePValue<PowerUnit> powerUnit = Props.of("powerUnit").valueOf(PowerUnit.class, PowerUnit.SI_UNIT);
-    private final WritablePValue<ResistanceUnit> resistanceUnit = Props.of("resistanceUnit").valueOf(ResistanceUnit.class, ResistanceUnit.SI_UNIT);
-    private final WritablePValue<TemperatureUnit> temperatureUnit = Props.of("temperatureUnit").valueOf(TemperatureUnit.class, TemperatureUnit.SI_UNIT);
-    private final WritablePValue<TimeUnit> timeUnit = Props.of("timeUnit").valueOf(TimeUnit.class, TimeUnit.SI_UNIT);
-    private final WritablePValue<VoltageUnit> voltageUnit = Props.of("voltageUnit").valueOf(VoltageUnit.class, VoltageUnit.SI_UNIT);
+    private final WritableValue<LengthUnit> lengthUnit = Props.of("lengthUnit").valueOf(LengthUnit.class, LengthUnit.mm);
+    private final WritableValue<FrequencyUnit> frequencyUnit = Props.of("frequencyUnit").valueOf(FrequencyUnit.class, FrequencyUnit.GHz);
+    private final WritableValue<CapacitanceUnit> capacitanceUnit = Props.of("capacitanceUnit").valueOf(CapacitanceUnit.class, CapacitanceUnit.SI_UNIT);
+    private final WritableValue<ConductanceUnit> conductanceUnit = Props.of("conductanceUnit").valueOf(ConductanceUnit.class, ConductanceUnit.SI_UNIT);
+    private final WritableValue<CurrentUnit> currentUnit = Props.of("currentUnit").valueOf(CurrentUnit.class, CurrentUnit.SI_UNIT);
+    private final WritableValue<InductanceUnit> inductanceUnit = Props.of("inductanceUnit").valueOf(InductanceUnit.class, InductanceUnit.SI_UNIT);
+    private final WritableValue<PowerUnit> powerUnit = Props.of("powerUnit").valueOf(PowerUnit.class, PowerUnit.SI_UNIT);
+    private final WritableValue<ResistanceUnit> resistanceUnit = Props.of("resistanceUnit").valueOf(ResistanceUnit.class, ResistanceUnit.SI_UNIT);
+    private final WritableValue<TemperatureUnit> temperatureUnit = Props.of("temperatureUnit").valueOf(TemperatureUnit.class, TemperatureUnit.SI_UNIT);
+    private final WritableValue<TimeUnit> timeUnit = Props.of("timeUnit").valueOf(TimeUnit.class, TimeUnit.SI_UNIT);
+    private final WritableValue<VoltageUnit> voltageUnit = Props.of("voltageUnit").valueOf(VoltageUnit.class, VoltageUnit.SI_UNIT);
 
     public HWUnits(HWProject project) {
         this.project.set(project);
@@ -52,7 +52,7 @@ public class HWUnits implements TsonSerializable, WithListeners {
         listeners.addDelegate(voltageUnit);
     }
 
-    public PValue<HWProject> project() {
+    public ObservableValue<HWProject> project() {
         return project;
     }
 
@@ -78,48 +78,48 @@ public class HWUnits implements TsonSerializable, WithListeners {
     }
 
 //    @Override
-    public WritablePValue<LengthUnit> lengthUnit() {
+    public WritableValue<LengthUnit> lengthUnit() {
         return lengthUnit;
     }
 
 //    @Override
-    public WritablePValue<FrequencyUnit> frequencyUnit() {
+    public WritableValue<FrequencyUnit> frequencyUnit() {
         return frequencyUnit;
     }
 
-    public WritablePValue<CapacitanceUnit> capacitanceUnit() {
+    public WritableValue<CapacitanceUnit> capacitanceUnit() {
         return capacitanceUnit;
     }
 
-    public WritablePValue<ConductanceUnit> conductanceUnit() {
+    public WritableValue<ConductanceUnit> conductanceUnit() {
         return conductanceUnit;
     }
 
-    public WritablePValue<CurrentUnit> currentUnit() {
+    public WritableValue<CurrentUnit> currentUnit() {
         return currentUnit;
     }
 
-    public WritablePValue<InductanceUnit> inductanceUnit() {
+    public WritableValue<InductanceUnit> inductanceUnit() {
         return inductanceUnit;
     }
 
-    public WritablePValue<PowerUnit> powerUnit() {
+    public WritableValue<PowerUnit> powerUnit() {
         return powerUnit;
     }
 
-    public WritablePValue<ResistanceUnit> resistanceUnit() {
+    public WritableValue<ResistanceUnit> resistanceUnit() {
         return resistanceUnit;
     }
 
-    public WritablePValue<TemperatureUnit> temperatureUnit() {
+    public WritableValue<TemperatureUnit> temperatureUnit() {
         return temperatureUnit;
     }
 
-    public WritablePValue<TimeUnit> timeUnit() {
+    public WritableValue<TimeUnit> timeUnit() {
         return timeUnit;
     }
 
-    public WritablePValue<VoltageUnit> voltageUnit() {
+    public WritableValue<VoltageUnit> voltageUnit() {
         return voltageUnit;
     }
 

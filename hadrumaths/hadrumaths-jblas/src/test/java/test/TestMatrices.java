@@ -1,6 +1,6 @@
 package test;
 
-import net.thevpc.common.util.Chronometer;
+import net.thevpc.common.time.Chronometer;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.ComplexMatrix;
 import net.thevpc.scholar.hadrumaths.ComplexMatrixFactory;

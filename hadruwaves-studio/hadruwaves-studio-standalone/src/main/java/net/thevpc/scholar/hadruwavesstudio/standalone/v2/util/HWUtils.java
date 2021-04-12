@@ -40,13 +40,7 @@ public class HWUtils {
                 }
             }
         });
-        a.app().iconSet().id().listeners().add(new PropertyListener() {
-            @Override
-            public void propertyUpdated(PropertyEvent event) {
-                e.run();
-            }
-        });
-        a.app().iconSet().id().listeners().add(new PropertyListener() {
+        a.app().iconSets().listeners().add(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
                 e.run();

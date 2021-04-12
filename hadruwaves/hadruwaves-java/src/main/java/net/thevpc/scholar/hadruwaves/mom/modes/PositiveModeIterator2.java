@@ -1,13 +1,13 @@
 package net.thevpc.scholar.hadruwaves.mom.modes;
 
-import net.thevpc.common.util.IntIterator;
-import net.thevpc.common.util.IntIteratorBuilder;
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadruwaves.ModeIndex;
 import net.thevpc.scholar.hadruwaves.ModeType;
 import net.thevpc.scholar.hadruwaves.WallBorders;
 
 import java.util.*;
+import net.thevpc.jeep.util.IntIterator;
+import net.thevpc.jeep.util.IntIteratorBuilder;
 
 public class PositiveModeIterator2 implements Iterator<ModeIndex> {
     private Axis invariance;

@@ -5,8 +5,8 @@ import net.thevpc.common.mon.TaskListener;
 import net.thevpc.common.mon.TaskMonitor;
 import net.thevpc.common.mon.TaskMonitorManager;
 import net.thevpc.common.swing.GridBagLayout2;
-import net.thevpc.common.util.DatePart;
-import net.thevpc.common.util.TimeDuration;
+import net.thevpc.common.time.DatePart;
+import net.thevpc.common.time.TimeDuration;
 import net.thevpc.scholar.hadruplot.util.PlotUtils;
 
 import javax.swing.*;

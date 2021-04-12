@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
-import net.thevpc.common.util.MapUtils;
+import net.thevpc.common.collections.MapUtils;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.Maths;

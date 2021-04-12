@@ -1,18 +1,18 @@
 package net.thevpc.scholar.hadruwaves.solvers;
 
 import net.thevpc.common.props.Props;
-import net.thevpc.common.props.WritablePValue;
+import net.thevpc.common.props.WritableValue;
 
 public abstract class AbstractHWSolverTemplate implements HWSolverTemplate {
 
-    private WritablePValue<String> name = Props.of("name").valueOf(String.class, null);
-    private WritablePValue<String> description = Props.of("description").valueOf(String.class, null);
+    private WritableValue<String> name = Props.of("name").valueOf(String.class, null);
+    private WritableValue<String> description = Props.of("description").valueOf(String.class, null);
 
-    public WritablePValue<String> name() {
+    public WritableValue<String> name() {
         return name;
     }
 
-    public WritablePValue<String> description() {
+    public WritableValue<String> description() {
         return description;
     }
 

@@ -7,6 +7,8 @@ import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonObjectContext;
 import net.thevpc.tson.TsonSerializer;
 import net.thevpc.common.util.*;
+import net.thevpc.common.collections.*;
+import net.thevpc.common.time.*;
 import net.thevpc.scholar.hadrumaths.cache.CacheEnabled;
 import net.thevpc.scholar.hadrumaths.cache.CacheMode;
 import net.thevpc.scholar.hadrumaths.derivation.FormalDifferentiation;
@@ -52,7 +54,7 @@ public final class MathsConfig {
     private FrequencyFormat frequencyFormatter = FrequencyFormat.INSTANCE;
     private BytesSizeFormat memorySizeFormatter = BytesSizeFormat.INSTANCE;
     private MetricFormat metricFormatter = new MetricFormat();
-    private final net.thevpc.common.util.TimePeriodFormat timePeriodFormat = new DefaultTimePeriodFormat();
+    private final TimePeriodFormat timePeriodFormat = new DefaultTimePeriodFormat();
     private final ExprCubeFactory exprCubeFactory = DefaultExprCubeFactory.INSTANCE;
     private int matrixBlockPrecision = 256;
     private InverseStrategy defaultMatrixInverseStrategy = InverseStrategy.BLOCK_SOLVE;
@@ -104,13 +106,13 @@ public final class MathsConfig {
         }
         Tson.setSerializer(
                 b
-                        .setToElement(DefaultTimePeriodFormat.class, (DefaultTimePeriodFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName()))
-                        .setToElement(ToStringDoubleFormat.class, (ToStringDoubleFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName()))
-                        .setToElement(PercentDoubleFormat.class, (PercentDoubleFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName()))
-                        .setToElement(DecimalDoubleFormat.class, (DecimalDoubleFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName(), Tson.elem(object.toPattern())))
-                        .setToElement(FrequencyFormat.class, (FrequencyFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName(), Tson.elem(object.toPattern())))
-                        .setToElement(BytesSizeFormat.class, (BytesSizeFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName(), Tson.elem(object.toPattern())))
-                        .setToElement(MetricFormat.class, (MetricFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName(), Tson.elem(object.toPattern())))
+                        .setSerializer(DefaultTimePeriodFormat.class, (DefaultTimePeriodFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName()))
+                        .setSerializer(ToStringDoubleFormat.class, (ToStringDoubleFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName()))
+                        .setSerializer(PercentDoubleFormat.class, (PercentDoubleFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName()))
+                        .setSerializer(DecimalDoubleFormat.class, (DecimalDoubleFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName(), Tson.elem(object.toPattern())))
+                        .setSerializer(FrequencyFormat.class, (FrequencyFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName(), Tson.elem(object.toPattern())))
+                        .setSerializer(BytesSizeFormat.class, (BytesSizeFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName(), Tson.elem(object.toPattern())))
+                        .setSerializer(MetricFormat.class, (MetricFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName(), Tson.elem(object.toPattern())))
                         .build()
         );
     }
@@ -621,7 +623,7 @@ public final class MathsConfig {
         return exprCubeFactory;
     }
 
-    public net.thevpc.common.util.TimePeriodFormat getTimePeriodFormat() {
+    public net.thevpc.common.time.TimePeriodFormat getTimePeriodFormat() {
 
         return timePeriodFormat;
     }

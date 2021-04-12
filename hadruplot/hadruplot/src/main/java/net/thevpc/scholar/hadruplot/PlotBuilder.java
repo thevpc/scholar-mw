@@ -5,7 +5,7 @@ import net.thevpc.scholar.hadruplot.extension.PlotBuilderSupport;
 import net.thevpc.scholar.hadruplot.model.PlotModel;
 import net.thevpc.common.strings.StringUtils;
 import net.thevpc.common.swing.SwingUtilities3;
-import net.thevpc.common.util.DoubleArrayList;
+import net.thevpc.common.collections.DoubleArrayList;
 import net.thevpc.common.util.DoubleFormat;
 import net.thevpc.scholar.hadruplot.console.PlotConfigManager;
 import net.thevpc.scholar.hadruplot.console.PlotConsole;
@@ -613,7 +613,7 @@ public class PlotBuilder {
                     } else {
                         windowManager.remove(update);
                         PlotPanel c = Plot.create(model, windowManager);
-                        windowManager.add(c, cwd());
+                        windowManager.add(c, PlotPath.of(cwd()));
                         fireOnPlot(c);
                         return c;
                     }
@@ -621,7 +621,7 @@ public class PlotBuilder {
             } else {
                 windowManager.remove(update);
                 PlotPanel c = Plot.create(model, windowManager);
-                windowManager.add(c, cwd());
+                windowManager.add(c, PlotPath.of(cwd()));
                 fireOnPlot(c);
                 return c;
             }
@@ -645,7 +645,7 @@ public class PlotBuilder {
                     } else {
                         windowManager.remove(u);
                         PlotPanel c = Plot.create(model, windowManager);
-                        windowManager.add(c, cwd());
+                        windowManager.add(c, PlotPath.of(cwd()));
                         Plot.setCachedPlotComponent(updateName, c);
                         fireOnPlot(c);
                         return c;
@@ -654,7 +654,7 @@ public class PlotBuilder {
             } else {
                 windowManager.remove(u);
                 PlotPanel c = Plot.create(model, windowManager);
-                windowManager.add(c, cwd());
+                windowManager.add(c, PlotPath.of(cwd()));
                 Plot.setCachedPlotComponent(updateName, c);
                 fireOnPlot(c);
                 return c;
@@ -664,7 +664,7 @@ public class PlotBuilder {
             if (parent != null) {
                 parent.add(c);
             } else if (display) {
-                windowManager.add(c, cwd());
+                windowManager.add(c, PlotPath.of(cwd()));
             }
             fireOnPlot(c);
             return c;

@@ -1,16 +1,16 @@
 package net.thevpc.scholar.hadruwaves.project.configuration;
 
-import net.thevpc.common.props.PValue;
+import net.thevpc.common.props.ObservableValue;
 import net.thevpc.common.props.UserObjects;
-import net.thevpc.common.props.WritablePValue;
+import net.thevpc.common.props.WritableValue;
 import net.thevpc.scholar.hadruwaves.project.HWProjectElement;
 
 public interface HWConfigurationElement extends HWProjectElement {
-    WritablePValue<String> description();
+    WritableValue<String> description();
 
-    PValue<HWConfigurationFolder> parent();
+    ObservableValue<HWConfigurationFolder> parent();
 
-    PValue<String> parentPath();
+    ObservableValue<String> parentPath();
 
     UserObjects userObjects();
 }

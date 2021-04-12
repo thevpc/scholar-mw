@@ -22,7 +22,7 @@ public interface PlotContainer extends PlotComponent, PlotComponentDisplayer {
 
     PlotContainer add(int index, String containerName);
 
-    void add(PlotComponent component, String path);
+    void add(PlotComponent component, net.thevpc.scholar.hadruplot.PlotPath path);
 
     void add(PlotComponent component);
 

@@ -8,22 +8,22 @@ import java.util.function.Predicate;
 
 public interface HWSolution extends TsonSerializable, WithListeners, FileObject {
 
-    WritablePValue<String> name();
+    WritableValue<String> name();
 
     String uuid();
 
-    WritablePValue<HWProject> activeProject();
+    WritableValue<HWProject> activeProject();
 
-    //    public WritablePNamedNode<HWSolutionElement> root() {
+    //    public WritableNamedNode<HWSolutionElement> root() {
     //        return root;
     //    }
-    WritablePLMap<String,HWSolutionElement> children();
+    WritableLiMap<String,HWSolutionElement> children();
 
     List<HWProject> findModifiedProjects();
 
     List<HWProject> findProjects();
 
-    WritablePValue<String> description();
+    WritableValue<String> description();
 
     HWSolutionElement findElement(String path);
 

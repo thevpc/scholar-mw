@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadruplot.model;
 
-import net.thevpc.common.util.Chronometer;
+import net.thevpc.common.time.Chronometer;
 
 import javax.swing.*;
 import java.awt.*;

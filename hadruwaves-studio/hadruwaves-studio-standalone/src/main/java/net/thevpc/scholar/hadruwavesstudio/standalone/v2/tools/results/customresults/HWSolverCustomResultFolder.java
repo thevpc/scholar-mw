@@ -5,7 +5,7 @@
  */
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results.customresults;
 
-import net.thevpc.common.props.PList;
+import net.thevpc.common.props.ObservableList;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results.actions.HWSolverActionNode;
 
 /**
@@ -14,5 +14,5 @@ import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results.actions.H
  */
 public interface HWSolverCustomResultFolder extends HWSolverActionNode {
 
-    PList<HWSolverActionNode> children();
+    ObservableList<HWSolverActionNode> children();
 }

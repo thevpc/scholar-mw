@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import net.thevpc.common.swing.JTreeCardPanel;
 import net.thevpc.scholar.hadruplot.PlotComponent;
+import net.thevpc.scholar.hadruplot.PlotPath;
 
 /**
  * @author vpc
@@ -23,10 +24,13 @@ public class TreeCardPlotContainer extends AbstractPlotContainer {
     }
 
     @Override
-    public void add(PlotComponent component, String path) {
+    public void add(PlotComponent component, net.thevpc.scholar.hadruplot.PlotPath path) {
 //        prepare(component);
+        if(path==null){
+            path=PlotPath.ROOT;
+        }
         String validateTitle = validateTitle(component.getPlotTitle());
-        cardPanel.addPage(path+"/"+component.getPlotTitle(), validateTitle, null, toComponent(component));
+        cardPanel.addPage(path.append(component.getPlotTitle()).toString(), validateTitle, null, toComponent(component));
     }
 
     public int indexOfPlotComponent(PlotComponent plotComponent) {

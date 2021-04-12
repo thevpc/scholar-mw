@@ -201,8 +201,8 @@ public class HWSSolutionExplorerTool extends AbstractToolWindowPanel {
         boolean folder = false;
         String name = null;
         Object ov = o;
-        if (o instanceof PValue) {
-            ov = ((PValue) o).get();
+        if (o instanceof ObservableValue) {
+            ov = ((ObservableValue) o).get();
         }
         if (ov instanceof HWProject) {
             project = (HWProject) ov;

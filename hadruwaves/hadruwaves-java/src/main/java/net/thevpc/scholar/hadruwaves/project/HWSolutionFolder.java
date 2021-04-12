@@ -1,12 +1,12 @@
 package net.thevpc.scholar.hadruwaves.project;
 
-import net.thevpc.common.props.WritablePLMap;
+import net.thevpc.common.props.WritableLiMap;
 
 import java.util.List;
 import java.util.function.Predicate;
 
 public interface HWSolutionFolder extends HWSolutionElement {
-    WritablePLMap<String, HWSolutionElement> children();
+    WritableLiMap<String, HWSolutionElement> children();
 
     List<HWProject> findModifiedProjects();
 

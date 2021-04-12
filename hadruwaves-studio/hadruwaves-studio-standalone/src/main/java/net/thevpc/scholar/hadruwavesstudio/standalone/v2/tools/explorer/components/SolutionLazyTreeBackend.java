@@ -7,8 +7,8 @@ package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer.compone
 
 import net.thevpc.echo.swing.core.swing.LazyTreeBackend;
 import net.thevpc.echo.swing.core.swing.LazyTreeNode;
-import net.thevpc.common.props.WritablePIndexedNode;
-import net.thevpc.common.props.WritablePNamedNode;
+import net.thevpc.common.props.WritableIndexedNode;
+import net.thevpc.common.props.WritableNamedNode;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 import net.thevpc.scholar.hadruwaves.project.HWSolution;
 import net.thevpc.scholar.hadruwaves.project.HWSolutionFolder;
@@ -175,7 +175,7 @@ public class SolutionLazyTreeBackend implements LazyTreeBackend {
             return ((HWParameterFolder) ov).children().values().stream().map((x) -> HWSSolutionExplorerTool.createLazyTreeNode(x, solution, oi.getProject(), studio, parentPath)).toArray(LazyTreeNode[]::new);
         }
         if (ov instanceof HWSolution) {
-            //WritablePIndexedNode<HWSolutionElement> child :
+            //WritableIndexedNode<HWSolutionElement> child :
             return ((HWSolution) o).children().values().stream().map((x) -> HWSSolutionExplorerTool.createLazyTreeNode(x, solution, oi.getProject(), studio, parentPath)).toArray(LazyTreeNode[]::new);
         }
         if (ov instanceof HWProject) {
@@ -190,12 +190,12 @@ public class SolutionLazyTreeBackend implements LazyTreeBackend {
                     new LazyTreeNode("Configurations", new HWProjectItem(studio, solution, project, new HWProjectFolder("/Configurations", project)), parentPath + "/Configurations", true)
             };
         }
-        if (o instanceof WritablePIndexedNode) {
-            WritablePIndexedNode<Object> node = (WritablePIndexedNode) o;
+        if (o instanceof WritableIndexedNode) {
+            WritableIndexedNode<Object> node = (WritableIndexedNode) o;
             return node.children().stream().map((x) -> HWSSolutionExplorerTool.createLazyTreeNode(x, solution, oi.getProject(), studio, parentPath)).toArray(LazyTreeNode[]::new);
         }
-        if (o instanceof WritablePNamedNode) {
-            WritablePNamedNode<Object> node = (WritablePNamedNode) o;
+        if (o instanceof WritableNamedNode) {
+            WritableNamedNode<Object> node = (WritableNamedNode) o;
             return node.children().values().stream().map((x) -> HWSSolutionExplorerTool.createLazyTreeNode(x, solution, oi.getProject(), studio, parentPath)).toArray(LazyTreeNode[]::new);
         }
         return new LazyTreeNode[0];

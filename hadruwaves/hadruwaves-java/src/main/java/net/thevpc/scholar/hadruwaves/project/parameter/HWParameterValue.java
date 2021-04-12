@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadruwaves.project.parameter;
 
 import net.thevpc.common.props.Props;
-import net.thevpc.common.props.WritablePValue;
+import net.thevpc.common.props.WritableValue;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonObjectBuilder;
@@ -11,12 +11,12 @@ import net.thevpc.scholar.hadrumaths.units.ParamUnit;
 
 public class HWParameterValue extends AbstractHWParameterElement {
 
-    private final WritablePValue<UnitType> type = Props.of("type").valueOf(UnitType.class, UnitType.Double);
-    private final WritablePValue<ParamUnit> unit = Props.of("unit").valueOf(ParamUnit.class, null);
-    private final WritablePValue<String> name = Props.of("name").valueOf(String.class, null);
-    private final WritablePValue<String> description = Props.of("description").valueOf(String.class, null);
-    private final WritablePValue<String> parentPath = Props.of("parentPath").valueOf(String.class, null);
-    private final WritablePValue<Boolean> discriminator = Props.of("discriminator").valueOf(Boolean.class, false);
+    private final WritableValue<UnitType> type = Props.of("type").valueOf(UnitType.class, UnitType.Double);
+    private final WritableValue<ParamUnit> unit = Props.of("unit").valueOf(ParamUnit.class, null);
+    private final WritableValue<String> name = Props.of("name").valueOf(String.class, null);
+    private final WritableValue<String> description = Props.of("description").valueOf(String.class, null);
+    private final WritableValue<String> parentPath = Props.of("parentPath").valueOf(String.class, null);
+    private final WritableValue<Boolean> discriminator = Props.of("discriminator").valueOf(Boolean.class, false);
 
     public HWParameterValue() {
     }
@@ -27,29 +27,29 @@ public class HWParameterValue extends AbstractHWParameterElement {
         this.type.set(type);
     }
 
-    public WritablePValue<Boolean> discriminator() {
+    public WritableValue<Boolean> discriminator() {
         return discriminator;
     }
 
     @Override
-    public WritablePValue<String> name() {
+    public WritableValue<String> name() {
         return name;
     }
 
     @Override
-    public WritablePValue<String> description() {
+    public WritableValue<String> description() {
         return description;
     }
 
-    public WritablePValue<String> parentPath() {
+    public WritableValue<String> parentPath() {
         return parentPath;
     }
 
-    public WritablePValue<ParamUnit> unit() {
+    public WritableValue<ParamUnit> unit() {
         return unit;
     }
 
-    public WritablePValue<UnitType> type() {
+    public WritableValue<UnitType> type() {
         return type;
     }
 

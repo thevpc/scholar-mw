@@ -41,7 +41,7 @@ import net.thevpc.scholar.hadruwaves.mom.project.common.AreaZone;
 import net.thevpc.scholar.hadruwaves.mom.project.common.VarUnit;
 import net.thevpc.scholar.hadruwaves.mom.project.common.VariableExpression;
 import net.thevpc.scholar.hadruwaves.mom.project.gpmesher.GpMesher;
-import net.thevpc.common.util.IndexedMap;
+import net.thevpc.common.collections.IndexedMap;
 import net.thevpc.scholar.hadruwaves.mom.sources.planar.DefaultPlanarSources;
 import net.thevpc.scholar.hadruwaves.mom.sources.PlanarSource;
 import net.thevpc.scholar.hadruwaves.mom.sources.Sources;

@@ -14,6 +14,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import net.thevpc.scholar.hadruplot.PlotComponent;
 import net.thevpc.scholar.hadruplot.PlotContainer;
+import net.thevpc.scholar.hadruplot.PlotPath;
 import net.thevpc.scholar.hadruplot.PlotWindowManager;
 
 /**
@@ -84,14 +85,10 @@ public abstract class AbstractPlotWindowManager implements PlotWindowManager {
     }
 
     public final void add(final PlotComponent component) {
-        add(component, "/");
+        add(component, PlotPath.ROOT);
     }
 
-    public final void add(final PlotComponent component, final String path) {
-        if (path == null || !path.startsWith("/")) {
-            throw new IllegalArgumentException("Invalid path " + path);
-        }
-
+    public final void add(final PlotComponent component, final PlotPath path) {
         Runnable r = new Runnable() {
             @Override
             public void run() {
@@ -100,7 +97,7 @@ public abstract class AbstractPlotWindowManager implements PlotWindowManager {
                 jComponent.putClientProperty(PlotWindowManager.class.getName(), this);
                 jComponent.putClientProperty(PlotComponent.class.getName(), component);
                 component.setPlotWindowManager(AbstractPlotWindowManager.this);
-                addPlotComponentImpl(component, StringUtils.split(path, "/"));
+                addPlotComponentImpl(component, PlotPath.nonnull(path));
             }
         };
         SwingUtilities3.invokeAndWait(r);
@@ -121,5 +118,5 @@ public abstract class AbstractPlotWindowManager implements PlotWindowManager {
 
     public abstract void removePlotComponentImpl(PlotComponent component);
 
-    public abstract void addPlotComponentImpl(PlotComponent component, String[] path);
+    public abstract void addPlotComponentImpl(PlotComponent component, net.thevpc.scholar.hadruplot.PlotPath path);
 }

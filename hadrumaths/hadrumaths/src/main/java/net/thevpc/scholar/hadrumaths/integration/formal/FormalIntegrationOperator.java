@@ -3,7 +3,7 @@ package net.thevpc.scholar.hadrumaths.integration.formal;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonObjectContext;
-import net.thevpc.common.util.ClassMapList;
+import net.thevpc.common.collections.ClassMapList;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.integration.AbstractIntegrationOperator;
 import net.thevpc.scholar.hadrumaths.scalarproducts.formal.FormalScalarProductOperator;

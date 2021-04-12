@@ -1,29 +1,20 @@
 package net.thevpc.scholar.hadruwaves.project;
 
-import net.thevpc.scholar.hadrumaths.units.LengthUnit;
-import net.thevpc.scholar.hadrumaths.units.FrequencyUnit;
-import net.thevpc.scholar.hadrumaths.units.UnitType;
 import net.thevpc.common.mon.DefaultTaskMonitorManager;
 import net.thevpc.common.mon.TaskMonitorManager;
 import net.thevpc.common.props.*;
 import net.thevpc.common.props.impl.PropertyListenersImpl;
-import net.thevpc.scholar.hadrumaths.*;
-import net.thevpc.scholar.hadruwaves.Material;
-import net.thevpc.scholar.hadruwaves.mom.*;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
-import net.thevpc.scholar.hadruwaves.str.MicroStripCalc;
-
-import static net.thevpc.scholar.hadrumaths.Maths.*;
 import net.thevpc.scholar.hadruwaves.project.templates.MicrostripProjectTemplate;
 
 public class HWSolutionProcessor implements WithListeners {
 
-    private WritablePList<HWFile> recentFiles = Props.of("recentFiles").listOf(HWFile.class);
-    private WritablePValue<HWSolution> solution = Props.of("solution").valueOf(HWSolution.class, null);
+    private WritableList<HWFile> recentFiles = Props.of("recentFiles").listOf(HWFile.class);
+    private WritableValue<HWSolution> solution = Props.of("solution").valueOf(HWSolution.class, null);
     private TaskMonitorManager taskMonitorManager = new DefaultTaskMonitorManager();
     private PropertyListenersImpl listeners = new PropertyListenersImpl(this);
-    private WritablePValue<HWProject> selectedProject = Props.of("selectedProject").valueOf(HWProject.class, null);
-    private WritablePValue<HWConfigurationRun> selectedConfiguration = Props.of("selectedConfiguration").valueOf(HWConfigurationRun.class, null);
+    private WritableValue<HWProject> selectedProject = Props.of("selectedProject").valueOf(HWProject.class, null);
+    private WritableValue<HWConfigurationRun> selectedConfiguration = Props.of("selectedConfiguration").valueOf(HWConfigurationRun.class, null);
 
     public HWSolutionProcessor() {
         listeners.addDelegate(recentFiles);
@@ -31,11 +22,11 @@ public class HWSolutionProcessor implements WithListeners {
         solution.listeners().add(new SolutionTracker(this));
     }
 
-    public WritablePValue<HWProject> selectedProject() {
+    public WritableValue<HWProject> selectedProject() {
         return selectedProject;
     }
 
-    public WritablePValue<HWConfigurationRun> selectedConfiguration() {
+    public WritableValue<HWConfigurationRun> selectedConfiguration() {
         return selectedConfiguration;
     }
 
@@ -102,15 +93,15 @@ public class HWSolutionProcessor implements WithListeners {
         return p;
     }
 
-    public PList<HWFile> getRecentFile() {
+    public ObservableList<HWFile> getRecentFile() {
         return recentFiles.readOnly();
     }
 
-    public WritablePList<HWFile> getRecentFiles() {
+    public WritableList<HWFile> getRecentFiles() {
         return recentFiles;
     }
 
-    public PValue<HWSolution> solution() {
+    public ObservableValue<HWSolution> solution() {
         return solution;
     }
 

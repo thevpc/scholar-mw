@@ -2,7 +2,7 @@ package net.thevpc.scholar.hadruplot.console.yaxis;
 
 import net.thevpc.common.mon.ProgressMonitors;
 import net.thevpc.common.swing.win.WindowPath;
-import net.thevpc.common.util.Chronometer;
+import net.thevpc.common.time.Chronometer;
 import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.scholar.hadruplot.DefaultPlotHyperCube;
 import net.thevpc.scholar.hadruplot.PlotHyperCube;

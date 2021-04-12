@@ -21,8 +21,8 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.tree.TreePath;
 
-import net.thevpc.echo.AppIconSet;
-import net.thevpc.common.iconset.PIconSet;
+import net.thevpc.common.iconset.IconSets;
+//import net.thevpc.common.iconset.PIconSet;
 import net.thevpc.scholar.hadrumaths.units.ParamUnit;
 import net.thevpc.scholar.hadrumaths.units.UnitType;
 import net.thevpc.scholar.hadruwaves.project.parameter.HWParameterElement;
@@ -76,7 +76,7 @@ public class CustomJXTreeTable extends JXTreeTable {
                 } else {
                     super.setText(String.valueOf(value));
                 }
-                AppIconSet iconSet = tool.app().iconSet();
+                IconSets iconSet = tool.app().iconSets();
                 if (!leaf || value instanceof HWConfigurationRun || value instanceof HWParameterFolder) {
                     if (value instanceof HWConfigurationRun) {
                         super.setIcon(iconSet.icon("Configuration").get());

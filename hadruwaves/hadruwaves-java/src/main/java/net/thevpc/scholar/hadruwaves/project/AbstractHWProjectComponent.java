@@ -15,49 +15,49 @@ import net.thevpc.scholar.hadruwaves.project.scene.HWProjectComponentGroup;
 
 public abstract class AbstractHWProjectComponent implements HWProjectComponent {
 
-    protected final WritablePValue<HWSolution> solution = Props.of("solution").valueOf(HWSolution.class, null);
-    protected final WritablePValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
-    private final WritablePValue<String> name = Props.of("name").valueOf(String.class, null);
+    protected final WritableValue<HWSolution> solution = Props.of("solution").valueOf(HWSolution.class, null);
+    protected final WritableValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
+    private final WritableValue<String> name = Props.of("name").valueOf(String.class, null);
 
-    protected final WritablePValue<HWProjectComponentGroup> parent = Props.of("parent").valueOf(HWProjectComponentGroup.class, null);
-    protected final WritablePValue<String> parentPath = Props.of("parentPath").valueOf(String.class, null);
+    protected final WritableValue<HWProjectComponentGroup> parent = Props.of("parent").valueOf(HWProjectComponentGroup.class, null);
+    protected final WritableValue<String> parentPath = Props.of("parentPath").valueOf(String.class, null);
 
     private final WritablePExpression<Boolean> enabled = Props2.of("enabled").exprBooleanOf(true);
-    private final WritablePValue<Boolean> visible = Props.of("visible").valueOf(Boolean.class, true);
-    private final WritablePValue<Boolean> selected = Props.of("selected").valueOf(Boolean.class, true);
-    private final WritablePList<Annotation3D> annotations = Props.of("annotations").listOf(Annotation3D.class);
-    private final WritablePValue<String> description = Props.of("description").valueOf(String.class, null);
+    private final WritableValue<Boolean> visible = Props.of("visible").valueOf(Boolean.class, true);
+    private final WritableValue<Boolean> selected = Props.of("selected").valueOf(Boolean.class, true);
+    private final WritableList<Annotation3D> annotations = Props.of("annotations").listOf(Annotation3D.class);
+    private final WritableValue<String> description = Props.of("description").valueOf(String.class, null);
 
     @Override
-    public PValue<String> parentPath() {
+    public ObservableValue<String> parentPath() {
         return parentPath;
     }
 
     @Override
-    public PValue<HWSolution> solution() {
+    public ObservableValue<HWSolution> solution() {
         return solution.readOnly();
     }
 
     @Override
-    public PValue<HWProject> project() {
+    public ObservableValue<HWProject> project() {
         return project.readOnly();
     }
 
     @Override
-    public PValue<HWProjectComponentGroup> parent() {
+    public ObservableValue<HWProjectComponentGroup> parent() {
         return parent.readOnly();
     }
 
-    public WritablePValue<String> name() {
+    public WritableValue<String> name() {
         return name;
     }
 
-    public WritablePValue<String> description() {
+    public WritableValue<String> description() {
         return description;
     }
 
     @Override
-    public WritablePValue<Boolean> selected() {
+    public WritableValue<Boolean> selected() {
         return selected;
     }
 
@@ -67,11 +67,11 @@ public abstract class AbstractHWProjectComponent implements HWProjectComponent {
     }
 
     @Override
-    public WritablePValue<Boolean> visible() {
+    public WritableValue<Boolean> visible() {
         return visible;
     }
 
-    public WritablePList<Annotation3D> annotations() {
+    public WritableList<Annotation3D> annotations() {
         return annotations;
     }
 

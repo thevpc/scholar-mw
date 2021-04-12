@@ -7,8 +7,8 @@ package net.thevpc.scholar.hadruwaves.project;
 
 import net.thevpc.common.props.FileObject;
 import net.thevpc.common.props.WithListeners;
-import net.thevpc.common.props.WritablePLMap;
-import net.thevpc.common.props.WritablePValue;
+import net.thevpc.common.props.WritableLiMap;
+import net.thevpc.common.props.WritableValue;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonSerializable;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurations;
@@ -27,10 +27,10 @@ public interface HWProject extends TsonSerializable, HWSolutionElement, WithList
     String uuid();
 
     @Override
-    WritablePValue<String> name();
+    WritableValue<String> name();
 
     @Override
-    WritablePValue<String> description();
+    WritableValue<String> description();
 
     HWParameters parameters();
 
@@ -38,9 +38,9 @@ public interface HWProject extends TsonSerializable, HWSolutionElement, WithList
 
     HWConfigurations configurations();
 
-    WritablePValue<HWProjectScene> scene();
+    WritableValue<HWProjectScene> scene();
 
-    WritablePLMap<String, HWMaterialTemplate> materials();
+    WritableLiMap<String, HWMaterialTemplate> materials();
 
     boolean isPersistent();
     

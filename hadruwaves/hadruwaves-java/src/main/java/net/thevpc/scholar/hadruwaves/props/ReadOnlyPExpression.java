@@ -22,7 +22,7 @@ public class ReadOnlyPExpression<T> extends DelegateProperty<T> implements PExpr
         return (PExpression<T>) super.getBase();
     }
 
-//    public static <T> ReadOnlyPValue<T> of(PValue<T> v) {
+//    public static <T> ReadOnlyPValue<T> of(ObservableValue<T> v) {
 //        if (v instanceof ReadOnlyPValue<?>) {
 //            return (ReadOnlyPValue<T>) v;
 //        }else{

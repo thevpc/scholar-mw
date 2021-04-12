@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadruwaves.project.scene;
 
-import net.thevpc.common.props.PValue;
+import net.thevpc.common.props.ObservableValue;
 import net.thevpc.common.props.Props;
-import net.thevpc.common.props.WritablePValue;
+import net.thevpc.common.props.WritableValue;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonObjectContext;
@@ -16,10 +16,10 @@ import net.thevpc.scholar.hadruwaves.props.WritablePExpression;
 
 public class HWMaterialTemplate implements HWProjectElement {
 
-    private final WritablePValue<HWSolution> solution = Props.of("solution").valueOf(HWSolution.class, null);
-    private final WritablePValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
-    private final WritablePValue<String> name = Props.of("name").valueOf(String.class, null);
-    private final WritablePValue<String> description = Props.of("description").valueOf(String.class, null);
+    private final WritableValue<HWSolution> solution = Props.of("solution").valueOf(HWSolution.class, null);
+    private final WritableValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
+    private final WritableValue<String> name = Props.of("name").valueOf(String.class, null);
+    private final WritableValue<String> description = Props.of("description").valueOf(String.class, null);
     private final WritablePExpression<Double> permettivity = Props2.of("permettivity").exprDoubleOf(1.0);
     private final WritablePExpression<Double> permeability = Props2.of("permeability").exprDoubleOf(1.0);
     private final WritablePExpression<Double> electricConductivity = Props2.of("electricConductivity").exprDoubleOf(0.0);
@@ -36,21 +36,21 @@ public class HWMaterialTemplate implements HWProjectElement {
     }
 
     @Override
-    public PValue<HWSolution> solution() {
+    public ObservableValue<HWSolution> solution() {
         return solution.readOnly();
     }
 
     @Override
-    public WritablePValue<HWProject> project() {
+    public WritableValue<HWProject> project() {
         return project;
     }
 
     @Override
-    public WritablePValue<String> name() {
+    public WritableValue<String> name() {
         return name;
     }
 
-    public WritablePValue<String> description() {
+    public WritableValue<String> description() {
         return description;
     }
 

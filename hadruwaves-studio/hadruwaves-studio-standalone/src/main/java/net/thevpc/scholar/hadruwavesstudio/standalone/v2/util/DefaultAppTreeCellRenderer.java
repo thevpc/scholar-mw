@@ -1,12 +1,12 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.util;
 
-import net.thevpc.echo.AppIconSet;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.HadruwavesStudio;
 
 import javax.swing.tree.DefaultTreeCellRenderer;
 import java.awt.*;
 import javax.swing.JTree;
-import net.thevpc.common.iconset.PIconSet;
+import net.thevpc.common.iconset.IconSets;
+//import net.thevpc.common.iconset.PIconSet;
 
 public class DefaultAppTreeCellRenderer extends DefaultTreeCellRenderer {
 
@@ -23,7 +23,7 @@ public class DefaultAppTreeCellRenderer extends DefaultTreeCellRenderer {
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
         Component c = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-        AppIconSet iconSet = studio().app().iconSet();
+        IconSets iconSet = studio().app().iconSets();
         if (leaf) {
 //            super.setIcon(iconSet.icon("Item").get());
         } else {

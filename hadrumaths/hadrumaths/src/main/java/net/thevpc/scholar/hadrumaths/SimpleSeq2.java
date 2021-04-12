@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.MapBuilder;
+import net.thevpc.common.collections.MapBuilder;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.DoubleParam;
 
 import java.util.Arrays;

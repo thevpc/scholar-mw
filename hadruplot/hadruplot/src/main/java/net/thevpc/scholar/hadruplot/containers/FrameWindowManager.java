@@ -13,6 +13,7 @@ import net.thevpc.scholar.hadruplot.Plot;
 import net.thevpc.scholar.hadruplot.PlotComponent;
 import net.thevpc.scholar.hadruplot.PlotContainer;
 import net.thevpc.scholar.hadruplot.PlotEvent;
+import net.thevpc.scholar.hadruplot.PlotPath;
 import net.thevpc.scholar.hadruplot.PlotPropertyEvent;
 import net.thevpc.scholar.hadruplot.PlotPropertyListener;
 
@@ -57,13 +58,13 @@ public class FrameWindowManager extends AbstractComponentPlotWindowManager {
     }
 
     @Override
-    public PlotContainer getContainer(String[] path) {
+    public PlotContainer getContainer(PlotPath path) {
         PlotContainer container = super.getContainer(path);
         showFrame();
         return container;
     }
 
-    public void addPlotComponentImpl(PlotComponent component, String[] path) {
+    public void addPlotComponentImpl(PlotComponent component, net.thevpc.scholar.hadruplot.PlotPath path) {
         super.addPlotComponentImpl(component, path);
         showFrame();
     }

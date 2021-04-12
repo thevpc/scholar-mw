@@ -7,6 +7,7 @@ import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.PolygonPlot;
 import net.thevpc.scholar.hadrumaths.geom.GeometryList;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.GpPattern;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshAlgo;
+import net.thevpc.scholar.hadruplot.PlotPath;
 
 public class PolygonPlotConsoleAction implements ConsoleAction {
     private static final long serialVersionUID = 1L;
@@ -29,7 +30,7 @@ public class PolygonPlotConsoleAction implements ConsoleAction {
     public void execute(PlotConsole plotter) {
         PlotConsoleFrame frame = plotter.getPlotConsoleFrame();
         ConsoleWindow window = frame.getWindow(preferredPath);
-        window.addChild(title, new PolygonPlot(geometryList, meshAlgo,pattern,domain));
+        window.addChild(PlotPath.of(title), new PolygonPlot(geometryList, meshAlgo,pattern,domain));
     }
 
 }

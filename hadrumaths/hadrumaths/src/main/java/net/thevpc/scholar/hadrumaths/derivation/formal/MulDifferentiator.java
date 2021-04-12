@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths.derivation.formal;
 
-import net.thevpc.common.util.CollectionUtils;
+import net.thevpc.common.collections.CollectionUtils;
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.Expr;

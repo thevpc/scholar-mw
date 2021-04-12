@@ -3,7 +3,7 @@ package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.params;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.params.components.*;
 import net.thevpc.common.props.PropertyEvent;
 import net.thevpc.common.props.PropertyListener;
-import net.thevpc.common.props.WritablePIndexedNode;
+import net.thevpc.common.props.WritableIndexedNode;
 import net.thevpc.echo.AppPopupMenu;
 import net.thevpc.echo.swing.core.swing.JPopupMenuComponentSupplier;
 import net.thevpc.echo.swing.core.swing.SwingAppFactory;
@@ -82,8 +82,8 @@ public class HWSProjectParametersTool extends AbstractToolWindowPanel {
             DefaultMutableTreeTableNode u = (DefaultMutableTreeTableNode) o;
             return toItem(u.getUserObject());
         }
-        if (o instanceof WritablePIndexedNode) {
-            WritablePIndexedNode u = (WritablePIndexedNode) o;
+        if (o instanceof WritableIndexedNode) {
+            WritableIndexedNode u = (WritableIndexedNode) o;
             return toItem(u.get());
         }
         return o;

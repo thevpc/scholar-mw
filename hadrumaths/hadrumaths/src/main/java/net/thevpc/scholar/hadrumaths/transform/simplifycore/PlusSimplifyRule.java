@@ -5,7 +5,7 @@
  */
 package net.thevpc.scholar.hadrumaths.transform.simplifycore;
 
-import net.thevpc.common.util.ClassMap;
+import net.thevpc.common.collections.ClassMap;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleValue;
 import net.thevpc.scholar.hadrumaths.symbolic.NumberExpr;

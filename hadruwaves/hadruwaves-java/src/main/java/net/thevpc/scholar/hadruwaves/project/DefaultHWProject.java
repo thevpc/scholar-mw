@@ -31,12 +31,12 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
     /**
      * bound by parent (solution)
      */
-    private final WritablePValue<String> filePath = Props.of("filePath").valueOf(String.class, null);
+    private final WritableValue<String> filePath = Props.of("filePath").valueOf(String.class, null);
 
     private String uuid;
-    private final WritablePValue<HWProjectScene> scene = Props.of("scene").valueOf(HWProjectScene.class, null);
-    private final WritablePValue<Boolean> modified = Props.of("modified").valueOf(Boolean.class, false);
-    private final WritablePLMap<String, HWMaterialTemplate> materials = Props.of("materials").lmapOf(String.class, HWMaterialTemplate.class, x -> x.name().get());
+    private final WritableValue<HWProjectScene> scene = Props.of("scene").valueOf(HWProjectScene.class, null);
+    private final WritableValue<Boolean> modified = Props.of("modified").valueOf(Boolean.class, false);
+    private final WritableLiMap<String, HWMaterialTemplate> materials = Props.of("materials").lmapOf(String.class, HWMaterialTemplate.class, x -> x.name().get());
 
     private final PropertyListenersImpl listeners = new PropertyListenersImpl(this);
 
@@ -84,8 +84,8 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
                 switch (event.getAction()) {
                     case ADD: {
                         Object elem = event.getNewValue();
-                        if (event.getNewValue() instanceof PIndexedNode) {
-                            elem = ((PIndexedNode) event.getNewValue()).get();
+                        if (event.getNewValue() instanceof IndexedNode) {
+                            elem = ((IndexedNode) event.getNewValue()).get();
                         }
                         if (elem instanceof HWParameterValue) {
                             HWParameterValue v = (HWParameterValue) elem;
@@ -97,8 +97,8 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
                     }
                     case REMOVE: {
                         Object elem = event.getOldValue();
-                        if (event.getNewValue() instanceof PIndexedNode) {
-                            elem = ((PIndexedNode) event.getNewValue()).get();
+                        if (event.getNewValue() instanceof IndexedNode) {
+                            elem = ((IndexedNode) event.getNewValue()).get();
                         }
                         if (elem instanceof HWParameterValue) {
                             HWParameterValue v = (HWParameterValue) elem;
@@ -132,7 +132,7 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
     }
 
     @Override
-    public WritablePValue<Boolean> modified() {
+    public WritableValue<Boolean> modified() {
         return modified;
     }
 
@@ -161,12 +161,12 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
         return listeners;
     }
 
-    public WritablePValue<String> filePath() {
+    public WritableValue<String> filePath() {
         return filePath;
     }
 
     @Override
-    public WritablePValue<HWProjectScene> scene() {
+    public WritableValue<HWProjectScene> scene() {
         return scene;
     }
 
@@ -190,7 +190,7 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
     }
 
     @Override
-    public WritablePLMap<String, HWMaterialTemplate> materials() {
+    public WritableLiMap<String, HWMaterialTemplate> materials() {
         return materials;
     }
 

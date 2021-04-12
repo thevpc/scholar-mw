@@ -10,7 +10,6 @@ import net.thevpc.scholar.hadruplot.extension.PlotWindowManagerProvider;
 import net.thevpc.common.io.FileUtils;
 import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.common.mon.*;
-import net.thevpc.common.strings.StringUtils;
 import net.thevpc.common.swing.ExtensionFileChooserFilter;
 import net.thevpc.common.swing.JInternalFrameHelper;
 import net.thevpc.common.swing.LogAreaComponent;
@@ -210,7 +209,7 @@ public class PlotConsole implements PlotComponentDisplayer, PlotManager, Progres
 
     public PlotBuilder newPlot() {
         return new PlotBuilder()
-//                .cd("/" + Plot.Config.getDefaultWindowTitle())
+                //                .cd("/" + Plot.Config.getDefaultWindowTitle())
                 .windowManager(windowManager) /*.display(false).plotBuilderListener(new PlotBuilderListener() {
             @Override
             public void onPlot(PlotComponent component, PlotBuilder builder) {
@@ -797,21 +796,27 @@ public class PlotConsole implements PlotComponentDisplayer, PlotManager, Progres
 
     @Override
     public void display(PlotComponent plotComponent) {
-        run(new ConsoleActionPlotComponent(plotComponent, plotComponent == null ? null : plotComponent.getLayoutConstraints()));
+        run(new ConsoleActionPlotComponent(plotComponent,
+                plotComponent == null ? null
+                        : PlotPath.of(plotComponent.getLayoutConstraints()
+                        )
+        ));
     }
 
-    public void display(PlotComponent plotComponent, String path) {
+    public void display(PlotComponent plotComponent, PlotPath path) {
         run(new ConsoleActionPlotComponent(plotComponent, path));
     }
 
-    protected void displayImpl(PlotComponent component, String path) {
+    protected void displayImpl(PlotComponent component, PlotPath path) {
         JComponent plotComponent = component.toComponent();
+        if (path == null) {
+            path = PlotPath.ROOT;
+        }
         if (plotComponent != null) {
 
-            List<String> pathList = new ArrayList<>(Arrays.asList(StringUtils.split(path, "/")));
-            WindowPath preferredPath = new WindowPath(pathList.size() == 0 ? "NoName" : pathList.get(0));
-            if (pathList.size() > 0) {
-                pathList.remove(0);
+            WindowPath preferredPath = new WindowPath(path.isRoot() ? "NoName" : path.get(0));
+            if (!path.isRoot()) {
+                path = path.removeFirst();
             }
             String plotGroup = component.getPlotTitle();
             if (plotGroup == null) {
@@ -821,7 +826,7 @@ public class PlotConsole implements PlotComponentDisplayer, PlotManager, Progres
                 plotGroup = "Plot";
             }
             ConsoleWindow window = getPlotConsoleFrame().getWindow(preferredPath);
-            window.addChild(StringUtils.join("/", pathList), component.toComponent());
+            window.addChild(path.removeFirst(), component.toComponent());
 //            JComponent jcomponent = window.getComponent();
 //            if (jcomponent == null) {
 //                jcomponent = new JListCardPanel();

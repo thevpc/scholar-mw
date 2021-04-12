@@ -7,12 +7,13 @@ package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.components
 
 import java.awt.Component;
 import javax.swing.JTree;
+import net.thevpc.common.iconset.IconSets;
 
 import net.thevpc.echo.AppIconSet;
 import net.thevpc.echo.AppPropertiesNode;
 import net.thevpc.echo.AppPropertiesNodeFolder;
 import net.thevpc.echo.AppPropertiesNodeItem;
-import net.thevpc.common.iconset.PIconSet;
+//import net.thevpc.common.iconset.PIconSet;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.HWSProjectPropertiesTool;
 import org.jdesktop.swingx.tree.DefaultXTreeCellRenderer;
 
@@ -32,7 +33,7 @@ public class PropsTreeCellRenderer extends DefaultXTreeCellRenderer {
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
         Component u = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
         AppPropertiesNode item = (AppPropertiesNode) HWSProjectPropertiesTool.toITem(value);
-        AppIconSet iconSet = tool.studio().app().iconSet();
+        IconSets iconSet = tool.studio().app().iconSets();
         if (item instanceof AppPropertiesNodeItem) {
             setText(((AppPropertiesNodeItem) item).name());
             super.setIcon(null);

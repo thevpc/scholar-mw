@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadruwaves.project.scene;
 
 import net.thevpc.common.props.Props;
-import net.thevpc.common.props.WritablePValue;
+import net.thevpc.common.props.WritableValue;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.elements.Element3D;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.thevpc.Element3DRenderPrefs;
 import net.thevpc.scholar.hadruwaves.project.AbstractHWProjectComponent;
@@ -18,7 +18,7 @@ import net.thevpc.scholar.hadruwaves.props.WritablePExpression;
 
 public class HWPlanarPort extends AbstractHWProjectComponent implements HWProjectPort {
 
-    private WritablePValue<Element3DTemplate> geometry = Props.of("geometry").valueOf(Element3DTemplate.class, null);
+    private WritableValue<Element3DTemplate> geometry = Props.of("geometry").valueOf(Element3DTemplate.class, null);
     private WritablePExpression<Complex> impedance = Props2.of("impedance").exprComplexOf(Complex.of(50));
     private WritablePExpression<Expr> expr = Props2.of("expr").exprOf(Complex.of(1));
 
@@ -63,7 +63,7 @@ public class HWPlanarPort extends AbstractHWProjectComponent implements HWProjec
         return e;
     }
 
-    public WritablePValue<Element3DTemplate> geometry() {
+    public WritableValue<Element3DTemplate> geometry() {
         return geometry;
     }
 

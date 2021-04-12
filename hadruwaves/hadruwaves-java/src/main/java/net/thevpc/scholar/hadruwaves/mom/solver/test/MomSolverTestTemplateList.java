@@ -7,7 +7,7 @@ package net.thevpc.scholar.hadruwaves.mom.solver.test;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.thevpc.common.props.WritablePList;
+import net.thevpc.common.props.WritableList;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadruwaves.mom.solver.AbstractMomSolverTestTemplate;
 import net.thevpc.scholar.hadruwaves.mom.solver.HWSolverMoM;
@@ -21,14 +21,14 @@ import net.thevpc.scholar.hadruwaves.props.WritablePExpression;
  */
 public class MomSolverTestTemplateList extends AbstractMomSolverTestTemplate {
 
-    private final WritablePList<WritablePExpression<Expr>> expressions = Props2.of("expressions").listOf((Class) WritablePList.class);
+    private final WritableList<WritablePExpression<Expr>> expressions = Props2.of("expressions").listOf((Class) WritableList.class);
     private final WritablePExpression<Integer> complexity = Props2.of("complexity").exprIntOf(0);
 
     public WritablePExpression<Integer> complexity() {
         return complexity;
     }
 
-    public WritablePList<WritablePExpression<Expr>> expressions() {
+    public WritableList<WritablePExpression<Expr>> expressions() {
         return expressions;
     }
 

@@ -5,7 +5,7 @@ import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonObjectBuilder;
 import net.thevpc.tson.TsonObjectContext;
-import net.thevpc.common.util.MapUtils;
+import net.thevpc.common.collections.MapUtils;
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Expressions;

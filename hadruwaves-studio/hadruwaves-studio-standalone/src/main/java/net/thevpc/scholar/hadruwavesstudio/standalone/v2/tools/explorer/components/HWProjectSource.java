@@ -6,7 +6,7 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer.components;
 
 import net.thevpc.common.props.Props;
-import net.thevpc.common.props.WritablePValue;
+import net.thevpc.common.props.WritableValue;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.HadruwavesStudio;
 

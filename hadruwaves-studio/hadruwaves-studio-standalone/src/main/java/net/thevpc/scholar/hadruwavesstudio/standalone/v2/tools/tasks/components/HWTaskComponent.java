@@ -7,8 +7,8 @@ import net.thevpc.common.mon.TaskMonitor;
 import net.thevpc.common.mon.TaskMonitorManager;
 import net.thevpc.common.strings.StringUtils;
 import net.thevpc.common.swing.GridBagLayout2;
-import net.thevpc.common.util.DatePart;
-import net.thevpc.common.util.TimeDuration;
+import net.thevpc.common.time.DatePart;
+import net.thevpc.common.time.TimeDuration;
 import net.thevpc.scholar.hadruplot.util.PlotUtils;
 
 import javax.swing.*;
@@ -246,8 +246,8 @@ public class HWTaskComponent extends JPanel implements ActionListener {
     }
 
     public void updateComponentUIImpl() {
-        pause.setIcon(app.iconSet().icon("Pause").get());
-        kill.setIcon(app.iconSet().icon("Delete").get());
+        pause.setIcon(app.iconSets().icon("Pause").get());
+        kill.setIcon(app.iconSets().icon("Delete").get());
         updateComponentUI();
     }
 

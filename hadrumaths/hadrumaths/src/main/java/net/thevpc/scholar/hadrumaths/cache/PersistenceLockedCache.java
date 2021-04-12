@@ -3,9 +3,9 @@ package net.thevpc.scholar.hadrumaths.cache;
 import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.common.util.Chronometer;
-import net.thevpc.common.util.DatePart;
-import net.thevpc.common.util.TimeDuration;
+import net.thevpc.common.time.Chronometer;
+import net.thevpc.common.time.DatePart;
+import net.thevpc.common.time.TimeDuration;
 
 import java.util.concurrent.Callable;
 import java.util.logging.Level;

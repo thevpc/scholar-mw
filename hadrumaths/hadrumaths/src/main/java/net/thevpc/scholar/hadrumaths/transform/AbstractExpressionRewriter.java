@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadrumaths.transform;
 
-import net.thevpc.common.util.Chronometer;
-import net.thevpc.common.util.LRUMap;
-import net.thevpc.common.util.TimeDuration;
+import net.thevpc.common.time.Chronometer;
+import net.thevpc.common.collections.LRUMap;
+import net.thevpc.common.time.TimeDuration;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.cache.CacheEnabled;

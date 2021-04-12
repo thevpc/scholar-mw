@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths.srv.rmi;
 
-import net.thevpc.common.util.Chronometer;
+import net.thevpc.common.time.Chronometer;
 import net.thevpc.scholar.hadrumaths.srv.FileStat;
 import net.thevpc.scholar.hadrumaths.srv.HadrumathsClient;
 import net.thevpc.scholar.hadrumaths.srv.HadrumathsServices;

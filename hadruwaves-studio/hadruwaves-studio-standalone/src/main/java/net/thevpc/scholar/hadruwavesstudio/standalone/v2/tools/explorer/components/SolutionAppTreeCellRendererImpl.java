@@ -6,11 +6,12 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer.components;
 
 import java.awt.Component;
-import java.io.File;
+//import java.io.File;
 import javax.swing.JTree;
+import net.thevpc.common.iconset.IconSets;
 
 import net.thevpc.echo.AppIconSet;
-import net.thevpc.common.iconset.PIconSet;
+//import net.thevpc.common.iconset.PIconSet;
 import net.thevpc.echo.swing.core.swing.LazyTree;
 import net.thevpc.scholar.hadruwaves.project.*;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationFolder;
@@ -44,7 +45,7 @@ public class SolutionAppTreeCellRendererImpl extends DefaultAppTreeCellRenderer 
         Component u = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
         HWProjectItem item = (HWProjectItem) LazyTree.resolveLazyTreeNodeValue(value);
         Object o = item.getItemValue();
-        AppIconSet iconSet = studio().app().iconSet();
+        IconSets iconSet = studio().app().iconSets();
         if (o instanceof HWSolution) {
             super.setIcon(iconSet.icon("Solution").get());
             setText(((HWSolution) o).name().get());
@@ -85,7 +86,7 @@ public class SolutionAppTreeCellRendererImpl extends DefaultAppTreeCellRenderer 
             super.setIcon(expanded ? iconSet.icon("OpenFolder").get() : iconSet.icon("Folder").get());
         } else if (o instanceof HWProjectSource) {
             HWProjectSource s=(HWProjectSource) o;
-            super.setIcon(outer.studio().app().iconSet().iconForFile(s.file,selected, expanded).get());
+            super.setIcon(outer.studio().app().iconSets().iconForFile(s.file,selected, expanded).get());
         } else if (!leaf) {
             super.setIcon(expanded ? iconSet.icon("OpenFolder").get() : iconSet.icon("Folder").get());
         }

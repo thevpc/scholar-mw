@@ -8,9 +8,10 @@ package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results.componen
 import java.awt.Component;
 import javax.swing.ImageIcon;
 import javax.swing.JTree;
+import net.thevpc.common.iconset.IconSets;
 
 import net.thevpc.echo.AppIconSet;
-import net.thevpc.common.iconset.PIconSet;
+//import net.thevpc.common.iconset.PIconSet;
 import net.thevpc.echo.swing.core.swing.LazyTree;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.HadruwavesStudio;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results.actions.HWSolverAction;
@@ -33,7 +34,7 @@ public class ResultsTreeCellRendererImpl extends DefaultAppTreeCellRenderer {
         super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
         CustomLazyNode ln = (CustomLazyNode) LazyTree.resolveLazyTreeNodeValue(value);
         if (ln != null) {
-            AppIconSet iconSet = studio().app().iconSet();
+            IconSets iconSet = studio().app().iconSets();
             Object o = ln.getValue();
             if (o instanceof HWSolverAction) {
                 HWSolverAction a = (HWSolverAction) o;

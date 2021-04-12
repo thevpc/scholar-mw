@@ -3,7 +3,6 @@ package net.thevpc.scholar.hadruplot.console;
 import net.thevpc.common.swing.win.WindowPath;
 import net.thevpc.scholar.hadruplot.containers.AbstractComponentPlotWindowManager;
 import net.thevpc.scholar.hadruplot.model.PlotModel;
-import net.thevpc.common.strings.StringUtils;
 import net.thevpc.scholar.hadruplot.*;
 import net.thevpc.scholar.hadruplot.containers.AbstractPlotContainer;
 
@@ -94,7 +93,7 @@ public class PlotConsoleWindowManager extends AbstractComponentPlotWindowManager
         return rootContainer;
     }
 
-    public void addPlotComponentImpl(PlotComponent component, String[] path) {
-        plotConsole.display(component, StringUtils.join("/",path));
+    public void addPlotComponentImpl(PlotComponent component, net.thevpc.scholar.hadruplot.PlotPath path) {
+        plotConsole.display(component, path);
     }
 }

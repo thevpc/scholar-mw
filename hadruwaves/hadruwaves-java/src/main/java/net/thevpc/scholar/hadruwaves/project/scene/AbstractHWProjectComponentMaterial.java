@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadruwaves.project.scene;
 
 import net.thevpc.common.props.Props;
-import net.thevpc.common.props.WritablePValue;
+import net.thevpc.common.props.WritableValue;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.elements.Element3D;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.thevpc.Element3DRenderPrefs;
 import net.thevpc.scholar.hadruwaves.Material;
@@ -19,8 +19,8 @@ import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 
 public abstract class AbstractHWProjectComponentMaterial extends AbstractHWProjectComponent implements HWProjectPiece {
 
-    private WritablePValue<HWMaterialTemplate> material = Props.of("material").valueOf(HWMaterialTemplate.class, null);
-    private WritablePValue<Element3DTemplate> geometry = Props.of("geometry").valueOf(Element3DTemplate.class, null);
+    private WritableValue<HWMaterialTemplate> material = Props.of("material").valueOf(HWMaterialTemplate.class, null);
+    private WritableValue<Element3DTemplate> geometry = Props.of("geometry").valueOf(Element3DTemplate.class, null);
 
     public AbstractHWProjectComponentMaterial(String name, HWMaterialTemplate material, Element3DTemplate geometry) {
         this.geometry.set(geometry);
@@ -29,11 +29,11 @@ public abstract class AbstractHWProjectComponentMaterial extends AbstractHWProje
     }
 
     @Override
-    public WritablePValue<HWMaterialTemplate> material() {
+    public WritableValue<HWMaterialTemplate> material() {
         return material;
     }
 
-    public WritablePValue<Element3DTemplate> geometry() {
+    public WritableValue<Element3DTemplate> geometry() {
         return geometry;
     }
 
