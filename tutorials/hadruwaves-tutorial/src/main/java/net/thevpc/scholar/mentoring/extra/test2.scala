@@ -9,7 +9,9 @@ object test2 extends App {
   var n = param("m")
   var a = 1.0
   var b = 1.0
-  private val f: Expr = sin(n * PI * X / a+m * PI * Y / b) * domain(0.0 -> a, 0.0 -> b)
+//  private val f: Expr = sin(n * PI * X / a+m * PI * Y / b) * domain(0.0 -> a, 0.0 -> b)
+//  private val f: Expr = cos(n * PI * X *Y  / a) * domain(0.0 -> a, 0.0 -> b)
+  private val f: Expr = (cos(n * PI * X / a)+ cos(m * PI * Y / b)) * domain(0.0 -> a, 0.0 -> b)
   Plot.cd("a/10").title("n=1 m=0").plot(f(n->1.0)(m->0.0))
   Plot.cd("a/11").title("n=1 m=1").plot(f(n->1.0)(m->1.0))
   Plot.cd("a/12").title("n=1 m=2").plot(f(n->1.0)(m->2.0))

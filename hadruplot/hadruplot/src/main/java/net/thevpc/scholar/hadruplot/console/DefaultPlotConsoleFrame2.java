@@ -45,16 +45,9 @@ public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
                 JInternalFrame internalFrame = (JInternalFrame) component.getClientProperty(JInternalFrame.class);
                 final JMenuItem windowMenu = createWindowMenu(internalFrame);
                 component.putClientProperty("menu",windowMenu);
-                app.tools().addAction(new AbstractFrameAction(
-                        DefaultPlotConsoleFrame2.this,
-                        internalFrame.getTitle(),
-                        null
-                        ){
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        wins.ensureVisible(internalFrame);
-                    }
-                }, "/mainWindow/menuBar/Windows/"+windowInfo.getTitle());
+                app.tools().addAction().bind(()->wins.ensureVisible(internalFrame))
+                        .path("/mainWindow/menuBar/Windows/"+windowInfo.getTitle())
+                        .tool();
             }
 
             @Override
@@ -84,10 +77,10 @@ public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
     }
 
     public void setVisible(boolean b) {
-        boolean oldV = app.mainWindow().get().state().getBase().get().is(AppWindowState.ACTIVATED);
+        boolean oldV = app.mainWindow().get().state().is(AppWindowState.ACTIVATED);
         app.mainWindow().get().state().add(b?AppWindowState.ACTIVATED:AppWindowState.CLOSED);
 //        super.setVisible(b);
-        boolean newV = app.mainWindow().get().state().getBase().get().is(AppWindowState.ACTIVATED);
+        boolean newV = app.mainWindow().get().state().is(AppWindowState.ACTIVATED);
         if (oldV != newV) {
             if (newV) {
                 openFrames++;
@@ -110,12 +103,12 @@ public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
     protected void prepareFileMenu() {
         AppTools tools = app.tools();
         tools.addFolder("/mainWindow/menuBar/File");
-        tools.addAction(new PlotConsolePropertiesAction(this), "/mainWindow/menuBar/File/Properties");
+        tools.addAction().bind(new PlotConsolePropertiesAction(this)).path( "/mainWindow/menuBar/File/Properties").tool();
         tools.addSeparator("/mainWindow/menuBar/File/Sep1");
-        tools.addAction(new LoadAction(this), "/mainWindow/menuBar/File/LoadAction");
+        tools.addAction().bind(new LoadAction(this)).path( "/mainWindow/menuBar/File/LoadAction").tool();
         tools.addSeparator("/mainWindow/menuBar/File/Sep1");
-        tools.addAction(new CloseAction(this), "/mainWindow/menuBar/File/CloseAction");
-        tools.addAction(new ExitAction(this), "/mainWindow/menuBar/File/ExitAction");
+        tools.addAction().bind(new CloseAction(this)).path( "/mainWindow/menuBar/File/CloseAction").tool();
+        tools.addAction().bind(new ExitAction(this)).path("/mainWindow/menuBar/File/ExitAction").tool();
         SwingApplications.Helper.addViewActions(app);
 
         SwingApplications.Helper.addWindowsActions(app,wins.getDesktop());

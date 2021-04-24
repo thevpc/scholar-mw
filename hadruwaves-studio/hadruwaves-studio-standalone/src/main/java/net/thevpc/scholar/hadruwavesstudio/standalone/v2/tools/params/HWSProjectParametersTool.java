@@ -6,7 +6,6 @@ import net.thevpc.common.props.PropertyListener;
 import net.thevpc.common.props.WritableIndexedNode;
 import net.thevpc.echo.AppPopupMenu;
 import net.thevpc.echo.swing.core.swing.JPopupMenuComponentSupplier;
-import net.thevpc.echo.swing.core.swing.SwingAppFactory;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 import net.thevpc.scholar.hadruwaves.project.parameter.HWParameterFolder;
@@ -27,6 +26,7 @@ import net.thevpc.scholar.hadrumaths.units.UnitType;
 import net.thevpc.scholar.hadruwaves.project.parameter.HWParameterElement;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.params.actions.AddParameterFolderAction;
 import net.thevpc.echo.AppPropertiesTree;
+import net.thevpc.echo.swing.SwingApplications;
 
 public class HWSProjectParametersTool extends AbstractToolWindowPanel {
 
@@ -66,8 +66,7 @@ public class HWSProjectParametersTool extends AbstractToolWindowPanel {
                 }
             }
         });
-        SwingAppFactory f = new SwingAppFactory();
-        popUpMenu = f.createPopupMenu(studio.app(), "/parametersMenu");
+        popUpMenu = SwingApplications.Components.createPopupMenu(studio.app());
         createPopUpMenu();
         tree.setComponentPopupMenu(((JPopupMenuComponentSupplier) popUpMenu).component());
         onLookChanged();

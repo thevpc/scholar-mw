@@ -368,13 +368,13 @@ public class HadruwavesStudioV2Impl implements HadruwavesStudio {
 
         tools.addFolder("/mainWindow/menuBar/File/LoadRecent");
 
-        tools.addAction("/mainWindow/menuBar/File/LoadRecent/Solution1");
-        tools.addAction("/mainWindow/menuBar/File/LoadRecent/Solution2");
+        tools.addAction().path("/mainWindow/menuBar/File/LoadRecent/Solution1").tool();
+        tools.addAction().path("/mainWindow/menuBar/File/LoadRecent/Solution2").tool();
         tools.addSeparator("/mainWindow/menuBar/File/LoadRecent/Separator1");
-        tools.addAction("/mainWindow/menuBar/File/LoadRecent/Project1");
-        tools.addAction("/mainWindow/menuBar/File/LoadRecent/Project2");
+        tools.addAction().path("/mainWindow/menuBar/File/LoadRecent/Project1").tool();
+        tools.addAction().path("/mainWindow/menuBar/File/LoadRecent/Project2").tool();
         tools.addSeparator("/mainWindow/menuBar/File/LoadRecent/Separator1");
-        tools.addAction("/mainWindow/menuBar/File/LoadRecent/Clear");
+        tools.addAction().path("/mainWindow/menuBar/File/LoadRecent/Clear").tool();
 
         tools.addSeparator("/mainWindow/menuBar/File/Separator1");
 //        tools.addAction("/mainWindow/menuBar/File/ClearProjectCache");
@@ -453,7 +453,10 @@ public class HadruwavesStudioV2Impl implements HadruwavesStudio {
             tools.addAction(new EditorThemeAction(this, theme.getId()), "/mainWindow/menuBar/View/Editor Themes/" + theme.getName());
         }
         tools.addSeparator("/mainWindow/menuBar/View/Editor Themes/Separator1");
-        tools.addCheck(editorThemes.usePlaf(), "/mainWindow/menuBar/View/Editor Themes/Maximize L&F");
+        tools.addCheck()
+                .bind(editorThemes.usePlaf())
+                .path("/mainWindow/menuBar/View/Editor Themes/Maximize L&F")
+                .tool();
 
         SwingApplications.Helper.addViewIconActions(application);
         SwingApplications.Helper.addViewAppearanceActions(application);
@@ -462,11 +465,26 @@ public class HadruwavesStudioV2Impl implements HadruwavesStudio {
         tools.addAction(new ZoomInAction(application, "ZoomIn", this), "/mainWindow/menuBar/View/3DView/ZoomIn", "/mainWindow/toolBar/Default/ZoomIn");
         tools.addAction(new ZoomOutAction(application, "ZoomOut", this), "/mainWindow/menuBar/View/3DView/ZoomIn", "/mainWindow/toolBar/Default/ZoomOut");
         tools.addAction(new ResetCameraAction(application, "ResetCamera", this), "/mainWindow/menuBar/View/3DView/ResetCamera", "/mainWindow/toolBar/Default/ResetCamera");
-        tools.addCheck(ws3DView.getPreferences().boxVisible(), "/mainWindow/menuBar/View/3DView/AxisVisible", "/mainWindow/toolBar/Default/BoxVisible");
-        tools.addCheck(ws3DView.getPreferences().axisVisible(), "/mainWindow/menuBar/View/3DView/AxisVisible", "/mainWindow/toolBar/Default/AxisVisible");
-        tools.addCheck(ws3DView.getPreferences().gridXYVisible(), "/mainWindow/menuBar/View/3DView/GridXYVisible", "/mainWindow/toolBar/Default/GridXYVisible");
-        tools.addCheck(ws3DView.getPreferences().perspectiveEnabled(), "/mainWindow/menuBar/View/3DView/PerspectiveEnabled", "/mainWindow/toolBar/Default/PerspectiveEnabled");
-        tools.addCheck(ws3DView.getPreferences().steroscopyEnabled(), "/mainWindow/menuBar/View/3DView/StereoscopeEnabled", "/mainWindow/toolBar/Default/StereoscopeEnabled");
+        tools.addCheck()
+                .bind(ws3DView.getPreferences().boxVisible())
+                .path("/mainWindow/menuBar/View/3DView/AxisVisible", "/mainWindow/toolBar/Default/BoxVisible")
+                .tool();
+        tools.addCheck()
+                .bind(ws3DView.getPreferences().axisVisible())
+                .path("/mainWindow/menuBar/View/3DView/AxisVisible", "/mainWindow/toolBar/Default/AxisVisible")
+                .tool();
+        tools.addCheck()
+                .bind(ws3DView.getPreferences().gridXYVisible())
+                .path("/mainWindow/menuBar/View/3DView/GridXYVisible", "/mainWindow/toolBar/Default/GridXYVisible")
+                .tool();
+        tools.addCheck()
+                .bind(ws3DView.getPreferences().perspectiveEnabled())
+                .path("/mainWindow/menuBar/View/3DView/PerspectiveEnabled", "/mainWindow/toolBar/Default/PerspectiveEnabled")
+                .tool();
+        tools.addCheck()
+                .bind(ws3DView.getPreferences().steroscopyEnabled())
+                .path("/mainWindow/menuBar/View/3DView/StereoscopeEnabled", "/mainWindow/toolBar/Default/StereoscopeEnabled")
+                .tool();
     }
 
     protected void prepareMenu() {

@@ -1,6 +1,5 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer;
 
-import net.thevpc.scholar.hadruwaves.project.HWProjectComponent;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer.actions.*;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer.components.*;
 import net.thevpc.common.props.*;
@@ -23,8 +22,8 @@ import java.util.ArrayList;
 import java.util.function.Predicate;
 import net.thevpc.common.props.impl.PropsHelper;
 import net.thevpc.echo.AppPopupMenu;
+import net.thevpc.echo.swing.SwingApplications;
 import net.thevpc.echo.swing.core.swing.JPopupMenuComponentSupplier;
-import net.thevpc.echo.swing.core.swing.SwingAppFactory;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationFolder;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.AbstractToolWindowPanel;
@@ -64,8 +63,7 @@ public class HWSSolutionExplorerTool extends AbstractToolWindowPanel {
                 }
             }
         });
-        SwingAppFactory f = new SwingAppFactory();
-        popUpMenu = f.createPopupMenu(studio.app(), "/solutionMenu");
+        popUpMenu = SwingApplications.Components.createPopupMenu(studio.app(), "/");
         AppCompUtils.bind(popUpMenu, tree, this::preparePopupBeforeShowing);
 
         createPopUpMenu();

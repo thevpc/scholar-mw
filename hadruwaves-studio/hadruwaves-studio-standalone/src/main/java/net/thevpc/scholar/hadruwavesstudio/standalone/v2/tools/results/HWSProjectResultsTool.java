@@ -15,9 +15,9 @@ import javax.swing.tree.TreePath;
 import net.thevpc.common.props.PropertyEvent;
 import net.thevpc.common.props.PropertyListener;
 import net.thevpc.echo.AppPopupMenu;
+import net.thevpc.echo.swing.SwingApplications;
 import net.thevpc.echo.swing.core.swing.JPopupMenuComponentSupplier;
 import net.thevpc.echo.swing.core.swing.LazyTree;
-import net.thevpc.echo.swing.core.swing.SwingAppFactory;
 import net.thevpc.scholar.hadruwaves.mom.solver.HWSolverTemplateFDM;
 import net.thevpc.scholar.hadruwaves.mom.solver.HWSolverTemplateFEM;
 import net.thevpc.scholar.hadruwaves.mom.solver.HWSolverTemplateMoM;
@@ -99,8 +99,7 @@ public class HWSProjectResultsTool extends AbstractToolWindowPanel {
             }
         });
         updateRegistry();
-        SwingAppFactory f = new SwingAppFactory();
-        popUpMenu = f.createPopupMenu(studio.app(), "/solutionMenu");
+        popUpMenu = SwingApplications.Components.createPopupMenu(studio.app());
         AppCompUtils.bind(popUpMenu, tree, this::preparePopupBeforeShowing);
 
         createPopUpMenu();

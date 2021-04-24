@@ -24,7 +24,7 @@ import net.thevpc.echo.AppPropertiesNode;
 import net.thevpc.echo.AppPropertiesNodeFolder;
 import net.thevpc.echo.AppPropertiesNodeItem;
 import net.thevpc.echo.AppPropertiesTree;
-import net.thevpc.echo.swing.core.swing.SwingAppFactory;
+import net.thevpc.echo.swing.SwingApplications;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.actions.MoMNewFunctionGroupListAction;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.actions.MoMNewFunctionGroupMeshAction;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.actions.MoMNewFunctionGroupSeqAction;
@@ -59,8 +59,7 @@ public class HWSProjectPropertiesTool extends AbstractToolWindowPanel {
         });
         updateRoot();
         setContent(new JScrollPane(tree));
-        SwingAppFactory f = new SwingAppFactory();
-        popUpMenu = f.createPopupMenu(studio.app(), "/propertiesMenu");
+        popUpMenu = SwingApplications.Components.createPopupMenu(studio.app());
         AppCompUtils.bind(popUpMenu, tree, this::preparePopupBeforeShowing);
         createPopUpMenu();
     }
