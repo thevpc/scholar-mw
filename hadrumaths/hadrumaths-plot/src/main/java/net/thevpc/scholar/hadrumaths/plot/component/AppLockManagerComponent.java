@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadrumaths.plot.component;
 
-import net.thevpc.common.swing.JInternalFrameHelper;
-import net.thevpc.common.swing.JTableHelper;
+import net.thevpc.common.swing.frame.JInternalFrameHelper;
+import net.thevpc.common.swing.table.JTableHelper;
 import net.thevpc.common.swing.SwingUtilities3;
 import net.thevpc.scholar.hadrumaths.concurrent.AppLock;
 import net.thevpc.scholar.hadrumaths.concurrent.AppLockEvent;

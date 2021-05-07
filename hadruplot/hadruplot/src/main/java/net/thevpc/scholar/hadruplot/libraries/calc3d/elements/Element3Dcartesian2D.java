@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import net.thevpc.common.swing.color.ColorUtils;
 
 import net.thevpc.scholar.hadruplot.libraries.calc3d.engine3d.Camera3D;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.geometry3d.PrimitiveElement3D;
@@ -12,7 +13,6 @@ import net.thevpc.scholar.hadruplot.libraries.calc3d.log.Logger;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.math.MathUtils;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.math.Vector3D;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.mathparser.Calculable;
-import net.thevpc.scholar.hadruplot.libraries.calc3d.utils.ColorUtils;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.geometry3d.*;
 
 /**

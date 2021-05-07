@@ -7,7 +7,7 @@ package net.thevpc.scholar.hadruplot.containers;
 
 import javax.swing.*;
 import java.awt.*;
-import net.thevpc.common.swing.JTreeCardPanel;
+import net.thevpc.common.swing.panel.JTreeCardPanel;
 import net.thevpc.scholar.hadruplot.PlotComponent;
 import net.thevpc.scholar.hadruplot.PlotPath;
 

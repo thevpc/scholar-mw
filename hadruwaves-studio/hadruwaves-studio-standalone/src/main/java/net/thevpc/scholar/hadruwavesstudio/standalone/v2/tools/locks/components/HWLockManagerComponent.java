@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.locks.components;
 
-import net.thevpc.common.swing.JTableHelper;
+import net.thevpc.common.swing.table.JTableHelper;
 import net.thevpc.common.swing.SwingUtilities3;
 import net.thevpc.scholar.hadrumaths.concurrent.AppLockManager;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.HadruwavesStudio;

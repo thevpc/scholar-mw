@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadruplot.console;
 
-import net.thevpc.common.swing.GridBagLayout2;
+import net.thevpc.common.swing.layout.GridBagLayout2;
 
 import javax.swing.*;
 import java.io.IOException;

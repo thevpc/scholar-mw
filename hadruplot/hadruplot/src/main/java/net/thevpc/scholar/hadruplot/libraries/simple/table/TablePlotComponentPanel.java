@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadruplot.libraries.simple.table;
 
-import net.thevpc.common.swing.JTableHelper;
+import net.thevpc.common.swing.table.JTableHelper;
 import net.thevpc.common.swing.SwingUtilities3;
 import net.thevpc.scholar.hadruplot.PlotComponentPanel;
 import net.thevpc.scholar.hadruplot.extension.PlotModelProvider;

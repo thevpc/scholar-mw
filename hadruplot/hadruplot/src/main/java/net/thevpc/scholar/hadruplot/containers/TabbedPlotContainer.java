@@ -5,7 +5,7 @@
  */
 package net.thevpc.scholar.hadruplot.containers;
 
-import net.thevpc.common.swing.JDraggableTabbedPane;
+import net.thevpc.common.swing.tab.JDraggableTabbedPane;
 import net.thevpc.scholar.hadruplot.PlotComponent;
 import net.thevpc.scholar.hadruplot.model.PlotModel;
 

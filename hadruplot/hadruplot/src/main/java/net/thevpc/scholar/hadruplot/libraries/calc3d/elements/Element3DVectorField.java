@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadruplot.libraries.calc3d.elements;
 
+import net.thevpc.common.swing.color.ColorUtils;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.geometry3d.Clip;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.geometry3d.PrimitiveElement3D;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.geometry3d.PrimitiveElement3DArrow;
@@ -9,7 +10,6 @@ import net.thevpc.scholar.hadruplot.libraries.calc3d.math.MathUtils;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.math.Vector3D;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.mathparser.Calculable;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.mathparser.ExpressionBuilder;
-import net.thevpc.scholar.hadruplot.libraries.calc3d.utils.ColorUtils;
 
 
 public class Element3DVectorField extends Element3D {

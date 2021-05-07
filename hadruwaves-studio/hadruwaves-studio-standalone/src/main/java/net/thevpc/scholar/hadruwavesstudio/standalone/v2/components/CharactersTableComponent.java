@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.components;
 
-import net.thevpc.common.swing.JDropDownButton;
+import net.thevpc.common.swing.button.JDropDownButton;
 import net.thevpc.scholar.hadrumaths.CharactersTable;
 
 import javax.swing.*;

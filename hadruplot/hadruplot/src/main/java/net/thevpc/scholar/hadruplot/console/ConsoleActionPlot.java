@@ -3,7 +3,7 @@ package net.thevpc.scholar.hadruplot.console;
 import net.thevpc.common.swing.win.WindowPath;
 import net.thevpc.scholar.hadruplot.component.ValuesPlotPanel;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotModel;
-import net.thevpc.common.swing.JListCardPanel;
+import net.thevpc.common.swing.panel.JListCardPanel;
 import net.thevpc.scholar.hadruplot.PlotMatrix;
 import net.thevpc.scholar.hadruplot.*;
 

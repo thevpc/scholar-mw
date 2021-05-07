@@ -3,7 +3,7 @@ package net.thevpc.scholar.hadrumaths.plot;
 import net.thevpc.scholar.hadruplot.extension.PlotModelPopupFactory;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotModel;
 import net.thevpc.common.strings.StringUtils;
-import net.thevpc.common.swing.GridBagLayout2;
+import net.thevpc.common.swing.layout.GridBagLayout2;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.ComplexMatrix;
 import net.thevpc.scholar.hadrumaths.Maths;

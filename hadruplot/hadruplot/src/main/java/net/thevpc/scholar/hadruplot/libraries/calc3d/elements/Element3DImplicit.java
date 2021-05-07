@@ -7,10 +7,10 @@ import net.thevpc.scholar.hadruplot.libraries.calc3d.log.Logger;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.math.Vector3D;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.mathparser.Calculable;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.mathparser.ExpressionBuilder;
-import net.thevpc.scholar.hadruplot.libraries.calc3d.utils.ColorUtils;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.geometry3d.*;
 
 import java.awt.*;
+import net.thevpc.common.swing.color.ColorUtils;
 
 public class Element3DImplicit extends Element3D {
 	private static Logger LOG = Logger.getLogger(Camera3D.class.getName());

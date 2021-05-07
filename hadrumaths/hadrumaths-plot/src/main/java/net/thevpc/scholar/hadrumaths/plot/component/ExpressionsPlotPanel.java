@@ -1,5 +1,7 @@
 package net.thevpc.scholar.hadrumaths.plot.component;
 
+import net.thevpc.common.swing.layout.GridBagLayout2;
+import net.thevpc.common.swing.table.JTableHelper;
 import net.thevpc.scholar.hadruplot.model.PlotModel;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotModel;
 import net.thevpc.scholar.hadrumaths.plot.model.ExpressionsPlotModel;

@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadruplot.console;
 
+import net.thevpc.common.swing.file.FileDropListener;
 import net.thevpc.common.i18n.I18nResourceBundle;
 import net.thevpc.common.swing.win.WindowInfo;
 import net.thevpc.common.swing.win.WindowInfoListener;

@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh;
 
-import net.thevpc.common.swing.GridBagLayout2;
+import net.thevpc.common.swing.layout.GridBagLayout2;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.geom.*;
 import net.thevpc.scholar.hadrumaths.geom.Polygon;

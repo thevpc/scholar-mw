@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadruplot.console;
 
-import net.thevpc.common.swing.ExtensionFileChooserFilter;
+import net.thevpc.common.swing.file.ExtensionFileChooserFilter;
 import net.thevpc.scholar.hadruplot.console.extension.PlotConsoleFileSupport;
 
 import javax.swing.*;

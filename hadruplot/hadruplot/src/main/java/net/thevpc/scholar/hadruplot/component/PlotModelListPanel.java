@@ -8,7 +8,7 @@ package net.thevpc.scholar.hadruplot.component;
 import net.thevpc.scholar.hadruplot.model.PlotModel;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotModel;
 import net.thevpc.scholar.hadruplot.model.PlotModelList;
-import net.thevpc.common.swing.JDraggableTabbedPane;
+import net.thevpc.common.swing.tab.JDraggableTabbedPane;
 
 import javax.swing.*;
 import java.awt.*;

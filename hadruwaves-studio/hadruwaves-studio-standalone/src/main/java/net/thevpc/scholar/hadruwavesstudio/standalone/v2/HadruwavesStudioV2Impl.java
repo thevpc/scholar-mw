@@ -453,7 +453,7 @@ public class HadruwavesStudioV2Impl implements HadruwavesStudio {
             tools.addAction(new EditorThemeAction(this, theme.getId()), "/mainWindow/menuBar/View/Editor Themes/" + theme.getName());
         }
         tools.addSeparator("/mainWindow/menuBar/View/Editor Themes/Separator1");
-        tools.addCheck()
+        tools.addToggle()
                 .bind(editorThemes.usePlaf())
                 .path("/mainWindow/menuBar/View/Editor Themes/Maximize L&F")
                 .tool();
@@ -465,23 +465,23 @@ public class HadruwavesStudioV2Impl implements HadruwavesStudio {
         tools.addAction(new ZoomInAction(application, "ZoomIn", this), "/mainWindow/menuBar/View/3DView/ZoomIn", "/mainWindow/toolBar/Default/ZoomIn");
         tools.addAction(new ZoomOutAction(application, "ZoomOut", this), "/mainWindow/menuBar/View/3DView/ZoomIn", "/mainWindow/toolBar/Default/ZoomOut");
         tools.addAction(new ResetCameraAction(application, "ResetCamera", this), "/mainWindow/menuBar/View/3DView/ResetCamera", "/mainWindow/toolBar/Default/ResetCamera");
-        tools.addCheck()
+        tools.addToggle()
                 .bind(ws3DView.getPreferences().boxVisible())
                 .path("/mainWindow/menuBar/View/3DView/AxisVisible", "/mainWindow/toolBar/Default/BoxVisible")
                 .tool();
-        tools.addCheck()
+        tools.addToggle()
                 .bind(ws3DView.getPreferences().axisVisible())
                 .path("/mainWindow/menuBar/View/3DView/AxisVisible", "/mainWindow/toolBar/Default/AxisVisible")
                 .tool();
-        tools.addCheck()
+        tools.addToggle()
                 .bind(ws3DView.getPreferences().gridXYVisible())
                 .path("/mainWindow/menuBar/View/3DView/GridXYVisible", "/mainWindow/toolBar/Default/GridXYVisible")
                 .tool();
-        tools.addCheck()
+        tools.addToggle()
                 .bind(ws3DView.getPreferences().perspectiveEnabled())
                 .path("/mainWindow/menuBar/View/3DView/PerspectiveEnabled", "/mainWindow/toolBar/Default/PerspectiveEnabled")
                 .tool();
-        tools.addCheck()
+        tools.addToggle()
                 .bind(ws3DView.getPreferences().steroscopyEnabled())
                 .path("/mainWindow/menuBar/View/3DView/StereoscopeEnabled", "/mainWindow/toolBar/Default/StereoscopeEnabled")
                 .tool();

@@ -2,13 +2,13 @@ package net.thevpc.scholar.hadruplot.libraries.calc3d.core;
 
 import net.thevpc.scholar.hadruplot.libraries.calc3d.engine3d.Scene3D;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.math.Vector3D;
-import net.thevpc.scholar.hadruplot.libraries.calc3d.utils.ColorUtils;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.geometry3d.*;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.elements.*;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.function.Predicate;
+import net.thevpc.common.swing.color.ColorUtils;
 
 public class SceneManager {
 

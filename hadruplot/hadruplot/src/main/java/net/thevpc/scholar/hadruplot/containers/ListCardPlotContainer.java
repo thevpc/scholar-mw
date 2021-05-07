@@ -5,7 +5,7 @@
  */
 package net.thevpc.scholar.hadruplot.containers;
 
-import net.thevpc.common.swing.JListCardPanel;
+import net.thevpc.common.swing.panel.JListCardPanel;
 import net.thevpc.scholar.hadruplot.PlotComponent;
 
 import javax.swing.*;

@@ -6,8 +6,8 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.components;
 
 import net.thevpc.echo.Application;
-import net.thevpc.common.swing.GBC;
-import net.thevpc.common.swing.GridBagLayout2;
+import net.thevpc.common.swing.layout.GBC;
+import net.thevpc.common.swing.layout.GridBagLayout2;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.units.ParamUnit;

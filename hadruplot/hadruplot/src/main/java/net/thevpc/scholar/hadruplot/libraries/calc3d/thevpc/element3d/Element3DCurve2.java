@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadruplot.libraries.calc3d.thevpc.element3d;
 
+import net.thevpc.common.swing.color.ColorUtils;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.log.Logger;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.math.Vector3D;
-import net.thevpc.scholar.hadruplot.libraries.calc3d.utils.ColorUtils;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.thevpc.Calc3dLibraryUtils;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.thevpc.Point3D;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.geometry3d.*;

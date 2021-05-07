@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadruplot.console;
 
 import net.thevpc.common.mon.*;
-import net.thevpc.common.swing.JInternalFrameHelper;
+import net.thevpc.common.swing.frame.JInternalFrameHelper;
 import net.thevpc.common.swing.SwingUtilities3;
 
 import javax.swing.*;

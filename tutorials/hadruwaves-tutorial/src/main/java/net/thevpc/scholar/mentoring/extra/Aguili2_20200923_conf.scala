@@ -9,6 +9,7 @@ object Aguili2_20200923_conf extends App {
   val εr = 1
   //  val εr =  10.2
   //26,5 à 27,5
+//  val f0 = 5 * GHZ
   val f0 = 26.5 * GHZ
   val df = 128 * MHZ
   val fs = dstepsFrom(f0, 9, df)

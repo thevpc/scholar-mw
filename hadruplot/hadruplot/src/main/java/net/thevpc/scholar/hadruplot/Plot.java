@@ -1,5 +1,8 @@
 package net.thevpc.scholar.hadruplot;
 
+import net.thevpc.common.swing.layout.GridBagLayout2;
+import net.thevpc.common.swing.table.JTableHelper;
+import net.thevpc.common.swing.color.ColorChooserEditor;
 import net.thevpc.scholar.hadruplot.libraries.simple.table.ValuesPlotTableModel;
 import net.thevpc.scholar.hadruplot.extension.defaults.SimplePlotModelProvider;
 import net.thevpc.scholar.hadruplot.extension.PlotModelProvider;

@@ -17,6 +17,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import net.thevpc.common.swing.color.ColorUtils;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.core.Globalsettings;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.engine3d.Camera3D;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.engine3d.Light3D;
@@ -28,7 +29,6 @@ import net.thevpc.scholar.hadruplot.libraries.calc3d.math.AffineTransform3D;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.math.Constants;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.math.MathUtils;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.math.Vector3D;
-import net.thevpc.scholar.hadruplot.libraries.calc3d.utils.ColorUtils;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.geometry3d.*;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.elements.*;
 

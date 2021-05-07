@@ -16,6 +16,7 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import net.thevpc.common.swing.color.ColorUtils;
 
 import net.thevpc.scholar.hadruplot.libraries.calc3d.core.Globalsettings;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.anaglyph.AnaglyphFactory;
@@ -29,7 +30,6 @@ import net.thevpc.scholar.hadruplot.libraries.calc3d.geometry3d.bsp.BSPTreeBuild
 import net.thevpc.scholar.hadruplot.libraries.calc3d.geometry3d.bsp.BSPTreeTraverser;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.log.Logger;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.math.Vector3D;
-import net.thevpc.scholar.hadruplot.libraries.calc3d.utils.ColorUtils;
 
 /**
  * A surface which renders graphics and handles user input.

@@ -1,5 +1,12 @@
 package net.thevpc.scholar.hadruplot.console;
 
+import net.thevpc.common.swing.frame.JInternalFrameHelper;
+import net.thevpc.common.swing.label.MemoryUseIconTray;
+import net.thevpc.common.swing.file.RecentFilesPropertiesModel;
+import net.thevpc.common.swing.file.RecentFilesMenu;
+import net.thevpc.common.swing.file.RecentFileEvent;
+import net.thevpc.common.swing.file.FileDropListener;
+import net.thevpc.common.swing.file.FileSelectedListener;
 import net.thevpc.common.swing.win.WindowInfo;
 import net.thevpc.common.swing.win.WindowInfoListener;
 import net.thevpc.common.strings.StringUtils;
