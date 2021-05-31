@@ -16,17 +16,17 @@ import net.thevpc.scholar.hadruwaves.project.scene.HWProjectPolygon;
  */
 public abstract class AbstractMomSolverTestTemplate implements MomSolverTestTemplate {
 
-    private final WritableValue<String> name = Props2.of("name").valueOf(String.class, null);
-    private final WritableValue<String> description = Props2.of("description").valueOf(String.class, null);
+    private final WritableString name = Props2.of("name").valueOf(String.class, null);
+    private final WritableString description = Props2.of("description").valueOf(String.class, null);
     private final WritableList<HWProjectPolygon> polygons = Props2.of("polygons").listOf(HWProjectPolygon.class);
 
     @Override
-    public WritableValue<String> name() {
+    public WritableString name() {
         return name;
     }
 
     @Override
-    public WritableValue<String> description() {
+    public WritableString description() {
         return description;
     }
 

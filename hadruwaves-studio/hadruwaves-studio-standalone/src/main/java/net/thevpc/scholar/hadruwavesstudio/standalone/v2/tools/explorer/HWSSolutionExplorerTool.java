@@ -1,10 +1,14 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer;
 
+import net.thevpc.echo.AppTools;
+import net.thevpc.echo.api.components.AppComponent;
+import net.thevpc.echo.api.AppContainerChildren;
+import net.thevpc.echo.ContextMenu;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer.actions.*;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer.components.*;
 import net.thevpc.common.props.*;
-import net.thevpc.echo.swing.core.swing.LazyTree;
-import net.thevpc.echo.swing.core.swing.LazyTreeNode;
+import net.thevpc.echo.swing.helpers.tree.LazyTree;
+import net.thevpc.echo.swing.helpers.tree.LazyTreeNode;
 import net.thevpc.scholar.hadruwaves.project.*;
 import net.thevpc.scholar.hadruwaves.project.scene.*;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.HadruwavesStudio;
@@ -21,9 +25,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.function.Predicate;
 import net.thevpc.common.props.impl.PropsHelper;
-import net.thevpc.echo.AppPopupMenu;
-import net.thevpc.echo.swing.SwingApplications;
-import net.thevpc.echo.swing.core.swing.JPopupMenuComponentSupplier;
+import net.thevpc.echo.swing.peers.SwingPeer;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationFolder;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.AbstractToolWindowPanel;
@@ -34,7 +36,7 @@ import net.thevpc.scholar.hadruwavesstudio.standalone.v2.util.AppCompUtils;
 public class HWSSolutionExplorerTool extends AbstractToolWindowPanel {
 
     public JXTree tree;
-    private AppPopupMenu popUpMenu;
+    private ContextMenu popUpMenu;
 
     public HWSSolutionExplorerTool(HadruwavesStudio studio) {
         super(studio);
@@ -52,18 +54,18 @@ public class HWSSolutionExplorerTool extends AbstractToolWindowPanel {
         tree.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(e.getClickCount()==2){
+                if (e.getClickCount() == 2) {
                     TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());
                     if (selPath != null) {
                         HWProjectItem i = resolveValidItem(selPath);
-                        if(i!=null && i.getItem() instanceof HWProjectSourceFile){
+                        if (i != null && i.getItem() instanceof HWProjectSourceFile) {
                             studio().openSourceFile((HWProjectSourceFile) i.getItem());
                         }
                     }
                 }
             }
         });
-        popUpMenu = SwingApplications.Components.createPopupMenu(studio.app(), "/");
+        popUpMenu = new ContextMenu(app());
         AppCompUtils.bind(popUpMenu, tree, this::preparePopupBeforeShowing);
 
         createPopUpMenu();
@@ -77,7 +79,7 @@ public class HWSSolutionExplorerTool extends AbstractToolWindowPanel {
         jsp.setBorder(null);
         pane.add(jsp, BorderLayout.CENTER);
         setContent(pane);
-        studio.proc().listeners().add(new PropertyListener() {
+        studio.proc().onChange(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
                 tree.repaint();
@@ -86,14 +88,16 @@ public class HWSSolutionExplorerTool extends AbstractToolWindowPanel {
     }
 
     public void refreshTools() {
-        popUpMenu.tools().refresh();
-        app().tools().refresh();
+//        popUpMenu.model().refresh();
+//        app().model().refresh();
     }
 
     protected void onLookChanged() {
         tree.setCellRenderer(new SolutionAppTreeCellRendererImpl(studio(), HWSSolutionExplorerTool.this));
         if (popUpMenu != null) {
-            SwingUtilities.updateComponentTreeUI(((JPopupMenuComponentSupplier) popUpMenu).component());
+            SwingUtilities.updateComponentTreeUI(
+                    SwingPeer.gcompOf(popUpMenu)
+            );
         }
     }
 
@@ -154,7 +158,7 @@ public class HWSSolutionExplorerTool extends AbstractToolWindowPanel {
         if (item == null) {
             return null;
         }
-        item.treePath=path;
+        item.treePath = path;
         Object a = item.getItemValue();
         if (a != null) {
             return item;
@@ -163,35 +167,36 @@ public class HWSSolutionExplorerTool extends AbstractToolWindowPanel {
     }
 
     private void createPopUpMenu() {
-        popUpMenu.tools().addAction(new OpenSourceAction(this), "/open");
-        popUpMenu.tools().addAction(new ReloadAction(this), "/reload");
-        popUpMenu.tools().addAction(new SelectProjectAction(this), "/selectProject");
-        popUpMenu.tools().addAction(new DeSelectProjectAction(this), "/deselectProject");
-        popUpMenu.tools().addAction(new SelectConfigAction(this), "/selectConfig");
-        popUpMenu.tools().addAction(new SaveNodeAction(this), "/save");
-        popUpMenu.tools().addAction(new SaveAllNodeAction(this), "/saveAll");
-        popUpMenu.tools().addAction(new SaveAsNodeAction(this), "/saveAs");
-        popUpMenu.tools().addAction(new BuildNodeAction(this), "/build");
-        popUpMenu.tools().addAction(new CopyNodeAction(this), "/copy");
-        popUpMenu.tools().addAction(new CutNodeAction(this), "/cut");
-        popUpMenu.tools().addAction(new PasteNodeAction(this), "/paste");
+        AppContainerChildren<AppComponent> tools = popUpMenu.children();
+        tools.addAction().bindUndo(new OpenSourceAction(this)).path("/open").tool();
+        tools.addAction().bindUndo(new ReloadAction(this)).path("/reload").tool();
+        tools.addAction().bindUndo(new SelectProjectAction(this)).path("/selectProject").tool();
+        tools.addAction().bindUndo(new DeSelectProjectAction(this)).path("/deselectProject").tool();
+        tools.addAction().bindUndo(new SelectConfigAction(this)).path("/selectConfig").tool();
+        tools.addAction().bindUndo(new SaveNodeAction(this)).path("/save").tool();
+        tools.addAction().bindUndo(new SaveAllNodeAction(this)).path("/saveAll").tool();
+        tools.addAction().bindUndo(new SaveAsNodeAction(this)).path("/saveAs").tool();
+        tools.addAction().bindUndo(new BuildNodeAction(this)).path("/build").tool();
+        tools.addAction().bindUndo(new CopyNodeAction(this)).path("/copy").tool();
+        tools.addAction().bindUndo(new CutNodeAction(this)).path("/cut").tool();
+        tools.addAction().bindUndo(new PasteNodeAction(this)).path("/paste").tool();
 
-        popUpMenu.tools().addAction(new NewFolderUndoableAction(this), "/newFolder");
-        popUpMenu.tools().addAction(new NewProjectUndoableAction(this), "/newProject");
-        popUpMenu.tools().addAction(new NewMaterialAction(this), "/newMaterial");
-        popUpMenu.tools().addAction(new NewConfigurationUndoableAction(this), "/newConfiguration");
-        popUpMenu.tools().addAction(new NewMaterial2DPolygonAction(this), "/newMaterial2DPolygon");
-        popUpMenu.tools().addAction(new NewMaterial2DRectangleAction(this), "/newMaterial2DRectangle");
-        popUpMenu.tools().addAction(new NewMaterial3DBoxAction(this), "/newMaterial3DBox");
-        popUpMenu.tools().addAction(new NewModalPortRectangleAction(this), "/newModalPortRectangle");
-        popUpMenu.tools().addAction(new NewPlanarPortPolygonAction(this), "/newPlanarPortPolygon");
-        popUpMenu.tools().addAction(new NewPlanarPortRectangleAction(this), "/newPlanarPortRectangle");
+        tools.addAction().bindUndo(new NewFolderUndoableAction(this)).path("/newFolder").tool();
+        tools.addAction().bindUndo(new NewProjectUndoableAction(this)).path("/newProject").tool();
+        tools.addAction().bindUndo(new NewMaterialAction(this)).path("/newMaterial").tool();
+        tools.addAction().bindUndo(new NewConfigurationUndoableAction(this)).path("/newConfiguration").tool();
+        tools.addAction().bindUndo(new NewMaterial2DPolygonAction(this)).path("/newMaterial2DPolygon").tool();
+        tools.addAction().bindUndo(new NewMaterial2DRectangleAction(this)).path("/newMaterial2DRectangle").tool();
+        tools.addAction().bindUndo(new NewMaterial3DBoxAction(this)).path("/newMaterial3DBox").tool();
+        tools.addAction().bindUndo(new NewModalPortRectangleAction(this)).path("/newModalPortRectangle").tool();
+        tools.addAction().bindUndo(new NewPlanarPortPolygonAction(this)).path("/newPlanarPortPolygon").tool();
+        tools.addAction().bindUndo(new NewPlanarPortRectangleAction(this)).path("/newPlanarPortRectangle").tool();
 
-        popUpMenu.tools().addAction(new EnableUndoableActionImpl(this), "/enable");
-        popUpMenu.tools().addAction(new DisableUndoableAction(this), "/disable");
-        popUpMenu.tools().addAction(new PropertiesAppSimpleActionImpl(studio().app(), this), "/properties");
-        popUpMenu.tools().addSeparator("/separator1");
-        popUpMenu.tools().addAction(new RemoveUndoableAction(this), "/remove");
+        tools.addAction().bindUndo(new EnableUndoableActionImpl(this)).path("/enable").tool();
+        tools.addAction().bindUndo(new DisableUndoableAction(this)).path("/disable").tool();
+        tools.addAction().bind(new PropertiesSimpleActionImpl(studio().app(), this)).path("/properties").tool();
+        tools.addSeparator("/separator1");
+        tools.addAction().bindUndo(new RemoveUndoableAction(this)).path("/remove").tool();
 
     }
 
@@ -233,11 +238,11 @@ public class HWSSolutionExplorerTool extends AbstractToolWindowPanel {
             HWProjectSource h = (HWProjectSource) ov;
             File file = h.file();
             name = file.getName();
-            folder=file.isDirectory();
-            if(project==null) {
+            folder = file.isDirectory();
+            if (project == null) {
                 project = h.project;
             }
-            if(solution==null){
+            if (solution == null) {
                 solution = h.project.solution().get();
             }
         }

@@ -6,15 +6,16 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.actions.global;
 
 import java.awt.event.ActionEvent;
-import net.thevpc.echo.AbstractAppAction;
+
 import net.thevpc.echo.Application;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.HadruwavesStudio;
+import net.thevpc.scholar.hadruwavesstudio.standalone.v2.actions.HAction;
 
 /**
  *
  * @author vpc
  */
-public class NewProjectAction extends AbstractAppAction {
+public class NewProjectAction extends HAction{
     
     private final HadruwavesStudio outer;
 

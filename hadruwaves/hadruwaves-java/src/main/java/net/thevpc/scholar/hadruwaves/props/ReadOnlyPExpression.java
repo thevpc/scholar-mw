@@ -2,11 +2,11 @@ package net.thevpc.scholar.hadruwaves.props;
 
 import net.thevpc.common.props.Property;
 import net.thevpc.common.props.PropertyType;
-import net.thevpc.common.props.impl.DelegateProperty;
+import net.thevpc.common.props.impl.PropertyDelegate;
 import net.thevpc.scholar.hadrumaths.units.UnitType;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 
-public class ReadOnlyPExpression<T> extends DelegateProperty<T> implements PExpression<T> {
+public class ReadOnlyPExpression<T> extends PropertyDelegate implements PExpression<T> {
 
     public ReadOnlyPExpression(PExpression<T> v) {
         super(v);

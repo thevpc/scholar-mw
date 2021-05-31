@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.library;
 
-import net.thevpc.echo.swing.core.swing.LazyTreeBackend;
-import net.thevpc.echo.swing.core.swing.LazyTree;
-import net.thevpc.echo.swing.core.swing.LazyTreeNode;
+import net.thevpc.echo.swing.helpers.tree.LazyTreeBackend;
+import net.thevpc.echo.swing.helpers.tree.LazyTree;
+import net.thevpc.echo.swing.helpers.tree.LazyTreeNode;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.HadruwavesStudio;
 import org.jdesktop.swingx.JXTree;
 

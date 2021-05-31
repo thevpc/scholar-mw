@@ -11,10 +11,10 @@ import java.util.logging.Level;
 import javax.swing.JOptionPane;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import net.thevpc.echo.AppEvent;
+import net.thevpc.echo.api.AppEvent;
 import net.thevpc.common.msg.JFormattedMessage;
-import net.thevpc.echo.UndoableAction;
-import net.thevpc.echo.AppUndoableAction;
+import net.thevpc.echo.api.UndoableAction;
+import net.thevpc.echo.swing.helpers.actions.SwingAppUndoableAction;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer.HWSSolutionExplorerTool;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer.components.HWProjectFolder;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.util.HWProjectItem;
@@ -25,7 +25,7 @@ import net.thevpc.common.msg.Message;
  *
  * @author vpc
  */
-public class NewModalPortRectangleAction extends AppUndoableAction {
+public class NewModalPortRectangleAction extends SwingAppUndoableAction {
 
     private final HWSSolutionExplorerTool explorer;
 
@@ -52,7 +52,7 @@ public class NewModalPortRectangleAction extends AppUndoableAction {
                 } else {
 
                 }
-                JOptionPane.showConfirmDialog((Component) explorer.app().mainWindow().get().component(), "Will Enter values here");
+                JOptionPane.showConfirmDialog((Component) explorer.app().mainFrame().get().component(), "Will Enter values here");
                 explorer.refreshTools();
                 return new JFormattedMessage(Level.INFO, "Add {0}", new Object[]{"Polygon"});
             }

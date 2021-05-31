@@ -6,7 +6,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import net.thevpc.common.props.*;
-import net.thevpc.common.props.impl.PropertyListenersImpl;
+import net.thevpc.common.props.impl.DefaultPropertyListeners;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
@@ -31,14 +31,14 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
     /**
      * bound by parent (solution)
      */
-    private final WritableValue<String> filePath = Props.of("filePath").valueOf(String.class, null);
+    private final WritableString filePath = Props.of("filePath").valueOf(String.class, null);
 
     private String uuid;
     private final WritableValue<HWProjectScene> scene = Props.of("scene").valueOf(HWProjectScene.class, null);
-    private final WritableValue<Boolean> modified = Props.of("modified").valueOf(Boolean.class, false);
+    private final WritableBoolean modified = Props.of("modified").booleanOf(false);
     private final WritableLiMap<String, HWMaterialTemplate> materials = Props.of("materials").lmapOf(String.class, HWMaterialTemplate.class, x -> x.name().get());
 
-    private final PropertyListenersImpl listeners = new PropertyListenersImpl(this);
+    private final DefaultPropertyListeners listeners = new DefaultPropertyListeners(this);
 
     private final HWParameters parameters = new HWParameters(this);
     private final HWUnits units = new HWUnits(this);
@@ -59,18 +59,18 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
 
         listeners.addDelegate(parameters, () -> "parameters");
         listeners.addDelegate(units, () -> "units");
-        materials.listeners().add(new PropertyListener() {
+        materials.onChange(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
-                HWMaterialTemplate oldValue = event.getOldValue();
-                HWMaterialTemplate newValue = event.getNewValue();
-                switch (event.getAction()) {
+                HWMaterialTemplate oldValue = event.oldValue();
+                HWMaterialTemplate newValue = event.newValue();
+                switch (event.eventType()) {
                     case ADD: {
-                        newValue.name().listeners().add(new RePutByNamePropertyListener(newValue));
+                        newValue.name().onChange(new RePutByNamePropertyListener(newValue));
                         break;
                     }
                     case REMOVE: {
-                        oldValue.name().listeners()
+                        oldValue.name().events()
                                 .removeIf(x -> x instanceof RePutByNamePropertyListener
                                 && ((RePutByNamePropertyListener) x).getMaterial() == newValue);
                         break;
@@ -78,14 +78,14 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
                 }
             }
         });
-        parameters.listeners().add(new PropertyListener() {
+        parameters.onChange(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
-                switch (event.getAction()) {
+                switch (event.eventType()) {
                     case ADD: {
-                        Object elem = event.getNewValue();
-                        if (event.getNewValue() instanceof IndexedNode) {
-                            elem = ((IndexedNode) event.getNewValue()).get();
+                        Object elem = event.newValue();
+                        if (event.newValue() instanceof IndexedNode) {
+                            elem = ((IndexedNode) event.newValue()).get();
                         }
                         if (elem instanceof HWParameterValue) {
                             HWParameterValue v = (HWParameterValue) elem;
@@ -96,9 +96,9 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
                         break;
                     }
                     case REMOVE: {
-                        Object elem = event.getOldValue();
-                        if (event.getNewValue() instanceof IndexedNode) {
-                            elem = ((IndexedNode) event.getNewValue()).get();
+                        Object elem = event.oldValue();
+                        if (event.newValue() instanceof IndexedNode) {
+                            elem = ((IndexedNode) event.newValue()).get();
                         }
                         if (elem instanceof HWParameterValue) {
                             HWParameterValue v = (HWParameterValue) elem;
@@ -113,7 +113,7 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
         });
         materials.add(new HWMaterialTemplate(Material.VACUUM, this));
         materials.add(new HWMaterialTemplate(Material.PEC, this));
-        scene.listeners().add(new PropertyListener() {
+        scene.onChange(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
                 updateMaterials();
@@ -122,7 +122,7 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
         listeners.add(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
-                if (event.getPath().matches("/[^/]+")) {
+                if (event.eventPath().matches("/[^/]+")) {
                     modified.set(true);
                 }
             }
@@ -132,7 +132,7 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
     }
 
     @Override
-    public WritableValue<Boolean> modified() {
+    public WritableBoolean modified() {
         return modified;
     }
 
@@ -157,11 +157,11 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
     }
 
     @Override
-    public PropertyListeners listeners() {
+    public PropertyListeners events() {
         return listeners;
     }
 
-    public WritableValue<String> filePath() {
+    public WritableString filePath() {
         return filePath;
     }
 
@@ -208,8 +208,8 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
 
         @Override
         public void propertyUpdated(PropertyEvent event) {
-            String oldName = event.getOldValue();
-            String newName = event.getNewValue();
+            String oldName = event.oldValue();
+            String newName = event.newValue();
             if (oldName != null) {
                 materials.remove(oldName);
             }

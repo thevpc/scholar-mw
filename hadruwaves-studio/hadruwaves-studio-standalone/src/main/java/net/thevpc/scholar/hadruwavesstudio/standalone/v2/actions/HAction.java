@@ -5,8 +5,8 @@
  */
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.actions;
 
-import net.thevpc.echo.api.components.AppAction;
-import net.thevpc.echo.AppActionEvent;
+import net.thevpc.echo.api.ActionEvent;
+import net.thevpc.echo.api.Action;
 import net.thevpc.echo.Application;
 import net.thevpc.echo.swing.helpers.actions.SwingAbstractAppAction;
 
@@ -14,7 +14,7 @@ import net.thevpc.echo.swing.helpers.actions.SwingAbstractAppAction;
  *
  * @author vpc
  */
-public abstract class HAction extends SwingAbstractAppAction implements AppAction{
+public abstract class HAction extends SwingAbstractAppAction implements Action {
 
     public HAction(Application application, String id) {
         super(application, id);
@@ -25,7 +25,7 @@ public abstract class HAction extends SwingAbstractAppAction implements AppActio
     }
 
     @Override
-    public void run(AppActionEvent event) {
+    public void run(ActionEvent event) {
         actionPerformed(null);
     }
     

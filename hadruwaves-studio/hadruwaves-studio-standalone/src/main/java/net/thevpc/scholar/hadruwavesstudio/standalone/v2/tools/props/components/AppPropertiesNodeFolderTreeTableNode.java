@@ -5,8 +5,8 @@
  */
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.components;
 
-import net.thevpc.echo.AppPropertiesNode;
-import net.thevpc.echo.AppPropertiesNodeFolder;
+import net.thevpc.echo.api.AppPropertiesNode;
+import net.thevpc.echo.api.AppPropertiesNodeFolder;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.HWSProjectPropertiesTool;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 

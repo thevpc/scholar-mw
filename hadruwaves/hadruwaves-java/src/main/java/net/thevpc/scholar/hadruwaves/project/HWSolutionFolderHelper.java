@@ -21,17 +21,17 @@ public class HWSolutionFolderHelper {
 
     public HWSolutionFolderHelper(HWSolutionFolder thisAsParent, Supplier<HWSolution> solution) {
         this.thisAsParent = thisAsParent;
-        children.listeners().add(new PropertyListener() {
+        children.onChange(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
-                if (event.getPath().equals("/")) {
-                    AbstractHWSolutionElement o = event.getOldValue();
+                if (event.eventPath().equals("/")) {
+                    AbstractHWSolutionElement o = event.oldValue();
                     if (o != null) {
                         o.solution.set(null);
                         o.parentPath.set(null);
                         o.parent.set(null);
                     }
-                    AbstractHWSolutionElement n = event.getNewValue();
+                    AbstractHWSolutionElement n = event.newValue();
                     if (n != null) {
                         n.solution.set(solution.get());
                         n.parent.set(thisAsParent);

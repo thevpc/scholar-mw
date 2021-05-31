@@ -16,15 +16,15 @@ public class HWParameterFolderHelper {
 
     public HWParameterFolderHelper(HWParameterFolder thisAsParent, Supplier<HWProject> prj) {
         this.thisAsParent = thisAsParent;
-        children.listeners().add(new PropertyListener() {
+        children.onChange(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
-                AbstractHWParameterElement o = event.getOldValue();
+                AbstractHWParameterElement o = event.oldValue();
                 if (o != null) {
                     o.parentPath.set(null);
                     o.parent.set(null);
                 }
-                AbstractHWParameterElement n = event.getNewValue();
+                AbstractHWParameterElement n = event.newValue();
                 if (n != null) {
                     n.project.set(prj.get());
                     n.parent.set(thisAsParent);

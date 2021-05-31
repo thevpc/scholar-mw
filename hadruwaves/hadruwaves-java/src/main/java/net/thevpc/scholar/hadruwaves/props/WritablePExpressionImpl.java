@@ -3,13 +3,13 @@ package net.thevpc.scholar.hadruwaves.props;
 import net.thevpc.common.props.PropertyEvent;
 import net.thevpc.common.props.PropertyType;
 import net.thevpc.common.props.PropertyUpdate;
-import net.thevpc.common.props.impl.AbstractProperty;
+import net.thevpc.common.props.impl.WritablePropertyBase;
 
 import java.util.Objects;
 import net.thevpc.scholar.hadrumaths.units.UnitType;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 
-public class WritablePExpressionImpl<T> extends AbstractProperty implements WritablePExpression<T> {
+public class WritablePExpressionImpl<T> extends WritablePropertyBase implements WritablePExpression<T> {
 
     private String expression;
     private PExpression<T> ro;

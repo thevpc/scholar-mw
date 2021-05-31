@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.cache;
 
-import net.thevpc.echo.swing.core.swing.DefaultLazyTreeBackend;
-import net.thevpc.echo.swing.core.swing.LazyTree;
+import net.thevpc.echo.swing.helpers.tree.DefaultLazyTreeBackend;
+import net.thevpc.echo.swing.helpers.tree.LazyTree;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.HadruwavesStudio;
 

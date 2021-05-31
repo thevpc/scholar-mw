@@ -3,23 +3,24 @@ package net.thevpc.scholar.hadruwaves.project;
 import net.thevpc.common.mon.DefaultTaskMonitorManager;
 import net.thevpc.common.mon.TaskMonitorManager;
 import net.thevpc.common.props.*;
-import net.thevpc.common.props.impl.PropertyListenersImpl;
+import net.thevpc.common.props.impl.DefaultPropertyListeners;
+import net.thevpc.common.props.impl.PropertyBase;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 import net.thevpc.scholar.hadruwaves.project.templates.MicrostripProjectTemplate;
 
-public class HWSolutionProcessor implements WithListeners {
+public class HWSolutionProcessor extends PropertyBase {
 
     private WritableList<HWFile> recentFiles = Props.of("recentFiles").listOf(HWFile.class);
     private WritableValue<HWSolution> solution = Props.of("solution").valueOf(HWSolution.class, null);
     private TaskMonitorManager taskMonitorManager = new DefaultTaskMonitorManager();
-    private PropertyListenersImpl listeners = new PropertyListenersImpl(this);
+    private DefaultPropertyListeners listeners = new DefaultPropertyListeners(this);
     private WritableValue<HWProject> selectedProject = Props.of("selectedProject").valueOf(HWProject.class, null);
     private WritableValue<HWConfigurationRun> selectedConfiguration = Props.of("selectedConfiguration").valueOf(HWConfigurationRun.class, null);
 
-    public HWSolutionProcessor() {
-        listeners.addDelegate(recentFiles);
-        listeners.addDelegate(solution);
-        solution.listeners().add(new SolutionTracker(this));
+    public HWSolutionProcessor(String name) {
+        super(name);
+        propagateEvents(recentFiles,solution);
+        solution.onChange(new SolutionTracker(this));
     }
 
     public WritableValue<HWProject> selectedProject() {
@@ -45,7 +46,7 @@ public class HWSolutionProcessor implements WithListeners {
     }
 
     @Override
-    public PropertyListeners listeners() {
+    public PropertyListeners events() {
         return listeners;
     }
 
@@ -113,7 +114,7 @@ public class HWSolutionProcessor implements WithListeners {
 
         @Override
         public void propertyUpdated(PropertyEvent event) {
-            System.out.println("Hello " + event.getAction() + " :: " + event.getPath());
+            System.out.println("Hello " + event.eventType() + " :: " + event.eventPath());
         }
     }
 

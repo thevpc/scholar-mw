@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2;
 
+import net.thevpc.echo.api.components.AppDock;
 import net.thevpc.scholar.hadruwaves.SolverBuildResult;
 import net.thevpc.common.props.FileObject;
 import net.thevpc.scholar.hadruwaves.project.HWSolutionProcessor;
@@ -13,7 +14,7 @@ import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.HWSProjectP
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results.HWSProjectResultsTool;
 
 import java.awt.*;
-import net.thevpc.echo.AppDockingWorkspace;
+import net.thevpc.echo.AppWorkspace;
 import net.thevpc.echo.Application;
 
 public interface HadruwavesStudio {
@@ -46,7 +47,7 @@ public interface HadruwavesStudio {
 
     Component appComponent();
 
-    AppDockingWorkspace workspace();
+    AppDock content();
 
     void openSourceFile(HWProjectSourceFile s);
 

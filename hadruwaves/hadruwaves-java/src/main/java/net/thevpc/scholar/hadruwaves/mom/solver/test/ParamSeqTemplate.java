@@ -19,7 +19,7 @@ import net.thevpc.scholar.hadruwaves.props.WritablePExpression;
  */
 public class ParamSeqTemplate {
 
-    private WritableValue<String> name = Props2.of("name").valueOf(String.class, null);
+    private WritableString name = Props2.of("name").valueOf(String.class, null);
     private WritablePExpression<Expr> from = Props2.of("from").exprOf(Maths.expr(0));
     private WritablePExpression<Expr> to = Props2.of("to").exprOf(Maths.expr(0));
     private WritablePExpression<Expr> condition = Props2.of("condition").exprOf(Maths.expr(1));
@@ -38,7 +38,7 @@ public class ParamSeqTemplate {
         this.condition.set(cond);
     }
 
-    public WritableValue<String> name() {
+    public WritableString name() {
         return name;
     }
 

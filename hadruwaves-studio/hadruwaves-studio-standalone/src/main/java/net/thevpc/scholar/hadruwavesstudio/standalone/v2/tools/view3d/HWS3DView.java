@@ -26,24 +26,24 @@ public class HWS3DView extends JPanel {
     public HWS3DView(HadruwavesStudio studio) {
         super(new BorderLayout());
         this.studio = studio;
-        this.studio.proc().listeners().add(new PropertyListener() {
+        this.studio.proc().onChange(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
-                if (event.getProperty().name().equals("activeProject")) {
-                    HWProject oldValue = event.getOldValue();
+                if (event.property().propertyName().equals("activeProject")) {
+                    HWProject oldValue = event.oldValue();
                     if (oldValue != null) {
-                        oldValue.listeners().remove(sceneChangeListener);
+                        oldValue.events().remove(sceneChangeListener);
                     }
-                    HWProject newValue = event.getNewValue();
+                    HWProject newValue = event.newValue();
                     if (newValue != null) {
-                        newValue.listeners().add(sceneChangeListener);
+                        newValue.onChange(sceneChangeListener);
                     }
                     updateScene();
                 }
             }
         });
         add(scenePlot = new HWProjectScenePlot(null, null));
-        studio.proc().selectedConfiguration().listeners().add(e -> updateScene());
+        studio.proc().selectedConfiguration().onChange(e -> updateScene());
     }
 
 //    public void removeSelection(HWProject p) {

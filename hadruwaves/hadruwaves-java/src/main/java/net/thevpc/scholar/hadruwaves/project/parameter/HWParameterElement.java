@@ -6,9 +6,9 @@ import net.thevpc.tson.TsonSerializable;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 
 public interface HWParameterElement extends TsonSerializable {
-    WritableValue<String> name();
+    WritableString name();
 
-    WritableValue<String> description();
+    WritableString description();
 
     ObservableValue<HWProject> project();
 

@@ -16,9 +16,9 @@ import net.thevpc.scholar.hadruwaves.project.scene.HWProjectPolygon;
  */
 public interface MomSolverTestTemplate {
 
-    WritableValue<String> name();
+    WritableString name();
 
-    WritableValue<String> description();
+    WritableString description();
 
     WritableList<HWProjectPolygon> polygons();
 

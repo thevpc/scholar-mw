@@ -2,6 +2,7 @@ package net.thevpc.scholar.hadruwaves.project.scene;
 
 import net.thevpc.common.props.ObservableValue;
 import net.thevpc.common.props.Props;
+import net.thevpc.common.props.WritableString;
 import net.thevpc.common.props.WritableValue;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
@@ -18,8 +19,8 @@ public class HWMaterialTemplate implements HWProjectElement {
 
     private final WritableValue<HWSolution> solution = Props.of("solution").valueOf(HWSolution.class, null);
     private final WritableValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
-    private final WritableValue<String> name = Props.of("name").valueOf(String.class, null);
-    private final WritableValue<String> description = Props.of("description").valueOf(String.class, null);
+    private final WritableString name = Props.of("name").stringOf(null);
+    private final WritableString description = Props.of("description").stringOf( null);
     private final WritablePExpression<Double> permettivity = Props2.of("permettivity").exprDoubleOf(1.0);
     private final WritablePExpression<Double> permeability = Props2.of("permeability").exprDoubleOf(1.0);
     private final WritablePExpression<Double> electricConductivity = Props2.of("electricConductivity").exprDoubleOf(0.0);
@@ -46,11 +47,11 @@ public class HWMaterialTemplate implements HWProjectElement {
     }
 
     @Override
-    public WritableValue<String> name() {
+    public WritableString name() {
         return name;
     }
 
-    public WritableValue<String> description() {
+    public WritableString description() {
         return description;
     }
 

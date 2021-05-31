@@ -13,10 +13,10 @@ public class HWParameterValue extends AbstractHWParameterElement {
 
     private final WritableValue<UnitType> type = Props.of("type").valueOf(UnitType.class, UnitType.Double);
     private final WritableValue<ParamUnit> unit = Props.of("unit").valueOf(ParamUnit.class, null);
-    private final WritableValue<String> name = Props.of("name").valueOf(String.class, null);
-    private final WritableValue<String> description = Props.of("description").valueOf(String.class, null);
-    private final WritableValue<String> parentPath = Props.of("parentPath").valueOf(String.class, null);
-    private final WritableValue<Boolean> discriminator = Props.of("discriminator").valueOf(Boolean.class, false);
+    private final WritableString name = Props.of("name").valueOf(String.class, null);
+    private final WritableString description = Props.of("description").valueOf(String.class, null);
+    private final WritableString parentPath = Props.of("parentPath").valueOf(String.class, null);
+    private final WritableBoolean discriminator = Props.of("discriminator").booleanOf(false);
 
     public HWParameterValue() {
     }
@@ -27,21 +27,21 @@ public class HWParameterValue extends AbstractHWParameterElement {
         this.type.set(type);
     }
 
-    public WritableValue<Boolean> discriminator() {
+    public WritableBoolean0 discriminator() {
         return discriminator;
     }
 
     @Override
-    public WritableValue<String> name() {
+    public WritableString name() {
         return name;
     }
 
     @Override
-    public WritableValue<String> description() {
+    public WritableString description() {
         return description;
     }
 
-    public WritableValue<String> parentPath() {
+    public WritableString parentPath() {
         return parentPath;
     }
 

@@ -2,7 +2,7 @@ package net.thevpc.scholar.hadruwavesstudio.standalone.v2.util;
 
 
 import java.io.File;
-import net.thevpc.common.iconset.AppIconResolver;
+import net.thevpc.echo.iconset.AppIconResolver;
 
 public class HWAppIconResolver implements AppIconResolver {
 

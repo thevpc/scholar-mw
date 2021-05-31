@@ -5,8 +5,8 @@
  */
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.util;
 
-import net.thevpc.echo.AppPropertiesNodeFolder;
-import net.thevpc.echo.swing.core.DefaultPropertiesTree;
+import net.thevpc.echo.api.AppPropertiesNodeFolder;
+import net.thevpc.echo.impl.DefaultPropertiesTree;
 import net.thevpc.scholar.hadruwaves.project.HWSolution;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 

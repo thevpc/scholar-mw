@@ -21,8 +21,8 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.tree.TreePath;
 
-import net.thevpc.common.iconset.IconSets;
-//import net.thevpc.common.iconset.PIconSet;
+import net.thevpc.echo.iconset.IconSets;
+import net.thevpc.echo.swing.icons.SwingAppImage;
 import net.thevpc.scholar.hadrumaths.units.ParamUnit;
 import net.thevpc.scholar.hadrumaths.units.UnitType;
 import net.thevpc.scholar.hadruwaves.project.parameter.HWParameterElement;
@@ -35,7 +35,7 @@ import net.thevpc.scholar.hadruwavesstudio.standalone.v2.util.PValueViewProperty
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 import org.jdesktop.swingx.tree.DefaultXTreeCellRenderer;
-import net.thevpc.echo.AppPropertiesNodeItem;
+import net.thevpc.echo.api.AppPropertiesNodeItem;
 import net.thevpc.scholar.hadruwaves.project.EvalExprError;
 import net.thevpc.scholar.hadruwaves.project.EvalExprResult;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
@@ -79,9 +79,11 @@ public class CustomJXTreeTable extends JXTreeTable {
                 IconSets iconSet = tool.app().iconSets();
                 if (!leaf || value instanceof HWConfigurationRun || value instanceof HWParameterFolder) {
                     if (value instanceof HWConfigurationRun) {
-                        super.setIcon(iconSet.icon("Configuration").get());
+                        super.setIcon(SwingAppImage.imageIconOf(iconSet.icon("Configuration").get()));
                     } else {
-                        super.setIcon(expanded ? iconSet.icon("OpenFolder").get() : iconSet.icon("Folder").get());
+                        super.setIcon(
+                                SwingAppImage.imageIconOf(expanded ? iconSet.icon("OpenFolder").get() : iconSet.icon("Folder").get())
+                        );
                     }
                 } else {
                     super.setIcon(null);

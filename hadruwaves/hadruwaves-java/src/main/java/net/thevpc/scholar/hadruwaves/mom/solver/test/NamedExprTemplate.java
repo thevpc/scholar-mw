@@ -17,7 +17,7 @@ import net.thevpc.scholar.hadruwaves.props.WritablePExpression;
  */
 public class NamedExprTemplate {
 
-    private WritableValue<String> name = Props2.of("name").valueOf(String.class, null);
+    private WritableString name = Props2.of("name").valueOf(String.class, null);
     private WritablePExpression<Expr> expr = Props2.of("expr").exprOf(Maths.expr(0));
 
     public NamedExprTemplate() {
@@ -28,7 +28,7 @@ public class NamedExprTemplate {
         this.name.set(name);
     }
 
-    public WritableValue<String> name() {
+    public WritableString name() {
         return name;
     }
 

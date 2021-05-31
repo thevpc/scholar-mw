@@ -51,7 +51,7 @@ public class HWLockManagerComponent extends JPanel implements ActionListener {
                         if (i == r) {
                             AppLockInfo a = lockModel.getAppLock(i);
                             if (a != null) {
-                                if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog((Component) studio.app().mainWindow().get().component(),
+                                if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog((Component) studio.app().mainFrame().get().component(),
                                         "Removing a lock may produce unexpected results. Are you sure?",
                                         "Attention",
                                         JOptionPane.OK_CANCEL_OPTION

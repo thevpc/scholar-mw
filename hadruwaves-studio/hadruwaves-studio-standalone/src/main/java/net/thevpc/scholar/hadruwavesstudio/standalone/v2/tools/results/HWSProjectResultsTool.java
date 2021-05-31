@@ -1,6 +1,11 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results;
 
 import java.awt.Component;
+
+import net.thevpc.echo.AppTools;
+import net.thevpc.echo.api.components.AppComponent;
+import net.thevpc.echo.api.AppContainerChildren;
+import net.thevpc.echo.ContextMenu;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results.components.ResultsTreeCellRendererImpl;
 import java.io.File;
 import java.util.ArrayList;
@@ -14,10 +19,8 @@ import javax.swing.*;
 import javax.swing.tree.TreePath;
 import net.thevpc.common.props.PropertyEvent;
 import net.thevpc.common.props.PropertyListener;
-import net.thevpc.echo.AppPopupMenu;
-import net.thevpc.echo.swing.SwingApplications;
-import net.thevpc.echo.swing.core.swing.JPopupMenuComponentSupplier;
-import net.thevpc.echo.swing.core.swing.LazyTree;
+import net.thevpc.echo.swing.peers.SwingPeer;
+import net.thevpc.echo.swing.helpers.tree.LazyTree;
 import net.thevpc.scholar.hadruwaves.mom.solver.HWSolverTemplateFDM;
 import net.thevpc.scholar.hadruwaves.mom.solver.HWSolverTemplateFEM;
 import net.thevpc.scholar.hadruwaves.mom.solver.HWSolverTemplateMoM;
@@ -65,7 +68,7 @@ public class HWSProjectResultsTool extends AbstractToolWindowPanel {
     private final LazyTreeBackendImpl backend = new LazyTreeBackendImpl(root);
     public final JTree tree;
     private final HWSolverActionResultRegistry registry = new HWSolverActionResultRegistry();
-    private AppPopupMenu popUpMenu;
+    private ContextMenu popUpMenu;
     private HWConfigurationRun configuration;
     private ThetaPhiRSamplesDialog polardialog = new ThetaPhiRSamplesDialog(null, null);
     private XyzSamplesDialog xyzdialog = new XyzSamplesDialog(null, null);
@@ -92,14 +95,14 @@ public class HWSProjectResultsTool extends AbstractToolWindowPanel {
         tree = (JXTree) LazyTree.of(new JXTree(), backend);
         tree.setRootVisible(false);
         setContent(new JScrollPane(tree));
-        studio.proc().selectedConfiguration().listeners().add(new PropertyListener() {
+        studio.proc().selectedConfiguration().onChange(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
                 updateRoot();
             }
         });
         updateRegistry();
-        popUpMenu = SwingApplications.Components.createPopupMenu(studio.app());
+        popUpMenu = new ContextMenu(app());
         AppCompUtils.bind(popUpMenu, tree, this::preparePopupBeforeShowing);
 
         createPopUpMenu();
@@ -108,12 +111,13 @@ public class HWSProjectResultsTool extends AbstractToolWindowPanel {
     }
 
     private void createPopUpMenu() {
-        popUpMenu.tools().addAction(new RunSolverAction(this), "/runSolver");
-        popUpMenu.tools().addAction(new ShowResultAction(this), "/showResult");
-        popUpMenu.tools().addAction(new SaveResultAction(this), "/saveResult");
-        popUpMenu.tools().addAction(new SaveCopyResultAction(this), "/saveCopyResult");
-        popUpMenu.tools().addAction(new RemoveResultAction(this), "/removeResult");
-        popUpMenu.tools().addAction(new RemoveDefaultFileResultAction(this), "/removeDefaultFileResult");
+        AppContainerChildren<AppComponent> tools = popUpMenu.children();
+        tools.addAction().bindUndo(new RunSolverAction(this)).path("/runSolver").tool();
+        tools.addAction().bindUndo(new ShowResultAction(this)).path("/showResult").tool();
+        tools.addAction().bindUndo(new SaveResultAction(this)).path("/saveResult").tool();
+        tools.addAction().bindUndo(new SaveCopyResultAction(this)).path("/saveCopyResult").tool();
+        tools.addAction().bindUndo(new RemoveResultAction(this)).path("/removeResult").tool();
+        tools.addAction().bindUndo(new RemoveDefaultFileResultAction(this)).path("/removeDefaultFileResult").tool();
     }
 
     protected void updateRegistry() {
@@ -121,8 +125,8 @@ public class HWSProjectResultsTool extends AbstractToolWindowPanel {
     }
 
     public void refreshTools() {
-        popUpMenu.tools().refresh();
-        app().tools().refresh();
+//        popUpMenu.model().refresh();
+//        app().model().refresh();
     }
 
     protected void preparePopupBeforeShowing() {
@@ -131,7 +135,9 @@ public class HWSProjectResultsTool extends AbstractToolWindowPanel {
     protected void onLookChanged() {
         tree.setCellRenderer(new ResultsTreeCellRendererImpl(studio()));
         if (popUpMenu != null) {
-            SwingUtilities.updateComponentTreeUI(((JPopupMenuComponentSupplier) popUpMenu).component());
+            SwingUtilities.updateComponentTreeUI(
+                (JPopupMenu) SwingPeer.gcompOf(popUpMenu)
+            );
         }
     }
 
@@ -217,10 +223,10 @@ public class HWSProjectResultsTool extends AbstractToolWindowPanel {
     }
 
     public ConfResults getConfResults() {
-        ConfResults u = (ConfResults) configuration.userObjects().getUserObject("results");
+        ConfResults u = (ConfResults) configuration.userObjects().get("results");
         if (u == null) {
             u = new ConfResults();
-            configuration.userObjects().putUserObject("results", u);
+            configuration.userObjects().put("results", u);
         }
         return u;
     }
@@ -239,10 +245,10 @@ public class HWSProjectResultsTool extends AbstractToolWindowPanel {
     }
 
     protected void updateMoMSolver(HWSolverTemplateMoM solver, DefaultHWSolverActionContext context) {
-        Component mc = (Component)context.app().mainWindow().get().component();
+        Component mc = (Component) context.app().mainFrame().get().component();
         xyzdialog.setParent(mc);
         polardialog.setParent(mc);
-        
+
         addAction(moMEFieldCartesianAction, context);
         addAction(moMEFieldSphereAction, context);
         addAction(moMEFieldSphereModuleAction, context);

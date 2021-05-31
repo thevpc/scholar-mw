@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadruplot.console;
 
+import net.thevpc.common.i18n.Str;
 import net.thevpc.common.swing.file.FileDropListener;
 import net.thevpc.common.i18n.I18nResourceBundle;
 import net.thevpc.common.swing.win.WindowInfo;
@@ -7,7 +8,10 @@ import net.thevpc.common.swing.win.WindowInfoListener;
 import net.thevpc.common.swing.*;
 import net.thevpc.common.swing.win.InternalWindowsHelper;
 import net.thevpc.common.swing.win.WindowPath;
-import net.thevpc.echo.swing.actions.TileWindowsAction;
+import net.thevpc.echo.WindowState;
+import net.thevpc.echo.api.components.AppComponent;
+import net.thevpc.echo.api.AppContainerChildren;
+import net.thevpc.echo.impl.DefaultApplication;
 import net.thevpc.swing.plaf.UIPlafManager;
 
 import javax.swing.*;
@@ -15,10 +19,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import net.thevpc.echo.AppTools;
-import net.thevpc.echo.AppWindowState;
+
 import net.thevpc.echo.Application;
-import net.thevpc.echo.swing.SwingApplications;
+import net.thevpc.echo.impl.Applications;
 
 public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
     public static int openFrames = 0;
@@ -28,14 +31,13 @@ public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
     private Application app;
     @Override
     public void setTitle(String frameTitle) {
-        app.mainWindow().get().title().set(frameTitle);
+        app.mainFrame().get().title().set(Str.of(frameTitle));
     }
 
     public DefaultPlotConsoleFrame2(PlotConsole console, String title) throws HeadlessException {
         this.console = console;
-        app = SwingApplications.Apps.Default();
+        app = new DefaultApplication();
         UIPlafManager.INSTANCE.apply("FlatLight");
-        app.builder().mainWindowBuilder().get().workspaceFactory().set(SwingApplications.Workspaces.Default(wins.getDesktop()));
         app.i18n().bundles().add(new I18nResourceBundle("net.thevpc.scholar.hadruplot.console.HadrumathsPlot"));
         app.start();
 
@@ -46,8 +48,8 @@ public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
                 JInternalFrame internalFrame = (JInternalFrame) component.getClientProperty(JInternalFrame.class);
                 final JMenuItem windowMenu = createWindowMenu(internalFrame);
                 component.putClientProperty("menu",windowMenu);
-                app.tools().addAction().bind(()->wins.ensureVisible(internalFrame))
-                        .path("/mainWindow/menuBar/Windows/"+windowInfo.getTitle())
+                app.components().addAction().bind(()->wins.ensureVisible(internalFrame))
+                        .path("/mainFrame/menuBar/Windows/"+windowInfo.getTitle())
                         .tool();
             }
 
@@ -78,10 +80,10 @@ public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
     }
 
     public void setVisible(boolean b) {
-        boolean oldV = app.mainWindow().get().state().is(AppWindowState.ACTIVATED);
-        app.mainWindow().get().state().add(b?AppWindowState.ACTIVATED:AppWindowState.CLOSED);
+        boolean oldV = app.mainFrame().get().model().state().is(WindowState.ACTIVATED);
+        app.mainFrame().get().model().state().add(b? WindowState.ACTIVATED: WindowState.CLOSED);
 //        super.setVisible(b);
-        boolean newV = app.mainWindow().get().state().is(AppWindowState.ACTIVATED);
+        boolean newV = app.mainFrame().get().model().state().is(WindowState.ACTIVATED);
         if (oldV != newV) {
             if (newV) {
                 openFrames++;
@@ -102,18 +104,18 @@ public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
 //    }
 
     protected void prepareFileMenu() {
-        AppTools tools = app.tools();
-        tools.addFolder("/mainWindow/menuBar/File");
-        tools.addAction().bind(new PlotConsolePropertiesAction(this)).path( "/mainWindow/menuBar/File/Properties").tool();
-        tools.addSeparator("/mainWindow/menuBar/File/Sep1");
-        tools.addAction().bind(new LoadAction(this)).path( "/mainWindow/menuBar/File/LoadAction").tool();
-        tools.addSeparator("/mainWindow/menuBar/File/Sep1");
-        tools.addAction().bind(new CloseAction(this)).path( "/mainWindow/menuBar/File/CloseAction").tool();
-        tools.addAction().bind(new ExitAction(this)).path("/mainWindow/menuBar/File/ExitAction").tool();
-        SwingApplications.Helper.addViewActions(app);
+        AppContainerChildren<AppComponent> tools = app.components();
+        tools.addFolder("/mainFrame/menuBar/File");
+        tools.addAction().bind(new PlotConsolePropertiesAction(this)).path( "/mainFrame/menuBar/File/Properties").tool();
+        tools.addSeparator("/mainFrame/menuBar/File/Sep1");
+        tools.addAction().bind(new LoadAction(this)).path( "/mainFrame/menuBar/File/LoadAction").tool();
+        tools.addSeparator("/mainFrame/menuBar/File/Sep1");
+        tools.addAction().bind(new CloseAction(this)).path( "/mainFrame/menuBar/File/CloseAction").tool();
+        tools.addAction().bind(new ExitAction(this)).path("/mainFrame/menuBar/File/ExitAction").tool();
+        Applications.Helper.addViewActions(app);
 
-        SwingApplications.Helper.addWindowsActions(app,wins.getDesktop());
-        tools.addSeparator("/mainWindow/menuBar/Windows/Separator");
+//        Applications.Helper.addWindowsActions(app,wins.getDesktop());
+        tools.addSeparator("/mainFrame/menuBar/Windows/Separator");
 
 //        recentFilesMenu = new RecentFilesMenu("Recent Files", new RecentFilesPropertiesModel(new File(System.getProperty("user.dir") + "/.java/plotconsole.xml")));
 //        recentFilesMenu.addFileSelectedListener(
@@ -340,7 +342,7 @@ public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
 
     @Override
     public Component frameComponent() {
-        return (Component) app.mainWindow().get().component();
+        return (Component) app.mainFrame().get().component();
     }
 
     @Override
@@ -388,7 +390,7 @@ public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
     }
     public void closeFrame(){
         setVisible(false);
-        app.mainWindow().get().state().add(AppWindowState.CLOSED);
+        app.mainFrame().get().state().add(WindowState.CLOSED);
         if (openFrames <= 0) {
             System.exit(0);
         }

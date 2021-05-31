@@ -1,12 +1,12 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.util;
 
+import net.thevpc.echo.iconset.IconSets;
+import net.thevpc.echo.swing.icons.SwingAppImage;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.HadruwavesStudio;
 
 import javax.swing.tree.DefaultTreeCellRenderer;
 import java.awt.*;
 import javax.swing.JTree;
-import net.thevpc.common.iconset.IconSets;
-//import net.thevpc.common.iconset.PIconSet;
 
 public class DefaultAppTreeCellRenderer extends DefaultTreeCellRenderer {
 
@@ -27,7 +27,9 @@ public class DefaultAppTreeCellRenderer extends DefaultTreeCellRenderer {
         if (leaf) {
 //            super.setIcon(iconSet.icon("Item").get());
         } else {
-            super.setIcon(expanded ? iconSet.icon("OpenFolder").get() : iconSet.icon("Folder").get());
+            super.setIcon(
+                    SwingAppImage.imageIconOf(expanded ? iconSet.icon("OpenFolder").get() : iconSet.icon("Folder").get())
+            );
         }
         return c;
     }

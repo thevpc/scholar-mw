@@ -20,16 +20,16 @@ public class HWProjectFolderHelper {
 
     public HWProjectFolderHelper(HWProjectComponentGroup thisAsParent, Supplier<HWSolution> solution) {
         this.thisAsParent = thisAsParent;
-        children.listeners().add(new PropertyListener() {
+        children.onChange(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
-                AbstractHWProjectComponent o = event.getOldValue();
+                AbstractHWProjectComponent o = event.oldValue();
                 if (o != null) {
                     o.solution.set(null);
                     o.parentPath.set(null);
                     o.parent.set(null);
                 }
-                AbstractHWProjectComponent n = event.getNewValue();
+                AbstractHWProjectComponent n = event.newValue();
                 if (n != null) {
                     n.solution.set(solution.get());
                     n.parent.set(thisAsParent);

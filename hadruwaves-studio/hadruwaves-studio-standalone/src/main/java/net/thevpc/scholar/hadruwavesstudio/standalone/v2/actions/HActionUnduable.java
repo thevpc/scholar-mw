@@ -5,7 +5,7 @@
  */
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.actions;
 
-import net.thevpc.echo.AppUndoableActionSupplier;
+import net.thevpc.echo.api.AppUndoableActionSupplier;
 import net.thevpc.echo.Application;
 import net.thevpc.echo.swing.helpers.actions.SwingAbstractAppAction;
 

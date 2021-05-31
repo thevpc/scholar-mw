@@ -6,8 +6,8 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.trees;
 
 import net.thevpc.echo.Application;
-import net.thevpc.echo.swing.core.PValueViewProperty;
-import net.thevpc.echo.swing.core.PValueViewPropertyReadOnly;
+import net.thevpc.echo.impl.PValueViewProperty;
+import net.thevpc.echo.impl.PValueViewPropertyReadOnly;
 import net.thevpc.scholar.hadrumaths.geom.Dimension;
 import net.thevpc.scholar.hadruwaves.Boundary;
 import net.thevpc.scholar.hadruwaves.project.scene.Element3DTemplate;
@@ -19,7 +19,7 @@ import net.thevpc.scholar.hadruwaves.project.scene.elem.Element3DPolygonTemplate
 import net.thevpc.scholar.hadruwaves.util.ProjectFormatter;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.util.HWProjectItem;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.util.PValueViewPropertyE;
-import net.thevpc.echo.swing.core.DefaultPropertiesNodeFolder;
+import net.thevpc.echo.impl.DefaultPropertiesNodeFolder;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.util.DefaultHWPropertiesTree;
 import net.thevpc.scholar.hadruwaves.project.scene.HWProjectPiece;

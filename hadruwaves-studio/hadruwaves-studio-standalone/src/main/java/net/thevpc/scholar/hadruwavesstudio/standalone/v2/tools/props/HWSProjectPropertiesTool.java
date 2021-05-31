@@ -1,5 +1,8 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props;
 
+import net.thevpc.echo.api.components.AppComponent;
+import net.thevpc.echo.api.AppContainerChildren;
+import net.thevpc.echo.ContextMenu;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.components.CustomJXTreeTableImpl;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.components.AppPropertiesNodeFolderTreeTableNode;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.components.AppPropertiesNodeItemTreeTableNode;
@@ -16,15 +19,14 @@ import javax.swing.*;
 import javax.swing.tree.TreePath;
 import java.util.ArrayList;
 import java.util.function.Predicate;
-import net.thevpc.echo.AppPopupMenu;
+
 import net.thevpc.echo.AppTools;
-import net.thevpc.echo.swing.core.EmptyPropertiesTree;
+import net.thevpc.echo.impl.EmptyPropertiesTree;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.AbstractToolWindowPanel;
-import net.thevpc.echo.AppPropertiesNode;
-import net.thevpc.echo.AppPropertiesNodeFolder;
-import net.thevpc.echo.AppPropertiesNodeItem;
-import net.thevpc.echo.AppPropertiesTree;
-import net.thevpc.echo.swing.SwingApplications;
+import net.thevpc.echo.api.AppPropertiesNode;
+import net.thevpc.echo.api.AppPropertiesNodeFolder;
+import net.thevpc.echo.api.AppPropertiesNodeItem;
+import net.thevpc.echo.api.AppPropertiesTree;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.actions.MoMNewFunctionGroupListAction;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.actions.MoMNewFunctionGroupMeshAction;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.actions.MoMNewFunctionGroupSeqAction;
@@ -35,7 +37,7 @@ import net.thevpc.scholar.hadruwavesstudio.standalone.v2.util.AppCompUtils;
 public class HWSProjectPropertiesTool extends AbstractToolWindowPanel {
 
     private JXTreeTable tree;
-    private AppPopupMenu popUpMenu;
+    private ContextMenu popUpMenu;
 
     public HWSProjectPropertiesTool(HadruwavesStudio studio) {
         super(studio);
@@ -49,17 +51,17 @@ public class HWSProjectPropertiesTool extends AbstractToolWindowPanel {
 //                return e;
 //            }
 //        });
-        app().activeProperties().listeners().add(new PropertyListener() {
+        app().activeProperties().onChange(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
-                if (event.getProperty().name().equals("activeProperties")) {
+                if (event.property().propertyName().equals("activeProperties")) {
                     updateRoot();
                 }
             }
         });
         updateRoot();
         setContent(new JScrollPane(tree));
-        popUpMenu = SwingApplications.Components.createPopupMenu(studio.app());
+        popUpMenu = new ContextMenu(app());
         AppCompUtils.bind(popUpMenu, tree, this::preparePopupBeforeShowing);
         createPopUpMenu();
     }
@@ -73,20 +75,20 @@ public class HWSProjectPropertiesTool extends AbstractToolWindowPanel {
         AppCompUtils.updateUI(popUpMenu);
     }
 
-    public AppTools popupTools() {
-        return popUpMenu.tools();
+    public AppContainerChildren<AppComponent> popupTools() {
+        return popUpMenu.children();
     }
 
     private void createPopUpMenu() {
-        popupTools().addAction(new MoMNewFunctionGroupListAction(studio()), "/moMNewFunctionGroupList");
-        popupTools().addAction(new MoMNewFunctionGroupSeqAction(studio()), "/moMNewFunctionGroupSeq");
-        popupTools().addAction(new MoMNewFunctionGroupMeshAction(studio()), "/moMNewFunctionGroupMesh");
+        popupTools().addAction().bindUndo(new MoMNewFunctionGroupListAction(studio())).path("/moMNewFunctionGroupList").tool();
+        popupTools().addAction().bindUndo(new MoMNewFunctionGroupSeqAction(studio())).path("/moMNewFunctionGroupSeq").tool();
+        popupTools().addAction().bindUndo(new MoMNewFunctionGroupMeshAction(studio())).path("/moMNewFunctionGroupMesh").tool();
         popupTools().addSeparator("/separator1");
-        popupTools().addAction(new RemoveFromPropsAction(studio()), "/removeFromProps");
+        popupTools().addAction().bindUndo(new RemoveFromPropsAction(studio())).path("/removeFromProps").tool();
     }
 
     public void refreshTools() {
-        app().tools().refresh();
+//        app().model().refresh();
     }
 
     public DefaultMutableTreeTableNode create(AppPropertiesNode o) {

@@ -25,17 +25,17 @@
         <dependency>
             <groupId>net.thevpc.echo</groupId>
             <artifactId>echo-swing</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>net.thevpc.echo</groupId>
             <artifactId>echo-swing-swingx</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>net.thevpc.echo</groupId>
             <artifactId>echo-swing-mydoggy</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
         </dependency>
        
         <dependency>

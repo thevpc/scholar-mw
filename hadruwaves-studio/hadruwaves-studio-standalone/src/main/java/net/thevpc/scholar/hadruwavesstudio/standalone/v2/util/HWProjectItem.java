@@ -23,7 +23,7 @@ import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer.componen
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.trees.HWProjectConfigurationPropertiesAware;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.trees.HWProjectFolderPropertiesAware;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationElement;
-import net.thevpc.echo.AppPropertiesTree;
+import net.thevpc.echo.api.AppPropertiesTree;
 import net.thevpc.scholar.hadruwaves.project.HWProjectComponent;
 import net.thevpc.scholar.hadruwaves.project.scene.HWProjectComponentGroup;
 import net.thevpc.scholar.hadruwaves.project.scene.HWProjectPiece;

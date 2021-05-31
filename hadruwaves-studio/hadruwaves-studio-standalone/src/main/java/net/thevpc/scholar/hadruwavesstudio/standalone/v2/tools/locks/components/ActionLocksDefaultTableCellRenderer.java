@@ -1,6 +1,7 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.locks.components;
 
 import net.thevpc.echo.Application;
+import net.thevpc.echo.swing.icons.SwingAppImage;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -25,7 +26,7 @@ class ActionLocksDefaultTableCellRenderer extends DefaultTableCellRenderer {
                 hasFocus, row, column);
         if(column==4){
             super.setIcon(
-                    app.iconSets().icon("Delete").get()
+                    SwingAppImage.imageIconOf(app.iconSets().icon("Delete").get())
             );
         }
         return c;

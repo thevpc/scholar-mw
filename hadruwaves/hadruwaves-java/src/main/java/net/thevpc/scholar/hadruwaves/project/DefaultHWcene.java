@@ -26,14 +26,14 @@ public class DefaultHWcene implements HWProjectScene {
 
     public DefaultHWcene(HWProject project) {
         this.project.set(project);
-        components.listeners().add(x -> {
-            AbstractHWProjectComponent e = x.getNewValue();
+        components.onChange(x -> {
+            AbstractHWProjectComponent e = x.newValue();
             if (e != null) {
                 e.project.set(project);
             }
-            if (x.getNewValue() instanceof HWProjectComponentGroup) {
+            if (x.newValue() instanceof HWProjectComponentGroup) {
                 for (HWProjectComponent child : ((HWProjectComponentGroup) x).children().values().toList()) {
-                    WritableList<HWProjectComponent> components = x.getProperty();
+                    WritableList<HWProjectComponent> components = x.property();
                     components.remove(child);
                 }
             }

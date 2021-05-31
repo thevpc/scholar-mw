@@ -67,9 +67,9 @@ public abstract class AppDialog {
         }
         Object parent = this.parent;
         if (parent instanceof Application) {
-            parent = ((Application) parent).mainWindow().get().component();
+            parent = ((Application) parent).mainFrame().get().component();
         } else if (parent instanceof HadruwavesStudio) {
-            parent = ((HadruwavesStudio) parent).app().mainWindow().get().component();
+            parent = ((HadruwavesStudio) parent).app().mainFrame().get().component();
         }
         if (parent == null) {
             dialog = new JXDialog(component);

@@ -6,15 +6,15 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.view3d.actions;
 
 import java.awt.event.ActionEvent;
-import net.thevpc.echo.AbstractAppAction;
 import net.thevpc.echo.Application;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.HadruwavesStudio;
+import net.thevpc.scholar.hadruwavesstudio.standalone.v2.actions.HAction;
 
 /**
  *
  * @author vpc
  */
-public class ZoomInAction extends AbstractAppAction {
+public class ZoomInAction extends HAction {
 
     private final HadruwavesStudio studio;
 

@@ -40,19 +40,19 @@ public class HWUtils {
                 }
             }
         });
-        a.app().iconSets().listeners().add(new PropertyListener() {
+        a.app().iconSets().onChange(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
                 e.run();
             }
         });
-        a.editorThemes().id().listeners().add(new PropertyListener() {
+        a.editorThemes().id().onChange(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
                 e.run();
             }
         });
-        a.editorThemes().usePlaf().listeners().add(new PropertyListener() {
+        a.editorThemes().usePlaf().onChange(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
                 e.run();

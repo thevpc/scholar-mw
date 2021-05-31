@@ -46,7 +46,7 @@ public class MoMCurrentAction extends AbstractHWSolverAction {
             HWSolver solver = context.studio().buildSolver(configuration);
             
             XyzSamplesDialog.Result r = xyzdialog.get(configuration);
-            context.app().runBack(() -> {
+            context.app().runWorker(() -> {
                 Object result = null;
                 String title2=title;
                 String icon="Chart";

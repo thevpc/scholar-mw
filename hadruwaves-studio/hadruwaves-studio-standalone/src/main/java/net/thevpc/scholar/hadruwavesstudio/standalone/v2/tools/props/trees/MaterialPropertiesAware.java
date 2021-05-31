@@ -6,10 +6,10 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.trees;
 
 import net.thevpc.common.props.Props;
-import net.thevpc.echo.swing.core.PValueViewProperty;
+import net.thevpc.echo.impl.PValueViewProperty;
 import net.thevpc.scholar.hadruwaves.Material;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.util.HWProjectItem;
-import net.thevpc.echo.swing.core.DefaultPropertiesNodeFolder;
+import net.thevpc.echo.impl.DefaultPropertiesNodeFolder;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.util.DefaultHWPropertiesTree;
 
 /**

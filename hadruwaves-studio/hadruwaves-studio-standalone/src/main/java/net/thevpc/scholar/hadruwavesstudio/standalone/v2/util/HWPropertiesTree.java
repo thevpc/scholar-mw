@@ -7,7 +7,7 @@ package net.thevpc.scholar.hadruwavesstudio.standalone.v2.util;
 
 import net.thevpc.scholar.hadruwaves.project.HWSolution;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
-import net.thevpc.echo.AppPropertiesTree;
+import net.thevpc.echo.api.AppPropertiesTree;
 
 /**
  *

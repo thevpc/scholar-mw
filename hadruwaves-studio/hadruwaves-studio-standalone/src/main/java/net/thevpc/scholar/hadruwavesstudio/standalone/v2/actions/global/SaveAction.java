@@ -10,25 +10,25 @@ import net.thevpc.common.props.PropertyEvent;
 import net.thevpc.common.props.PropertyListener;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.HadruwavesStudio;
 import net.thevpc.common.props.FileObject;
-import net.thevpc.echo.AbstractAppAction;
-import net.thevpc.echo.AppPropertiesTree;
+import net.thevpc.echo.api.AppPropertiesTree;
 import net.thevpc.echo.Application;
+import net.thevpc.scholar.hadruwavesstudio.standalone.v2.actions.HAction;
 
 /**
  *
  * @author vpc
  */
-public class SaveAction extends AbstractAppAction {
+public class SaveAction extends HAction{
 
     private final HadruwavesStudio outer;
 
     public SaveAction(Application aplctn, final HadruwavesStudio outer) {
         super(aplctn, "Save");
         this.outer = outer;
-        outer.app().activeProperties().listeners().add(new PropertyListener() {
+        outer.app().activeProperties().onChange(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
-                AppPropertiesTree a = event.getNewValue();
+                AppPropertiesTree a = event.newValue();
                 if (a != null) {
                     if (a.root().object() instanceof FileObject) {
                         setEnabled(true);
@@ -41,7 +41,7 @@ public class SaveAction extends AbstractAppAction {
             }
         });
     }
-
+   
     @Override
     public void actionPerformedImpl(ActionEvent e) {
         AppPropertiesTree a = outer.app().activeProperties().get();

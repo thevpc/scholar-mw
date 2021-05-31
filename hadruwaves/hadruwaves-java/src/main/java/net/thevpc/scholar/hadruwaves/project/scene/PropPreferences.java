@@ -7,11 +7,10 @@ package net.thevpc.scholar.hadruwaves.project.scene;
 
 import java.awt.Color;
 import java.awt.Paint;
-import net.thevpc.common.props.PropertyListeners;
-import net.thevpc.common.props.Props;
-import net.thevpc.common.props.WithListeners;
-import net.thevpc.common.props.WritableValue;
-import net.thevpc.common.props.impl.PropertyListenersImpl;
+
+import net.thevpc.common.props.*;
+import net.thevpc.common.props.impl.DefaultPropertyListeners;
+import net.thevpc.common.props.impl.PropertyBase;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.core.ExtraPrefs;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.core.Preferences;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.geometry3d.Box3D;
@@ -20,12 +19,12 @@ import net.thevpc.scholar.hadruplot.libraries.calc3d.geometry3d.Box3D;
  *
  * @author vpc
  */
-public class PropPreferences implements WithListeners {
+public class PropPreferences extends PropertyBase {
 
-    protected PropertyListenersImpl listeners = new PropertyListenersImpl(this);
+    protected DefaultPropertyListeners listeners = new DefaultPropertyListeners(this);
 
     @Override
-    public PropertyListeners listeners() {
+    public PropertyListeners events() {
         return listeners;
     }
 
@@ -39,23 +38,23 @@ public class PropPreferences implements WithListeners {
     /*
      * Renderer Settings
      */
-    private WritableValue<Boolean> antiAliasingEnabled = Props.of("antiAliasingEnabled").valueOf(Boolean.class, false);
-    private WritableValue<Boolean> perspectiveEnabled = Props.of("perspectiveEnabled").valueOf(Boolean.class, false);
-    private WritableValue<Boolean> steroscopyEnabled = Props.of("steroscopyEnabled").valueOf(Boolean.class, false);
+    private WritableBoolean antiAliasingEnabled = Props.of("antiAliasingEnabled").booleanOf(false);
+    private WritableBoolean perspectiveEnabled = Props.of("perspectiveEnabled").booleanOf(false);
+    private WritableBoolean steroscopyEnabled = Props.of("steroscopyEnabled").booleanOf(false);
     private WritableValue<Integer> steroscopicMode = Props.of("steroscopicMode").valueOf(Integer.class, 0);
     private WritableValue<Paint> backColor = Props.of("backColor").valueOf(Paint.class, Color.red);
-    private WritableValue<Boolean> fogEnabled = Props.of("fogEnabled").valueOf(Boolean.class, false);
-    private WritableValue<Boolean> light1Enabled = Props.of("light1Enabled").valueOf(Boolean.class, false);
-    private WritableValue<Boolean> light2Enabled = Props.of("light2Enabled").valueOf(Boolean.class, false);
-    private WritableValue<Boolean> light3Enabled = Props.of("light3Enabled").valueOf(Boolean.class, false);
+    private WritableBoolean fogEnabled = Props.of("fogEnabled").booleanOf(false);
+    private WritableBoolean light1Enabled = Props.of("light1Enabled").booleanOf(false);
+    private WritableBoolean light2Enabled = Props.of("light2Enabled").booleanOf(false);
+    private WritableBoolean light3Enabled = Props.of("light3Enabled").booleanOf(false);
 
     /*
      * Axis Settings
      */
-    private WritableValue<Boolean> xAxisVisible = Props.of("xAxisVisible").valueOf(Boolean.class, false);
-    private WritableValue<Boolean> yAxisVisible = Props.of("yAxisVisible").valueOf(Boolean.class, false);
-    private WritableValue<Boolean> zAxisVisible = Props.of("zAxisVisible").valueOf(Boolean.class, false);
-    private WritableValue<Boolean> xyGridVisible = Props.of("xyGridVisible").valueOf(Boolean.class, false);
+    private WritableBoolean xAxisVisible = Props.of("xAxisVisible").booleanOf(false);
+    private WritableBoolean yAxisVisible = Props.of("yAxisVisible").booleanOf(false);
+    private WritableBoolean zAxisVisible = Props.of("zAxisVisible").booleanOf(false);
+    private WritableBoolean xyGridVisible = Props.of("xyGridVisible").booleanOf(false);
     private WritableValue<Box3D> axesBox = Props.of("axesBox").valueOf(Box3D.class, null);
     private WritableValue<Integer> axisTicks = Props.of("axisTicks").valueOf(Integer.class, 0);
     private WritableValue<Integer> axisWidth = Props.of("axisWidth").valueOf(Integer.class, 0);
@@ -63,21 +62,22 @@ public class PropPreferences implements WithListeners {
     /*
      * Box Settings
      */
-    private WritableValue<Boolean> gridsVisible = Props.of("gridsVisible").valueOf(Boolean.class, false);
-    private WritableValue<Boolean> planesVisible = Props.of("planesVisible").valueOf(Boolean.class, false);
-    private WritableValue<Boolean> labelsVisible = Props.of("labelsVisible").valueOf(Boolean.class, false);
-    private WritableValue<Boolean> boxVisible = Props.of("boxVisible").valueOf(Boolean.class, false);
-    private WritableValue<Boolean> ticksVisible = Props.of("ticksVisible").valueOf(Boolean.class, false);
+    private WritableBoolean gridsVisible = Props.of("gridsVisible").booleanOf(false);
+    private WritableBoolean planesVisible = Props.of("planesVisible").booleanOf(false);
+    private WritableBoolean labelsVisible = Props.of("labelsVisible").booleanOf(false);
+    private WritableBoolean boxVisible = Props.of("boxVisible").booleanOf(false);
+    private WritableBoolean ticksVisible = Props.of("ticksVisible").booleanOf(false);
 
-    private WritableValue<Boolean> ticks = Props.of("ticks").valueOf(Boolean.class, false);
+    private WritableBoolean ticks = Props.of("ticks").booleanOf(false);
     private WritableValue<Integer> divisions = Props.of("divisions").valueOf(Integer.class, 0);
     private WritableValue<Integer> subDivisions = Props.of("subDivisions").valueOf(Integer.class, 0);
 
     private WritableValue<Double> fov = Props.of("fov").valueOf(Double.class, 0.0);
-    private WritableValue<Boolean> axisVisible = Props.of("axisVisible").valueOf(Boolean.class, true);
-    private WritableValue<Boolean> gridXYVisible = Props.of("gridXYVisible").valueOf(Boolean.class, true);
+    private WritableBoolean axisVisible = Props.of("axisVisible").booleanOf( true);
+    private WritableBoolean gridXYVisible = Props.of("gridXYVisible").booleanOf( true);
 
-    public PropPreferences() {
+    public PropPreferences(String name) {
+        super(name);
         listeners.addDelegate(axisVisible);
         listeners.addDelegate(gridXYVisible);
         listeners.addDelegate(clipBox);
@@ -126,15 +126,15 @@ public class PropPreferences implements WithListeners {
         return clipBox;
     }
 
-    public WritableValue<Boolean> antiAliasingEnabled() {
+    public WritableBoolean antiAliasingEnabled() {
         return antiAliasingEnabled;
     }
 
-    public WritableValue<Boolean> perspectiveEnabled() {
+    public WritableBoolean perspectiveEnabled() {
         return perspectiveEnabled;
     }
 
-    public WritableValue<Boolean> steroscopyEnabled() {
+    public WritableBoolean steroscopyEnabled() {
         return steroscopyEnabled;
     }
 
@@ -146,35 +146,35 @@ public class PropPreferences implements WithListeners {
         return backColor;
     }
 
-    public WritableValue<Boolean> fogEnabled() {
+    public WritableBoolean fogEnabled() {
         return fogEnabled;
     }
 
-    public WritableValue<Boolean> light1Enabled() {
+    public WritableBoolean light1Enabled() {
         return light1Enabled;
     }
 
-    public WritableValue<Boolean> light2Enabled() {
+    public WritableBoolean light2Enabled() {
         return light2Enabled;
     }
 
-    public WritableValue<Boolean> light3Enabled() {
+    public WritableBoolean light3Enabled() {
         return light3Enabled;
     }
 
-    public WritableValue<Boolean> xAxisVisible() {
+    public WritableBoolean xAxisVisible() {
         return xAxisVisible;
     }
 
-    public WritableValue<Boolean> yAxisVisible() {
+    public WritableBoolean yAxisVisible() {
         return yAxisVisible;
     }
 
-    public WritableValue<Boolean> zAxisVisible() {
+    public WritableBoolean zAxisVisible() {
         return zAxisVisible;
     }
 
-    public WritableValue<Boolean> xyGridVisible() {
+    public WritableBoolean xyGridVisible() {
         return xyGridVisible;
     }
 
@@ -194,27 +194,27 @@ public class PropPreferences implements WithListeners {
         return axisColor;
     }
 
-    public WritableValue<Boolean> gridsVisible() {
+    public WritableBoolean gridsVisible() {
         return gridsVisible;
     }
 
-    public WritableValue<Boolean> planesVisible() {
+    public WritableBoolean planesVisible() {
         return planesVisible;
     }
 
-    public WritableValue<Boolean> labelsVisible() {
+    public WritableBoolean labelsVisible() {
         return labelsVisible;
     }
 
-    public WritableValue<Boolean> boxVisible() {
+    public WritableBoolean boxVisible() {
         return boxVisible;
     }
 
-    public WritableValue<Boolean> ticksVisible() {
+    public WritableBoolean ticksVisible() {
         return ticksVisible;
     }
 
-    public WritableValue<Boolean> ticks() {
+    public WritableBoolean ticks() {
         return ticks;
     }
 
@@ -230,11 +230,11 @@ public class PropPreferences implements WithListeners {
         return fov;
     }
 
-    public WritableValue<Boolean> axisVisible() {
+    public WritableBoolean axisVisible() {
         return axisVisible;
     }
 
-    public WritableValue<Boolean> gridXYVisible() {
+    public WritableBoolean gridXYVisible() {
         return gridXYVisible;
     }
 

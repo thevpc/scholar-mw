@@ -17,16 +17,16 @@ public abstract class AbstractHWProjectComponent implements HWProjectComponent {
 
     protected final WritableValue<HWSolution> solution = Props.of("solution").valueOf(HWSolution.class, null);
     protected final WritableValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
-    private final WritableValue<String> name = Props.of("name").valueOf(String.class, null);
+    private final WritableString name = Props.of("name").valueOf(String.class, null);
 
     protected final WritableValue<HWProjectComponentGroup> parent = Props.of("parent").valueOf(HWProjectComponentGroup.class, null);
-    protected final WritableValue<String> parentPath = Props.of("parentPath").valueOf(String.class, null);
+    protected final WritableString parentPath = Props.of("parentPath").valueOf(String.class, null);
 
     private final WritablePExpression<Boolean> enabled = Props2.of("enabled").exprBooleanOf(true);
-    private final WritableValue<Boolean> visible = Props.of("visible").valueOf(Boolean.class, true);
-    private final WritableValue<Boolean> selected = Props.of("selected").valueOf(Boolean.class, true);
+    private final WritableBoolean visible = Props.of("visible").valueOf(Boolean.class, true);
+    private final WritableBoolean selected = Props.of("selected").valueOf(Boolean.class, true);
     private final WritableList<Annotation3D> annotations = Props.of("annotations").listOf(Annotation3D.class);
-    private final WritableValue<String> description = Props.of("description").valueOf(String.class, null);
+    private final WritableString description = Props.of("description").valueOf(String.class, null);
 
     @Override
     public ObservableValue<String> parentPath() {
@@ -48,16 +48,16 @@ public abstract class AbstractHWProjectComponent implements HWProjectComponent {
         return parent.readOnly();
     }
 
-    public WritableValue<String> name() {
+    public WritableString name() {
         return name;
     }
 
-    public WritableValue<String> description() {
+    public WritableString description() {
         return description;
     }
 
     @Override
-    public WritableValue<Boolean> selected() {
+    public WritableBoolean selected() {
         return selected;
     }
 
@@ -67,7 +67,7 @@ public abstract class AbstractHWProjectComponent implements HWProjectComponent {
     }
 
     @Override
-    public WritableValue<Boolean> visible() {
+    public WritableBoolean visible() {
         return visible;
     }
 

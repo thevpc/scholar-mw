@@ -5,12 +5,12 @@
  */
 package net.thevpc.scholar.hadruwaves.project;
 
-import net.thevpc.common.props.WritableValue;
+import net.thevpc.common.props.WritableBoolean;
 
 /**
  *
  * @author vpc
  */
 public interface WritableSelectable {
-    WritableValue<Boolean> selected();
+    WritableBoolean selected();
 }

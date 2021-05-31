@@ -44,7 +44,7 @@ public class MoMPoyntingSphereAction extends AbstractHWSolverAction {
         if (polardialog.show()) {
             HWSolver solver = context.studio().buildSolver(configuration);
             ThetaPhiRSamplesDialog.Result r = polardialog.get(configuration);
-            context.app().runBack(() -> {
+            context.app().runWorker(() -> {
                 String icon="Chart";
                 Object result = solver.poyntingVector().spherical()
                         .evalModuleMatrix(

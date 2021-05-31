@@ -1,17 +1,13 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.components;
 
-import net.thevpc.common.props.Props;
-import net.thevpc.common.props.WritableLiMap;
-import net.thevpc.common.props.WritableValue;
-//import net.thevpc.common.props.WritableLiMap;
-//import net.thevpc.common.props.WritableValue;
+import net.thevpc.common.props.*;
 
 public class AppEditorThemes {
     private WritableLiMap<String, HWTextEditorTheme> editorThemes = Props.of("editorThemes").lmapOf(String.class, HWTextEditorTheme.class,
             x -> x.getId()
     );
-    private WritableValue<String> editorTheme = Props.of("editorTheme").valueOf(String.class, "Default");
-    private WritableValue<Boolean> usePlaf = Props.of("usePlaf").valueOf(Boolean.class, false);
+    private WritableString editorTheme = Props.of("editorTheme").stringOf("Default");
+    private WritableBoolean usePlaf = Props.of("usePlaf").booleanOf(false);
 
     public AppEditorThemes() {
         editorThemes.add(new HWTextEditorTheme("default", "Default", "org/fife/ui/rsyntaxtextarea/themes/default.xml"));
@@ -26,11 +22,11 @@ public class AppEditorThemes {
         return editorThemes;
     }
 
-    public WritableValue<String> id() {
+    public WritableString id() {
         return editorTheme;
     }
 
-    public WritableValue<Boolean> usePlaf() {
+    public WritableBoolean usePlaf() {
         return usePlaf;
     }
 }

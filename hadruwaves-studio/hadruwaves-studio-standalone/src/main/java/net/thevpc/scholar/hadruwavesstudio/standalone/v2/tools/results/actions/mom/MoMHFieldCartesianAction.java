@@ -46,7 +46,7 @@ public class MoMHFieldCartesianAction extends AbstractHWSolverAction {
             HWSolver solver = context.studio().buildSolver(configuration);
             
             XyzSamplesDialog.Result r = xyzdialog.get(configuration);
-            context.app().runBack(() -> {
+            context.app().runWorker(() -> {
                 String icon="Chart";
                 Object result = null;
                 String title2=title;

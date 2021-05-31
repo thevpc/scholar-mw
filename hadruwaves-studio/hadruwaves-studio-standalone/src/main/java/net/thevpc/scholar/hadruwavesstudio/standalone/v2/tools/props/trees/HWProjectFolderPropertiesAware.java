@@ -8,8 +8,8 @@ package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.trees;
 import java.io.File;
 import net.thevpc.echo.Application;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.util.HWProjectItem;
-import net.thevpc.echo.swing.core.DefaultPropertiesNodeFolder;
-import net.thevpc.echo.swing.core.PValueViewPropertyReadOnly;
+import net.thevpc.echo.impl.DefaultPropertiesNodeFolder;
+import net.thevpc.echo.impl.PValueViewPropertyReadOnly;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer.components.HWProjectFolder;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.util.DefaultHWPropertiesTree;
 

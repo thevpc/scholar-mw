@@ -7,9 +7,9 @@ package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results.actions;
 
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import net.thevpc.echo.AppEvent;
-import net.thevpc.echo.AppUndoableAction;
-import net.thevpc.echo.UndoableAction;
+import net.thevpc.echo.api.AppEvent;
+import net.thevpc.echo.swing.helpers.actions.SwingAppUndoableAction;
+import net.thevpc.echo.api.UndoableAction;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results.HWSProjectResultsTool;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results.results.DefaultHWSolverActionContext;
@@ -20,7 +20,7 @@ import net.thevpc.common.msg.Message;
  *
  * @author vpc
  */
-public class RunSolverAction extends AppUndoableAction {
+public class RunSolverAction extends SwingAppUndoableAction {
 
     HWSProjectResultsTool outer;
 

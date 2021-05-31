@@ -3,10 +3,9 @@ package net.thevpc.scholar.hadruwavesstudio.standalone.v2.util;
 import net.thevpc.common.props.PropertyType;
 import net.thevpc.scholar.hadruwaves.props.PExpression;
 import net.thevpc.scholar.hadruwaves.props.WritablePExpression;
-import net.thevpc.echo.swing.core.AbstractPropertiesNode;
+import net.thevpc.echo.impl.AbstractPropertiesNode;
 import net.thevpc.scholar.hadrumaths.units.UnitType;
-import net.thevpc.echo.AppPropertiesNodeItem;
-import net.thevpc.echo.AppPropertiesTree;
+import net.thevpc.echo.api.AppPropertiesNodeItem;
 
 public class PValueViewPropertyE extends AbstractPropertiesNode implements AppPropertiesNodeItem {
 
@@ -23,7 +22,7 @@ public class PValueViewPropertyE extends AbstractPropertiesNode implements AppPr
         super(type);
         this.type = type;
         this.expr = wv;
-        this.newName = newName == null ? wv.name() : newName;
+        this.newName = newName == null ? wv.propertyName() : newName;
     }
 
     public UnitType unitType() {

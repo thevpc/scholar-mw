@@ -5,14 +5,14 @@ import net.thevpc.common.props.WritableValue;
 
 public abstract class AbstractHWSolverTemplate implements HWSolverTemplate {
 
-    private WritableValue<String> name = Props.of("name").valueOf(String.class, null);
-    private WritableValue<String> description = Props.of("description").valueOf(String.class, null);
+    private WritableString name = Props.of("name").valueOf(String.class, null);
+    private WritableString description = Props.of("description").valueOf(String.class, null);
 
-    public WritableValue<String> name() {
+    public WritableString name() {
         return name;
     }
 
-    public WritableValue<String> description() {
+    public WritableString description() {
         return description;
     }
 

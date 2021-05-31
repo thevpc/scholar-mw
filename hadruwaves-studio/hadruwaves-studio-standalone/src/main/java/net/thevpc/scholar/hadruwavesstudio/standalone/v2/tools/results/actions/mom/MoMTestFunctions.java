@@ -35,7 +35,7 @@ public class MoMTestFunctions extends AbstractHWSolverAction {
     public void run(HWSolverActionContext context) {
         HWConfigurationRun configuration = context.configuration();
         String title = name()+configuration.discriminatorStringSuffix();
-        context.app().runBack(() -> {
+        context.app().runWorker(() -> {
             String icon="Chart";
             HWSolverMoM solver = (HWSolverMoM)context.studio().buildSolver(configuration);
             Object result = solver.str().testFunctions().arr();

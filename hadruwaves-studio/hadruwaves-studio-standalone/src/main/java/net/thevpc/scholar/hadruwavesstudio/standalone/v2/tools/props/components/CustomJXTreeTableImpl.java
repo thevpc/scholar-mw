@@ -17,7 +17,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.tree.TreePath;
 import net.thevpc.common.swing.color.ColorChooserEditor;
-import net.thevpc.echo.AppPropertiesNodeItem;
+import net.thevpc.echo.api.AppPropertiesNodeItem;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.HadruwavesStudio;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.components.NumberExpressionDialog;

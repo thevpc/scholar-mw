@@ -6,9 +6,9 @@ import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 
 public interface HWSolverTemplate {
 
-    WritableValue<String> name();
+    WritableString name();
 
-    WritableValue<String> description();
+    WritableString description();
 
     HWSolver eval(HWConfigurationRun configuration, ProgressMonitorFactory taskMonitorManager);
 

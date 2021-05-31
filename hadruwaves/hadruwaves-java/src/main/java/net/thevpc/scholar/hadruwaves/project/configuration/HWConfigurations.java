@@ -1,7 +1,8 @@
 package net.thevpc.scholar.hadruwaves.project.configuration;
 
 import net.thevpc.common.props.*;
-import net.thevpc.common.props.impl.PropertyListenersImpl;
+import net.thevpc.common.props.impl.DefaultPropertyListeners;
+import net.thevpc.common.props.impl.PropertyBase;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonSerializable;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 import net.thevpc.tson.TsonObjectContext;
 import net.thevpc.scholar.hadruwaves.project.HWSolution;
 
-public class HWConfigurations implements TsonSerializable, WithListeners {
+public class HWConfigurations extends PropertyBase implements TsonSerializable{
 
     private HWConfigurationFolderHelper childrenHelper = new HWConfigurationFolderHelper(null, () -> project().get());
     private WritableValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
@@ -21,7 +22,7 @@ public class HWConfigurations implements TsonSerializable, WithListeners {
             .adjust(new PropertyAdjuster() {
                 @Override
                 public Object adjustNewValue(PropertyEvent event) {
-                    Object nv = event.getNewValue();
+                    Object nv = event.newValue();
                     if (nv == null) {
                         return findInitialDefault();
                     }
@@ -29,7 +30,7 @@ public class HWConfigurations implements TsonSerializable, WithListeners {
                 }
             })
             .valueOf(HWConfigurationRun.class, null);
-    private PropertyListenersImpl listeners = new PropertyListenersImpl(this);
+    private DefaultPropertyListeners listeners = new DefaultPropertyListeners(this);
 
     public HWConfigurations(HWProject project0) {
         project.set(project0);
@@ -40,9 +41,9 @@ public class HWConfigurations implements TsonSerializable, WithListeners {
         aDefault.name().vetos().add(new PropertyVeto() {
             @Override
             public void vetoableChange(PropertyEvent event) {
-                switch (event.getAction()) {
+                switch (event.eventType()) {
                     case UPDATE: {
-                        if (!"default".equals(event.getNewValue())) {
+                        if (!"default".equals(event.newValue())) {
                             throw new IllegalArgumentException("Default Configuration cannot be renamed");
                         }
                         break;
@@ -55,9 +56,9 @@ public class HWConfigurations implements TsonSerializable, WithListeners {
         children().vetos().add(new PropertyVeto() {
             @Override
             public void vetoableChange(PropertyEvent event) {
-                switch (event.getAction()) {
+                switch (event.eventType()) {
                     case REMOVE: {
-                        WritableNamedNode<HWConfigurationElement> oldValue = event.getOldValue();
+                        WritableNamedNode<HWConfigurationElement> oldValue = event.oldValue();
                         if ("default".equals(oldValue.get().name().get())) {
                             throw new IllegalArgumentException("Default Configuration cannot be removed");
                         }
@@ -65,17 +66,17 @@ public class HWConfigurations implements TsonSerializable, WithListeners {
                 }
             }
         });
-        children().listeners().add(new PropertyListener() {
+        children().onChange(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
-                Object ov = event.getOldValue();
+                Object ov = event.oldValue();
                 if (ov instanceof AbstractHWConfigurationElement) {
                     WritableValue<HWProject> p = (WritableValue<HWProject>) (((AbstractHWConfigurationElement) ov).project());
                     p.set(null);
                     WritableValue<HWSolution> s = (WritableValue<HWSolution>) (((AbstractHWConfigurationElement) ov).solution());
                     s.set(project.get().solution().get());
                 }
-                Object nv = event.getNewValue();
+                Object nv = event.newValue();
                 if (nv instanceof AbstractHWConfigurationElement) {
                     WritableValue<HWProject> p = (WritableValue<HWProject>) (((AbstractHWConfigurationElement) nv).project());
                     p.set(project.get());
@@ -103,7 +104,7 @@ public class HWConfigurations implements TsonSerializable, WithListeners {
     }
 
     @Override
-    public PropertyListeners listeners() {
+    public PropertyListeners events() {
         return listeners;
     }
 

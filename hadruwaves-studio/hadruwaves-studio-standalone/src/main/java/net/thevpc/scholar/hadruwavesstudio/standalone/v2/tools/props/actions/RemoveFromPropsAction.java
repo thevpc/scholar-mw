@@ -7,13 +7,12 @@ package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.actions;
 
 import java.util.logging.Level;
 import javax.swing.JOptionPane;
-import net.thevpc.echo.AppEvent;
-import net.thevpc.echo.AppPropertiesNode;
+import net.thevpc.echo.api.AppEvent;
+import net.thevpc.echo.api.AppPropertiesNode;
 import net.thevpc.common.msg.JFormattedMessage;
-import net.thevpc.echo.UndoableAction;
-import net.thevpc.echo.AppUndoableAction;
+import net.thevpc.echo.api.UndoableAction;
+import net.thevpc.echo.swing.helpers.actions.SwingAppUndoableAction;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.HadruwavesStudio;
-import net.thevpc.echo.AppPropertiesNodeItem;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadruwaves.mom.solver.HWSolverTemplateFDM;
 import net.thevpc.scholar.hadruwaves.mom.solver.HWSolverTemplateFEM;
@@ -31,7 +30,7 @@ import net.thevpc.common.msg.Message;
  *
  * @author vpc
  */
-public class RemoveFromPropsAction extends AppUndoableAction {
+public class RemoveFromPropsAction extends SwingAppUndoableAction {
 
     private HadruwavesStudio studio;
 
@@ -64,7 +63,7 @@ public class RemoveFromPropsAction extends AppUndoableAction {
                         index = (Integer) i.getUserObject("index");
                         if (msolver instanceof HWSolverTemplateMoM) {
                             TestFunctionListItem_list = (MomSolverTestTemplateList) i.parent().object();
-                            this.removed = TestFunctionListItem_list.expressions().remove(index);
+                            this.removed = TestFunctionListItem_list.expressions().removeAt(index);
                             studio.app().activeProperties().get().refresh();
                             studio.props().updateRoot();
                             return new JFormattedMessage(Level.INFO, "Remove Test JFunction {0}", new Object[]{index});
@@ -73,7 +72,7 @@ public class RemoveFromPropsAction extends AppUndoableAction {
                     if ("TestFunctionGroup".equals(removeType)) {
                         index = (Integer) i.getUserObject("index");
                         if (msolver instanceof HWSolverTemplateMoM) {
-                            this.removed = ((HWSolverTemplateMoM) msolver).testFunctions().remove(index);
+                            this.removed = ((HWSolverTemplateMoM) msolver).testFunctions().removeAt(index);
                             studio.app().activeProperties().get().refresh();
                             studio.props().updateRoot();
                             return new JFormattedMessage(Level.INFO, "Remove Test JFunction {0}", new Object[]{index});
@@ -118,12 +117,12 @@ public class RemoveFromPropsAction extends AppUndoableAction {
             @Override
             public void redoAction(AppEvent event) {
                 if ("TestFunctionListItem".equals(removeType)) {
-                    TestFunctionListItem_list.expressions().remove(index);
+                    TestFunctionListItem_list.expressions().removeAt(index);
                     studio.app().activeProperties().get().refresh();
                     studio.props().updateRoot();
                 }
                 if ("TestFunctionGroup".equals(removeType)) {
-                    this.removed = ((HWSolverTemplateMoM) msolver).testFunctions().remove(index);
+                    this.removed = ((HWSolverTemplateMoM) msolver).testFunctions().removeAt(index);
                     studio.app().activeProperties().get().refresh();
                     studio.props().updateRoot();
                 }

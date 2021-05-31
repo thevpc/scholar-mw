@@ -1,7 +1,8 @@
 package net.thevpc.scholar.hadruwaves.project;
 
 import net.thevpc.common.props.*;
-import net.thevpc.common.props.impl.PropertyListenersImpl;
+import net.thevpc.common.props.impl.DefaultPropertyListeners;
+import net.thevpc.common.props.impl.PropertyBase;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 
@@ -13,24 +14,22 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import net.thevpc.tson.TsonObjectContext;
 
-public class DefaultHWSolution implements HWSolution {
+public class DefaultHWSolution extends PropertyBase implements HWSolution {
 
     private String uuid;
-    private WritableValue<String> filePath = Props.of("path").valueOf(String.class, null);
-    private WritableValue<Boolean> modified = Props.of("modified").valueOf(Boolean.class, false);
-    private WritableValue<String> name = Props.of("name").valueOf(String.class, null);
-    private WritableValue<String> description = Props.of("description").valueOf(String.class, null);
+    private WritableString filePath = Props.of("path").valueOf(String.class, null);
+    private WritableBoolean modified = Props.of("modified").booleanOf(false);
+    private WritableString name = Props.of("name").valueOf(String.class, null);
+    private WritableString description = Props.of("description").valueOf(String.class, null);
     private WritableValue<HWProject> activeProject = Props.of("activeProject").valueOf(HWProject.class, null);
-    private PropertyListenersImpl listeners = new PropertyListenersImpl(this);
+    private DefaultPropertyListeners listeners = new DefaultPropertyListeners(this);
     private HWSolutionFolderHelper childrenHelper = new HWSolutionFolderHelper(null, () -> this);
 
     public DefaultHWSolution(String uuid) {
+        super(uuid);
         this.uuid = uuid;
-        listeners.addDelegate(filePath);
         listeners.addDelegate(childrenHelper.children, () -> null);
-        listeners.addDelegate(name);
-        listeners.addDelegate(description);
-        listeners.addDelegate(activeProject);
+        propagateEvents(filePath,name,description,activeProject);
         listeners.add(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
@@ -56,7 +55,7 @@ public class DefaultHWSolution implements HWSolution {
     }
 
     @Override
-    public WritableValue<String> description() {
+    public WritableString description() {
         return description;
     }
 
@@ -106,21 +105,21 @@ public class DefaultHWSolution implements HWSolution {
     }
 
     @Override
-    public PropertyListeners listeners() {
+    public PropertyListeners events() {
         return listeners;
     }
 
     @Override
-    public WritableValue<String> name() {
+    public WritableString name() {
         return name;
     }
 
     @Override
-    public WritableValue<Boolean> modified() {
+    public WritableBoolean modified() {
         return modified;
     }
 
-    public WritableValue<String> filePath() {
+    public WritableString filePath() {
         return filePath;
     }
 

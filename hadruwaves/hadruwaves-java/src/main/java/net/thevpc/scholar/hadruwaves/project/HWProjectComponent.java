@@ -16,13 +16,13 @@ public interface HWProjectComponent extends HWProjectElement{
 
     ObservableValue<String> parentPath();
 
-    WritableValue<String> description();
+    WritableString description();
 
-    WritableValue<Boolean> selected();
+    WritableBoolean selected();
 
     WritablePExpression<Boolean> enabled();
 
-    WritableValue<Boolean> visible();
+    WritableBoolean visible();
 
     List<Element3D> toElements3D(HWConfigurationRun configuration);
 

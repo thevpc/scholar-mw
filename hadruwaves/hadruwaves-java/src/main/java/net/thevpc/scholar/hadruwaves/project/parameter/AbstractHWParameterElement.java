@@ -8,9 +8,9 @@ import net.thevpc.scholar.hadruwaves.project.HWProject;
 public class AbstractHWParameterElement implements HWParameterElement{
     protected WritableValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
     protected WritableValue<HWParameterFolder> parent = Props.of("parent").valueOf(HWParameterFolder.class, null);
-    protected WritableValue<String> parentPath = Props.of("parentPath").valueOf(String.class, null);
-    private WritableValue<String> description = Props.of("description").valueOf(String.class, null);
-    private WritableValue<String> name = Props.of("name").valueOf(String.class, null);
+    protected WritableString parentPath = Props.of("parentPath").valueOf(String.class, null);
+    private WritableString description = Props.of("description").valueOf(String.class, null);
+    private WritableString name = Props.of("name").valueOf(String.class, null);
 
     @Override
     public ObservableValue<HWProject> project() {
@@ -26,11 +26,11 @@ public class AbstractHWParameterElement implements HWParameterElement{
         return parentPath;
     }
 
-    public WritableValue<String> description() {
+    public WritableString description() {
         return description;
     }
 
-    public WritableValue<String> name() {
+    public WritableString name() {
         return name;
     }
 

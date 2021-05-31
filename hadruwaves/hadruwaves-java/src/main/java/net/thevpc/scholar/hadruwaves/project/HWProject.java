@@ -5,10 +5,7 @@
  */
 package net.thevpc.scholar.hadruwaves.project;
 
-import net.thevpc.common.props.FileObject;
-import net.thevpc.common.props.WithListeners;
-import net.thevpc.common.props.WritableLiMap;
-import net.thevpc.common.props.WritableValue;
+import net.thevpc.common.props.*;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonSerializable;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurations;
@@ -22,15 +19,15 @@ import net.thevpc.scholar.hadruwaves.project.parameter.HWUnits;
  *
  * @author vpc
  */
-public interface HWProject extends TsonSerializable, HWSolutionElement, WithListeners, FileObject {
+public interface HWProject extends TsonSerializable, HWSolutionElement, Property, FileObject {
 
     String uuid();
 
     @Override
-    WritableValue<String> name();
+    WritableString name();
 
     @Override
-    WritableValue<String> description();
+    WritableString description();
 
     HWParameters parameters();
 

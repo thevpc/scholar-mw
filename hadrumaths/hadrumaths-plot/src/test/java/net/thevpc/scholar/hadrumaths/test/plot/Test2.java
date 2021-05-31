@@ -12,7 +12,7 @@ package net.thevpc.scholar.hadrumaths.test.plot;
 //import javax.swing.BorderFactory;
 //import javax.swing.JFrame;
 //import javax.swing.JPanel;
-//import javax.swing.border.Border;
+//import javax.swing.border.Anchor;
 //
 //import net.miginfocom.swing.MigLayout;
 //
@@ -143,7 +143,7 @@ package net.thevpc.scholar.hadrumaths.test.plot;
 //
 //        public void addChart(Chart chart, int id) {
 //            JPanel chartPanel = new JPanel(new BorderLayout());
-//            Border b = BorderFactory.createLineBorder(java.awt.Color.black);
+//            Anchor b = BorderFactory.createLineBorder(java.awt.Color.black);
 //            chartPanel.setBorder(b);
 //            chartPanel.add((java.awt.Component) chart.getCanvas(), BorderLayout.CENTER);
 //            add(chartPanel, "cell 0 " + id + ", grow");

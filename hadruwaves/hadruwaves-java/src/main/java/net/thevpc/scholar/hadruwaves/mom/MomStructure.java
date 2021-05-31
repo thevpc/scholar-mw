@@ -10,7 +10,6 @@ import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.cache.CacheKey;
 import net.thevpc.scholar.hadrumaths.cache.ObjectCache;
 import net.thevpc.scholar.hadrumaths.cache.PersistenceCache;
-import net.thevpc.scholar.hadrumaths.geom.DefaultPolygon;
 import net.thevpc.scholar.hadrumaths.geom.Geometry;
 import net.thevpc.scholar.hadrumaths.geom.Polygon;
 import net.thevpc.scholar.hadrumaths.io.HadrumathsIOUtils;
@@ -1135,7 +1134,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
                     }
                 }
             }
-            mb.visible().userObjects().putUserObject("visible-of-BottomSpace-" + project.name().get(), "visible-of-BottomSpace-" + project.name().get());
+            mb.visible().userObjects().put("visible-of-BottomSpace-" + project.name().get(), "visible-of-BottomSpace-" + project.name().get());
             scene.components().add(mb);
         }
         double h = 0;
@@ -1249,7 +1248,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
                         SceneHelper.createBrickTemplate(
                                 new DomainTemplate(Domain.ofBounds(domain.xmin(), domain.xmax(), domain.ymin(), domain.ymax(), h, h + zw))
                         ));
-                mb.visible().userObjects().putUserObject("visible-of-TopSpace-" + project.name().get(), "visible-of-TopSpace-" + project.name().get());
+                mb.visible().userObjects().put("visible-of-TopSpace-" + project.name().get(), "visible-of-TopSpace-" + project.name().get());
                 mb.face(HWProjectBrick.Face.TOP).boundary().set(zmaterial.name());
                 Boundary[] walls = getBorders().toArray();
                 for (int i = 0; i < walls.length; i++) {

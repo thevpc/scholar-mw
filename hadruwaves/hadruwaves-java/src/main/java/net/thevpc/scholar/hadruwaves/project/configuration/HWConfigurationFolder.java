@@ -19,15 +19,15 @@ public class HWConfigurationFolder extends AbstractHWConfigurationElement {
 
     public HWConfigurationFolder(String name) {
         name().set(name);
-        childrenHelper.children().listeners().add(new PropertyListener() {
+        childrenHelper.children().onChange(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
-                Object ov = event.getOldValue();
+                Object ov = event.oldValue();
                 if (ov instanceof AbstractHWConfigurationElement) {
                     WritableValue<HWProject> p = (WritableValue<HWProject>) (((AbstractHWConfigurationElement) ov).project());
                     p.set(null);
                 }
-                Object nv = event.getNewValue();
+                Object nv = event.newValue();
                 if (nv instanceof AbstractHWConfigurationElement) {
                     WritableValue<HWProject> p = (WritableValue<HWProject>) (((AbstractHWConfigurationElement) nv).project());
                     p.set(project().get());

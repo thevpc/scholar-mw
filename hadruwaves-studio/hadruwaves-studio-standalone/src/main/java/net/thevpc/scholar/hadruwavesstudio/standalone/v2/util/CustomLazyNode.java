@@ -6,7 +6,7 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.util;
 
 import java.util.ArrayList;
-import net.thevpc.echo.ItemPath;
+import net.thevpc.common.props.Path;
 
 /**
  *
@@ -31,7 +31,7 @@ public class CustomLazyNode {
 
     public CustomLazyNode find(String n) {
         for (CustomLazyNode r : getList()) {
-            if (r.getPath().equals(ItemPath.of(this.getPath(), n).toString())) {
+            if (r.getPath().equals(Path.of(this.getPath(), n).toString())) {
                 return r;
             }
         }
@@ -43,15 +43,15 @@ public class CustomLazyNode {
     }
 
     public void add(String path, String name, String type, Object value, boolean folder) {
-        ItemPath ipath = ItemPath.of(path);
+        Path ipath = Path.of(path);
         if (ipath.isEmpty()) {
             throw new IllegalArgumentException("Error");
         } else if (ipath.size() == 1) {
-            getList().add(new CustomLazyNode(ItemPath.of(this.getPath()).child(ipath.first()).toString(), name, type, value, folder));
+            getList().add(new CustomLazyNode(Path.of(this.getPath()).append(ipath.first()).toString(), name, type, value, folder));
         } else {
             CustomLazyNode c = find(ipath.first());
             if (c == null) {
-                c = new CustomLazyNode(ItemPath.of(this.getPath() + "/" + ipath.first()).toString(), ipath.first(), "folder", null, true);
+                c = new CustomLazyNode(Path.of(this.getPath() + "/" + ipath.first()).toString(), ipath.first(), "folder", null, true);
                 getList().add(c);
             }
             c.add(ipath.skipFirst().toString(), name, type, value, folder);

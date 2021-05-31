@@ -5,7 +5,8 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.stream.Collectors;
 import net.thevpc.common.props.*;
-import net.thevpc.common.props.impl.PropertyListenersImpl;
+import net.thevpc.common.props.impl.DefaultPropertyListeners;
+import net.thevpc.common.props.impl.PropertyBase;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonObjectContext;
@@ -15,11 +16,11 @@ import net.thevpc.scholar.hadrumaths.units.UnitType;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 
-public class HWParameters implements TsonSerializable, WithListeners {
+public class HWParameters extends PropertyBase,TsonSerializable {
 
     protected WritableValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
     private HWParameterFolderHelper childrenHelper = new HWParameterFolderHelper(null, () -> project().get());
-    private PropertyListenersImpl listeners = new PropertyListenersImpl(this);
+    private DefaultPropertyListeners listeners = new DefaultPropertyListeners(this);
 
     public HWParameters(HWProject project) {
         this.project.set(project);

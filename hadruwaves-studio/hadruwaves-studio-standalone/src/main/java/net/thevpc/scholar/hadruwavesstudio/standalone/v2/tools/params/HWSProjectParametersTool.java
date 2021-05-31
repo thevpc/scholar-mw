@@ -1,11 +1,13 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.params;
 
+import net.thevpc.echo.AppTools;
+import net.thevpc.echo.api.components.AppComponent;
+import net.thevpc.echo.api.AppContainerChildren;
+import net.thevpc.echo.ContextMenu;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.params.components.*;
 import net.thevpc.common.props.PropertyEvent;
 import net.thevpc.common.props.PropertyListener;
 import net.thevpc.common.props.WritableIndexedNode;
-import net.thevpc.echo.AppPopupMenu;
-import net.thevpc.echo.swing.core.swing.JPopupMenuComponentSupplier;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 import net.thevpc.scholar.hadruwaves.project.parameter.HWParameterFolder;
@@ -25,13 +27,13 @@ import java.util.ArrayList;
 import net.thevpc.scholar.hadrumaths.units.UnitType;
 import net.thevpc.scholar.hadruwaves.project.parameter.HWParameterElement;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.params.actions.AddParameterFolderAction;
-import net.thevpc.echo.AppPropertiesTree;
-import net.thevpc.echo.swing.SwingApplications;
+import net.thevpc.echo.api.AppPropertiesTree;
+import net.thevpc.echo.swing.peers.SwingPeer;
 
 public class HWSProjectParametersTool extends AbstractToolWindowPanel {
 
     private CustomJXTreeTable tree;
-    private AppPopupMenu popUpMenu;
+    private ContextMenu popUpMenu;
     private HWConfigurationRun configuration;
 
     public HWSProjectParametersTool(HadruwavesStudio studio) {
@@ -40,17 +42,17 @@ public class HWSProjectParametersTool extends AbstractToolWindowPanel {
         tree.setTreeTableModel(new CustomDefaultTreeTableModelImpl(new DefaultMutableTreeTableNode()));
         tree.expandAll();
         add(new JScrollPane(tree));
-        studio.proc().listeners().add(new PropertyListener() {
+        studio.proc().onChange(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
                 updateRoot(null, null);
             }
         });
-        app().activeProperties().listeners().add(new PropertyListener() {
+        app().activeProperties().onChange(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
-                if (event.getProperty().name().equals("activeProperties")) {
-                    AppPropertiesTree t = event.getNewValue();
+                if (event.property().propertyName().equals("activeProperties")) {
+                    AppPropertiesTree t = event.newValue();
                     HWProject prj = null;
                     HWConfigurationRun conf = null;
                     if (t instanceof HWPropertiesTree) {
@@ -66,9 +68,11 @@ public class HWSProjectParametersTool extends AbstractToolWindowPanel {
                 }
             }
         });
-        popUpMenu = SwingApplications.Components.createPopupMenu(studio.app());
+        popUpMenu = new ContextMenu(app());
         createPopUpMenu();
-        tree.setComponentPopupMenu(((JPopupMenuComponentSupplier) popUpMenu).component());
+        tree.setComponentPopupMenu(
+                (JPopupMenu) SwingPeer.gcompOf(popUpMenu)
+        );
         onLookChanged();
     }
 
@@ -110,7 +114,9 @@ public class HWSProjectParametersTool extends AbstractToolWindowPanel {
     protected void onLookChanged() {
 //        tree.setCellRenderer(new SolutiionAppTreeCellRendererImpl(studio, HWSSolutionExplorerTool.this));
         if (popUpMenu != null) {
-            SwingUtilities.updateComponentTreeUI(((JPopupMenuComponentSupplier) popUpMenu).component());
+            SwingUtilities.updateComponentTreeUI(
+                (JPopupMenu) SwingPeer.gcompOf(popUpMenu)
+            );
         }
     }
 
@@ -175,13 +181,14 @@ public class HWSProjectParametersTool extends AbstractToolWindowPanel {
 
     private void createPopUpMenu() {
 
+        AppContainerChildren<AppComponent> tools = popUpMenu.children();
         for (UnitType value : UnitType.values()) {
-            popUpMenu.tools().addAction(new AddParameterAction(this, value), "/Add/New " + value.group() + " Parameter/addParameter" + value);
+            tools.addAction().bindUndo(new AddParameterAction(this, value)).path("/Add/New " + value.group() + " Parameter/addParameter" + value).tool();
         }
-        popUpMenu.tools().addSeparator("/Add/sepatator1");
-        popUpMenu.tools().addAction(new AddParameterFolderAction(this), "/Add/addParameterFolder");
-        popUpMenu.tools().addSeparator("/sepatator1");
-        popUpMenu.tools().addAction(new RemoveParameterOrFolderAction(this), "/removeParameter");
+        tools.addSeparator("/Add/sepatator1");
+        tools.addAction().bindUndo(new AddParameterFolderAction(this)).path( "/Add/addParameterFolder").tool();
+        tools.addSeparator("/sepatator1");
+        tools.addAction().bindUndo(new RemoveParameterOrFolderAction(this)).path( "/removeParameter").tool();
     }
 
 }

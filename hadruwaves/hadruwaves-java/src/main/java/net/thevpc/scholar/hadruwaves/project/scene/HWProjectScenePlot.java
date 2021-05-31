@@ -37,7 +37,7 @@ public class HWProjectScenePlot extends JPanel {
         add(this.chartPanel.getCanvas(), BorderLayout.CENTER);
         setScene(scene, configuration);
         preferences.setAll(chartPanel.getPreferences());
-        preferences.listeners().add(new PropertyListener() {
+        preferences.onChange(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
                 chartPanel.applySettings(preferences.getAll(), true);

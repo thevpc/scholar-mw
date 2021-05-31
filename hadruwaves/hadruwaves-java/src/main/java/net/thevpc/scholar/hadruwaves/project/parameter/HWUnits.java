@@ -1,7 +1,8 @@
 package net.thevpc.scholar.hadruwaves.project.parameter;
 
 import net.thevpc.common.props.*;
-import net.thevpc.common.props.impl.PropertyListenersImpl;
+import net.thevpc.common.props.impl.DefaultPropertyListeners;
+import net.thevpc.common.props.impl.PropertyBase;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonObjectContext;
@@ -21,10 +22,10 @@ import net.thevpc.scholar.hadrumaths.units.UnitType;
 import net.thevpc.scholar.hadrumaths.units.VoltageUnit;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 
-public class HWUnits implements TsonSerializable, WithListeners {
+public class HWUnits extends PropertyBase implements TsonSerializable {
 
     protected WritableValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
-    private PropertyListenersImpl listeners = new PropertyListenersImpl(this);
+    private DefaultPropertyListeners listeners = new DefaultPropertyListeners(this);
     private final WritableValue<LengthUnit> lengthUnit = Props.of("lengthUnit").valueOf(LengthUnit.class, LengthUnit.mm);
     private final WritableValue<FrequencyUnit> frequencyUnit = Props.of("frequencyUnit").valueOf(FrequencyUnit.class, FrequencyUnit.GHz);
     private final WritableValue<CapacitanceUnit> capacitanceUnit = Props.of("capacitanceUnit").valueOf(CapacitanceUnit.class, CapacitanceUnit.SI_UNIT);
@@ -37,19 +38,20 @@ public class HWUnits implements TsonSerializable, WithListeners {
     private final WritableValue<TimeUnit> timeUnit = Props.of("timeUnit").valueOf(TimeUnit.class, TimeUnit.SI_UNIT);
     private final WritableValue<VoltageUnit> voltageUnit = Props.of("voltageUnit").valueOf(VoltageUnit.class, VoltageUnit.SI_UNIT);
 
-    public HWUnits(HWProject project) {
+    public HWUnits(String name,HWProject project) {
+        super(name);
         this.project.set(project);
-        listeners.addDelegate(lengthUnit);
-        listeners.addDelegate(frequencyUnit);
-        listeners.addDelegate(capacitanceUnit);
-        listeners.addDelegate(conductanceUnit);
-        listeners.addDelegate(currentUnit);
-        listeners.addDelegate(inductanceUnit);
-        listeners.addDelegate(powerUnit);
-        listeners.addDelegate(resistanceUnit);
-        listeners.addDelegate(temperatureUnit);
-        listeners.addDelegate(timeUnit);
-        listeners.addDelegate(voltageUnit);
+        propagateEvents(lengthUnit);
+        propagateEvents(frequencyUnit);
+        propagateEvents(capacitanceUnit);
+        propagateEvents(conductanceUnit);
+        propagateEvents(currentUnit);
+        propagateEvents(inductanceUnit);
+        propagateEvents(powerUnit);
+        propagateEvents(resistanceUnit);
+        propagateEvents(temperatureUnit);
+        propagateEvents(timeUnit);
+        propagateEvents(voltageUnit);
     }
 
     public ObservableValue<HWProject> project() {
@@ -57,7 +59,7 @@ public class HWUnits implements TsonSerializable, WithListeners {
     }
 
     @Override
-    public PropertyListeners listeners() {
+    public PropertyListeners events() {
         return listeners;
     }
 

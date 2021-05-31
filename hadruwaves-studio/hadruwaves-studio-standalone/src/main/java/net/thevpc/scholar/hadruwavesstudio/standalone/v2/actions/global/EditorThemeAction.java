@@ -5,16 +5,16 @@
  */
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.actions.global;
 
-import net.thevpc.echo.AbstractAppAction;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.HadruwavesStudio;
 
 import java.awt.event.ActionEvent;
+import net.thevpc.scholar.hadruwavesstudio.standalone.v2.actions.HAction;
 
 /**
  *
  * @author vpc
  */
-public class EditorThemeAction extends AbstractAppAction {
+public class EditorThemeAction extends HAction {
     
     private HadruwavesStudio studio;
     private String theme;

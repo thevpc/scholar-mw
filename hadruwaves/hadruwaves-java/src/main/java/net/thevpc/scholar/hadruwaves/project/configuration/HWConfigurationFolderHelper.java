@@ -19,15 +19,15 @@ public class HWConfigurationFolderHelper {
 
     public HWConfigurationFolderHelper(HWConfigurationFolder thisAsParent, Supplier<HWProject> prj) {
         this.thisAsParent = thisAsParent;
-        children.listeners().add(new PropertyListener() {
+        children.onChange(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
-                AbstractHWConfigurationElement o = event.getOldValue();
+                AbstractHWConfigurationElement o = event.oldValue();
                 if (o != null) {
                     o.parentPath.set(null);
                     o.parent.set(null);
                 }
-                AbstractHWConfigurationElement n = event.getNewValue();
+                AbstractHWConfigurationElement n = event.newValue();
                 if (n != null) {
                     n.project.set(prj.get());
                     n.parent.set(thisAsParent);

@@ -7,13 +7,13 @@ package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.components
 
 import java.awt.Component;
 import javax.swing.JTree;
-import net.thevpc.common.iconset.IconSets;
 
-import net.thevpc.echo.AppIconSet;
-import net.thevpc.echo.AppPropertiesNode;
-import net.thevpc.echo.AppPropertiesNodeFolder;
-import net.thevpc.echo.AppPropertiesNodeItem;
+import net.thevpc.echo.api.AppPropertiesNode;
+import net.thevpc.echo.api.AppPropertiesNodeFolder;
+import net.thevpc.echo.api.AppPropertiesNodeItem;
 //import net.thevpc.common.iconset.PIconSet;
+import net.thevpc.echo.iconset.IconSets;
+import net.thevpc.echo.swing.icons.SwingAppImage;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.HWSProjectPropertiesTool;
 import org.jdesktop.swingx.tree.DefaultXTreeCellRenderer;
 
@@ -39,7 +39,9 @@ public class PropsTreeCellRenderer extends DefaultXTreeCellRenderer {
             super.setIcon(null);
         } else if (item instanceof AppPropertiesNodeFolder) {
             setText(((AppPropertiesNodeFolder) item).name());
-            super.setIcon(expanded ? iconSet.icon("OpenFolder").get() : iconSet.icon("Folder").get());
+            super.setIcon(
+                    SwingAppImage.imageIconOf(expanded ? iconSet.icon("OpenFolder").get() : iconSet.icon("Folder").get())
+            );
         }
         return u;
     }

@@ -6,9 +6,9 @@ import net.thevpc.tson.TsonSerializable;
 import java.util.List;
 import java.util.function.Predicate;
 
-public interface HWSolution extends TsonSerializable, WithListeners, FileObject {
+public interface HWSolution extends TsonSerializable, Property, FileObject {
 
-    WritableValue<String> name();
+    WritableString name();
 
     String uuid();
 
@@ -23,7 +23,7 @@ public interface HWSolution extends TsonSerializable, WithListeners, FileObject 
 
     List<HWProject> findProjects();
 
-    WritableValue<String> description();
+    WritableString description();
 
     HWSolutionElement findElement(String path);
 

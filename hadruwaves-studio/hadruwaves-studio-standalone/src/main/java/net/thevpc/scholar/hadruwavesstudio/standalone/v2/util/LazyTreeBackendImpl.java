@@ -5,8 +5,8 @@
  */
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.util;
 
-import net.thevpc.echo.swing.core.swing.LazyTreeBackend;
-import net.thevpc.echo.swing.core.swing.LazyTreeNode;
+import net.thevpc.echo.swing.helpers.tree.LazyTreeBackend;
+import net.thevpc.echo.swing.helpers.tree.LazyTreeNode;
 
 /**
  *

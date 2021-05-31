@@ -6,9 +6,6 @@ import net.thevpc.common.props.PropertyListener;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.HadruwavesStudio;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.components.HWTextEditor;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.AbstractToolWindowPanel;
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
-import org.fife.ui.rtextarea.RTextScrollPane;
 import net.thevpc.common.msg.Message;
 
 
@@ -23,12 +20,12 @@ public class HWSLogTool extends AbstractToolWindowPanel {
         messagesArea.setEditable(false);
         setContent(messagesArea);
         updateAll(studio.app().messages());
-        studio.app().logs().listeners().add(new PropertyListener() {
+        studio.app().logs().onChange(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
-                switch (event.getAction()) {
+                switch (event.eventType()) {
                     case ADD: {
-                        appendMessage(event.getNewValue());
+                        appendMessage(event.newValue());
                         break;
                     }
                     default: {

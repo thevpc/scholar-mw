@@ -6,14 +6,14 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.actions.global;
 
 import java.awt.event.ActionEvent;
-import net.thevpc.echo.AbstractAppAction;
 import net.thevpc.echo.Application;
+import net.thevpc.scholar.hadruwavesstudio.standalone.v2.actions.HAction;
 
 /**
  *
  * @author vpc
  */
-public class CopyAction extends AbstractAppAction {
+public class CopyAction extends HAction {
 
     public CopyAction(Application aplctn) {
         super(aplctn, "Copy");

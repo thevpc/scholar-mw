@@ -9,8 +9,7 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import net.thevpc.echo.AbstractAppAction;
-import net.thevpc.echo.AppDockingWorkspace;
+import net.thevpc.echo.AppWorkspace;
 import net.thevpc.echo.Application;
 import net.thevpc.scholar.hadruwaves.Material;
 import net.thevpc.scholar.hadruwaves.project.HWSolutionElement;
@@ -19,16 +18,17 @@ import net.thevpc.scholar.hadruwaves.project.scene.HWProjectElementBrickFace;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer.HWSSolutionExplorerTool;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationElement;
 import net.thevpc.scholar.hadruwaves.project.HWProjectComponent;
+import net.thevpc.scholar.hadruwavesstudio.standalone.v2.actions.HAction;
 
 /**
  *
  * @author vpc
  */
-public class PropertiesAppSimpleActionImpl extends AbstractAppAction {
+public class PropertiesSimpleActionImpl extends HAction {
 
     private final HWSSolutionExplorerTool explorer;
 
-    public PropertiesAppSimpleActionImpl(Application aplctn, final HWSSolutionExplorerTool outer) {
+    public PropertiesSimpleActionImpl(Application aplctn, final HWSSolutionExplorerTool outer) {
         super(aplctn, "Properties");
         this.explorer = outer;
         outer.tree.addTreeSelectionListener(new TreeSelectionListener() {
@@ -62,10 +62,10 @@ public class PropertiesAppSimpleActionImpl extends AbstractAppAction {
 
     @Override
     protected void actionPerformedImpl(ActionEvent e) {
-        AppDockingWorkspace ws = (AppDockingWorkspace) getApplication().mainWindow().get().workspace().get();
+        AppWorkspace ws = getApplication().mainFrame().get().content().get();
         //TODO
                 explorer.refreshTools();
-        ws.toolWindows().get("Properties").active().set(true);
+        ws.windows().get("Properties").active().set(true);
     }
     @Override
     public void refresh() {

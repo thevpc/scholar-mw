@@ -2,8 +2,8 @@ package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.files;
 
 import net.thevpc.common.props.PropertyEvent;
 import net.thevpc.common.props.PropertyListener;
-import net.thevpc.echo.swing.core.swing.DefaultLazyTreeBackend;
-import net.thevpc.echo.swing.core.swing.LazyTree;
+import net.thevpc.echo.swing.helpers.tree.DefaultLazyTreeBackend;
+import net.thevpc.echo.swing.helpers.tree.LazyTree;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.HadruwavesStudio;
 import org.jdesktop.swingx.JXTree;
 
@@ -28,17 +28,17 @@ public class HWSFileExplorerTool extends AbstractToolWindowPanel {
     public HWSFileExplorerTool(HadruwavesStudio studio) {
         super(studio);
         tree = LazyTree.of(new JXTree(), new DefaultLazyTreeBackend(new File(System.getProperty("user.home")), "Home Directory", true));
-        proc().listeners().add(new PropertyListener() {
+        proc().onChange(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
-                if (event.getProperty().name().equals("activeProject")) {
-                    HWProject oldValue = event.getOldValue();
+                if (event.property().propertyName().equals("activeProject")) {
+                    HWProject oldValue = event.oldValue();
                     if (oldValue != null) {
-                        oldValue.listeners().remove(projectChangeListener);
+                        oldValue.events().remove(projectChangeListener);
                     }
-                    HWProject newValue = event.getNewValue();
+                    HWProject newValue = event.newValue();
                     if (newValue != null) {
-                        newValue.listeners().add(projectChangeListener);
+                        newValue.onChange(projectChangeListener);
                     }
                     projectUpdated();
                 }
