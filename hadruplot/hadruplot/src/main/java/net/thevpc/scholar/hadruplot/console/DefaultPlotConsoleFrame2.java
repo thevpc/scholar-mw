@@ -2,7 +2,6 @@ package net.thevpc.scholar.hadruplot.console;
 
 import net.thevpc.common.i18n.Str;
 import net.thevpc.common.swing.file.FileDropListener;
-import net.thevpc.common.i18n.I18nResourceBundle;
 import net.thevpc.common.swing.win.WindowInfo;
 import net.thevpc.common.swing.win.WindowInfoListener;
 import net.thevpc.common.swing.*;
@@ -19,16 +18,20 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import net.thevpc.common.props.Path;
+import net.thevpc.common.swing.file.ExtensionFileChooserFilter;
 
 import net.thevpc.echo.Application;
-import net.thevpc.echo.impl.Applications;
+import net.thevpc.scholar.hadruplot.console.extension.PlotConsoleFileSupport;
 
-public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
+public class DefaultPlotConsoleFrame2 implements PlotConsoleFrame {
+
     public static int openFrames = 0;
     PlotConsole console;
     JLabel globalLabel;
-    InternalWindowsHelper wins=new InternalWindowsHelper();
+    InternalWindowsHelper wins = new InternalWindowsHelper();
     private Application app;
+
     @Override
     public void setTitle(String frameTitle) {
         app.mainFrame().get().title().set(Str.of(frameTitle));
@@ -37,8 +40,9 @@ public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
     public DefaultPlotConsoleFrame2(PlotConsole console, String title) throws HeadlessException {
         this.console = console;
         app = new DefaultApplication();
+        app.mainFrame().set(new net.thevpc.echo.Frame(app));
         UIPlafManager.INSTANCE.apply("FlatLight");
-        app.i18n().bundles().add(new I18nResourceBundle("net.thevpc.scholar.hadruplot.console.HadrumathsPlot"));
+        app.i18n().bundles().add("net.thevpc.scholar.hadruplot.console.HadrumathsPlot");
         app.start();
 
         wins.addWindowInfoListener(new WindowInfoListener() {
@@ -47,17 +51,18 @@ public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
                 JComponent component = (JComponent) windowInfo.getComponent();
                 JInternalFrame internalFrame = (JInternalFrame) component.getClientProperty(JInternalFrame.class);
                 final JMenuItem windowMenu = createWindowMenu(internalFrame);
-                component.putClientProperty("menu",windowMenu);
-                app.components().addAction().bind(()->wins.ensureVisible(internalFrame))
-                        .path("/mainFrame/menuBar/Windows/"+windowInfo.getTitle())
-                        .tool();
+                component.putClientProperty("menu", windowMenu);
+                app.components().add(
+                        new net.thevpc.echo.Button(null, Str.of(windowInfo.getTitle()), () -> wins.ensureVisible(internalFrame), app),
+                        Path.of("/mainFrame/menuBar/Windows/*")
+                );
             }
 
             @Override
             public void onCloseFrame(WindowInfo windowInfo) {
                 JComponent component = (JComponent) windowInfo.getComponent();
-                JMenuItem windowMenu=(JMenuItem) component.getClientProperty("menu");
-                if(windowMenu!=null) {
+                JMenuItem windowMenu = (JMenuItem) component.getClientProperty("menu");
+                if (windowMenu != null) {
                     //windowsMenu.add(windowMenu);
                 }
             }
@@ -80,10 +85,10 @@ public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
     }
 
     public void setVisible(boolean b) {
-        boolean oldV = app.mainFrame().get().model().state().is(WindowState.ACTIVATED);
-        app.mainFrame().get().model().state().add(b? WindowState.ACTIVATED: WindowState.CLOSED);
+        boolean oldV = app.mainFrame().get().state().is(WindowState.ACTIVATED);
+        app.mainFrame().get().state().add(b ? WindowState.ACTIVATED : WindowState.CLOSED);
 //        super.setVisible(b);
-        boolean newV = app.mainFrame().get().model().state().is(WindowState.ACTIVATED);
+        boolean newV = app.mainFrame().get().state().is(WindowState.ACTIVATED);
         if (oldV != newV) {
             if (newV) {
                 openFrames++;
@@ -102,20 +107,25 @@ public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
 //        jmi.addActionListener(action);
 //        return jmi;
 //    }
-
     protected void prepareFileMenu() {
         AppContainerChildren<AppComponent> tools = app.components();
-        tools.addFolder("/mainFrame/menuBar/File");
-        tools.addAction().bind(new PlotConsolePropertiesAction(this)).path( "/mainFrame/menuBar/File/Properties").tool();
-        tools.addSeparator("/mainFrame/menuBar/File/Sep1");
-        tools.addAction().bind(new LoadAction(this)).path( "/mainFrame/menuBar/File/LoadAction").tool();
-        tools.addSeparator("/mainFrame/menuBar/File/Sep1");
-        tools.addAction().bind(new CloseAction(this)).path( "/mainFrame/menuBar/File/CloseAction").tool();
-        tools.addAction().bind(new ExitAction(this)).path("/mainFrame/menuBar/File/ExitAction").tool();
-        Applications.Helper.addViewActions(app);
+        tools.addFolder(Path.of("/mainFrame/menuBar/File"));
+        //;
+        tools.add(
+                new net.thevpc.echo.Button("Properties", Str.of("Properties"),
+                        () -> JOptionPane.showMessageDialog(frameComponent(), new PlotConsoleProperties(getConsole()), "Properties", JOptionPane.PLAIN_MESSAGE),
+                        app
+                ), Path.of("/mainFrame/menuBar/File/*")
+        );
+        tools.addSeparator(Path.of("/mainFrame/menuBar/File/*"));
+        tools.add(new net.thevpc.echo.Button("Open",()->loadPlot(),app),Path.of("/mainFrame/menuBar/File/LoadAction"));
+        tools.addSeparator(Path.of("/mainFrame/menuBar/File/*"));
+        tools.add(new net.thevpc.echo.Button("Close",()->closeFrame(),app),Path.of("/mainFrame/menuBar/File/CloseAction"));
+        tools.add(new net.thevpc.echo.Button("Exit",()->exitFrame(),app),Path.of("/mainFrame/menuBar/File/ExitAction"));
+        //Applications.Helper.addViewActions(app);
 
 //        Applications.Helper.addWindowsActions(app,wins.getDesktop());
-        tools.addSeparator("/mainFrame/menuBar/Windows/Separator");
+        tools.addSeparator(Path.of("/mainFrame/menuBar/Windows/Separator"));
 
 //        recentFilesMenu = new RecentFilesMenu("Recent Files", new RecentFilesPropertiesModel(new File(System.getProperty("user.dir") + "/.java/plotconsole.xml")));
 //        recentFilesMenu.addFileSelectedListener(
@@ -278,7 +288,6 @@ public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
 //        }
 //        return menubar;
 //    }
-
     private void init() {
         prepareFileMenu();
 
@@ -342,7 +351,7 @@ public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
 
     @Override
     public Component frameComponent() {
-        return (Component) app.mainFrame().get().component();
+        return (Component) app.mainFrame().get().peer().toolkitComponent();
     }
 
     @Override
@@ -351,7 +360,7 @@ public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
     }
 
     public JInternalFrame addToolsFrame(WindowInfo fino) {
-        JInternalFrame jInternalFrame = wins.addFrame( fino);
+        JInternalFrame jInternalFrame = wins.addFrame(fino);
         //toolsWindowsMenu.add(createWindowMenu(jInternalFrame));
         return jInternalFrame;
     }
@@ -369,7 +378,6 @@ public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
         return i;
     }
 
-
     public void setGlobalInfo(String title) {
         globalLabel.setText(title);
     }
@@ -382,13 +390,12 @@ public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
         wins.removeWindow(path);
     }
 
-
-
     @Override
-    public void exitFrame(){
+    public void exitFrame() {
         closeFrame();
     }
-    public void closeFrame(){
+
+    public void closeFrame() {
         setVisible(false);
         app.mainFrame().get().state().add(WindowState.CLOSED);
         if (openFrames <= 0) {
@@ -417,9 +424,29 @@ public class DefaultPlotConsoleFrame2  implements PlotConsoleFrame{
 //        }
     }
 
-
     @Override
     public void removeWindow(JComponent toComponent) {
         wins.removeWindow(toComponent);
+    }
+
+    private void loadPlot() {
+        JFileChooser c = new JFileChooser();
+        PlotConsole console = getConsole();
+        c.setCurrentDirectory(getConsole().getCurrentDirectory());
+        c.addChoosableFileFilter(PlotConsole.CHOOSER_FILTER);
+        for (PlotConsoleFileSupport plotConsoleFileSupport : console.getPlotConsoleFileSupports()) {
+            c.addChoosableFileFilter(new ExtensionFileChooserFilter(plotConsoleFileSupport.getFileExtension(), plotConsoleFileSupport.getFileDesc()));
+        }
+        if (JFileChooser.APPROVE_OPTION == c.showOpenDialog(frameComponent())) {
+            File selectedFile = c.getSelectedFile();
+            try {
+                console.loadFile(selectedFile);
+                addRecentFile(selectedFile);
+            } catch (Throwable e1) {
+                console.getLog().error(e1);
+                e1.printStackTrace();
+                JOptionPane.showMessageDialog(frameComponent(), "unable to load " + selectedFile + "\n" + e1);
+            }
+        }
     }
 }
