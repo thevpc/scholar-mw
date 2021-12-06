@@ -31,6 +31,10 @@ public abstract class AbstractHWSolutionElement extends PropertyBase implements 
     protected WritableValue<HWSolution> solution = Props.of("solution").valueOf(HWSolution.class);
     protected WritableValue<HWSolutionFolder> parent = Props.of("parent").valueOf(HWSolutionFolder.class);
 
+    public AbstractHWSolutionElement(String name) {
+        super(name);
+    }
+    
     @Override
     public WritableString name() {
         return name;

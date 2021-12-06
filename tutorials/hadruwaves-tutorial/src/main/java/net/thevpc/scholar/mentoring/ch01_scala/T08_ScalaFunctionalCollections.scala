@@ -3,6 +3,7 @@ package net.thevpc.scholar.mentoring.ch01_scala
 object T08_ScalaFunctionalCollections extends App{
   class Person(var name:String,var age:Int){
     override def toString = s"La Personne($name, $age)"
+//    override def toString = "La Personne("+name+", "+age+")"
   }
 //  public class Person{
 //    String name;
@@ -24,7 +25,7 @@ object T08_ScalaFunctionalCollections extends App{
   )
   println(seif)
   println(seif.sortBy(x=>x.age))
-  println(seif.filter(x=>x.age>17))
+  println(seif.filter(x=>x.age>17).sortBy(x=>x.age))
   println(seif.forall(x=>x.age>10))
   println(seif.forall(x=>x.age>18))
   println(seif.exists(x=>x.age>18))

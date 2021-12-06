@@ -781,7 +781,7 @@ public abstract class AbstractVector<T> implements Vector<T> {
     @Override
     public <E extends T> E[] toArray(E[] a) {
         if (a.length < size()) {
-            a = ArrayUtils.newArray(Expr.class, size());
+            a = ArrayUtils.newArray(getComponentType().getTypeClass(), size());
         }
         for (int i = 0; i < size(); i++) {
             a[i] = (E) get(i);

@@ -4,7 +4,7 @@
  */
 package net.thevpc.vr.core.toolbox.hadruwavesbox;
 
-import net.thevpc.common.nuts.template.DefaultProjectTemplate;
+import net.thevpc.nuts.lib.template.DefaultProjectTemplate;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -13,15 +13,15 @@ import java.util.HashSet;
 import java.util.Set;
 import net.thevpc.nuts.NutsApplicationContext;
 import net.thevpc.nuts.NutsId;
-import net.thevpc.common.nuts.template.IOUtils;
-import net.thevpc.common.nuts.template.JavaUtils;
-import net.thevpc.common.nuts.template._StringUtils;
+import net.thevpc.nuts.lib.template.IOUtils;
+import net.thevpc.nuts.lib.template.JavaUtils;
+import net.thevpc.nuts.lib.template._StringUtils;
 import net.thevpc.common.strings.MessageNameFormat;
 import net.thevpc.common.strings.StringToObject;
 import net.thevpc.common.strings.StringUtils;
 import net.thevpc.common.strings.format.AbstractFunction;
-import net.thevpc.common.nuts.template.ProjectTemplate;
-import net.thevpc.common.nuts.template.ProjectTemplateListener;
+import net.thevpc.nuts.lib.template.ProjectTemplate;
+import net.thevpc.nuts.lib.template.ProjectTemplateListener;
 
 /**
  *

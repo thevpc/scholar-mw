@@ -4,6 +4,7 @@ import net.thevpc.common.props.ObservableValue;
 import net.thevpc.common.props.Props;
 import net.thevpc.common.props.UserObjects;
 import net.thevpc.common.props.DefaultUserObjects;
+import net.thevpc.common.props.WritableString;
 import net.thevpc.common.props.WritableValue;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 import net.thevpc.scholar.hadruwaves.project.HWSolution;
@@ -13,9 +14,9 @@ public class AbstractHWConfigurationElement implements HWConfigurationElement {
     protected final WritableValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
     protected final WritableValue<HWSolution> solution = Props.of("solution").valueOf(HWSolution.class, null);
     protected final WritableValue<HWConfigurationFolder> parent = Props.of("parent").valueOf(HWConfigurationFolder.class, null);
-    protected final WritableString parentPath = Props.of("parentPath").valueOf(String.class, null);
-    private final WritableString description = Props.of("description").valueOf(String.class, null);
-    private final WritableString name = Props.of("name").valueOf(String.class, null);
+    protected final WritableString parentPath = Props.of("parentPath").stringOf(null);
+    private final WritableString description = Props.of("description").stringOf(null);
+    private final WritableString name = Props.of("name").stringOf(null);
     private final UserObjects userObjects = new DefaultUserObjects();
 
     @Override

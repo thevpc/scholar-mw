@@ -24,6 +24,11 @@ public interface Expr extends HSerializable {
         return true;
     }
 
+    default boolean isUnbounded() {
+        return false;
+    }
+
+
     /**
      * return complex value if this expression is defined as a valid non param
      * complex value. It may have domain. Otherwise throws ClassCastException
@@ -34,6 +39,15 @@ public interface Expr extends HSerializable {
     default Complex toComplex() {
         throw new ExprNarrowException(toString() + " of type " + getClass().getName() + " cannot be casted to Complex");
     }
+
+    default boolean isCstComplex() {
+        return false;
+    }
+
+    default boolean isCstDouble() {
+        return false;
+    }
+
 
     default NumberExpr toNumber() {
         return ExprDefaults.toNumber(this);

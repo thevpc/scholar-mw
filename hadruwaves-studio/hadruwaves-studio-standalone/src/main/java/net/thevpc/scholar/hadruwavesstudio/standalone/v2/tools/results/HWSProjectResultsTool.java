@@ -2,7 +2,6 @@ package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results;
 
 import java.awt.Component;
 
-import net.thevpc.echo.AppTools;
 import net.thevpc.echo.api.components.AppComponent;
 import net.thevpc.echo.api.AppContainerChildren;
 import net.thevpc.echo.ContextMenu;
@@ -245,7 +244,7 @@ public class HWSProjectResultsTool extends AbstractToolWindowPanel {
     }
 
     protected void updateMoMSolver(HWSolverTemplateMoM solver, DefaultHWSolverActionContext context) {
-        Component mc = (Component) context.app().mainFrame().get().component();
+        Component mc = (Component) context.app().mainFrame().get().peer().toolkitComponent();
         xyzdialog.setParent(mc);
         polardialog.setParent(mc);
 

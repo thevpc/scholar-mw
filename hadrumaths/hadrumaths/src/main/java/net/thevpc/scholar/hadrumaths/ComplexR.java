@@ -607,5 +607,7 @@ final class ComplexR extends Complex {
         return ExprDefaults.narrow(this, other);
     }
 
-
+    public boolean isCstDouble() {
+        return true;
+    }
 }

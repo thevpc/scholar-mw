@@ -20,7 +20,6 @@ import javax.swing.tree.TreePath;
 import java.util.ArrayList;
 import java.util.function.Predicate;
 
-import net.thevpc.echo.AppTools;
 import net.thevpc.echo.impl.EmptyPropertiesTree;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.AbstractToolWindowPanel;
 import net.thevpc.echo.api.AppPropertiesNode;

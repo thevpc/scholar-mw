@@ -2,15 +2,16 @@ package net.thevpc.scholar.hadruwaves.project.parameter;
 
 import net.thevpc.common.props.ObservableValue;
 import net.thevpc.common.props.Props;
+import net.thevpc.common.props.WritableString;
 import net.thevpc.common.props.WritableValue;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 
 public class AbstractHWParameterElement implements HWParameterElement{
     protected WritableValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
     protected WritableValue<HWParameterFolder> parent = Props.of("parent").valueOf(HWParameterFolder.class, null);
-    protected WritableString parentPath = Props.of("parentPath").valueOf(String.class, null);
-    private WritableString description = Props.of("description").valueOf(String.class, null);
-    private WritableString name = Props.of("name").valueOf(String.class, null);
+    protected WritableString parentPath = Props.of("parentPath").stringOf(null);
+    private WritableString description = Props.of("description").stringOf(null);
+    private WritableString name = Props.of("name").stringOf(null);
 
     @Override
     public ObservableValue<HWProject> project() {

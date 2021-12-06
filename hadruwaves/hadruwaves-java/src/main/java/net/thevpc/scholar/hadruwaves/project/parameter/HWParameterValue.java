@@ -1,21 +1,23 @@
 package net.thevpc.scholar.hadruwaves.project.parameter;
 
 import net.thevpc.common.props.Props;
+import net.thevpc.common.props.WritableBoolean;
+import net.thevpc.common.props.WritableString;
 import net.thevpc.common.props.WritableValue;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
 import net.thevpc.tson.TsonObjectBuilder;
 import net.thevpc.tson.TsonObjectContext;
-import net.thevpc.scholar.hadrumaths.units.UnitType;
 import net.thevpc.scholar.hadrumaths.units.ParamUnit;
+import net.thevpc.scholar.hadrumaths.units.UnitType;
 
 public class HWParameterValue extends AbstractHWParameterElement {
 
     private final WritableValue<UnitType> type = Props.of("type").valueOf(UnitType.class, UnitType.Double);
     private final WritableValue<ParamUnit> unit = Props.of("unit").valueOf(ParamUnit.class, null);
-    private final WritableString name = Props.of("name").valueOf(String.class, null);
-    private final WritableString description = Props.of("description").valueOf(String.class, null);
-    private final WritableString parentPath = Props.of("parentPath").valueOf(String.class, null);
+    private final WritableString name = Props.of("name").stringOf(null);
+    private final WritableString description = Props.of("description").stringOf(null);
+    private final WritableString parentPath = Props.of("parentPath").stringOf(null);
     private final WritableBoolean discriminator = Props.of("discriminator").booleanOf(false);
 
     public HWParameterValue() {
@@ -27,7 +29,7 @@ public class HWParameterValue extends AbstractHWParameterElement {
         this.type.set(type);
     }
 
-    public WritableBoolean0 discriminator() {
+    public WritableBoolean discriminator() {
         return discriminator;
     }
 

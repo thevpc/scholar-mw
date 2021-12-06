@@ -1674,6 +1674,16 @@ public abstract class Domain implements DoubleValue, DoubleToDouble, DoubleToDou
         return isUnboundedX() && isUnboundedY() && isUnboundedZ();
     }
 
+    @Override
+    public boolean isCstComplex() {
+        return true;
+    }
+
+    @Override
+    public boolean isCstDouble() {
+        return true;
+    }
+
     public Domain transform(Axis a1, Axis a2, Axis a3, int dim) {
         double xmin = Double.NaN;
         double xmax = Double.NaN;

@@ -1,6 +1,7 @@
 package net.thevpc.scholar.hadrumaths;
 
 import net.thevpc.common.util.TypeName;
+import net.thevpc.scholar.hadrumaths.symbolic.ExprNarrowException;
 import net.thevpc.scholar.hadrumaths.symbolic.ExprType;
 import net.thevpc.scholar.hadrumaths.symbolic.conv.Imag;
 import net.thevpc.scholar.hadrumaths.symbolic.conv.Real;
@@ -948,8 +949,9 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
                 if (e2 instanceof Plus) {
                     t.addAll(e2.getChildren());
                 } else {
-                    if (e2.isNarrow(ExprNumberType.COMPLEX_TYPE)) {
-                        Complex v = e2.toComplex();
+                    Expr se2 = e2.simplify();
+                    if (se2.isCstComplex() && se2.isUnbounded()) {
+                        Complex v = se2.toComplex();
                         c.add(v);
                     } else {
                         all.add(e2);
@@ -964,7 +966,7 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
             if (all.isEmpty()) {
                 return complex;
             }
-            if (!complex.equals(Maths.CONE)) {
+            if (!complex.equals(Maths.CZERO)) {
                 all.add(0, complex);
             }
             return Plus.of(all.toArray(new Expr[0]));

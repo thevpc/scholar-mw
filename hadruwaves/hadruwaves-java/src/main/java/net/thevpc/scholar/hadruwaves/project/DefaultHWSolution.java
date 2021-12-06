@@ -17,10 +17,10 @@ import net.thevpc.tson.TsonObjectContext;
 public class DefaultHWSolution extends PropertyBase implements HWSolution {
 
     private String uuid;
-    private WritableString filePath = Props.of("path").valueOf(String.class, null);
+    private WritableString filePath = Props.of("path").stringOf(null);
     private WritableBoolean modified = Props.of("modified").booleanOf(false);
-    private WritableString name = Props.of("name").valueOf(String.class, null);
-    private WritableString description = Props.of("description").valueOf(String.class, null);
+    private WritableString name = Props.of("name").stringOf(null);
+    private WritableString description = Props.of("description").stringOf(null);
     private WritableValue<HWProject> activeProject = Props.of("activeProject").valueOf(HWProject.class, null);
     private DefaultPropertyListeners listeners = new DefaultPropertyListeners(this);
     private HWSolutionFolderHelper childrenHelper = new HWSolutionFolderHelper(null, () -> this);

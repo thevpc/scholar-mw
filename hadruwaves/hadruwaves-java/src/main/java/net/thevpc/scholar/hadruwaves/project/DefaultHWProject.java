@@ -31,7 +31,7 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
     /**
      * bound by parent (solution)
      */
-    private final WritableString filePath = Props.of("filePath").valueOf(String.class, null);
+    private final WritableString filePath = Props.of("filePath").stringOf(null);
 
     private String uuid;
     private final WritableValue<HWProjectScene> scene = Props.of("scene").valueOf(HWProjectScene.class, null);
@@ -41,7 +41,7 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
     private final DefaultPropertyListeners listeners = new DefaultPropertyListeners(this);
 
     private final HWParameters parameters = new HWParameters(this);
-    private final HWUnits units = new HWUnits(this);
+    private final HWUnits units = new HWUnits("units", this);
     private final HWConfigurations configurations = new HWConfigurations(this);
 
     public DefaultHWProject() {
@@ -49,16 +49,17 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
     }
 
     public DefaultHWProject(String uuid) {
+        super("project");
         this.uuid = uuid;
         listeners.addDelegate(filePath);
         listeners.addDelegate(name());
         listeners.addDelegate(description());
         listeners.addDelegate(parentPath());
         listeners.addDelegate(scene);
-        listeners.addDelegate(configurations, () -> "configurations");
+        listeners.addDelegate(configurations, () -> Path.of("configurations"));
 
-        listeners.addDelegate(parameters, () -> "parameters");
-        listeners.addDelegate(units, () -> "units");
+        listeners.addDelegate(parameters, () -> Path.of("parameters"));
+        listeners.addDelegate(units, () -> Path.of("units"));
         materials.onChange(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
@@ -122,7 +123,7 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
         listeners.add(new PropertyListener() {
             @Override
             public void propertyUpdated(PropertyEvent event) {
-                if (event.eventPath().matches("/[^/]+")) {
+                if (event.eventPath().toString().matches("/[^/]+")) {
                     modified.set(true);
                 }
             }
@@ -218,11 +219,13 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
             }
         }
     }
-    private File toOldFile(File file){
+
+    private File toOldFile(File file) {
         File pf = file.getParentFile();
-        String name=file.getName();
-        return new File(pf,".~old~"+name);
+        String name = file.getName();
+        return new File(pf, ".~old~" + name);
     }
+
     @Override
     public void save() {
         String f = filePath().get();
@@ -248,17 +251,17 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
             throw new UncheckedIOException(ex);
         }
         for (String p : new String[]{
-                "code/scala/src/main/scala",
-                "code/java/src/main/java",
-                "code/hadra",
-                "code/resources",
-                "code/other",
-                "build/cache",
-                "results/default",
-                "results/saved"
+            "code/scala/src/main/scala",
+            "code/java/src/main/java",
+            "code/hadra",
+            "code/resources",
+            "code/other",
+            "build/cache",
+            "results/default",
+            "results/saved"
         }) {
-            File d=new File(root,p);
-            if(!d.exists()){
+            File d = new File(root, p);
+            if (!d.exists()) {
                 d.mkdirs();
             }
         }
@@ -328,8 +331,7 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
                 if (c.isHidden()
                         || c.getName().startsWith(".")
                         || c.getName().endsWith(".old")
-                        || c.getName().endsWith(".back")
-                ) {
+                        || c.getName().endsWith(".back")) {
                     //ignore this;
                 } else if (c.isFile()) {
                     if (c.getName().endsWith(".hws.tson")) {

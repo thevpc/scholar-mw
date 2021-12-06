@@ -17,16 +17,16 @@ public abstract class AbstractHWProjectComponent implements HWProjectComponent {
 
     protected final WritableValue<HWSolution> solution = Props.of("solution").valueOf(HWSolution.class, null);
     protected final WritableValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
-    private final WritableString name = Props.of("name").valueOf(String.class, null);
+    private final WritableString name = Props.of("name").stringOf(null);
 
     protected final WritableValue<HWProjectComponentGroup> parent = Props.of("parent").valueOf(HWProjectComponentGroup.class, null);
-    protected final WritableString parentPath = Props.of("parentPath").valueOf(String.class, null);
+    protected final WritableString parentPath = Props.of("parentPath").stringOf(null);
 
     private final WritablePExpression<Boolean> enabled = Props2.of("enabled").exprBooleanOf(true);
-    private final WritableBoolean visible = Props.of("visible").valueOf(Boolean.class, true);
-    private final WritableBoolean selected = Props.of("selected").valueOf(Boolean.class, true);
+    private final WritableBoolean visible = Props.of("visible").booleanOf(true);
+    private final WritableBoolean selected = Props.of("selected").booleanOf(true);
     private final WritableList<Annotation3D> annotations = Props.of("annotations").listOf(Annotation3D.class);
-    private final WritableString description = Props.of("description").valueOf(String.class, null);
+    private final WritableString description = Props.of("description").stringOf(null);
 
     @Override
     public ObservableValue<String> parentPath() {

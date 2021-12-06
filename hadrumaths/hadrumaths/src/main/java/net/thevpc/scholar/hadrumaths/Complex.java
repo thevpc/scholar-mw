@@ -1513,6 +1513,13 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
         return getReal() == 1 && getImag() == 0;
     }
 
+    @Override
+    public boolean isCstComplex() {
+        return true;
+    }
 
-
+    @Override
+    public boolean isUnbounded() {
+        return true;
+    }
 }

@@ -12,7 +12,6 @@ import net.thevpc.scholar.hadrumaths.symbolic.*;
 import net.thevpc.scholar.hadrumaths.util.ArrayUtils;
 import net.thevpc.scholar.hadruplot.*;
 import net.thevpc.scholar.hadruplot.util.PlotSwingUtils;
-import org.jfree.chart.plot.DefaultDrawingSupplier;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -1245,7 +1244,8 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
                     }
                     yz[i] = expr.evalComplex(x, new double[]{y})[0];
                     complexValue = getComplexAsDouble();
-                    colors.add(DefaultDrawingSupplier.DEFAULT_PAINT_SEQUENCE[exp.sels[i] % DefaultDrawingSupplier.DEFAULT_PAINT_SEQUENCE.length]);
+                    float index = (Math.abs(exp.sels[i])%24)/24f;
+                    colors.add(ColorPalettes.DEFAULT_PALETTE.getColor(index));
                     title.add(titles[i]);
                 }
 

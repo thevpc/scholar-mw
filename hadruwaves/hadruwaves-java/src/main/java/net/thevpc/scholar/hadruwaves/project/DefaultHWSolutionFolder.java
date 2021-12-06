@@ -9,6 +9,7 @@ public class DefaultHWSolutionFolder extends AbstractHWSolutionElement implement
     private HWSolutionFolderHelper childrenHelper = new HWSolutionFolderHelper(this, () -> solution().get());
 
     public DefaultHWSolutionFolder(String name) {
+        super("solution-folder");
         name().set(name);
     }
 

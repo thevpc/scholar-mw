@@ -11,28 +11,34 @@ import net.thevpc.scholar.hadruwaves.project.HWProject;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import net.thevpc.common.props.impl.PropertyAdjusterContext;
 import net.thevpc.tson.TsonObjectContext;
 import net.thevpc.scholar.hadruwaves.project.HWSolution;
 
-public class HWConfigurations extends PropertyBase implements TsonSerializable{
+public class HWConfigurations extends PropertyBase implements TsonSerializable {
 
     private HWConfigurationFolderHelper childrenHelper = new HWConfigurationFolderHelper(null, () -> project().get());
     private WritableValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
     private WritableValue<HWConfigurationRun> activeConfiguration = Props.of("activeConfiguration")
             .adjust(new PropertyAdjuster() {
                 @Override
-                public Object adjustNewValue(PropertyEvent event) {
-                    Object nv = event.newValue();
+                public void adjust(PropertyAdjusterContext context) {
+                    Object nv = context.newValue();
                     if (nv == null) {
-                        return findInitialDefault();
+                        HWConfigurationRun v = findInitialDefault();
+                        if (v != null) {
+                            context.doInstead(() -> context.writableValue().set(v));
+                        }
+                    } else {
+                        //
                     }
-                    return nv;
                 }
             })
             .valueOf(HWConfigurationRun.class, null);
     private DefaultPropertyListeners listeners = new DefaultPropertyListeners(this);
 
     public HWConfigurations(HWProject project0) {
+        super("configurations");
         project.set(project0);
         listeners.addDelegate(childrenHelper.children);
         listeners.addDelegate(activeConfiguration);
@@ -123,7 +129,7 @@ public class HWConfigurations extends PropertyBase implements TsonSerializable{
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
         return Tson.array("Configurations")
-                .addAll(children().values().stream().map(x->x.toTsonElement(context)).collect(Collectors.toList()))
+                .addAll(children().values().stream().map(x -> x.toTsonElement(context)).collect(Collectors.toList()))
                 .build();
     }
 

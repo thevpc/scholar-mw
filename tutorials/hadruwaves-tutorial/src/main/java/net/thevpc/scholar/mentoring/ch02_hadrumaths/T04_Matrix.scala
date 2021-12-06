@@ -2,9 +2,16 @@ package net.thevpc.scholar.mentoring.ch02_hadrumaths
 
 //these are Main Mandatory Imports
 
+import net.thevpc.scholar.hadrumaths._
 import net.thevpc.scholar.hadrumaths.MathScala._
 
 object T04_Matrix extends App {
+  var m0 = matrix(
+    Array[Array[Complex]](
+      Array(1+0*î,î),
+      Array(2*î,1+0*î)
+    )
+  )
   var m1 = matrix(
     3, (i: Int, j: Int) => i + î * j + i - j
   )

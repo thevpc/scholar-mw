@@ -1,6 +1,5 @@
 package net.thevpc.scholar.hadrumaths.test.other;
 
-import junit.framework.Assert;
 import net.thevpc.scholar.hadrumaths.BooleanArray1;
 import net.thevpc.scholar.hadrumaths.BooleanArray2;
 import net.thevpc.scholar.hadrumaths.BooleanArray3;

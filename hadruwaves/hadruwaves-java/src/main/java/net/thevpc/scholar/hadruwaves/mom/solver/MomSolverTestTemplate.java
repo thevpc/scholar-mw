@@ -6,7 +6,7 @@
 package net.thevpc.scholar.hadruwaves.mom.solver;
 
 import net.thevpc.common.props.WritableList;
-import net.thevpc.common.props.WritableValue;
+import net.thevpc.common.props.WritableString;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadruwaves.project.scene.HWProjectPolygon;
 

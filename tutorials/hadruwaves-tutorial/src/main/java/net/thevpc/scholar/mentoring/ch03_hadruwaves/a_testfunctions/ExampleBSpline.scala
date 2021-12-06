@@ -26,7 +26,7 @@ object ExampleBSpline extends App{
         + (ksi(i + p + 1) - X)
         / (ksi(i + p + 1) - ksi(i + 1))
         * N(i + 1, p - 1))
-      fct.setTitle("B" + p + "(" + i + ")=" + fct)
+      fct.setTitle("B" + p + "(" + i + ")")
     }
   }
 }

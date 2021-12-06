@@ -6,7 +6,8 @@ import net.thevpc.scholar.hadrumaths.MathScala._
 
 object T01_HelloHadrumaths extends App{
 //  var x=4;
-  var h=cos(2*PI / 3 * X)*II(0.0->PI)
+  sin(PI) //value
+  var h=cos(2*PI / 3 * X)*II(0.0->PI)  //function
   Plot.plot(h);
 
   var f=sin(X+Y)*II(0.0->2*PI,0.0->2*PI)

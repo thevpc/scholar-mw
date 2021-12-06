@@ -11,6 +11,7 @@ import java.util.List;
 
 import net.thevpc.common.mvn.PomId;
 import net.thevpc.common.mvn.PomIdResolver;
+import net.thevpc.scholar.hadruplot.*;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonObjectContext;
 import net.thevpc.tson.TsonSerializer;
@@ -25,23 +26,11 @@ import net.thevpc.scholar.hadrumaths.plot.filetypes.PlotFileTypeJFig;
 import net.thevpc.scholar.hadrumaths.plot.filetypes.PlotFileTypeMatlab;
 import net.thevpc.scholar.hadrumaths.symbolic.double2complex.CDiscrete;
 import net.thevpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
-import net.thevpc.scholar.hadruplot.AbsolutePlotSamples;
-import net.thevpc.scholar.hadruplot.AdaptivePlotSamples;
 import net.thevpc.scholar.hadruplot.extension.ClassResolver;
 import net.thevpc.scholar.hadruplot.extension.defaults.DefaultPlotModelFactory;
-import net.thevpc.scholar.hadruplot.PlotModelFactory;
 import net.thevpc.scholar.hadruplot.model.value.PlotValueTypeFactory;
 import net.thevpc.scholar.hadruplot.filetypes.PlotFileTypeJpeg;
 import net.thevpc.scholar.hadruplot.filetypes.PlotFileTypePng;
-import net.thevpc.scholar.hadruplot.PlotDoubleConverter;
-import net.thevpc.scholar.hadruplot.ColorPalette;
-import net.thevpc.scholar.hadruplot.PlotBuilder;
-import net.thevpc.scholar.hadruplot.PlotComplex;
-import net.thevpc.scholar.hadruplot.PlotCube;
-import net.thevpc.scholar.hadruplot.PlotDomain;
-import net.thevpc.scholar.hadruplot.PlotHyperCube;
-import net.thevpc.scholar.hadruplot.PlotSamples;
-import net.thevpc.scholar.hadruplot.RelativePlotSamples;
 import net.thevpc.scholar.hadruplot.console.ConsoleParams;
 import net.thevpc.scholar.hadruplot.console.PlotConfigManager;
 import net.thevpc.scholar.hadruplot.console.params.CParam;
@@ -54,7 +43,7 @@ import net.thevpc.scholar.hadruplot.util.SimpleDoubleFormat;
  */
 public class MathsPlot {
 
-    public static ColorPalette DEFAULT_PALETTE = PlotConfigManager.DEFAULT_PALETTE;
+    public static ColorPalette DEFAULT_PALETTE = ColorPalettes.DEFAULT_PALETTE;
 
     static {
         synchronized (PlotConfigManager.class) {

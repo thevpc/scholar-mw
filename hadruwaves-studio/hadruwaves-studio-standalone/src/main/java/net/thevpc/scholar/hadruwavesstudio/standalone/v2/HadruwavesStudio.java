@@ -14,7 +14,6 @@ import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props.HWSProjectP
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results.HWSProjectResultsTool;
 
 import java.awt.*;
-import net.thevpc.echo.AppWorkspace;
 import net.thevpc.echo.Application;
 
 public interface HadruwavesStudio {

@@ -2,7 +2,6 @@ package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer.compone
 
 import net.thevpc.common.props.FileObject;
 import net.thevpc.common.props.Props;
-import net.thevpc.common.props.WritableValue;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 
 import java.io.File;
@@ -10,12 +9,14 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import net.thevpc.common.props.WritableBoolean;
+import net.thevpc.common.props.WritableString;
 
 public class HWProjectSourceFile extends HWProjectSource implements FileObject {
     private final WritableBoolean modified = Props.of("modified").booleanOf(false);
-    private final WritableString filePath = Props.of("filePath").valueOf(String.class, null);
-    private final WritableString content = Props.of("content").valueOf(String.class, "");
-    private WritableString name = Props.of("name").valueOf(String.class, null);
+    private final WritableString filePath = Props.of("filePath").stringOf(null);
+    private final WritableString content = Props.of("content").stringOf("");
+    private WritableString name = Props.of("name").stringOf(null);
     public HWProjectSourceFile(String path, HWProject project, File file) {
         super(path, project, file);
         filePath.set(file.toPath().toString());
@@ -26,7 +27,7 @@ public class HWProjectSourceFile extends HWProjectSource implements FileObject {
         return content;
     }
 
-    public WritableBoolean0 modified() {
+    public WritableBoolean modified() {
         return modified;
     }
 

@@ -8,6 +8,11 @@
     <version>3.2.0</version>
     <packaging>pom</packaging>
     <modules>
+        <module>hadruplot-core</module>
+        <module>libraries/hadruplot-jzy3</module>
+        <module>libraries/hadruplot-calc3d</module>
+        <module>libraries/hadruplot-jfreechart</module>
+        <module>libraries/hadruplot-simple</module>
         <module>hadruplot</module>
     </modules>
 

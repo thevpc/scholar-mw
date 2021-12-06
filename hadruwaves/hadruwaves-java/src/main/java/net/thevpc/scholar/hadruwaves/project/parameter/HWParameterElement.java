@@ -1,6 +1,7 @@
 package net.thevpc.scholar.hadruwaves.project.parameter;
 
 import net.thevpc.common.props.ObservableValue;
+import net.thevpc.common.props.WritableString;
 import net.thevpc.common.props.WritableValue;
 import net.thevpc.tson.TsonSerializable;
 import net.thevpc.scholar.hadruwaves.project.HWProject;

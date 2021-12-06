@@ -5,7 +5,7 @@
  */
 package net.thevpc.scholar.hadruwaves.mom.solver.test;
 
-import net.thevpc.common.props.WritableValue;
+import net.thevpc.common.props.WritableString;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadruwaves.project.Props2;
@@ -17,7 +17,7 @@ import net.thevpc.scholar.hadruwaves.props.WritablePExpression;
  */
 public class NamedExprTemplate {
 
-    private WritableString name = Props2.of("name").valueOf(String.class, null);
+    private WritableString name = Props2.of("name").stringOf(null);
     private WritablePExpression<Expr> expr = Props2.of("expr").exprOf(Maths.expr(0));
 
     public NamedExprTemplate() {

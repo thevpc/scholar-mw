@@ -20,7 +20,7 @@ public class HWProjectScenePlot extends JPanel {
     private Calc3dTool chartPanel = new Calc3dTool();
     private HWProjectScene scene;
     private HWConfigurationRun configuration;
-    private PropPreferences preferences = new PropPreferences();
+    private PropPreferences preferences = new PropPreferences("preferences");
 
     public HWProjectScenePlot(HWProjectScene scene, HWConfigurationRun configuration) {
         super(new BorderLayout());

@@ -16,13 +16,14 @@ import net.thevpc.scholar.hadrumaths.units.UnitType;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 
-public class HWParameters extends PropertyBase,TsonSerializable {
+public class HWParameters extends PropertyBase implements TsonSerializable {
 
     protected WritableValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
     private HWParameterFolderHelper childrenHelper = new HWParameterFolderHelper(null, () -> project().get());
     private DefaultPropertyListeners listeners = new DefaultPropertyListeners(this);
 
     public HWParameters(HWProject project) {
+        super("parameters");
         this.project.set(project);
         listeners.addDelegate(childrenHelper.children());
     }
@@ -32,7 +33,7 @@ public class HWParameters extends PropertyBase,TsonSerializable {
     }
 
     @Override
-    public PropertyListeners listeners() {
+    public PropertyListeners events() {
         return listeners;
     }
 

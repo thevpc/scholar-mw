@@ -1,9 +1,10 @@
 package net.thevpc.scholar.hadrumaths.test.scalarproducts;
 
-import junit.framework.Assert;
 import net.thevpc.common.time.Chronometer;
 
 import static net.thevpc.scholar.hadrumaths.io.HadrumathsIOUtils.*;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -211,7 +212,7 @@ public class TestCosXPlusY {
                     System.out.println(v1 + " ; " + v2 + " ; " + v3 + " ; " + v4 + " ; ");
                     saveObject(System.getProperty("user.home") + "/err.sv", new Object[]{e1,e2,dom});
                     v1 = ScalarProductOperatorFactory.hardFormal().eval(dom, e1, e2).toComplex();
-                    Assert.fail("FAIL...");
+                    Assertions.fail("FAIL...");
                 }
             }
         }

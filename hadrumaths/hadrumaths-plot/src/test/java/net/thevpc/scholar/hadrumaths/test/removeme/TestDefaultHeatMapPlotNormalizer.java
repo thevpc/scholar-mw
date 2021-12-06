@@ -1,6 +1,7 @@
 package net.thevpc.scholar.hadrumaths.test.removeme;
 
-import net.thevpc.scholar.hadruplot.libraries.simple.heatmap.DefaultPlotNormalizer;
+
+import net.thevpc.scholar.hadruplot.util.DefaultPlotNormalizer;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)

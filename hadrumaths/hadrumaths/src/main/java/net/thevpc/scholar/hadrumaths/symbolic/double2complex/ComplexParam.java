@@ -208,4 +208,10 @@ public class ComplexParam extends AbstractDoubleToComplex implements /*IDDx,*/Pa
         }
         return sb.toString();
     }
+
+    @Override
+    public boolean isUnbounded() {
+        return true;
+    }
+
 }

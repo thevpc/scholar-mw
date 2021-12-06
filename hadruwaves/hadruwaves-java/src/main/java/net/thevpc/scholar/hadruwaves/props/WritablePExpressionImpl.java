@@ -6,6 +6,8 @@ import net.thevpc.common.props.PropertyUpdate;
 import net.thevpc.common.props.impl.WritablePropertyBase;
 
 import java.util.Objects;
+import net.thevpc.common.props.impl.DefaultPropertyListeners;
+import net.thevpc.common.props.impl.PropertyAdjusterContext;
 import net.thevpc.scholar.hadrumaths.units.UnitType;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 
@@ -50,12 +52,12 @@ public class WritablePExpressionImpl<T> extends WritablePropertyBase implements 
     public void set(String v) {
         String old = this.expression;
         if (!Objects.equals(old, v)) {
-            PropertyEvent event = new PropertyEvent(this, null, old, v, null, PropertyUpdate.UPDATE);
-            event = adjusters.firePropertyUpdated(event);
-            if (event != null) {
+            PropertyEvent event = new PropertyEvent(this, null, old, v, null, PropertyUpdate.UPDATE,true);
+            PropertyAdjusterContext eventc = adjusters.firePropertyUpdated(event);
+            if (!eventc.isIgnore()) {
                 vetos.firePropertyUpdated(event);
                 this.expression = v;
-                listeners.firePropertyUpdated(event);
+                ((DefaultPropertyListeners)listeners).firePropertyUpdated(event);
             }
         }
     }

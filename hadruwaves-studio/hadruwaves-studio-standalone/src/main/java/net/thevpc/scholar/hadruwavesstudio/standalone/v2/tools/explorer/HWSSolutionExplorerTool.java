@@ -1,6 +1,5 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer;
 
-import net.thevpc.echo.AppTools;
 import net.thevpc.echo.api.components.AppComponent;
 import net.thevpc.echo.api.AppContainerChildren;
 import net.thevpc.echo.ContextMenu;

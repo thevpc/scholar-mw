@@ -2,6 +2,8 @@ package net.thevpc.scholar.hadruwaves.project.scene;
 
 import net.thevpc.common.props.ObservableValue;
 import net.thevpc.common.props.Props;
+import net.thevpc.common.props.WritableBoolean;
+import net.thevpc.common.props.WritableString;
 import net.thevpc.common.props.WritableValue;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
@@ -17,10 +19,10 @@ public class HWProjectElementBrickFace implements HWProjectElement {
 
     protected final WritableValue<HWSolution> solution = Props.of("solution").valueOf(HWSolution.class, null);
     protected final WritableValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
-    private final WritableString name = Props.of("name").valueOf(String.class, null);
+    private final WritableString name = Props.of("name").stringOf(null);
     private HWProjectBrick.Face index;
     private final WritablePExpression<Boundary> boundary = Props2.of("boundary").exprEnumOf(Boundary.class, Boundary.NOTHING);
-    private final WritableBoolean visible = Props.of("visible").valueOf(Boolean.class, true);
+    private final WritableBoolean visible = Props.of("visible").booleanOf(true);
     private HWProjectBrick parent;
 
     public HWProjectElementBrickFace(String boundary, HWProjectBrick.Face index, String name, HWProjectBrick parent) {
@@ -56,7 +58,7 @@ public class HWProjectElementBrickFace implements HWProjectElement {
         return boundary;
     }
 
-    public WritableBoolean0 visible() {
+    public WritableBoolean visible() {
         return visible;
     }
 
