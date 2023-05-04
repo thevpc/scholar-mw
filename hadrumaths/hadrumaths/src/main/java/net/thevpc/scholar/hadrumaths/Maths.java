@@ -30,6 +30,7 @@ import net.thevpc.scholar.hadrumaths.symbolic.polymorph.cond.IfExpr;
 import net.thevpc.scholar.hadrumaths.symbolic.polymorph.trigo.Conj;
 import net.thevpc.scholar.hadrumaths.util.ArrayUtils;
 import net.thevpc.scholar.hadrumaths.util.PlatformUtils;
+import net.thevpc.scholar.hadrumaths.util.UnsafeHandler;
 
 import java.io.File;
 import java.io.Serializable;
@@ -52,6 +53,8 @@ public final class Maths {
 
     //<editor-fold desc="constants functions">
     public static final double PI = Math.PI;
+    public static final double TWO_PI = 2 * Math.PI;
+    public static final double HALF_PI = Math.PI / 2.0;
     public static final double π = Math.PI;
     public static final double E = Math.E;
     public static final DoubleToDouble ZERO = DefaultDoubleValue.ZERO1;//valueOf(0, Domain.FULLX);
@@ -66,7 +69,6 @@ public final class Maths {
     public static final Expr X = new XX(Domain.FULLX);
     public static final Expr Y = new YY(Domain.FULLXY);
     public static final Expr Z = new ZZ(Domain.FULLXYZ);
-    public static final double HALF_PI = Math.PI / 2.0;
     public static final Complex I = Complex.I;
     public static final Complex CNaN = Complex.NaN;
     public static final Complex CONE = Complex.ONE;
@@ -219,6 +221,7 @@ public final class Maths {
     public static final int X_AXIS = 0;
     public static final int Y_AXIS = 1;
     public static final int Z_AXIS = 2;
+    public static final double DEGREES_PER_RADIAN = (double) (180.0 / PI);
     public static final Function IDENTITY = new IdentityConverter();
     public static final Function<Complex, Double> COMPLEX_TO_DOUBLE = new ComplexDoubleConverter();
     public static final Function<Double, Complex> DOUBLE_TO_COMPLEX = new DoubleComplexConverter();
@@ -970,8 +973,9 @@ public final class Maths {
     public static double[] dsteps(double min, double max, double step) {
         return net.thevpc.common.util.ArrayUtils.dsteps(min, max, step);
     }
+
     public static double[] dstepsFrom(double min, int times, double step) {
-        if (times <=0) {
+        if (times <= 0) {
             return new double[0];
         }
         double[] d = new double[times];
@@ -1192,9 +1196,9 @@ public final class Maths {
      * polynomials, the routine requires one more addition per loop than
      * evaluating a nested polynomial of the same degree.
      *
-     * @param x argument to the polynomial.
+     * @param x    argument to the polynomial.
      * @param coef the coefficients of the polynomial.
-     * @param N the number of coefficients.
+     * @param N    the number of coefficients.
      */
     public static double chbevl(double x, double[] coef, int N) throws ArithmeticException {
         return MathsTrigo.chbevl(x, coef, N);
@@ -1220,9 +1224,9 @@ public final class Maths {
      * range closed min (inclusive) and closed max (inclusive)
      *
      * @param orderedValues array to look for range into. must be
-     * <strong>ordered</strong>
-     * @param min min value accepted in range (inclusive)
-     * @param max max value accepted in range (inclusive)
+     *                      <strong>ordered</strong>
+     * @param min           min value accepted in range (inclusive)
+     * @param max           max value accepted in range (inclusive)
      * @return array of two integers defining first and last indices (all
      * inclusive) accepted in range
      */
@@ -1234,9 +1238,9 @@ public final class Maths {
      * range closed min (inclusive) and open max (exclusive)
      *
      * @param orderedValues array to look for range into. must be
-     * <strong>ordered</strong>
-     * @param min min value accepted in range (inclusive)
-     * @param max max value accepted in range (exclusive)
+     *                      <strong>ordered</strong>
+     * @param min           min value accepted in range (inclusive)
+     * @param max           max value accepted in range (exclusive)
      * @return array of two integers defining first and last indices (all
      * inclusive) accepted in range
      */
@@ -1744,9 +1748,9 @@ public final class Maths {
     /**
      * lenient cast
      *
-     * @param o instance
+     * @param o      instance
      * @param toType cast to
-     * @param <T> toType
+     * @param <T>    toType
      * @return
      */
     public static <T> T lcast(Object o, Class<T> toType) {
@@ -1774,7 +1778,7 @@ public final class Maths {
 
     public static Expr parseExpression(String expression) {
         JContext m = createExpressionParser();
-        Object evaluated = m.evaluate(expression,null);
+        Object evaluated = m.evaluate(expression, null);
         if (evaluated instanceof Expr) {
             return (Expr) evaluated;
         }
@@ -1994,7 +1998,7 @@ public final class Maths {
         return v.abs();
     }
 
-//    public static Complex[] abs(Complex[] v) {
+    //    public static Complex[] abs(Complex[] v) {
 //        Complex[] r = new Complex[v.length];
 //        for (int i = 0; i < r.length; i++) {
 //            r[i] = (v[i].abs());
@@ -3815,7 +3819,7 @@ public final class Maths {
     }
 
     public static int sizeOf(Class src) {
-        return PrivateUnsafe.sizeOf(src);
+        return UnsafeHandler.get().sizeOf(src);
     }
 
     //    public static Complex csum(int size, Int2Complex f) {
@@ -3924,27 +3928,27 @@ public final class Maths {
         return MathsArrays.rerr(a, b);
     }
 
-    public static CustomCCFunctionXExpr define(String name, CustomCCFunctionX f) {
+    public static CustomCCFunctionXExpr define(String name, FunctionCCX f) {
         return new CustomCCFunctionXDefinition(name, f).fct();
     }
 
-    public static CustomDCFunctionXExpr define(String name, CustomDCFunctionX f) {
+    public static CustomDCFunctionXExpr define(String name, FunctionDCX f) {
         return new CustomDCFunctionXDefinition(name, f).fct();
     }
 
-    public static CustomDDFunctionXExpr define(String name, CustomDDFunctionX f) {
+    public static CustomDDFunctionXExpr define(String name, FunctionDDX f) {
         return new CustomDDFunctionXDefinition(name, f).fct();
     }
 
-    public static CustomDDFunctionXYExpr define(String name, CustomDDFunctionXY f) {
+    public static CustomDDFunctionXYExpr define(String name, FunctionDDXY f) {
         return new CustomDDFunctionXYDefinition(name, f).fct();
     }
 
-    public static CustomDCFunctionXYExpr define(String name, CustomDCFunctionXY f) {
+    public static CustomDCFunctionXYExpr define(String name, FunctionDCXY f) {
         return new CustomDCFunctionXYDefinition(name, f).fct();
     }
 
-    public static CustomCCFunctionXYExpr define(String name, CustomCCFunctionXY f) {
+    public static CustomCCFunctionXYExpr define(String name, FunctionCCXY f) {
         return new CustomCCFunctionXYDefinition(name, f).fct();
     }
 
@@ -4213,7 +4217,7 @@ public final class Maths {
         return Math.round(a);
     }
 
-//    private static class StringTypeReference extends TypeName<String> {
+    //    private static class StringTypeReference extends TypeName<String> {
 //    }
 //
 //    private static class MatrixTypeReference extends TypeName<Matrix> {
@@ -4296,7 +4300,7 @@ public final class Maths {
 
     public static Expr evalExpression(String expression) {
         JContext m = ExpressionManagerFactory.createEvaluator();
-        Object evaluated = m.evaluate(expression,null);
+        Object evaluated = m.evaluate(expression, null);
         if (evaluated instanceof Expr) {
             return (Expr) evaluated;
         }
@@ -4310,14 +4314,26 @@ public final class Maths {
         return ExpressionManagerFactory.createParser();
     }
 
-    public static double toRadians(double a) {
-        return Math.toRadians(a);
+    public static double toRadians(double degrees) {
+        return Math.toRadians(degrees);
     }
 
-    public static double[] toRadians(double[] a) {
-        double[] b = new double[a.length];
+    public static double toDegrees(double radians) {
+        return Math.toDegrees(radians);
+    }
+
+    public static double[] toRadians(double[] degrees) {
+        double[] b = new double[degrees.length];
         for (int i = 0; i < b.length; i++) {
-            b[i] = Math.toRadians(a[i]);
+            b[i] = Math.toRadians(degrees[i]);
+        }
+        return b;
+    }
+
+    public static double[] toDegrees(double[] radians) {
+        double[] b = new double[radians.length];
+        for (int i = 0; i < b.length; i++) {
+            b[i] = Math.toDegrees(radians[i]);
         }
         return b;
     }
@@ -4451,42 +4467,45 @@ public final class Maths {
 
     /**
      * solve ax2+bx+c
+     *
      * @param a a number
      * @param b b number
      * @param c c number
      * @return solutions
      */
-    public static Complex[] solvePoly2(double a,double b,double c) {
-        double delta=sqr(b) - 4*a*c;
-        if(delta==0){
+    public static Complex[] solvePoly2(double a, double b, double c) {
+        double delta = sqr(b) - 4 * a * c;
+        if (delta == 0) {
             return new Complex[]{
-                    complex(-b).div(2*a)
+                    complex(-b).div(2 * a)
             };
         }
         return new Complex[]{
-                complex(-b).minus(csqrt(delta)).div(2*a),
-                complex(-b).plus(csqrt(delta)).div(2*a),
+                complex(-b).minus(csqrt(delta)).div(2 * a),
+                complex(-b).plus(csqrt(delta)).div(2 * a),
         };
     }
 
     /**
      * solve ax2+bx+c
+     *
      * @param a a number
      * @param b b number
      * @param c c number
      * @return solutions
      */
-    public static double[] solvePoly2dbl(double a,double b,double c) {
-        double delta=sqr(b) - 4*a*c;
-        if(delta<0){
+    public static double[] solvePoly2dbl(double a, double b, double c) {
+        double delta = sqr(b) - 4 * a * c;
+        if (delta < 0) {
             return new double[0];
         }
-        double d1=sqrt(delta);
+        double d1 = sqrt(delta);
         return new double[]{
-                (-b-d1)/(2*a),
-                (-b+d1)/(2*a),
+                (-b - d1) / (2 * a),
+                (-b + d1) / (2 * a),
         };
     }
+
     public static float toFloat(Object o) {
         return toFloat(o, null);
     }

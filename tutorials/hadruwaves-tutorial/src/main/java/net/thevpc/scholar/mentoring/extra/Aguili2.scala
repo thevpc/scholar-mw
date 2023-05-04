@@ -26,7 +26,7 @@ object Aguili2 extends App {
   //  Plot.title("dela_f=fct(f)").yname("V").xsamples(fs).titles("V").plot(stream(fs).map(ff=>new Data(ff).find_V().df2).toArray)
   //  Plot.title("ρ=fct(f)").yname("V").xsamples(fs).titles("V").plot(stream(fs).map(ff=>new Data(ff).find_V().ρ).toArray)
 
-  //  private val aaa: CustomDDFunctionXYExpr = define("A", new CustomDDFunctionXY {
+  //  private val aaa: CustomDDFunctionXYExpr = define("A", new FunctionDDXY {
   //    override def eval(x: Double, y: Double): Double = new Data(fs(0)).G(Complex.of(x, y))
   //  });
 

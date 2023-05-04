@@ -21,7 +21,6 @@ import net.thevpc.scholar.hadruwaves.project.DefaultHWSolutionFolder;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationFolder;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 import net.thevpc.scholar.hadruwaves.project.scene.HWMaterialTemplate;
-import net.thevpc.echo.swing.helpers.actions.SwingAppUndoableAction;
 import net.thevpc.scholar.hadruwaves.project.HWSolutionElement;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer.HWSSolutionExplorerTool;
@@ -34,7 +33,7 @@ import net.thevpc.common.msg.Message;
  *
  * @author vpc
  */
-public class RemoveUndoableAction extends SwingAppUndoableAction {
+public class RemoveUndoableAction extends HWUnduableAction {
 
     private final HWSSolutionExplorerTool explorer;
 

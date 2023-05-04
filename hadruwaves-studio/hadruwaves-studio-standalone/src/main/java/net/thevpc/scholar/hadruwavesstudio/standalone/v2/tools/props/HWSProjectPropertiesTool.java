@@ -1,5 +1,7 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.props;
 
+import net.thevpc.common.props.Path;
+import net.thevpc.echo.Button;
 import net.thevpc.echo.api.components.AppComponent;
 import net.thevpc.echo.api.AppContainerChildren;
 import net.thevpc.echo.ContextMenu;
@@ -79,11 +81,11 @@ public class HWSProjectPropertiesTool extends AbstractToolWindowPanel {
     }
 
     private void createPopUpMenu() {
-        popupTools().addAction().bindUndo(new MoMNewFunctionGroupListAction(studio())).path("/moMNewFunctionGroupList").tool();
-        popupTools().addAction().bindUndo(new MoMNewFunctionGroupSeqAction(studio())).path("/moMNewFunctionGroupSeq").tool();
-        popupTools().addAction().bindUndo(new MoMNewFunctionGroupMeshAction(studio())).path("/moMNewFunctionGroupMesh").tool();
-        popupTools().addSeparator("/separator1");
-        popupTools().addAction().bindUndo(new RemoveFromPropsAction(studio())).path("/removeFromProps").tool();
+        popupTools().add(new Button(new MoMNewFunctionGroupListAction(studio()),app()), Path.of("/moMNewFunctionGroupList"));
+        popupTools().add(new Button(new MoMNewFunctionGroupSeqAction(studio()),app()), Path.of("/moMNewFunctionGroupSeq"));
+        popupTools().add(new Button(new MoMNewFunctionGroupMeshAction(studio()),app()), Path.of("/moMNewFunctionGroupMesh"));
+        popupTools().addSeparator(Path.of("/separator1"));
+        popupTools().add(new Button(new RemoveFromPropsAction(studio()),app()), Path.of("/removeFromProps"));
     }
 
     public void refreshTools() {

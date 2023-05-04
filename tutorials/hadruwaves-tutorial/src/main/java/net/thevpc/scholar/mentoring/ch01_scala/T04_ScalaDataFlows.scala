@@ -31,5 +31,5 @@ object T04_ScalaDataFlows extends App{
   for ( j <- 1 to 30 ) {
     println(j)
   }
-
+  //for(int j=1;j<=30;j++) System.out.println(j)
 }

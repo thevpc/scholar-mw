@@ -16,7 +16,6 @@ import net.thevpc.echo.api.AppEvent;
 import net.thevpc.common.msg.JFormattedMessage;
 import net.thevpc.echo.api.UndoableAction;
 import net.thevpc.scholar.hadruwaves.project.*;
-import net.thevpc.echo.swing.helpers.actions.SwingAppUndoableAction;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer.HWSSolutionExplorerTool;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.util.HWProjectItem;
 import net.thevpc.common.msg.Message;
@@ -25,7 +24,7 @@ import net.thevpc.common.msg.Message;
  *
  * @author vpc
  */
-public class NewFolderUndoableAction extends SwingAppUndoableAction {
+public class NewFolderUndoableAction extends HWUnduableAction {
 
     private final HWSSolutionExplorerTool explorer;
 

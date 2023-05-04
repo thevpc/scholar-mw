@@ -4,6 +4,7 @@ import net.thevpc.common.time.Chronometer;
 import net.thevpc.common.collections.Collections2;
 import net.thevpc.common.time.DatePart;
 import net.thevpc.common.collections.ListValueMap;
+import net.thevpc.common.time.TimeDuration;
 import net.thevpc.scholar.hadrumaths.transform.ExprRewriteCounter;
 import net.thevpc.scholar.hadrumaths.transform.ExprRewriteLogger;
 import net.thevpc.scholar.hadrumaths.transform.ExpressionRewriter;
@@ -119,7 +120,7 @@ public class TestSimplify2 {
             }
             chrono.stop();
             System.out.println(chrono.getDuration().toString(DatePart.NANOSECOND));
-            System.out.println(chrono.getDuration().div(iterationsCount).toString(DatePart.NANOSECOND));
+            System.out.println(TimeDuration.ofMillis((chrono.getDuration().toNanoSeconds()/iterationsCount)).toString(DatePart.NANOSECOND));
             //Count{newValue=24, bestEffort=68, unmodified=152, totalModified=92, total=244}
             // 6s 603ms  16us 498ns
             // 66us  30ns

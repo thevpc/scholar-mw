@@ -20,14 +20,15 @@ object MicrostripLineMoMExample extends App {
   val space = matchedLoadBoxSpace(Material.VACUUM) // layer descr for the open componentVectorSpace, 1 refers to the espilon_r of the air/void
   val mass = shortCircuitBoxSpace(Material.substrate(2.2), 1 * CM) // layer descr for 1cm height of substrate, with espilon_r 2.2
 
-  var lineDomain = domain(0.0 -> l * 1.5, -w -> w) // line domain
+  var lineDomain = domain(0.0 -> l, -w -> w) // line domain
   var box = domain(0.0 -> a, -b / 2 -> b / 2) // box domain
 
   var m = param("m") // m and n parameters
   var n = param("n")
 
   // defines a parametrized test function
-  var gp = cos((2 * m + 1) * PI / 2 * X / l) * cos(n * PI / w * (Y + w / 2)
+  var gp = cos((2 * m + 1) * PI / 2 * X / l) *
+    cos(n * PI / w * (Y + w / 2)
   ) * lineDomain
 
   //if(true) System.exit(0);

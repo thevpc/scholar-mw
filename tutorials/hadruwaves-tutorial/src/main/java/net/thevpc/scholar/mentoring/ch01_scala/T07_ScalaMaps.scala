@@ -1,5 +1,7 @@
 package net.thevpc.scholar.mentoring.ch01_scala
 
+import scala.collection.mutable
+
 object T07_ScalaMaps extends App {
   //linked lists
   var a = Map(
@@ -13,12 +15,15 @@ object T07_ScalaMaps extends App {
 //
   var a2 = List(
     "hammadi"->30,
-    "belleaid"->35,
+      "aguerbi"->35,
   )
-  var b = Map(
+  var b = mutable.Map(
     "hammadi"->30,
     "belleaid"->35,
   )
+  println(b("hammadi"))
+  b("hammadi")=12;
+  println(b.keySet)
 
   for (x <- a) {
     println(x)

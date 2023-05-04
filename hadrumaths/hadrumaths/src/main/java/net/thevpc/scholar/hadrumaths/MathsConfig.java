@@ -54,7 +54,7 @@ public final class MathsConfig {
     private FrequencyFormat frequencyFormatter = FrequencyFormat.INSTANCE;
     private BytesSizeFormat memorySizeFormatter = BytesSizeFormat.INSTANCE;
     private MetricFormat metricFormatter = new MetricFormat();
-    private final TimePeriodFormat timePeriodFormat = new DefaultTimePeriodFormat();
+    private final TimeDurationFormat timePeriodFormat = new DefaultTimeDurationFormat();
     private final ExprCubeFactory exprCubeFactory = DefaultExprCubeFactory.INSTANCE;
     private int matrixBlockPrecision = 256;
     private InverseStrategy defaultMatrixInverseStrategy = InverseStrategy.BLOCK_SOLVE;
@@ -106,7 +106,7 @@ public final class MathsConfig {
         }
         Tson.setSerializer(
                 b
-                        .setSerializer(DefaultTimePeriodFormat.class, (DefaultTimePeriodFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName()))
+                        .setSerializer(DefaultTimeDurationFormat.class, (DefaultTimeDurationFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName()))
                         .setSerializer(ToStringDoubleFormat.class, (ToStringDoubleFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName()))
                         .setSerializer(PercentDoubleFormat.class, (PercentDoubleFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName()))
                         .setSerializer(DecimalDoubleFormat.class, (DecimalDoubleFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName(), Tson.elem(object.toPattern())))
@@ -623,7 +623,7 @@ public final class MathsConfig {
         return exprCubeFactory;
     }
 
-    public net.thevpc.common.time.TimePeriodFormat getTimePeriodFormat() {
+    public net.thevpc.common.time.TimeDurationFormat getTimePeriodFormat() {
 
         return timePeriodFormat;
     }

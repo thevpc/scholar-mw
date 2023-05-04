@@ -46,7 +46,7 @@ public class TestFieldSerialParallelEvaluator implements TestFieldEvaluator {
                 }
 
                 double[] z = new double[]{0};
-                Domain domain = Domain.ofBounds(x[0], x[1], y[0], y[1], z[0], z[1]);
+                Domain domain = Domain.ofBounds(x[0], x[1], y[0], y[1], z[0], z[0]);
                 return new VDiscrete(
                         CDiscrete.of(domain,new Complex[][][]{xCube}),
                         CDiscrete.of(domain,new Complex[][][]{yCube}),

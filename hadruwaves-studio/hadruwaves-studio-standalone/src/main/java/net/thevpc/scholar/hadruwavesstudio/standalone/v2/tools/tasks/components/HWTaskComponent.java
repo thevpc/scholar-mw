@@ -255,7 +255,7 @@ public class HWTaskComponent extends JPanel implements ActionListener {
     public void updateComponentUI() {
 //        pause.setSelectedIcon(app.iconSet().icon("Stop").get());
         if (monitor != null) {
-            TimeDuration spent = new TimeDuration(monitor.getDuration());
+            TimeDuration spent = TimeDuration.ofMillis(monitor.getDuration());
             TimeDuration remaining = null;
             TimeDuration approx = null;
             double d = Double.NaN;
@@ -274,8 +274,8 @@ public class HWTaskComponent extends JPanel implements ActionListener {
                         d = 1;
                     }
                     if(d>0){
-                        remaining = new TimeDuration(pmonitor.getEstimatedRemainingDuration());
-                        approx = new TimeDuration(pmonitor.getEstimatedTotalDuration());
+                        remaining = TimeDuration.ofMillis(pmonitor.getEstimatedRemainingDuration());
+                        approx = TimeDuration.ofMillis(pmonitor.getEstimatedTotalDuration());
                     }
                     d100 = d * 100;
                     indeterminate = false;

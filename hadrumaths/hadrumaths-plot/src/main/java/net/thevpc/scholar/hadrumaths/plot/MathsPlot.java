@@ -61,6 +61,7 @@ public class MathsPlot {
             PlotConfigManager.getPlotValueTypeFactory().registerType(new PlotValueAxisVectorType());
             PlotConfigManager.getPlotValueTypeFactory().registerType(new PlotValueComplexType());
             PlotConfigManager.getPlotValueTypeFactory().registerType(new PlotValueExprType());
+            PlotConfigManager.getPlotValueTypeFactory().registerType(new PlotValueCustomFunctionType());
             PlotConfigManager.getPlotValueTypeFactory().registerType(new PlotValuePointType());
             PlotConfigManager.getPlotValueTypeFactory().registerType(MathsPlotValueDoubleType.INSTANCE);
             PlotConfigManager.getPlotValueTypeFactory().registerConverter(new PlotValueTypeFactory.AbstractPlotValueTypeConverter("number", "complex") {

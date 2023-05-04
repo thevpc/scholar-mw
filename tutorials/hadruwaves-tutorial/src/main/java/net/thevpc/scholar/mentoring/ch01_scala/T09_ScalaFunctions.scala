@@ -7,7 +7,8 @@ object T09_ScalaFunctions {
     proc(x.toString)
   }
 
-  def fact(x: Int): Int = if (x <= 1) 1 else x * fact(x - 1)
+  def fact(x: Int): Int = if (x <= 1)
+    1 else x * fact(x - 1)
 
   def proc(s: String): Unit = println(s)
 }

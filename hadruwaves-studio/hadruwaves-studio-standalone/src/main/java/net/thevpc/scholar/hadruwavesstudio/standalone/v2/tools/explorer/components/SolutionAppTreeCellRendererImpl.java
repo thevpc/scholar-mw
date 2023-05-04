@@ -10,6 +10,7 @@ import java.awt.Component;
 import javax.swing.JTree;
 
 //import net.thevpc.common.iconset.PIconSet;
+import net.thevpc.echo.iconset.IconSetAware;
 import net.thevpc.echo.iconset.IconSets;
 import net.thevpc.echo.swing.helpers.tree.LazyTree;
 import net.thevpc.echo.swing.icons.SwingAppImage;
@@ -34,10 +35,12 @@ import net.thevpc.scholar.hadruwaves.project.scene.HWProjectPort;
 public class SolutionAppTreeCellRendererImpl extends DefaultAppTreeCellRenderer {
 
     private final HWSSolutionExplorerTool outer;
+    private final IconSetAware iconSetAware;
 
     public SolutionAppTreeCellRendererImpl(HadruwavesStudio studio, final HWSSolutionExplorerTool outer) {
         super(studio);
         this.outer = outer;
+        this.iconSetAware = studio;
     }
 
     @Override
@@ -47,38 +50,38 @@ public class SolutionAppTreeCellRendererImpl extends DefaultAppTreeCellRenderer 
         Object o = item.getItemValue();
         IconSets iconSet = studio().app().iconSets();
         if (o instanceof HWSolution) {
-            super.setIcon(SwingAppImage.imageIconOf(iconSet.icon("Solution",outer).get()));
+            super.setIcon(SwingAppImage.imageIconOf(iconSet.icon("Solution",iconSetAware)));
             setText(((HWSolution) o).name().get());
         } else if (o instanceof HWMaterialTemplate) {
             setText(((HWMaterialTemplate) o).name().get());
-            super.setIcon(SwingAppImage.imageIconOf(iconSet.icon("Material",outer).get()));
+            super.setIcon(SwingAppImage.imageIconOf(iconSet.icon("Material",iconSetAware)));
         } else if (o instanceof AbstractHWProjectComponentMaterial) {
             Element3DTemplate e = ((AbstractHWProjectComponentMaterial) o).geometry().get();
             if (e instanceof Element3DPolygonTemplate) {
-                super.setIcon(SwingAppImage.imageIconOf(iconSet.icon("Elem2d",outer).get()));
+                super.setIcon(SwingAppImage.imageIconOf(iconSet.icon("Elem2d",iconSetAware)));
             } else {
-                super.setIcon(SwingAppImage.imageIconOf(iconSet.icon("Elem3d",outer).get()));
+                super.setIcon(SwingAppImage.imageIconOf(iconSet.icon("Elem3d",iconSetAware)));
             }
         } else if (o instanceof HWProject) {
             if (studio().proc().activeProjectValue() == o) {
                 super.setForeground(getActivatedColor(sel));
-                super.setIcon(SwingAppImage.imageIconOf(iconSet.icon("SelectedProject",outer).get()));
+                super.setIcon(SwingAppImage.imageIconOf(iconSet.icon("SelectedProject",iconSetAware)));
             } else {
-                super.setIcon(SwingAppImage.imageIconOf(iconSet.icon("Project",outer).get()));
+                super.setIcon(SwingAppImage.imageIconOf(iconSet.icon("Project",iconSetAware)));
             }
             HWSolutionElement se = (HWSolutionElement) o;
             setText(se.name().get());
         } else if (o instanceof DefaultHWSolutionFolder) {
             HWSolutionElement se = (HWSolutionElement) o;
             setText(se.name().get());
-            super.setIcon(SwingAppImage.imageIconOf(expanded ? iconSet.icon("OpenFolder",outer).get() : iconSet.icon("Folder").get()));
+            super.setIcon(SwingAppImage.imageIconOf(expanded ? iconSet.icon("OpenFolder",iconSetAware) : iconSet.icon("Folder").get()));
         } else if (o instanceof HWProjectPort) {
-            super.setIcon(SwingAppImage.imageIconOf(iconSet.icon("Port",outer).get()));
+            super.setIcon(SwingAppImage.imageIconOf(iconSet.icon("Port",iconSetAware)));
             setText(((HWProjectComponent) o).name().get());
         } else if (o instanceof HWConfigurationRun) {
             HWConfigurationRun t = item.getProject().configurations().activeConfiguration().get();
             if (o == t) {
-                super.setIcon(SwingAppImage.imageIconOf(iconSet.icon("ActiveConfig",outer).get()));
+                super.setIcon(SwingAppImage.imageIconOf(iconSet.icon("ActiveConfig",iconSetAware)));
             } else {
                 super.setIcon(SwingAppImage.imageIconOf(iconSet.icon("Config").get()));
             }
@@ -86,7 +89,7 @@ public class SolutionAppTreeCellRendererImpl extends DefaultAppTreeCellRenderer 
             super.setIcon(SwingAppImage.imageIconOf(expanded ? iconSet.icon("OpenFolder").get() : iconSet.icon("Folder").get()));
         } else if (o instanceof HWProjectSource) {
             HWProjectSource s=(HWProjectSource) o;
-            super.setIcon(SwingAppImage.imageIconOf(outer.studio().app().iconSets().iconForFile(s.file,selected, expanded).get()));
+            super.setIcon(SwingAppImage.imageIconOf(outer.studio().app().iconSets().iconForFile(s.file,selected, expanded,iconSetAware)));
         } else if (!leaf) {
             super.setIcon(SwingAppImage.imageIconOf(expanded ? iconSet.icon("OpenFolder").get() : iconSet.icon("Folder").get()));
         }

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.geom.Point;
+import net.thevpc.scholar.hadrumaths.symbolic.CustomFunction;
 import net.thevpc.scholar.hadrumaths.symbolic.ExprType;
 import net.thevpc.scholar.hadruplot.extension.defaults.DefaultPlotValueFactory;
 import net.thevpc.scholar.hadruplot.PlotBuilder;
@@ -89,6 +90,9 @@ public class MathsPlotValueFactory extends DefaultPlotValueFactory {
         }
         if (obj instanceof Expr) {
             return createPlotValue("expr", obj);
+        }
+        if (obj instanceof CustomFunction) {
+            return createPlotValue("custom-function", obj);
         }
         if (obj instanceof Point) {
             return createPlotValue("point", obj);

@@ -9,7 +9,6 @@ import java.util.logging.Level;
 import net.thevpc.echo.api.AppEvent;
 import net.thevpc.common.msg.JFormattedMessage;
 import net.thevpc.echo.api.UndoableAction;
-import net.thevpc.echo.swing.helpers.actions.SwingAppUndoableAction;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.HadruwavesStudio;
 import net.thevpc.echo.api.AppPropertiesNodeFolder;
 import net.thevpc.scholar.hadruwaves.mom.solver.HWSolverTemplateFDM;
@@ -19,12 +18,13 @@ import net.thevpc.scholar.hadruwaves.mom.solver.MomSolverTestTemplate;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 import net.thevpc.scholar.hadruwaves.solvers.HWSolverTemplate;
 import net.thevpc.common.msg.Message;
+import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer.actions.HWUnduableAction;
 
 /**
  *
  * @author vpc
  */
-public abstract class MoMNewFunctionGroupActionBase extends SwingAppUndoableAction {
+public abstract class MoMNewFunctionGroupActionBase extends HWUnduableAction {
 
     private HadruwavesStudio studio;
 

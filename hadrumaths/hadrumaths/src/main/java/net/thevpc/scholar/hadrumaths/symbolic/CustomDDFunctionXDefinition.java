@@ -7,9 +7,9 @@ import net.thevpc.scholar.hadrumaths.symbolic.double2double.DefaultCustomDDFunct
 public class CustomDDFunctionXDefinition implements CustomFunctionDefinition {
     private static final long serialVersionUID = 1L;
     private final String name;
-    private final CustomDDFunctionX eval;
+    private final FunctionDDX eval;
 
-    public CustomDDFunctionXDefinition(String name, CustomDDFunctionX eval) {
+    public CustomDDFunctionXDefinition(String name, FunctionDDX eval) {
         this.name = name;
         this.eval = eval;
     }
@@ -18,7 +18,7 @@ public class CustomDDFunctionXDefinition implements CustomFunctionDefinition {
         return name;
     }
 
-    public CustomDDFunctionX getEval() {
+    public FunctionDDX getEval() {
         return eval;
     }
 

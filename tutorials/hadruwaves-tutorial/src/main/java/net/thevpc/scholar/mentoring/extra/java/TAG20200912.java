@@ -1,7 +1,7 @@
 package net.thevpc.scholar.mentoring.extra.java;
 
 import net.thevpc.scholar.hadrumaths.Domain;
-import net.thevpc.scholar.hadrumaths.symbolic.CustomDDFunctionX;
+import net.thevpc.scholar.hadrumaths.symbolic.FunctionDDX;
 import net.thevpc.scholar.hadruplot.Plot;
 
 import java.lang.Double;
@@ -76,7 +76,7 @@ public class TAG20200912 implements Cloneable {
         Plot.xsamples(20000)
                 .title("Zc(w)")
                 .plot(mul(
-                        define("zdirect", (CustomDDFunctionX) this::zdirect)
+                        define("zdirect", (FunctionDDX) this::zdirect)
 //                        , Domain.ofBounds(c1_lowerBound, c1_upperBound))
                         , Domain.ofBounds(1E-8, 1E-2))
                 );

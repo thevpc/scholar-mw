@@ -603,8 +603,8 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
         }
     }
 
-    public double getLambda() {
-        return Physics.lambda(getFrequency());
+    public double waveLength() {
+        return Physics.waveLength(getFrequency());
     }
 
     public MomStructure frequency(double f) {

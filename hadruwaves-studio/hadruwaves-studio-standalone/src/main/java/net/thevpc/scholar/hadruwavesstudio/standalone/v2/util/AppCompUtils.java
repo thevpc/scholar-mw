@@ -14,6 +14,8 @@ import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.TreePath;
 
+import net.thevpc.echo.UserControl;
+import net.thevpc.echo.api.components.AppContextMenu;
 import net.thevpc.echo.api.components.AppMenu;
 import net.thevpc.echo.ContextMenu;
 import net.thevpc.echo.swing.peers.SwingPeer;
@@ -50,10 +52,10 @@ public class AppCompUtils {
     private static class JXTreeTableMouseAdapterImpl extends MouseAdapter {
 
         private final JXTreeTable tree;
-        private final AppMenu popUpMenu;
+        private final AppContextMenu popUpMenu;
         private final Runnable preparePopupBeforeShowing;
 
-        public JXTreeTableMouseAdapterImpl(JXTreeTable tree, AppMenu popUpMenu, Runnable preparePopupBeforeShowing) {
+        public JXTreeTableMouseAdapterImpl(JXTreeTable tree, AppContextMenu popUpMenu, Runnable preparePopupBeforeShowing) {
             this.tree = tree;
             this.popUpMenu = popUpMenu;
             this.preparePopupBeforeShowing = preparePopupBeforeShowing;
@@ -71,8 +73,8 @@ public class AppCompUtils {
                 try {
 //                    popUpMenu.model().refresh();
                     preparePopupBeforeShowing.run();
-                    if (popUpMenu.isActionable()) {
-                        popUpMenu.show(tree, e.getX(), e.getY());
+                    if (popUpMenu.actionable().get()) {
+                        popUpMenu.show(new UserControl("",tree, popUpMenu.app()), e.getX(), e.getY());
                     }
                 } catch (Exception ex) {
                     System.err.println(ex);
@@ -85,10 +87,10 @@ public class AppCompUtils {
     private static class JTreeMouseAdapterImpl extends MouseAdapter {
 
         private final JTree tree;
-        private final AppMenu popUpMenu;
+        private final ContextMenu popUpMenu;
         private final Runnable preparePopupBeforeShowing;
 
-        public JTreeMouseAdapterImpl(JTree tree, AppMenu popUpMenu, Runnable preparePopupBeforeShowing) {
+        public JTreeMouseAdapterImpl(JTree tree, ContextMenu popUpMenu, Runnable preparePopupBeforeShowing) {
             this.tree = tree;
             this.popUpMenu = popUpMenu;
             this.preparePopupBeforeShowing = preparePopupBeforeShowing;
@@ -106,8 +108,8 @@ public class AppCompUtils {
                 try {
 //                    popUpMenu.model().refresh();
                     preparePopupBeforeShowing.run();
-                    if (popUpMenu.isActionable()) {
-                        popUpMenu.show(tree, e.getX(), e.getY());
+                    if (popUpMenu.actionable().get()) {
+                        popUpMenu.show(new UserControl("",tree, popUpMenu.app()), e.getX(), e.getY());
                     }
                 } catch (Exception ex) {
                     System.err.println(ex);

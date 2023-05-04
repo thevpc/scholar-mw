@@ -9,8 +9,9 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import net.thevpc.echo.AppWorkspace;
 import net.thevpc.echo.Application;
+import net.thevpc.echo.api.components.AppComponent;
+import net.thevpc.echo.api.components.AppContainer;
 import net.thevpc.scholar.hadruwaves.Material;
 import net.thevpc.scholar.hadruwaves.project.HWSolutionElement;
 import net.thevpc.scholar.hadruwaves.project.scene.HWMaterialTemplate;
@@ -62,10 +63,10 @@ public class PropertiesSimpleActionImpl extends HAction {
 
     @Override
     protected void actionPerformedImpl(ActionEvent e) {
-        AppWorkspace ws = getApplication().mainFrame().get().content().get();
+        AppContainer ws = (AppContainer) getApplication().mainFrame().get().content().get();
         //TODO
                 explorer.refreshTools();
-        ws.windows().get("Properties").active().set(true);
+        ws.children().get("Properties").active().set(true);
     }
     @Override
     public void refresh() {

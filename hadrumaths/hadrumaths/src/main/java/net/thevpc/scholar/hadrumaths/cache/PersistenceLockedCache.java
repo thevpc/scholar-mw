@@ -52,7 +52,8 @@ class PersistenceLockedCache<T> implements Callable<T> {
             }
             if (oldValue != null) {
                 if (timeThresholdMilli > 0 && c.getTime() > timeThresholdMilli * 1000000) {
-                    log.log(Level.SEVERE, "[PersistenceCache] " + cacheItemName + " loading took too long (" + c + " > " + new TimeDuration(timeThresholdMilli).toString(DatePart.SECOND) + ")" + " (" + objCache.getObjectCacheFile(cacheItemName).getFile() + ")");
+                    log.log(Level.SEVERE, "[PersistenceCache] " + cacheItemName + " loading took too long (" + c + " > "
+                            + TimeDuration.ofMillis(timeThresholdMilli).toString(DatePart.SECOND) + ")" + " (" + objCache.getObjectCacheFile(cacheItemName).getFile() + ")");
                 }
             }
         }
@@ -104,7 +105,8 @@ class PersistenceLockedCache<T> implements Callable<T> {
                                 )));
                         if (longLoadNDetected) {
                             stat.add(Tson.pair("slowLoading", Tson.elem(true)));
-                            log.log(Level.WARNING, "[PersistenceCache] " + cacheItemName + " reloading took too long (" + loadChrono + " > " + new TimeDuration(timeThresholdMilli).toString(DatePart.SECOND) + ")");
+                            log.log(Level.WARNING, "[PersistenceCache] " + cacheItemName + " reloading took too long (" + loadChrono + " > " +
+                                    TimeDuration.ofMillis(timeThresholdMilli).toString(DatePart.SECOND) + ")");
                         }
                     }
                     objCache.addStat(stat.build());

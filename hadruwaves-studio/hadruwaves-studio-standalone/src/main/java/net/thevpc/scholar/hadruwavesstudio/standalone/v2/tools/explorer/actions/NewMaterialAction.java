@@ -13,7 +13,6 @@ import javax.swing.event.TreeSelectionListener;
 import net.thevpc.echo.api.AppEvent;
 import net.thevpc.common.msg.JFormattedMessage;
 import net.thevpc.echo.api.UndoableAction;
-import net.thevpc.echo.swing.helpers.actions.SwingAppUndoableAction;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 import net.thevpc.scholar.hadruwaves.project.scene.HWMaterialTemplate;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer.HWSSolutionExplorerTool;
@@ -24,7 +23,7 @@ import net.thevpc.common.msg.Message;
  *
  * @author vpc
  */
-public class NewMaterialAction extends SwingAppUndoableAction {
+public class NewMaterialAction extends HWUnduableAction {
 
     private final HWSSolutionExplorerTool explorer;
 
@@ -50,11 +49,11 @@ public class NewMaterialAction extends SwingAppUndoableAction {
             public Message doAction(AppEvent event) {
                 oo = getSelectedItem();
                 if (oo != null) {
-                    String s = JOptionPane.showInputDialog((Component) explorer.app().mainFrame().get().component(), "New Name");
+                    String s = JOptionPane.showInputDialog((Component) explorer.app().mainFrame().get().peer().toolkitComponent(), "New Name");
                     if (s != null) {
                         HWMaterialTemplate old = oo.getProject().materials().get(s);
                         if (old != null) {
-                            JOptionPane.showConfirmDialog((Component) explorer.app().mainFrame().get().component(), "Name exists");
+                            JOptionPane.showConfirmDialog((Component) explorer.app().mainFrame().get().peer().toolkitComponent(), "Name exists");
                         } else {
                             HWMaterialTemplate m = new HWMaterialTemplate(oo.getProject());
                             m.name().set(s);

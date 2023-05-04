@@ -11,7 +11,6 @@ import javax.swing.event.TreeSelectionListener;
 import net.thevpc.echo.api.AppEvent;
 import net.thevpc.echo.api.UndoableAction;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationFolder;
-import net.thevpc.echo.swing.helpers.actions.SwingAppUndoableAction;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer.HWSSolutionExplorerTool;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer.components.HWProjectFolder;
@@ -22,7 +21,7 @@ import net.thevpc.common.msg.Message;
  *
  * @author vpc
  */
-public class NewConfigurationUndoableAction extends SwingAppUndoableAction {
+public class NewConfigurationUndoableAction extends HWUnduableAction {
 
     private final HWSSolutionExplorerTool explorer;
 

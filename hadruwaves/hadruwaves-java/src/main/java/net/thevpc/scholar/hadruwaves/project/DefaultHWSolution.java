@@ -28,7 +28,7 @@ public class DefaultHWSolution extends PropertyBase implements HWSolution {
     public DefaultHWSolution(String uuid) {
         super(uuid);
         this.uuid = uuid;
-        listeners.addDelegate(childrenHelper.children, () -> null);
+        listeners.addDelegate(childrenHelper.children, () -> Path.root());
         propagateEvents(filePath,name,description,activeProject);
         listeners.add(new PropertyListener() {
             @Override

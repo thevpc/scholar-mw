@@ -516,14 +516,14 @@ public class ExprRandomObjectGenerator extends RandomObjectGenerator<ExprRandomO
         register(CustomCCFunctionXDefinition.class, new Generator() {
             @Override
             public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
-                return new CustomCCFunctionXDefinition("CustomCCX", new MyCustomCCFunctionX());
+                return new CustomCCFunctionXDefinition("CustomCCX", new MyFunctionCCX());
             }
         }
         );
         register(CustomCCFunctionXYDefinition.class, new Generator() {
             @Override
             public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
-                return new CustomCCFunctionXYDefinition("CustomCCXY", new MyCustomCCFunctionXY());
+                return new CustomCCFunctionXYDefinition("CustomCCXY", new MyFunctionCCXY());
             }
         }
         );
@@ -544,14 +544,14 @@ public class ExprRandomObjectGenerator extends RandomObjectGenerator<ExprRandomO
         register(CustomDCFunctionXDefinition.class, new Generator() {
             @Override
             public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
-                return new CustomDCFunctionXDefinition("CustomDCX", new MyCustomDCFunctionX());
+                return new CustomDCFunctionXDefinition("CustomDCX", new MyFunctionDCX());
             }
         }
         );
         register(CustomDCFunctionXYDefinition.class, new Generator() {
             @Override
             public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
-                return new CustomDCFunctionXYDefinition("CustomDCXY", new MyCustomDCFunctionXY());
+                return new CustomDCFunctionXYDefinition("CustomDCXY", new MyFunctionDCXY());
             }
         }
         );
@@ -608,14 +608,14 @@ public class ExprRandomObjectGenerator extends RandomObjectGenerator<ExprRandomO
         register(CustomDCFunctionXYDefinition.class, new Generator() {
             @Override
             public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
-                return new CustomDCFunctionXYDefinition("CustomDCXY", new MyCustomDCFunctionXY());
+                return new CustomDCFunctionXYDefinition("CustomDCXY", new MyFunctionDCXY());
             }
         }
         );
         register(CustomDCFunctionXDefinition.class, new Generator() {
             @Override
             public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
-                return new CustomDCFunctionXDefinition("CustomDCX", new MyCustomDCFunctionX());
+                return new CustomDCFunctionXDefinition("CustomDCX", new MyFunctionDCX());
             }
         }
         );
@@ -1131,7 +1131,7 @@ public class ExprRandomObjectGenerator extends RandomObjectGenerator<ExprRandomO
         return this;
     }
 
-    private static class MyCustomCCFunctionX implements CustomCCFunctionX {
+    private static class MyFunctionCCX implements FunctionCCX {
 
         private static final long serialVersionUID = 1L;
 
@@ -1141,7 +1141,7 @@ public class ExprRandomObjectGenerator extends RandomObjectGenerator<ExprRandomO
         }
     }
 
-    private static class MyCustomCCFunctionXY implements CustomCCFunctionXY {
+    private static class MyFunctionCCXY implements FunctionCCXY {
 
         private static final long serialVersionUID = 1L;
 
@@ -1151,7 +1151,7 @@ public class ExprRandomObjectGenerator extends RandomObjectGenerator<ExprRandomO
         }
     }
 
-    private static class MyCustomDDFunctionX implements CustomDDFunctionX {
+    private static class MyCustomDDFunctionX implements FunctionDDX {
 
         private static final long serialVersionUID = 1L;
 
@@ -1161,7 +1161,7 @@ public class ExprRandomObjectGenerator extends RandomObjectGenerator<ExprRandomO
         }
     }
 
-    private static class MyCustomDCFunctionX implements CustomDCFunctionX {
+    private static class MyFunctionDCX implements FunctionDCX {
 
         private static final long serialVersionUID = 1L;
 
@@ -1171,7 +1171,7 @@ public class ExprRandomObjectGenerator extends RandomObjectGenerator<ExprRandomO
         }
     }
 
-    private static class MyCustomDDFunctionXY implements CustomDDFunctionXY {
+    private static class MyCustomDDFunctionXY implements FunctionDDXY {
 
         private static final long serialVersionUID = 1L;
 
@@ -1181,7 +1181,7 @@ public class ExprRandomObjectGenerator extends RandomObjectGenerator<ExprRandomO
         }
     }
 
-    private static class MyCustomDCFunctionXY implements CustomDCFunctionXY {
+    private static class MyFunctionDCXY implements FunctionDCXY {
 
         private static final long serialVersionUID = 1L;
 

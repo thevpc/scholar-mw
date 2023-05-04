@@ -72,7 +72,7 @@
         <dependency>
             <groupId>net.thevpc.hl</groupId>
             <artifactId>hadra-build-tool</artifactId>
-            <version>0.1.0</version> <!--updated-->
+            <version>0.1.2</version> <!--updated-->
         </dependency>
         <dependency>
             <groupId>net.thevpc.common</groupId>
@@ -94,7 +94,7 @@
         <dependency>
             <groupId>net.thevpc.common</groupId>
             <artifactId>thevpc-common-utils</artifactId>
-            <version>1.23.1</version>
+            <version>1.23.2</version>
         </dependency>
         <dependency>
             <groupId>net.thevpc.common</groupId>

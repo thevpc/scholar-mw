@@ -13,7 +13,9 @@
         <module>libraries/hadruplot-calc3d</module>
         <module>libraries/hadruplot-jfreechart</module>
         <module>libraries/hadruplot-simple</module>
+        <module>libraries/hadruplot-laf</module>
         <module>hadruplot</module>
+        <module>hadruplot-app</module>
     </modules>
 
 </project>

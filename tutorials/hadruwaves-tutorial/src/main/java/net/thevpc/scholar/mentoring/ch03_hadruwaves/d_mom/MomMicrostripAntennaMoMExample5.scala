@@ -13,7 +13,7 @@ object MomMicrostripAntennaMoMExample5 {
   def main(args: Array[String]): Unit = {
 
     var f = 5 * GHZ
-    println(lambda(f))
+    println(waveLength(f))
     //box
     var a = 100 * MM
     var b = 100 * MM

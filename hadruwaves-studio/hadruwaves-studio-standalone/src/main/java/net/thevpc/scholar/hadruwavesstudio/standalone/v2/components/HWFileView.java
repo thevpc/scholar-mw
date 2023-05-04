@@ -51,7 +51,7 @@ public class HWFileView extends FileView {
         if (f == null) {
             return null;
         }
-        AppImage ii = studio.app().iconSets().iconForFile(f, false, false).get();
+        AppImage ii = studio.app().iconSets().iconForFile(f, false, false,studio);
         return ii == null ? null : ((SwingAppImage) ii).getIcon();
     }
 

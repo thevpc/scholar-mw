@@ -31,7 +31,7 @@ public final class DefaultPlanarSources implements PlanarSources, Cloneable {
         this.all.addAll(Arrays.asList(sources));
     }
 
-    public void add(Source source) {
+    public void add(SourceValue source) {
         add((PlanarSource) source);
     }
 

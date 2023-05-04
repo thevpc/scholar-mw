@@ -19,7 +19,7 @@ import javax.swing.event.TreeSelectionListener;
  *
  * @author vpc
  */
-public class SaveNodeAction extends SwingAppUndoableAction {
+public class SaveNodeAction extends HWUnduableAction {
 
 
     HWSSolutionExplorerTool outer;

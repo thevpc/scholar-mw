@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Created by vpc on 3/1/17.
  */
 public abstract class AbstractGeometry implements Geometry {
 

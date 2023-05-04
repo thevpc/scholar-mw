@@ -10,7 +10,7 @@ import net.thevpc.tson.TsonObjectBuilder;
 import net.thevpc.tson.TsonObjectContext;
 import net.thevpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.thevpc.scholar.hadruwaves.mom.sources.Sources;
-import static net.thevpc.scholar.hadruwaves.Physics.lambda;
+import static net.thevpc.scholar.hadruwaves.Physics.waveLength;
 
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
@@ -34,7 +34,7 @@ public abstract class AbstractPropagatingModalSources implements ModalSources {
     }
 
     public int getSourceCountForDimensions(ModeFunctions fn) {
-        int x = ((int) (Math.max(fn.getEnv().getDomain().xwidth(),fn.getEnv().getDomain().ywidth()) / lambda(fn.getEnv().getFrequency()))) + 1;
+        int x = ((int) (Math.max(fn.getEnv().getDomain().xwidth(),fn.getEnv().getDomain().ywidth()) / waveLength(fn.getEnv().getFrequency()))) + 1;
         int val = (x < 0 || x >= this.sourceCountPerDimension.length) ? this.defaultSourceCount : this.sourceCountPerDimension[x - 1];
         if (val == 0) {
             return x;

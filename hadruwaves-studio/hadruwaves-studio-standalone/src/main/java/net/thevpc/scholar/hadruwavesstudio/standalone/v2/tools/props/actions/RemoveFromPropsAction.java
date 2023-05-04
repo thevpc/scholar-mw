@@ -11,7 +11,6 @@ import net.thevpc.echo.api.AppEvent;
 import net.thevpc.echo.api.AppPropertiesNode;
 import net.thevpc.common.msg.JFormattedMessage;
 import net.thevpc.echo.api.UndoableAction;
-import net.thevpc.echo.swing.helpers.actions.SwingAppUndoableAction;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.HadruwavesStudio;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadruwaves.mom.solver.HWSolverTemplateFDM;
@@ -25,12 +24,13 @@ import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 import net.thevpc.scholar.hadruwaves.props.WritablePExpression;
 import net.thevpc.scholar.hadruwaves.solvers.HWSolverTemplate;
 import net.thevpc.common.msg.Message;
+import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer.actions.HWUnduableAction;
 
 /**
  *
  * @author vpc
  */
-public class RemoveFromPropsAction extends SwingAppUndoableAction {
+public class RemoveFromPropsAction extends HWUnduableAction {
 
     private HadruwavesStudio studio;
 

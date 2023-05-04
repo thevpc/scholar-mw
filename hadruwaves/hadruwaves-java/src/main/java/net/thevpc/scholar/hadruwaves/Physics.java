@@ -41,13 +41,7 @@ public final class Physics {
         return (k0 * Maths.C) / (2 * Math.PI);
     }
 
-    public static double lambda(double freq) {
-//        return freq / Physics.C;
-        return Maths.C / freq;
-    }
-
     public static double waveLength(double freq) {
-//        return freq / Physics.C;
         return Maths.C / freq;
     }
 

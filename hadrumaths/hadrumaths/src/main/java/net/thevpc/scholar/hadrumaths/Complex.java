@@ -1120,6 +1120,15 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
         return Complex.of(Math.log(absdbl()), Math.atan2(getImag(), getReal()));
     }
 
+    public double dbl() {
+        double imag = getImag();
+        double real = getReal();
+        if (imag == 0) {
+            return real;
+        }
+        return absdbl();
+    }
+
     public Complex log10() {
         double imag = getImag();
         double real = getReal();

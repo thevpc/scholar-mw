@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer;
 
+import net.thevpc.echo.Button;
 import net.thevpc.echo.api.components.AppComponent;
 import net.thevpc.echo.api.AppContainerChildren;
 import net.thevpc.echo.ContextMenu;
@@ -17,12 +18,14 @@ import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
-import java.awt.*;
+//import java.awt.*;
+import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.function.Predicate;
+
 import net.thevpc.common.props.impl.PropsHelper;
 import net.thevpc.echo.swing.peers.SwingPeer;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationFolder;
@@ -100,7 +103,7 @@ public class HWSSolutionExplorerTool extends AbstractToolWindowPanel {
         }
     }
 
-//    protected void setVisible(AbstractAction a, boolean visible) {
+    //    protected void setVisible(AbstractAction a, boolean visible) {
 //        a.putValue("visible", visible);
 //    }
     protected void preparePopupBeforeShowing() {
@@ -167,35 +170,33 @@ public class HWSSolutionExplorerTool extends AbstractToolWindowPanel {
 
     private void createPopUpMenu() {
         AppContainerChildren<AppComponent> tools = popUpMenu.children();
-        tools.addAction().bindUndo(new OpenSourceAction(this)).path("/open").tool();
-        tools.addAction().bindUndo(new ReloadAction(this)).path("/reload").tool();
-        tools.addAction().bindUndo(new SelectProjectAction(this)).path("/selectProject").tool();
-        tools.addAction().bindUndo(new DeSelectProjectAction(this)).path("/deselectProject").tool();
-        tools.addAction().bindUndo(new SelectConfigAction(this)).path("/selectConfig").tool();
-        tools.addAction().bindUndo(new SaveNodeAction(this)).path("/save").tool();
-        tools.addAction().bindUndo(new SaveAllNodeAction(this)).path("/saveAll").tool();
-        tools.addAction().bindUndo(new SaveAsNodeAction(this)).path("/saveAs").tool();
-        tools.addAction().bindUndo(new BuildNodeAction(this)).path("/build").tool();
-        tools.addAction().bindUndo(new CopyNodeAction(this)).path("/copy").tool();
-        tools.addAction().bindUndo(new CutNodeAction(this)).path("/cut").tool();
-        tools.addAction().bindUndo(new PasteNodeAction(this)).path("/paste").tool();
-
-        tools.addAction().bindUndo(new NewFolderUndoableAction(this)).path("/newFolder").tool();
-        tools.addAction().bindUndo(new NewProjectUndoableAction(this)).path("/newProject").tool();
-        tools.addAction().bindUndo(new NewMaterialAction(this)).path("/newMaterial").tool();
-        tools.addAction().bindUndo(new NewConfigurationUndoableAction(this)).path("/newConfiguration").tool();
-        tools.addAction().bindUndo(new NewMaterial2DPolygonAction(this)).path("/newMaterial2DPolygon").tool();
-        tools.addAction().bindUndo(new NewMaterial2DRectangleAction(this)).path("/newMaterial2DRectangle").tool();
-        tools.addAction().bindUndo(new NewMaterial3DBoxAction(this)).path("/newMaterial3DBox").tool();
-        tools.addAction().bindUndo(new NewModalPortRectangleAction(this)).path("/newModalPortRectangle").tool();
-        tools.addAction().bindUndo(new NewPlanarPortPolygonAction(this)).path("/newPlanarPortPolygon").tool();
-        tools.addAction().bindUndo(new NewPlanarPortRectangleAction(this)).path("/newPlanarPortRectangle").tool();
-
-        tools.addAction().bindUndo(new EnableUndoableActionImpl(this)).path("/enable").tool();
-        tools.addAction().bindUndo(new DisableUndoableAction(this)).path("/disable").tool();
-        tools.addAction().bind(new PropertiesSimpleActionImpl(studio().app(), this)).path("/properties").tool();
-        tools.addSeparator("/separator1");
-        tools.addAction().bindUndo(new RemoveUndoableAction(this)).path("/remove").tool();
+        tools.add(new Button(new OpenSourceAction(this), app()), Path.of("/open"));
+        tools.add(new Button(new ReloadAction(this), app()), Path.of("/reload"));
+        tools.add(new Button(new SelectProjectAction(this), app()), Path.of("/selectProject"));
+        tools.add(new Button(new DeSelectProjectAction(this), app()), Path.of("/deselectProject"));
+        tools.add(new Button(new SelectConfigAction(this), app()), Path.of("/selectConfig"));
+        tools.add(new Button(new SaveNodeAction(this), app()), Path.of("/save"));
+        tools.add(new Button(new SaveAllNodeAction(this), app()), Path.of("/saveAll"));
+        tools.add(new Button(new SaveAsNodeAction(this), app()), Path.of("/saveAs"));
+        tools.add(new Button(new BuildNodeAction(this), app()), Path.of("/build"));
+        tools.add(new Button(new CopyNodeAction(this), app()), Path.of("/copy"));
+        tools.add(new Button(new CutNodeAction(this), app()), Path.of("/cut"));
+        tools.add(new Button(new PasteNodeAction(this), app()), Path.of("/paste"));
+        tools.add(new Button(new NewFolderUndoableAction(this), app()), Path.of("/newFolder"));
+        tools.add(new Button(new NewProjectUndoableAction(this), app()), Path.of("/newProject"));
+        tools.add(new Button(new NewMaterialAction(this), app()), Path.of("/newMaterial"));
+        tools.add(new Button(new NewConfigurationUndoableAction(this), app()), Path.of("/newConfiguration"));
+        tools.add(new Button(new NewMaterial2DPolygonAction(this), app()), Path.of("/newMaterial2DPolygon"));
+        tools.add(new Button(new NewMaterial2DRectangleAction(this), app()), Path.of("/newMaterial2DRectangle"));
+        tools.add(new Button(new NewMaterial3DBoxAction(this), app()), Path.of("/newMaterial3DBox"));
+        tools.add(new Button(new NewModalPortRectangleAction(this), app()), Path.of("/newModalPortRectangle"));
+        tools.add(new Button(new NewPlanarPortPolygonAction(this), app()), Path.of("/newPlanarPortPolygon"));
+        tools.add(new Button(new NewPlanarPortRectangleAction(this), app()), Path.of("/newPlanarPortRectangle"));
+        tools.add(new Button(new EnableUndoableActionImpl(this), app()), Path.of("/enable"));
+        tools.add(new Button(new DisableUndoableAction(this), app()), Path.of("/disable"));
+        tools.add(new Button(new PropertiesSimpleActionImpl(studio().app(), this), app()), Path.of("/properties"));
+        tools.addSeparator(Path.of("/separator1"));
+        tools.add(new Button(new RemoveUndoableAction(this), app()), Path.of("/remove"));
 
     }
 

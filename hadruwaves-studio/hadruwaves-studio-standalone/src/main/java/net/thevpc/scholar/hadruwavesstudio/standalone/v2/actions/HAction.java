@@ -8,13 +8,14 @@ package net.thevpc.scholar.hadruwavesstudio.standalone.v2.actions;
 import net.thevpc.echo.api.ActionEvent;
 import net.thevpc.echo.api.Action;
 import net.thevpc.echo.Application;
+import net.thevpc.echo.api.ActionWithId;
 import net.thevpc.echo.swing.helpers.actions.SwingAbstractAppAction;
 
 /**
  *
  * @author vpc
  */
-public abstract class HAction extends SwingAbstractAppAction implements Action {
+public abstract class HAction extends SwingAbstractAppAction implements ActionWithId {
 
     public HAction(Application application, String id) {
         super(application, id);

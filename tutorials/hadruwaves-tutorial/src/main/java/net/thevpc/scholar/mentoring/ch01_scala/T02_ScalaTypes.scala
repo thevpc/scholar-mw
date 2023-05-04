@@ -9,7 +9,7 @@ object T02_ScalaTypes extends App{
   var a6=300L // this is a long (64bits)
 
   //you still can declare explicitly var types
-  var d_a1 : Int=3 // this is an integer (32 bits)
+  var d_a1 : Int=_; // this is an integer (32 bits)
   var d_a2 : Double=3 // this is a double (64 bits)
   var d_a3 : Character='3' // this is a character (16bits)
   var d_a4 : Boolean=true // this is a boolean

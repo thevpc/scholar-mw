@@ -4133,27 +4133,27 @@ object MathScala {
     Maths.rerr(a, b)
   }
 
-  def define(name: String, f: CustomCCFunctionX): CustomCCFunctionXExpr = {
+  def define(name: String, f: FunctionCCX): CustomCCFunctionXExpr = {
     Maths.define(name, f)
   }
 
-  def define(name: String, f: CustomDCFunctionX): CustomDCFunctionXExpr = {
+  def define(name: String, f: FunctionDCX): CustomDCFunctionXExpr = {
     Maths.define(name, f)
   }
 
-  def define(name: String, f: CustomDDFunctionX): CustomDDFunctionXExpr = {
+  def define(name: String, f: FunctionDDX): CustomDDFunctionXExpr = {
     Maths.define(name, f)
   }
 
-  def define(name: String, f: CustomDDFunctionXY): CustomDDFunctionXYExpr = {
+  def define(name: String, f: FunctionDDXY): CustomDDFunctionXYExpr = {
     Maths.define(name, f)
   }
 
-  def define(name: String, f: CustomDCFunctionXY): CustomDCFunctionXYExpr = {
+  def define(name: String, f: FunctionDCXY): CustomDCFunctionXYExpr = {
     Maths.define(name, f)
   }
 
-  def define(name: String, f: CustomCCFunctionXY): CustomCCFunctionXYExpr = {
+  def define(name: String, f: FunctionCCXY): CustomCCFunctionXYExpr = {
     Maths.define(name, f)
   }
 

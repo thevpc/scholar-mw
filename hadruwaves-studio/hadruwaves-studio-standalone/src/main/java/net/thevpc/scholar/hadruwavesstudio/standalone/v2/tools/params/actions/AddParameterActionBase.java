@@ -8,8 +8,8 @@ package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.params.actions;
 import net.thevpc.echo.api.AppEvent;
 import net.thevpc.common.msg.JFormattedMessage;
 import net.thevpc.echo.api.UndoableAction;
-import net.thevpc.echo.swing.helpers.actions.SwingAppUndoableAction;
 import net.thevpc.scholar.hadruwaves.project.parameter.HWParameterFolder;
+import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer.actions.HWUnduableAction;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.params.HWSProjectParametersTool;
 
 import javax.swing.event.TreeSelectionEvent;
@@ -22,7 +22,7 @@ import net.thevpc.common.msg.Message;
 /**
  * @author vpc
  */
-public abstract class AddParameterActionBase extends SwingAppUndoableAction {
+public abstract class AddParameterActionBase extends HWUnduableAction {
 
     HWSProjectParametersTool outer;
 

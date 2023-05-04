@@ -1,6 +1,7 @@
 package net.thevpc.scholar.hadrumaths.plot;
 
 import net.thevpc.scholar.hadrumaths.plot.model.AxisVectorPlotModel;
+import net.thevpc.scholar.hadrumaths.symbolic.*;
 import net.thevpc.scholar.hadruplot.extension.ClassResolvers;
 import net.thevpc.scholar.hadruplot.model.PlotModel;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotModel;
@@ -65,6 +66,9 @@ public class MathsPlotModelFactory implements PlotModelFactory {
         PlotValueType type = data.getType();
         PlotValueType complexType = PlotConfigManager.getPlotValueTypeFactory().getType("complex");
         switch (type.getName()) {
+            case "custom-function": {
+                return _plotCustomFunctionArray(new CustomFunction[]{(CustomFunction) type.toValue(data.getValue(), CustomFunction.class)}, builder);
+            }
             case "complex[][][]": {
                 PlotValueArrayType oo = (PlotValueArrayType) type;
                 return PlotModelUtils._plotComplexArray3(
@@ -113,7 +117,7 @@ public class MathsPlotModelFactory implements PlotModelFactory {
                 PlotValueArrayType oo = (PlotValueArrayType) type;
                 Complex[] y = (Complex[]) oo.toArray(data.getValue(), Complex[].class);
                 boolean col = "true".equals(data.get("column"));
-                return PlotModelUtils._plotComplexArray1(y, col?PlotType.MATRIX:PlotType.CURVE, col, builder, complexType);
+                return PlotModelUtils._plotComplexArray1(y, col ? PlotType.MATRIX : PlotType.CURVE, col, builder, complexType);
             }
             case "point":
                 return _plotPoints(new Point[][]{{(Point) type.toValue(data.getValue(), Point.class)}}, builder);
@@ -193,7 +197,7 @@ public class MathsPlotModelFactory implements PlotModelFactory {
         }
     }
 
-//    private PlotType _getPlotType(PlotType plotType, PlotBuilder builder) {
+    //    private PlotType _getPlotType(PlotType plotType, PlotBuilder builder) {
 //        if (builder.getPlotType() != null) {
 //            return builder.getPlotType();
 //        }
@@ -280,6 +284,45 @@ public class MathsPlotModelFactory implements PlotModelFactory {
             return (PlotModel) ref[0];
         } else {
             return _plotExprArray0(expressions, builder);
+        }
+    }
+
+    private PlotModel _plotCustomFunctionArray(CustomFunction[] functions, PlotBuilder builder) {
+        if (functions.length == 1 && builder.getSamples() instanceof AdaptivePlotSamples) {
+            AdaptivePlotSamples adaptiveSamples = (AdaptivePlotSamples) builder.getSamples();
+            String updateName0 = builder.getUpdateName();
+            if (updateName0 == null) {
+                updateName0 = UUID.randomUUID().toString();
+                update(updateName0);
+            }
+            Object[] ref = new Object[1];
+            AdaptiveFunction1<Double> af = new AdaptiveFunction1<Double>() {
+                @Override
+                public Double eval(double x) {
+                    return ((FunctionDDX) functions[0]).eval(x);
+                }
+            };
+            DistanceStrategy<Double> ds = Maths.DISTANCE_DOUBLE;
+            Maths.adaptiveEval(
+                    af,
+                    ds, (DomainX) Domain.ofBounds(0.0, 1.0)
+                    , new AdaptiveConfig()
+                            .setError(adaptiveSamples.getError())
+                            .setMinimumXSamples(adaptiveSamples.getMinimumXSamples())
+                            .setMaximumXSamples(adaptiveSamples.getMaximumXSamples())
+                            .setListener(new SamplifyListener() {
+                                @Override
+                                public void onNewElements(AdaptiveEvent event) {
+                                    builder.samples(Samples.absolute(event.getSamples().x.toDoubleArray()));
+                                    ref[0] = _plotCustomFunctionArray(functions, builder);
+                                }
+                            }));
+            if (builder.getUpdateName() == null) {
+                Plot.setCachedPlotComponent(updateName0, null);
+            }
+            return (PlotModel) ref[0];
+        } else {
+            return _plotCustomFunctionArray0(functions, builder);
         }
     }
 
@@ -411,10 +454,73 @@ public class MathsPlotModelFactory implements PlotModelFactory {
         }
     }
 
+    private PlotModel _plotCustomFunctionArray0(CustomFunction[] expressions, PlotBuilder builder) {
+        List<PlotHyperCube> discretes = new ArrayList<PlotHyperCube>();
+        List<Expr> other = new ArrayList<Expr>();
+        ClassResolvers<PlotHyperCube> plotHyperCubeResolvers = PlotConfigManager.getPlotHyperCubeResolvers();
+        for (CustomFunction f : expressions) {
+            PlotSamples samples0 = builder.getSamples();
+            PlotDomain domain = builder.getDomain();
+            if (samples0 instanceof RelativePlotSamples && domain != null) {
+                samples0 = domain.toAbsolute(samples0);
+            }
+            if (!(samples0 instanceof AbsolutePlotSamples)) {
+                throw new IllegalArgumentException("Expected absolute samples");
+            }
+            AbsolutePlotSamples samples1 = (AbsolutePlotSamples) samples0;
+            if (f instanceof FunctionDDXY) {
+                FunctionDDXY ff = (FunctionDDXY) f;
+                double[] x = samples1.getX();
+                double[] y = samples1.getY();
+                Double[][] vals = new Double[y.length][x.length];
+                for (int xi = 0; xi < x.length; xi++) {
+                    for (int yj = 0; yj < y.length; yj++) {
+                        vals[yj][xi] = ff.eval(x[xi], y[yj]);
+                    }
+                }
+                //PlotValueType complexType = PlotConfigManager.getPlotValueTypeFactory().getType("complex");
+                PlotValueType doubleType = PlotConfigManager.getPlotValueTypeFactory().getType("number");
+                return PlotModelUtils._plotComplexArray2(vals, PlotType.MATRIX, false, builder, doubleType);
+            } else if (f instanceof FunctionDCXY) {
+                FunctionDCXY ff = (FunctionDCXY) f;
+                double[] x = samples1.getX();
+                double[] y = samples1.getY();
+                Complex[][] vals = new Complex[y.length][x.length];
+                for (int xi = 0; xi < x.length; xi++) {
+                    for (int yj = 0; yj < y.length; yj++) {
+                        vals[yj][xi] = ff.eval(x[xi], y[yj]);
+                    }
+                }
+                PlotValueType complexType = PlotConfigManager.getPlotValueTypeFactory().getType("complex");
+                return PlotModelUtils._plotComplexArray2(vals, PlotType.MATRIX, false, builder, complexType);
+            } else if (f instanceof FunctionDDX) {
+                FunctionDDX ff = (FunctionDDX) f;
+                double[] x = samples1.getX();
+                Double[] vals = new Double[x.length];
+                for (int xi = 0; xi < x.length; xi++) {
+                    vals[xi] = ff.eval(x[xi]);
+                }
+                //PlotValueType complexType = PlotConfigManager.getPlotValueTypeFactory().getType("complex");
+                PlotValueType doubleType = PlotConfigManager.getPlotValueTypeFactory().getType("number");
+                return PlotModelUtils._plotComplexArray1(vals, PlotType.MATRIX, true, builder, doubleType);
+            } else if (f instanceof FunctionDCX) {
+                FunctionDCX ff = (FunctionDCX) f;
+                double[] x = samples1.getX();
+                Complex[] vals = new Complex[x.length];
+                for (int xi = 0; xi < x.length; xi++) {
+                    vals[xi] = ff.eval(x[xi]);
+                }
+                PlotValueType complexType = PlotConfigManager.getPlotValueTypeFactory().getType("complex");
+                return PlotModelUtils._plotComplexArray1(vals, PlotType.MATRIX, false, builder, complexType);
+            }
+        }
+        throw new IllegalArgumentException("unsupported");
+    }
+
     private ExpressionsPlotModel _createExpressionsPlotModel(PlotBuilder builder) {
         ExpressionsPlotModel mm = (ExpressionsPlotModel) new ExpressionsPlotModel().setDomain(
-                PlotConfigManager.getPlotDomainResolvers().resolve(builder.getDomain())
-        )
+                        PlotConfigManager.getPlotDomainResolvers().resolve(builder.getDomain())
+                )
                 .setSamples(builder.getSamples()).setXprec(builder.getXsamples()).setYprec(builder.getYsamples())
                 .setConstX(builder.isConstX())
                 //.setLibraries(builder.getLibrary())

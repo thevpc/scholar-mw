@@ -1,6 +1,7 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.params;
 
-import net.thevpc.echo.AppTools;
+import net.thevpc.common.props.Path;
+import net.thevpc.echo.Button;
 import net.thevpc.echo.api.components.AppComponent;
 import net.thevpc.echo.api.AppContainerChildren;
 import net.thevpc.echo.ContextMenu;
@@ -183,12 +184,17 @@ public class HWSProjectParametersTool extends AbstractToolWindowPanel {
 
         AppContainerChildren<AppComponent> tools = popUpMenu.children();
         for (UnitType value : UnitType.values()) {
-            tools.addAction().bindUndo(new AddParameterAction(this, value)).path("/Add/New " + value.group() + " Parameter/addParameter" + value).tool();
+            tools.add(new Button("AddParameterAction",
+                            new AddParameterAction(this, value),app()
+                            ),Path.of("/Add/New " + value.group() + " Parameter/addParameter" + value));
+            tools.add(
+                    new Button("AddParameterAction",new AddParameterAction(this, value),app())
+            ,Path.of("/Add/New " + value.group() + " Parameter/addParameter" + value));
         }
-        tools.addSeparator("/Add/sepatator1");
-        tools.addAction().bindUndo(new AddParameterFolderAction(this)).path( "/Add/addParameterFolder").tool();
-        tools.addSeparator("/sepatator1");
-        tools.addAction().bindUndo(new RemoveParameterOrFolderAction(this)).path( "/removeParameter").tool();
+        tools.addSeparator(Path.of("/Add/sepatator1"));
+        tools.add(new Button("AddParameterFolderAction",new AddParameterFolderAction(this),app()), Path.of("/Add/addParameterFolder"));
+        tools.addSeparator(Path.of("/sepatator1"));
+        tools.add(new Button("RemoveParameterOrFolderAction",new RemoveParameterOrFolderAction(this),app()), Path.of("/removeParameter"));
     }
 
 }

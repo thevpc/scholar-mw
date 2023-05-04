@@ -1,7 +1,10 @@
+//import package junit:junit#5.0 for test;
+import package net.thevpc.scholar:hadruwaves#3.2.0;
+
 import net.thevpc.scholar.hadruwaves.Hadruwaves.**;
 
 val f = 3.5 * GHZ ;
-val λ = lambda(f) ;
+val λ = waveLength(f) ;
 var S = vector(1 * II(0.0 .. λ / 10, -λ / 20 .. λ / 20), 0 * ê)  ;
 var m = param("n") ;
 var n = param("m") ;
@@ -13,7 +16,7 @@ var gp = vector(
 cos((2 * n + 1) / 2 * PI / L * X) * cos(m * PI / W * (Y + W / 2)),
 sin((2 * n + 1) / 2 * PI / L * X) * sin(m * PI / W * (Y + W / 2)),
 ) * II(0.0 .. L, -W / 2 .. W / 2)  ;
-var gps = gp.inflate(n.in(0, 3).cross(m.in(0, 3)));
+var gps = gp.inflate((n in (0, 3)).cross(m in (0, 3)));
 var S2 = columnEVector(gps.length(), (i) -> (gps(i) ** S) * gps(i)).sum();
 //Plot.plot(PS)
 Plot.domain(II(0..a, -b/2..b/2)).plot(gps) ;

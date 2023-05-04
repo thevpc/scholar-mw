@@ -2,6 +2,8 @@ package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results;
 
 import java.awt.Component;
 
+import net.thevpc.common.props.Path;
+import net.thevpc.echo.Button;
 import net.thevpc.echo.api.components.AppComponent;
 import net.thevpc.echo.api.AppContainerChildren;
 import net.thevpc.echo.ContextMenu;
@@ -111,12 +113,12 @@ public class HWSProjectResultsTool extends AbstractToolWindowPanel {
 
     private void createPopUpMenu() {
         AppContainerChildren<AppComponent> tools = popUpMenu.children();
-        tools.addAction().bindUndo(new RunSolverAction(this)).path("/runSolver").tool();
-        tools.addAction().bindUndo(new ShowResultAction(this)).path("/showResult").tool();
-        tools.addAction().bindUndo(new SaveResultAction(this)).path("/saveResult").tool();
-        tools.addAction().bindUndo(new SaveCopyResultAction(this)).path("/saveCopyResult").tool();
-        tools.addAction().bindUndo(new RemoveResultAction(this)).path("/removeResult").tool();
-        tools.addAction().bindUndo(new RemoveDefaultFileResultAction(this)).path("/removeDefaultFileResult").tool();
+        tools.add(new Button(new RunSolverAction(this),app()), Path.of("/runSolver"));
+        tools.add(new Button(new ShowResultAction(this),app()), Path.of("/showResult"));
+        tools.add(new Button(new SaveResultAction(this),app()), Path.of("/saveResult"));
+        tools.add(new Button(new SaveCopyResultAction(this),app()), Path.of("/saveCopyResult"));
+        tools.add(new Button(new RemoveResultAction(this),app()), Path.of("/removeResult"));
+        tools.add(new Button(new RemoveDefaultFileResultAction(this),app()), Path.of("/removeDefaultFileResult"));
     }
 
     protected void updateRegistry() {

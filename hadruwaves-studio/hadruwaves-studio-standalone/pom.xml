@@ -25,18 +25,18 @@
         <dependency>
             <groupId>net.thevpc.echo</groupId>
             <artifactId>echo-swing</artifactId>
-            <version>1.1.0</version>
+            <version>1.1.1</version>
         </dependency>
         <dependency>
             <groupId>net.thevpc.echo</groupId>
             <artifactId>echo-swing-swingx</artifactId>
-            <version>1.1.0</version>
+            <version>1.1.1</version>
         </dependency>
-        <dependency>
-            <groupId>net.thevpc.echo</groupId>
-            <artifactId>echo-swing-mydoggy</artifactId>
-            <version>1.1.0</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>net.thevpc.echo</groupId>-->
+<!--            <artifactId>echo-swing-mydoggy</artifactId>-->
+<!--            <version>1.1.0</version>-->
+<!--        </dependency>-->
        
         <dependency>
             <groupId>com.fifesoft</groupId>
@@ -62,7 +62,7 @@
         <dependency>
             <groupId>net.thevpc.common</groupId>
             <artifactId>thevpc-common-utils</artifactId>
-            <version>1.23.1</version>
+            <version>1.23.2</version>
         </dependency>
     </dependencies>
 

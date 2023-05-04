@@ -5,12 +5,11 @@
  */
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.components;
 
-import net.thevpc.echo.AppWorkspace;
+import net.thevpc.common.i18n.Str;
 import net.thevpc.echo.api.components.AppDock;
 import net.thevpc.echo.api.components.AppWindow;
 import net.thevpc.echo.Window;
 import net.thevpc.echo.constraints.Anchor;
-import net.thevpc.echo.model.WindowModel;
 import net.thevpc.scholar.hadruplot.Plot;
 import net.thevpc.scholar.hadruplot.PlotComponent;
 import net.thevpc.scholar.hadruplot.model.PlotModel;
@@ -43,18 +42,18 @@ public class PlotResult extends AbstractHWSolverActionResult {
         PlotComponent r = Plot.display(false).plot(model);
         context.app().runUI(() -> {
             AppDock ws = context.studio().content();
-            AppWindow plot = ws.children().get("Plot");
+            AppWindow plot = (AppWindow) ws.children().get("Plot");
             if (plot == null) {
-                plot = new Window(new WindowModel(
-                        "Plot", title, Anchor.CENTER, context.studio().app().toolkit().createComponent(r.toComponent()),
+                plot = new Window(
+                        "Plot", Str.of(model.getTitle()), Anchor.CENTER, context.studio().app().toolkit().createComponent(r.toComponent()),
                         context.app()
-                ));
+                );
                 ws.children().add(plot);
-                plot.title().set("Plot " + defaultName());
+                plot.title().set(Str.of("Plot " + defaultName()));
                 plot.closable().set(false);
                 plot.active().set(true);
             } else {
-                plot.title().set("Plot " + defaultName());
+                plot.title().set(Str.of("Plot " + defaultName()));
                 plot.component().set(context.app().toolkit().createComponent(r.toComponent()));
                 plot.active().set(true);
             }

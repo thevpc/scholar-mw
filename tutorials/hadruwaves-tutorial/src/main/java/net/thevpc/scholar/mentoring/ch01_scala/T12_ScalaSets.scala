@@ -25,6 +25,7 @@ object T12_ScalaSets extends App {
   println(c)
 
   println("intersect" ,a intersect b)
+  println("intersect" ,a.intersect(b))
   println("union",a.union(b))
   println("diff",a.diff(b))
 

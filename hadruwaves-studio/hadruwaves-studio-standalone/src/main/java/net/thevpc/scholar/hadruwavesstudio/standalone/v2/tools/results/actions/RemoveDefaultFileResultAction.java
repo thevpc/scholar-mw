@@ -8,8 +8,8 @@ package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results.actions;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import net.thevpc.echo.api.AppEvent;
-import net.thevpc.echo.swing.helpers.actions.SwingAppUndoableAction;
 import net.thevpc.echo.api.UndoableAction;
+import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer.actions.HWUnduableAction;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results.HWSProjectResultsTool;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results.results.HWSolverResult;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results.results.HWSolverResultLocationType;
@@ -19,7 +19,7 @@ import net.thevpc.common.msg.Message;
  *
  * @author vpc
  */
-public class RemoveDefaultFileResultAction extends SwingAppUndoableAction {
+public class RemoveDefaultFileResultAction extends HWUnduableAction {
 
     HWSProjectResultsTool outer;
 

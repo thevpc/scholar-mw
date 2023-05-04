@@ -5,7 +5,7 @@ import net.thevpc.common.mon.ProgressMonitors;
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Maths;
-import net.thevpc.scholar.hadrumaths.symbolic.CustomDDFunctionXY;
+import net.thevpc.scholar.hadrumaths.symbolic.FunctionDDXY;
 import net.thevpc.scholar.hadrumaths.symbolic.CustomDDFunctionXYExpr;
 import net.thevpc.scholar.hadruplot.PlotType;
 import net.thevpc.scholar.hadruplot.console.ConsoleAction;
@@ -62,7 +62,7 @@ public class PlotStructureDefinition extends PlotAxisCustom implements Cloneable
     }
 
     public DoubleToVector[] change(Domain domain, final DoubleToVector[] gf, final DoubleToVector[] sf) {
-        CustomDDFunctionXYExpr defX = Maths.define("defX", (CustomDDFunctionXY) (x, y) -> {
+        CustomDDFunctionXYExpr defX = Maths.define("defX", (FunctionDDXY) (x, y) -> {
             for (DoubleToVector f : sf) {
                 if (f.getComponent(Axis.X).toDC().evalComplex(x, y).absdbl() > 0) {
                     return 2;
@@ -75,7 +75,7 @@ public class PlotStructureDefinition extends PlotAxisCustom implements Cloneable
             }
             return 0;
         });
-        CustomDDFunctionXYExpr defY = Maths.define("defY", (CustomDDFunctionXY) (x, y) -> {
+        CustomDDFunctionXYExpr defY = Maths.define("defY", (FunctionDDXY) (x, y) -> {
             for (DoubleToVector f : sf) {
                 if (f.getComponent(Axis.Y).toDC().evalComplex(x, y).absdbl() > 0) {
                     return 2;

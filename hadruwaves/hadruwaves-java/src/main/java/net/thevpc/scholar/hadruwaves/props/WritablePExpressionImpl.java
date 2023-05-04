@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadruwaves.props;
 
+import net.thevpc.common.props.Path;
 import net.thevpc.common.props.PropertyEvent;
 import net.thevpc.common.props.PropertyType;
 import net.thevpc.common.props.PropertyUpdate;
@@ -52,7 +53,7 @@ public class WritablePExpressionImpl<T> extends WritablePropertyBase implements 
     public void set(String v) {
         String old = this.expression;
         if (!Objects.equals(old, v)) {
-            PropertyEvent event = new PropertyEvent(this, null, old, v, null, PropertyUpdate.UPDATE,true);
+            PropertyEvent event = new PropertyEvent(this, null, old, v, Path.of("/"), PropertyUpdate.UPDATE,true);
             PropertyAdjusterContext eventc = adjusters.firePropertyUpdated(event);
             if (!eventc.isIgnore()) {
                 vetos.firePropertyUpdated(event);

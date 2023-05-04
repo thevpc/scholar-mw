@@ -14,7 +14,7 @@ object T01_HelloHadrumaths extends App{
 
   Plot.title("First").
     domain(II(-10.0->10.0,-10.0->10.0)).
-    asHeatMap().
+    asMesh().
     plot(f)
   var g=sin(X+Y)
   Plot.title("Second").

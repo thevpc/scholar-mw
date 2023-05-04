@@ -1,0 +1,55 @@
+import package net.thevpc.scholar:hadruwaves#3.2.0;
+
+    var f = 5 * GHZ
+    //box
+    var a = 100 * MM;
+    var b = 100 * MM;
+    var d = [0.0 -> a] * [-b/2 -> b/2];
+
+    //line (relative to box)
+    var ll = 60 * MM;
+    var lw =  10 * MM;
+    var ld = [0.0 -> ll] *  [(-lw/2) -> (lw/2))];
+    //source
+    var sl = 2 * MM;
+    var sw = lw;
+    var sd = [0.0 -> sl] * [-sw / 2 -> sw / 2];
+
+    val nbBaseFunctions = 1000;
+    val nbTestFunctions = 8;
+    val geometry=json2DGeometry("sierpinski-antenna.json2d")
+        .resizeTo({width:a/2,height:b/2})
+        .moveTo({x:a/2-a/4,y:b/2-b/4});
+
+    var m = MomBoxStructure({
+        size:d
+        frequency:f,
+        modesCount:nbBaseFunctions,
+        lateralBounds:EEEE,
+        lowerBound, shortCircuit(substrate(2.2),1*MM),
+        upperBound:shortCircuit(VACUUM,100*MM),
+        sources:{voltage:sd*1, impedance:50},
+        testFunctions:{
+              bounds:d,
+              geometry:geometry,
+              complexity:nbTestFunctions,
+              type:boxModes(),
+          }
+      }
+    )
+    val arr = m.testFunctions.arr()
+    println(arr[0].toDM()[0.01,0.5])
+    var c = Plot.console()
+    c.run({structure:m, y: structureDefinitionAxis()})
+    c.plot({
+        structure:m,
+        x:ConsoleParams.xyParamSet(100, 100),
+        y:[
+            testFunctionsAxis(),
+            modeFunctionsAxis(),
+            current2DAxis(X),
+            current3DAxis(),
+            electricField3DAxis(),
+        ]
+    }
+    );

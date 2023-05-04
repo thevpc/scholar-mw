@@ -1,6 +1,7 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2;
 
 import net.thevpc.echo.api.components.AppDock;
+import net.thevpc.echo.iconset.IconSetAware;
 import net.thevpc.scholar.hadruwaves.SolverBuildResult;
 import net.thevpc.common.props.FileObject;
 import net.thevpc.scholar.hadruwaves.project.HWSolutionProcessor;
@@ -16,7 +17,7 @@ import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results.HWSProjec
 import java.awt.*;
 import net.thevpc.echo.Application;
 
-public interface HadruwavesStudio {
+public interface HadruwavesStudio extends IconSetAware {
 
     Application app();
 

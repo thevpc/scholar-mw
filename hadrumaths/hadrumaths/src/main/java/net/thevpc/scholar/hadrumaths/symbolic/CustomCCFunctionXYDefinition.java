@@ -7,9 +7,9 @@ import net.thevpc.scholar.hadrumaths.symbolic.complex2complex.DefaultCustomCCFun
 public class CustomCCFunctionXYDefinition implements CustomFunctionDefinition {
     private static final long serialVersionUID = 1L;
     private final String name;
-    private final CustomCCFunctionXY eval;
+    private final FunctionCCXY eval;
 
-    public CustomCCFunctionXYDefinition(String name, CustomCCFunctionXY eval) {
+    public CustomCCFunctionXYDefinition(String name, FunctionCCXY eval) {
         this.name = name;
         this.eval = eval;
     }
@@ -18,7 +18,7 @@ public class CustomCCFunctionXYDefinition implements CustomFunctionDefinition {
         return name;
     }
 
-    public CustomCCFunctionXY getEval() {
+    public FunctionCCXY getEval() {
         return eval;
     }
 

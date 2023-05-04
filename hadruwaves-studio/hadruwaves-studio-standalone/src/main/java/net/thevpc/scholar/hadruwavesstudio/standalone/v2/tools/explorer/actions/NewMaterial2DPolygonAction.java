@@ -14,7 +14,6 @@ import javax.swing.event.TreeSelectionListener;
 import net.thevpc.echo.api.AppEvent;
 import net.thevpc.common.msg.JFormattedMessage;
 import net.thevpc.echo.api.UndoableAction;
-import net.thevpc.echo.swing.helpers.actions.SwingAppUndoableAction;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.explorer.HWSSolutionExplorerTool;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.util.HWProjectItem;
 import net.thevpc.scholar.hadruwaves.project.scene.HWProjectComponentGroup;
@@ -24,7 +23,7 @@ import net.thevpc.common.msg.Message;
  *
  * @author vpc
  */
-public class NewMaterial2DPolygonAction extends SwingAppUndoableAction {
+public class NewMaterial2DPolygonAction extends HWUnduableAction {
 
     private final HWSSolutionExplorerTool explorer;
 
@@ -51,7 +50,7 @@ public class NewMaterial2DPolygonAction extends SwingAppUndoableAction {
                 } else {
 
                 }
-                JOptionPane.showConfirmDialog((Component) explorer.app().mainFrame().get().component(), "Will Enter values here");
+                JOptionPane.showConfirmDialog((Component) explorer.app().mainFrame().get().peer().toolkitComponent(), "Will Enter values here");
                 explorer.refreshTools();
                 return new JFormattedMessage(Level.INFO, "Add {0}", new Object[]{"Polygon"});
             }

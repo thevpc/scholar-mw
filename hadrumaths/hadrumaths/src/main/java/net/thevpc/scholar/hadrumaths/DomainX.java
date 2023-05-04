@@ -3,7 +3,7 @@ package net.thevpc.scholar.hadrumaths;
 /**
  * User: taha Date: 2 juil. 2003 Time: 14:31:19
  */
-final class DomainX extends Domain implements Cloneable {
+public final class DomainX extends Domain implements Cloneable {
     private static final long serialVersionUID = 1L;
 
 

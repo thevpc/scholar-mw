@@ -17,20 +17,20 @@ object T12_CustomFunctions {
 
     val vv = DDXY.evalDouble(2, 3)
 
-    val console = Plot.console()
-    console.Plot.title("DDX").asHeatMap().plot(DDX * dom) //, CCX, DCX
-    console.Plot.title("CCX").asHeatMap().plot(CCX * dom) //, CCX, DCX
-    console.Plot.title("DCX").asHeatMap().plot(DCX * dom) //, CCX, DCX
-    console.Plot.title("CCXY").asHeatMap().plot(CCXY * dom) //, CCX, DCX
-    console.Plot.title("DCXY").asHeatMap().plot(DCXY * dom) //, CCX, DCX
-
-    console.Plot.title("DDXY").asHeatMap().plot(DDXY * dom) //, CCX, DCX
-    console.Plot.title("DDXY.composeX").asHeatMap().plot(DDXY.compose(X+Y) * dom)
-    console.Plot.title("DDXY.composeXY").asHeatMap().plot(DDXY.compose(X + Y) * dom)
-    console.Plot.title("CCXY").asHeatMap().plot(CCXY * dom)
-    console.Plot.title("DCXY").asHeatMap().plot(DCXY * dom)
-
-
-    console.Plot.title("DDX+DDXY").asHeatMap().plot(DDX * dom,DDXY*dom) //, CCX, DCX
+//    val console = Plot.console()
+    /*console.*/Plot.title("DDX").asHeatMap().plot(DDX * dom) //, CCX, DCX
+    /*console.*/Plot.title("CCX").asHeatMap().plot(CCX * dom) //, CCX, DCX
+    /*console.*/Plot.title("DCX").asHeatMap().plot(DCX * dom) //, CCX, DCX
+    /*console.*/Plot.title("CCXY").asHeatMap().plot(CCXY * dom) //, CCX, DCX
+    /*console.*/Plot.title("DCXY").asHeatMap().plot(DCXY * dom) //, CCX, DCX
+    /*        */
+    /*console.*/Plot.title("DDXY").asHeatMap().plot(DDXY * dom) //, CCX, DCX
+    /*console.*/Plot.title("DDXY.composeX").asHeatMap().plot(DDXY.compose(X+Y) * dom)
+    /*console.*/Plot.title("DDXY.composeXY").asHeatMap().plot(DDXY.compose(X + Y) * dom)
+    /*console.*/Plot.title("CCXY").asHeatMap().plot(CCXY * dom)
+    /*console.*/Plot.title("DCXY").asHeatMap().plot(DCXY * dom)
+    /*        */
+    /*        */
+    /*console.*/Plot.title("DDX+DDXY").asHeatMap().plot(DDX * dom,DDXY*dom) //, CCX, DCX
   }
 }

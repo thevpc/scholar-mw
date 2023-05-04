@@ -1,19 +1,26 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2;
 
 import net.thevpc.common.i18n.I18nResourceBundle;
+import net.thevpc.common.i18n.Str;
 import net.thevpc.common.msg.Message;
 import net.thevpc.common.msg.StringMessage;
 import net.thevpc.common.props.*;
 import net.thevpc.common.strings.StringUtils;
 import net.thevpc.echo.*;
 import net.thevpc.common.props.Path;
+import net.thevpc.echo.Button;
+import net.thevpc.echo.Dimension;
+import net.thevpc.echo.Frame;
 import net.thevpc.echo.ScrollPane;
 import net.thevpc.echo.TextArea;
 import net.thevpc.echo.api.AppMessageProducer;
 import net.thevpc.echo.api.components.AppComponent;
 import net.thevpc.echo.api.components.AppDock;
+import net.thevpc.echo.api.components.AppFrame;
 import net.thevpc.echo.api.components.AppWindow;
 import net.thevpc.echo.constraints.Anchor;
+import net.thevpc.echo.constraints.Pos;
+import net.thevpc.echo.iconset.IconConfig;
 import net.thevpc.echo.impl.Applications;
 import net.thevpc.echo.api.AppContainerChildren;
 import net.thevpc.echo.CheckBox;
@@ -119,6 +126,16 @@ public class HadruwavesStudioV2Impl implements HadruwavesStudio {
         }
         o.filePath().set(null);
         saveFileObject(o);
+    }
+
+    @Override
+    public ObservableValue<String> iconSet() {
+        return app().mainFrame().get().iconSet();
+    }
+
+    @Override
+    public ObservableValue<IconConfig> iconConfig() {
+        return app().mainFrame().get().iconConfig();
     }
 
     @Override
@@ -279,14 +296,18 @@ public class HadruwavesStudioV2Impl implements HadruwavesStudio {
             SourceFileEditor sfe = null;
             if (content == null) {
                 sfe = new SourceFileEditor(this);
-                content = ws.addWindow("SourceEditor", application.toolkit().createComponent(sfe), Anchor.CENTER);
-                content.title().set(s.file.getName());
+                AppComponent cc = application.toolkit().createComponent(sfe);
+                cc.anchor().set(Anchor.CENTER);
+                cc.title().set(Str.of("SourceEditor"));
+                ws.children().add(cc);
+                content = (AppWindow) cc;
+                content.title().set(Str.of(s.file.getName()));
                 content.closable().set(false);
             } else {
                 sfe = (SourceFileEditor) content.component().get();
             }
-            content.title().set(s.file.getName());
-            content.icon().set(app().iconSets().iconForFile(s.file, false, false).get());
+            content.title().set(Str.of(s.file.getName()));
+            content.icon().set(app().iconSets().iconForFile(s.file, false, false,null));
             sfe.loadFile(s);
             content.active().set(true);
         } else {
@@ -346,9 +367,9 @@ public class HadruwavesStudioV2Impl implements HadruwavesStudio {
 //        }
         prepareWorkspace();
         prepareMenu();
-        app.mainFrame().get().title().set("Hadruwaves Studio - v2.0");
+        app.mainFrame().get().title().set(Str.of("Hadruwaves Studio - v2.0"));
         app.iconSets().icon("App").bindTarget(app.mainFrame().get().icon());
-        SwingUtilities.invokeLater(() -> ((SwingFramePeer) app.mainFrame().get()).getFrame().setSize(1024, 800));
+        SwingUtilities.invokeLater(() -> app.mainFrame().get().prefSize().set(new Dimension(1024, 800)));
         swingx.confirmExit().set(() -> confirmSaveCurrent());
         swingx.configure(app);
         app.state().onChange(e -> {
@@ -368,81 +389,72 @@ public class HadruwavesStudioV2Impl implements HadruwavesStudio {
 
     protected void prepareMenu_File() {
         AppContainerChildren<AppComponent> tools = application.components();
-        tools.addFolder("/mainFrame/menuBar/File");
-        tools.addAction().bind(new SaveAction(application, this)).path("/mainFrame/menuBar/File/Save"/*, "/mainFrame/toolBar/Default/Save"*/).tool();
-        tools.addAction().bind(new SaveAllAction(application, this)).path("/mainFrame/menuBar/File/SaveAll", "/mainFrame/toolBar/Default/SaveAll").tool();
-        tools.addAction().bind(new SaveAsAction(application, this)).path("/mainFrame/menuBar/File/SaveAs"/*, "/mainFrame/toolBar/Default/SaveAs"*/).tool();
-        tools.addAction().bind(new NewSolutionAction(application, this)).path("/mainFrame/menuBar/File/New/NewSolution", "/mainFrame/toolBar/Default/NewSolution").tool();
-        tools.addAction().bind(new NewProjectAction(application, this)).path("/mainFrame/menuBar/File/New/NewProject"/*, "/mainFrame/toolBar/Default/NewProject"*/).tool();
-        tools.addAction().bind(new OpenAction(application, this)).path("/mainFrame/menuBar/File/Open", "/mainFrame/toolBar/Default/Open").tool();
+        tools.addFolder(Path.of("/mainFrame/menuBar/File"));
+        tools.add(new Button("SaveAction",new SaveAction(application, this),app()),Path.of("/mainFrame/menuBar/File/Save"/*, "/mainFrame/toolBar/Default/Save"*/));
+        tools.add(new Button("SaveAllAction",new SaveAllAction(application, this),app()),Path.of("/mainFrame/menuBar/File/SaveAll"));
+        tools.add(new Button("SaveAllAction",new SaveAllAction(application, this),app()),Path.of("/mainFrame/toolBar/Default/SaveAll"));
+        tools.add(new Button("SaveAsAction",new SaveAsAction(application, this),app()),Path.of("/mainFrame/menuBar/File/SaveAs"/*, "/mainFrame/toolBar/Default/SaveAs"*/));
+        tools.add(new Button("NewSolutionAction",new NewSolutionAction(application, this),app()),Path.of("/mainFrame/menuBar/File/New/NewSolution"));
+        tools.add(new Button("NewSolutionAction",new NewSolutionAction(application, this),app()),Path.of("/mainFrame/toolBar/Default/NewSolution"));
+        tools.add(new Button("NewProjectAction",new NewProjectAction(application, this),app()),Path.of("/mainFrame/menuBar/File/New/NewProject"/*, "/mainFrame/toolBar/Default/NewProject"*/));
+        tools.add(new Button("OpenAction",new OpenAction(application, this),app()),Path.of("/mainFrame/menuBar/File/Open"));
+        tools.add(new Button("OpenAction",new OpenAction(application, this),app()),Path.of("/mainFrame/toolBar/Default/Open"));
 
-        tools.addFolder("/mainFrame/menuBar/File/LoadRecent");
+        tools.addFolder(Path.of("/mainFrame/menuBar/File/LoadRecent"));
 
-        tools.addAction().path("/mainFrame/menuBar/File/LoadRecent/Solution1").tool();
-        tools.addAction().path("/mainFrame/menuBar/File/LoadRecent/Solution2").tool();
-        tools.addSeparator("/mainFrame/menuBar/File/LoadRecent/Separator1");
-        tools.addAction().path("/mainFrame/menuBar/File/LoadRecent/Project1").tool();
-        tools.addAction().path("/mainFrame/menuBar/File/LoadRecent/Project2").tool();
-        tools.addSeparator("/mainFrame/menuBar/File/LoadRecent/Separator1");
-        tools.addAction().path("/mainFrame/menuBar/File/LoadRecent/Clear").tool();
+        tools.add(new Button("Solution1",Str.of("Solution1"), app()),Path.of("/mainFrame/menuBar/File/LoadRecent/Solution1"));
+        tools.add(new Button("Solution2",Str.of("Solution2"), app()),Path.of("/mainFrame/menuBar/File/LoadRecent/Solution2"));
+        tools.addSeparator(Path.of("/mainFrame/menuBar/File/LoadRecent/Separator1"));
+        tools.add(new Button("Solution1",Str.of("Project1"), app()),Path.of("/mainFrame/menuBar/File/LoadRecent/Project1"));
+        tools.add(new Button("Solution1",Str.of("Project2"), app()),Path.of("/mainFrame/menuBar/File/LoadRecent/Project2"));
+        tools.addSeparator(Path.of("/mainFrame/menuBar/File/LoadRecent/Separator1"));
+        tools.add(new Button("Clear",Str.of("Clear"), app()),Path.of("/mainFrame/menuBar/File/LoadRecent/Clear"));
 
-        tools.addSeparator("/mainFrame/menuBar/File/Separator1");
+        tools.addSeparator(Path.of("/mainFrame/menuBar/File/Separator1"));
 //        model.addAction("/mainFrame/menuBar/File/ClearProjectCache");
 //        model.addAction("/mainFrame/menuBar/File/ClearAllCache");
-        tools.addSeparator("/mainFrame/menuBar/File/Separator2");
-        tools.addAction().bind(new SettingsAction(application, this)).path("/mainFrame/menuBar/File/Settings", "/mainFrame/toolBar/Default/Settings").tool();
-        tools.addSeparator("/mainFrame/menuBar/File/Separator3");
-        tools.addAction().bind(new ExitAction(application, this)).path("/mainFrame/menuBar/File/Exit").tool();
-
+        tools.addSeparator(Path.of("/mainFrame/menuBar/File/Separator2"));
+        tools.add(new Button("SettingsAction",new SettingsAction(application, this),app()),Path.of("/mainFrame/menuBar/File/Settings"));
+        tools.add(new Button("SettingsAction",new SettingsAction(application, this),app()),Path.of("/mainFrame/toolBar/Default/Settings"));
+        tools.addSeparator(Path.of("/mainFrame/menuBar/File/Separator3"));
+        tools.add(new Button("ExitAction",new ExitAction(application, this),app()),Path.of("/mainFrame/menuBar/File/Exit"));
     }
 
     protected void prepareMenu_Edit() {
         AppContainerChildren<AppComponent> tools = application.components();
-        tools.addFolder("/mainFrame/menuBar/Edit");
-        tools.addSeparator("/mainFrame/toolBar/Default/Separator1");
-        tools.addAction().bind(new CopyAction(application)).path("/mainFrame/menuBar/Edit/Copy", "/mainFrame/toolBar/Default/Copy").tool();
-        tools.addAction().bind(new CutAction(application)).path("/mainFrame/menuBar/Edit/Cut", "/mainFrame/toolBar/Default/Cut").tool();
-        tools.addAction().bind(new PasteAction(application)).path("/mainFrame/menuBar/Edit/Paste", "/mainFrame/toolBar/Default/Paste").tool();
+        tools.addFolder(Path.of("/mainFrame/menuBar/Edit"));
+        tools.addSeparator(Path.of("/mainFrame/toolBar/Default/Separator1"));
+        tools.add(new Button("CopyAction",new CopyAction(application),app()),Path.of("/mainFrame/menuBar/Edit/Copy", "/mainFrame/toolBar/Default/Copy"));
+        tools.add(new Button("CutAction",new CutAction(application),app()),Path.of("/mainFrame/menuBar/Edit/Cut", "/mainFrame/toolBar/Default/Cut"));
+        tools.add(new Button("PasteAction",new PasteAction(application),app()),Path.of("/mainFrame/menuBar/Edit/Paste", "/mainFrame/toolBar/Default/Paste"));
 
-        tools.addAction().bind(new UndoAction(application)).path("/mainFrame/menuBar/Edit/Undo", "/mainFrame/toolBar/Default/Undo").tool();
-        tools.addAction().bind(new RedoAction(application)).path("/mainFrame/menuBar/Edit/Redo", "/mainFrame/toolBar/Default/Redo").tool();
+        tools.add(new Button("UndoAction",new UndoAction(application),app()),Path.of("/mainFrame/menuBar/Edit/Undo", "/mainFrame/toolBar/Default/Undo"));
+        tools.add(new Button("RedoAction",new RedoAction(application),app()),Path.of("/mainFrame/menuBar/Edit/Redo", "/mainFrame/toolBar/Default/Redo"));
 
-        tools.addSeparator("/mainFrame/toolBar/Default/Separator2");
-        tools.addCustom().renderer(
-                () -> {
-                    return CharactersTableComponent.createComponents(sourceEditorCharTableListener,
+        tools.addSeparator(Path.of("/mainFrame/toolBar/Default/Separator2"));
+        tools.add(new UserControl("GREEK_LOWER",
+                    CharactersTableComponent.createComponents(sourceEditorCharTableListener,
                             CharactersTableComponent.Family.GREEK_LOWER, CharactersTableComponent.Family.GREEK_UPPER)
-                            .get(0);
-                }
-        ).path("/mainFrame/toolBar/Default/GREEK").tool();
-        tools.addCustom().renderer(
-                () -> {
-                    return CharactersTableComponent.createComponents(sourceEditorCharTableListener,
+                            .get(0),app()),Path.of("/mainFrame/toolBar/Default/GREEK"));
+        tools.add(new UserControl("OPERATORS",
+                    CharactersTableComponent.createComponents(sourceEditorCharTableListener,
                             CharactersTableComponent.Family.OPERATORS)
-                            .get(0);
-                }
-        ).path("/mainFrame/toolBar/Default/OPERATORS").tool();
-        tools.addCustom().renderer(
-                () -> {
-                    return CharactersTableComponent.createComponents(sourceEditorCharTableListener,
+                            .get(0)
+                ,app()),Path.of("/mainFrame/toolBar/Default/OPERATORS"));
+        tools.add(new UserControl("CONSTANTS",
+                    CharactersTableComponent.createComponents(sourceEditorCharTableListener,
                             CharactersTableComponent.Family.SYMBOLS)
-                            .get(0);
-                }
-        ).path("/mainFrame/toolBar/Default/SYMBOLS").tool();
-        tools.addCustom().renderer(
-                () -> {
-                    return CharactersTableComponent.createComponents(sourceEditorCharTableListener,
+                            .get(0)
+                ,app()),Path.of("/mainFrame/toolBar/Default/SYMBOLS"));
+        tools.add(new UserControl("CONSTANTS",
+                    CharactersTableComponent.createComponents(sourceEditorCharTableListener,
                             CharactersTableComponent.Family.CONSTANTS)
-                            .get(0);
-                }
-        ).path("/mainFrame/toolBar/Default/CONSTANTS");
-        tools.addCustom().renderer(
-                () -> {
-                    return CharactersTableComponent.createComponents(sourceEditorCharTableListener,
+                            .get(0),app()
+        ),Path.of("/mainFrame/toolBar/Default/CONSTANTS"));
+        tools.add(new UserControl("Trigo",CharactersTableComponent.createComponents(sourceEditorCharTableListener,
                             CharactersTableComponent.Family.TRIGO)
-                            .get(0);
-                }
-        ).path("/mainFrame/toolBar/Default/TRIGO").tool();
+                            .get(0)
+                ,app()),Path.of("/mainFrame/toolBar/Default/TRIGO"));
 
         //        model.addAction("/mainFrame/menuBar/Edit/Macros/StartMacroRecording");
 //        model.addAction("/mainFrame/menuBar/Edit/Macros/StopMacroRecording");
@@ -450,25 +462,29 @@ public class HadruwavesStudioV2Impl implements HadruwavesStudio {
     }
 
     protected void prepareMenu_View() {
-        Applications.Helper.addViewToolActions(application);
+        Frame appFrame = (Frame) this.app().mainFrame().get();
+        appFrame.defaultMenus().addViewToolActions();
         AppContainerChildren<AppComponent> tools = application.components();
-        Applications.Helper.addViewPlafActions(application);
+        appFrame.defaultMenus().addViewPlafActions();
         tools.addFolder(Path.of("/mainFrame/menuBar/View/Editor Themes"));
         for (HWTextEditorTheme theme : editorThemes.editorThemes().values()) {
-            tools.addAction().bind(new EditorThemeAction(this, theme.getId())).path("/mainFrame/menuBar/View/Editor Themes/" + theme.getName()).tool();
+            tools.add(new Button("EditorThemeAction",new EditorThemeAction(this, theme.getId()),app()),Path.of("/mainFrame/menuBar/View/Editor Themes/" + theme.getName()));
         }
         tools.addSeparator(Path.of("/mainFrame/menuBar/View/Editor Themes/Separator1"));
         CheckBox t = new CheckBox("usePlaf", application);
         t.selected().bind(editorThemes.usePlaf());
         app().components().add(t, Path.of("/mainFrame/menuBar/View/Editor Themes/Maximize L&F"));
 
-        Applications.Helper.addViewIconActions(application);
-        Applications.Helper.addViewAppearanceActions(application);
+        appFrame.defaultMenus().addViewIconActions();
+        appFrame.defaultMenus().addViewAppearanceActions();
 
         tools.addSeparator(Path.of("/mainFrame/toolBar/Default/Separator3"));
-        tools.addAction().bind(new ZoomInAction(application, "ZoomIn", this)).path("/mainFrame/menuBar/View/3DView/ZoomIn", "/mainFrame/toolBar/Default/ZoomIn").tool();
-        tools.addAction().bind(new ZoomOutAction(application, "ZoomOut", this)).path("/mainFrame/menuBar/View/3DView/ZoomIn", "/mainFrame/toolBar/Default/ZoomOut").tool();
-        tools.addAction().bind(new ResetCameraAction(application, "ResetCamera", this)).path("/mainFrame/menuBar/View/3DView/ResetCamera", "/mainFrame/toolBar/Default/ResetCamera").tool();
+        tools.add(new Button("new ZoomInAction",new ZoomInAction(application, "ZoomIn", this),app()),Path.of("/mainFrame/menuBar/View/3DView/ZoomIn"));
+        tools.add(new Button("new ZoomInAction",new ZoomInAction(application, "ZoomIn", this),app()),Path.of("/mainFrame/toolBar/Default/ZoomIn"));
+        tools.add(new Button("ZoomOutAction",new ZoomOutAction(application, "ZoomOut", this),app()),Path.of("/mainFrame/menuBar/View/3DView/ZoomIn"));
+        tools.add(new Button("ZoomOutAction",new ZoomOutAction(application, "ZoomOut", this),app()),Path.of("/mainFrame/toolBar/Default/ZoomOut"));
+        tools.add(new Button("ResetCameraAction",new ResetCameraAction(application, "ResetCamera", this),app()),Path.of("/mainFrame/menuBar/View/3DView/ResetCamera"));
+        tools.add(new Button("ResetCameraAction",new ResetCameraAction(application, "ResetCamera", this),app()),Path.of("/mainFrame/toolBar/Default/ResetCamera"));
 
         t = new CheckBox("usePlaf", application);
         t.selected().bind(editorThemes.usePlaf());
@@ -502,24 +518,41 @@ public class HadruwavesStudioV2Impl implements HadruwavesStudio {
 
     }
 
+    private void prepareWorkspaceWindow(String name,Object toolkitComponent,Anchor anchor) {
+        AppDock ws = content();
+        AppComponent uc =null;
+        if(toolkitComponent instanceof AppComponent){
+            uc=(AppComponent) toolkitComponent;
+        }else {
+            uc = new UserControl(
+                    name, toolkitComponent, app()
+            );
+        }
+        uc.anchor().set(anchor);
+        uc.title().set(Str.of(name));
+        ws.children().add(uc);
+    }
     private void prepareWorkspace() {
-        AppWorkspace ws = content();
-        ws.addWindow("Solution", (wsSolutionExplorer = new HWSSolutionExplorerTool(this)), Anchor.LEFT);
-        ws.addWindow("Parameters", (wsParameters = new HWSProjectParametersTool(this)), Anchor.BOTTOM);
-        ws.addWindow("UI Dev", (new HWSUIPropsTool(this)), Anchor.BOTTOM);
-        ws.addWindow("Properties", (wsProperties = new HWSProjectPropertiesTool(this)), Anchor.RIGHT);
-        ws.addWindow("History", (wsHistory = new HWSProjectHistoryTool(this)), Anchor.LEFT);
-        ws.addWindow("Files", (wsFiles = new HWSFileExplorerTool(this)), Anchor.LEFT);
-        ws.addWindow("Library", (wsLibraries = new HWSLibraryExplorerTool(this)), Anchor.LEFT);
-        ws.addWindow("Cache", (wsCache = new HWSCacheExplorerTool(this)), Anchor.RIGHT);
-        ws.addWindow("Results", (wsResults = new HWSProjectResultsTool(this)), Anchor.RIGHT);
-        ws.addWindow("Tasks", (wsTasks = new HWSTasksTool(this)), Anchor.BOTTOM);
-        ws.addWindow("Locks", (wsLocks = new HWSLocksTool(this)), Anchor.BOTTOM);
-        ws.addWindow("Log", (wsLog = new HWSLogTool(this)), Anchor.BOTTOM);
-        ws.addWindow("Console", (wsConsole = new HWSConsoleTool(this)), Anchor.BOTTOM);
-        ws.addWindow("Messages", (wsMessages = new HWSMessageTools(this)), Anchor.BOTTOM);
-        ws.addWindow("3DView", (ws3DView = new HWS3DView(this)), Anchor.CENTER);
-        ws.addWindow("JTextArea", (new ScrollPane(new TextArea(application))), Anchor.CENTER);
+        Frame frame = new Frame("Frame", app());
+        application.mainFrame().set(frame);
+        frame.content().set(new DockPane("DockPane",app()));
+        AppDock ws = content();
+        prepareWorkspaceWindow("Solution", (wsSolutionExplorer = new HWSSolutionExplorerTool(this)), Anchor.LEFT);
+        prepareWorkspaceWindow("Parameters", (wsParameters = new HWSProjectParametersTool(this)), Anchor.BOTTOM);
+        prepareWorkspaceWindow("UI Dev", (new HWSUIPropsTool(this)), Anchor.BOTTOM);
+        prepareWorkspaceWindow("Properties", (wsProperties = new HWSProjectPropertiesTool(this)), Anchor.RIGHT);
+        prepareWorkspaceWindow("History", (wsHistory = new HWSProjectHistoryTool(this)), Anchor.LEFT);
+        prepareWorkspaceWindow("Files", (wsFiles = new HWSFileExplorerTool(this)), Anchor.LEFT);
+        prepareWorkspaceWindow("Library", (wsLibraries = new HWSLibraryExplorerTool(this)), Anchor.LEFT);
+        prepareWorkspaceWindow("Cache", (wsCache = new HWSCacheExplorerTool(this)), Anchor.RIGHT);
+        prepareWorkspaceWindow("Results", (wsResults = new HWSProjectResultsTool(this)), Anchor.RIGHT);
+        prepareWorkspaceWindow("Tasks", (wsTasks = new HWSTasksTool(this)), Anchor.BOTTOM);
+        prepareWorkspaceWindow("Locks", (wsLocks = new HWSLocksTool(this)), Anchor.BOTTOM);
+        prepareWorkspaceWindow("Log", (wsLog = new HWSLogTool(this)), Anchor.BOTTOM);
+        prepareWorkspaceWindow("Console", (wsConsole = new HWSConsoleTool(this)), Anchor.BOTTOM);
+        prepareWorkspaceWindow("Messages", (wsMessages = new HWSMessageTools(this)), Anchor.BOTTOM);
+        prepareWorkspaceWindow("3DView", (ws3DView = new HWS3DView(this)), Anchor.CENTER);
+        prepareWorkspaceWindow("JTextArea", (new ScrollPane(new TextArea(application))), Anchor.CENTER);
     }
 
     private JFileChooser createJFileChooser() {
@@ -561,11 +594,11 @@ public class HadruwavesStudioV2Impl implements HadruwavesStudio {
 
         @Override
         public void onChar(CharEvent event) {
-            AppWorkspace ws = content();
-            AppWindow content = ws.children().get("SourceEditor");
+            AppDock ws = content();
+            AppWindow content = (AppWindow) ws.children().get("SourceEditor");
             if (content != null) {
-                if (content.model().active().get()) {
-                    SourceFileEditor sfe = (SourceFileEditor) content.model().component().get();
+                if (content.active().get()) {
+                    SourceFileEditor sfe = (SourceFileEditor) content.component().get();
                     if (sfe != null) {
                         sfe.getTextEditor().insertOrReplaceSelection(event.getCharCommand().getText());
                     }
