@@ -1,17 +1,18 @@
 package net.thevpc.vr.core.toolbox.hadruwavesbox;
 
 import java.io.File;
-import java.io.PrintStream;
 import java.io.UncheckedIOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
-import net.thevpc.nuts.NutsApplication;
-import net.thevpc.nuts.NutsApplicationContext;
-import net.thevpc.nuts.NutsCommandLine;
-import net.thevpc.nuts.NutsArgument;
+import net.thevpc.nuts.NApplication;
+import net.thevpc.nuts.NSession;
+import net.thevpc.nuts.cmdline.NArg;
+import net.thevpc.nuts.cmdline.NCmdLine;
+import net.thevpc.nuts.io.NPrintStream;
+import net.thevpc.nuts.util.NMsg;
 
-public class HadruwavesBoxMain extends NutsApplication{
+public class HadruwavesBoxMain implements NApplication{
 
     private static final Logger LOG = Logger.getLogger(HadruwavesBoxMain.class.getName());
     public HBoxProject project;
@@ -21,21 +22,21 @@ public class HadruwavesBoxMain extends NutsApplication{
     }
 
     @Override
-    public void run(NutsApplicationContext appContext) {
-        this.project = new HBoxProject(appContext);
-        NutsCommandLine cmd = appContext.getCommandLine().setCommandName("hadruwaves-box");
-        PrintStream out = appContext.getSession().out();
+    public void run(NSession session) {
+        this.project = new HBoxProject(session);
+        NCmdLine cmd = session.getAppCmdLine().setCommandName("hadruwaves-box");
+        NPrintStream out = session.out();
 
         if (cmd.isExecMode()) {
-            out.printf("==Hadruwaves Toolbox== v##%s##\n", appContext.getAppId().getVersion());
-            out.printf("(c) Taha Ben Salah (==%s==) 2018-2019 - ==%s==\n", "@vpc", "http://github.com/thevpc");
+            out.println(NMsg.ofC("==Hadruwaves Toolbox== v##%s##", session.getAppId().getVersion()));
+            out.println(NMsg.ofC("(c) Taha Ben Salah (==%s==) 2018-2019 - ==%s==\n", "@vpc", "http://github.com/thevpc"));
         }
 
-        NutsArgument a;
+        NArg a;
         while (cmd.hasNext()) {
-            if (appContext.configureFirst(cmd)) {
+            if (session.configureFirst(cmd)) {
 
-            } else if ((a = cmd.next("new", "n")) != null) {
+            } else if ((a = cmd.next("new", "n").orNull()) != null) {
                 newProject(cmd);
                 return;
             } else if ((a = cmd.next(
@@ -43,34 +44,34 @@ public class HadruwavesBoxMain extends NutsApplication{
                     "generate object", 
                     "g s o",
                     "g o"
-            )) != null) {
+            ).orNull()) != null) {
                 generateScalaObject(cmd);
                 return;
             } else {
-                cmd.unexpectedArgument();
+                cmd.throwUnexpectedArgument();
             }
         }
-        cmd.unexpectedArgument();
+        cmd.throwUnexpectedArgument();
     }
 
     public HadruwavesBoxMain() {
     }
 
-    public void generateScalaObject(NutsCommandLine commandLine) throws UncheckedIOException {
+    public void generateScalaObject(NCmdLine commandLine) throws UncheckedIOException {
         File loadPropertiesFrom = null;
-        NutsArgument a;
+        NArg a;
         String name = null;
         while (commandLine.hasNext()) {
-            if (project.getApplicationContext().configureFirst(commandLine)) {
+            if (project.getSession().configureFirst(commandLine)) {
                 //
-            }else if ((a = commandLine.nextString("--name")) != null) {
-                name = a.getStringValue();
-            } else if ((a = commandLine.nextBoolean("--load")) != null) {
-                loadPropertiesFrom = new File(a.getStringValue());
-            } else if (commandLine.peek().isNonOption() && name == null) {
-                name = commandLine.next().getString();
+            }else if ((a = commandLine.nextEntry("--name").orNull()) != null) {
+                name = a.getStringValue().get();
+            } else if ((a = commandLine.nextFlag("--load").orNull()) != null) {
+                loadPropertiesFrom = new File(a.getStringValue().get());
+            } else if (commandLine.peek().get().isNonOption() && name == null) {
+                name = commandLine.next().get().getImage();
             } else {
-                commandLine.unexpectedArgument();
+                commandLine.throwUnexpectedArgument();
             }
         }
         if (!commandLine.isExecMode()) {
@@ -82,42 +83,42 @@ public class HadruwavesBoxMain extends NutsApplication{
         project.createScalaObject(name);
     }
 
-    public void newProject(NutsCommandLine commandLine) {
+    public void newProject(NCmdLine commandLine) {
         File storePropertiesTo = null;
         File loadPropertiesFrom = null;
-        NutsArgument a;
+        NArg a;
         String projectName = null;
         Set<String> archetypes = new HashSet<String>();
         while (commandLine.hasNext()) {
-            if (project.getApplicationContext().configureFirst(commandLine)) {
+            if (project.getSession().configureFirst(commandLine)) {
                 //
-            } else if ((a = commandLine.nextString("--name")) != null) {
-                projectName = a.getStringValue();
-            } else if ((a = commandLine.nextString("--save")) != null) {
-                storePropertiesTo = new File(a.getStringValue());
-            } else if ((a = commandLine.nextString("--load")) != null) {
-                loadPropertiesFrom = new File(a.getStringValue());
-            } else if ((a = commandLine.nextBoolean("--edu", "--equip", "--exp", "--all")) != null) {
-                if (a.getBooleanValue()) {
+            } else if ((a = commandLine.nextEntry("--name").orNull()) != null) {
+                projectName = a.getStringValue().get();
+            } else if ((a = commandLine.nextEntry("--save").orNull()) != null) {
+                storePropertiesTo = new File(a.getStringValue().get());
+            } else if ((a = commandLine.nextEntry("--load").orNull()) != null) {
+                loadPropertiesFrom = new File(a.getStringValue().get());
+            } else if ((a = commandLine.nextFlag("--edu", "--equip", "--exp", "--all").orNull()) != null) {
+                if (a.getBooleanValue().get()) {
                     archetypes.remove("all");
                     archetypes.remove("none");
                     archetypes.add("basic");
-                    archetypes.add(a.getStringKey().substring(2));
+                    archetypes.add(a.getStringKey().get().substring(2));
                 }
-            } else if ((a = commandLine.nextBoolean("--all")) != null) {
-                if (a.getBooleanValue()) {
+            } else if ((a = commandLine.nextFlag("--all").orNull()) != null) {
+                if (a.getBooleanValue().get()) {
                     archetypes.clear();
                     archetypes.add("all");
                 }
-            } else if ((a = commandLine.nextBoolean("--none")) != null) {
-                if (a.getBooleanValue()) {
+            } else if ((a = commandLine.nextFlag("--none").orNull()) != null) {
+                if (a.getBooleanValue().get()) {
                     archetypes.clear();
                     archetypes.add("none");
                 }
-            } else if (commandLine.peek().isNonOption() && projectName == null) {
-                projectName = commandLine.next().getString();
+            } else if (commandLine.peek().get().isNonOption() && projectName == null) {
+                projectName = commandLine.next().get().getImage();
             } else {
-                commandLine.unexpectedArgument();
+                commandLine.throwUnexpectedArgument();
             }
         }
         if (!commandLine.isExecMode()) {

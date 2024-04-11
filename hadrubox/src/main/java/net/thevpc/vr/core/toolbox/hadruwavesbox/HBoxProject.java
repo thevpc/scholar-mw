@@ -11,18 +11,13 @@ import java.io.UncheckedIOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import net.thevpc.nuts.NutsApplicationContext;
-import net.thevpc.nuts.NutsId;
+import net.thevpc.nuts.*;
+import net.thevpc.nuts.util.*;
 import net.thevpc.nuts.lib.template.IOUtils;
 import net.thevpc.nuts.lib.template.JavaUtils;
-import net.thevpc.nuts.lib.template._StringUtils;
-import net.thevpc.common.strings.MessageNameFormat;
-import net.thevpc.common.strings.StringToObject;
-import net.thevpc.common.strings.StringUtils;
-import net.thevpc.common.strings.format.AbstractFunction;
 import net.thevpc.nuts.lib.template.ProjectTemplate;
 import net.thevpc.nuts.lib.template.ProjectTemplateListener;
-
+import net.thevpc.nuts.lib.template.*;
 /**
  *
  * @author vpc
@@ -31,39 +26,46 @@ public class HBoxProject extends DefaultProjectTemplate {
 
     private HValidatorFactory vf;
 
-    public HBoxProject(NutsApplicationContext appContext) {
-        super(appContext);
-        this.vf = new HValidatorFactory(appContext.getWorkspace());
+    public HBoxProject(NSession session) {
+        super(session);
+        this.vf = new HValidatorFactory(session);
         getConfigListeners().add(new ProjectTemplateListener() {
             @Override
             public void onSetProperty(String propertyName, String value, ProjectTemplate project) {
                 switch (propertyName) {
                     case "ProjectName": {
-                        project.getConfigProperty("ProjectShortTitle").setDefaultValue(StringUtils.isBlank(value) ? "my-project" : JavaUtils.toIdFormat(value));
-                        project.getConfigProperty("ProjectLongTitle").setDefaultValue(StringUtils.isBlank(value) ? "My Project" : JavaUtils.toNameFormat(value));
+                        project.getConfigProperty("ProjectShortTitle").setDefaultValue(NBlankable.isBlank(value) ? "my-project" : JavaUtils.toIdFormat(value));
+                        project.getConfigProperty("ProjectLongTitle").setDefaultValue(NBlankable.isBlank(value) ? "My Project" : JavaUtils.toNameFormat(value));
                         break;
                     }
                 }
             }
         });
         registerDefaultsFunctions();
-        registerFunction("vrMavenModelDependency", new AbstractFunction() {
+        registerFunction("vrMavenModelDependency", new MessageNameFormat.Function() {
             @Override
-            public Object evalArgs(Object[] args, MessageNameFormat format, StringToObject provider) {
+            public Object eval(MessageNameFormat.ExprNode[] args, MessageNameFormat mnf, 
+                    java.util.function.Function<String, Object> fnctn, 
+                    MessageNameFormatContext mnfc) {
+            //public Object evalArgs(Object[] args, MessageNameFormat format, StringToObject provider) {
                 String module = String.valueOf(args[0]);
                 return vrMavenModelDependency(module, HBoxProject.this);
             }
         });
-        registerFunction("vrMavenServiceDependency", new AbstractFunction() {
+        registerFunction("vrMavenServiceDependency", new MessageNameFormat.Function() {
             @Override
-            public Object evalArgs(Object[] args, MessageNameFormat format, StringToObject provider) {
+            public Object eval(MessageNameFormat.ExprNode[] args, MessageNameFormat mnf, 
+                    java.util.function.Function<String, Object> fnctn, 
+                    MessageNameFormatContext mnfc) {
                 String module = String.valueOf(args[0]);
                 return vrMavenServiceDependency(module, HBoxProject.this);
             }
         });
-        registerFunction("vrMavenWebDependency", new AbstractFunction() {
+        registerFunction("vrMavenWebDependency", new MessageNameFormat.Function() {
             @Override
-            public Object evalArgs(Object[] args, MessageNameFormat format, StringToObject provider) {
+            public Object eval(MessageNameFormat.ExprNode[] args, MessageNameFormat mnf, 
+                    java.util.function.Function<String, Object> fnctn, 
+                    MessageNameFormatContext mnfc) {
                 String module = String.valueOf(args[0]);
                 return vrMavenWebDependency(module, HBoxProject.this);
             }
@@ -103,12 +105,12 @@ public class HBoxProject extends DefaultProjectTemplate {
             loadConfigProperties(loadPropertiesFrom);
         }
         if (projectName != null) {
-            final NutsId pn = getWorkspace().id().parseRequired(projectName);
-            if (pn.getGroup() != null) {
-                setConfigValue("ProjectGroup", pn.getGroup());
+            final NId pn = NId.of(projectName).get();
+            if (pn.getGroupId() != null) {
+                setConfigValue("ProjectGroup", pn.getGroupId());
             }
-            if (pn.getName() != null) {
-                setConfigValue("ProjectName", pn.getName());
+            if (pn.getArtifactId() != null) {
+                setConfigValue("ProjectName", pn.getArtifactId());
             }
             if (pn.getVersion().getValue() != null) {
                 setConfigValue("ProjectVersion", pn.getVersion().getValue());
@@ -129,8 +131,8 @@ public class HBoxProject extends DefaultProjectTemplate {
         println("Looking for latest Hadruwaves version...");
         boolean newVersion = false;
         try {
-            NutsId v = getWorkspace().search().id("net.thevpc.scholar:hadruwaves-scala")
-                    .setLatest(true).getResultIds().required();
+            NId v = NSearchCmd.of(getSession()).addId("net.thevpc.scholar:hadruwaves-scala")
+                    .setLatest(true).getResultIds().findAny().get();
             if (v != null) {
                 println("Detected hadruwaves-scala version ==%s==", v.getVersion());
                 getConfigProperty("HadruwavesVersion").setDefaultValue(v.getVersion().getValue());
@@ -151,7 +153,7 @@ public class HBoxProject extends DefaultProjectTemplate {
         println("**--------------------------------**");
         println("**PROJECT PROPERTIES**");
         println("**--------------------------------**");
-        String sortLines = _StringUtils.sortLines(
+        String sortLines = sortLines(
                 IOUtils.toString(getConfigProperties(), null)
         );
         println(sortLines);
@@ -218,4 +220,9 @@ public class HBoxProject extends DefaultProjectTemplate {
         return "";
     }
 
+    public static String sortLines(String string) {
+        String[] all = string.split("\n");
+        Arrays.sort(all);
+        return String.join("\n", all);
+    }
 }
