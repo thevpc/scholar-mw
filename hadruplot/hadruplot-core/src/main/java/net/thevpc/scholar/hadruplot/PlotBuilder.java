@@ -610,6 +610,9 @@ public class PlotBuilder {
         if (any instanceof String) {
             return new StringPlotModel((String) any);
         }
+        if (any instanceof TextContent) {
+            return new StringPlotModel((String) any);
+        }
         if (any instanceof JComponent) {
             return new SwingComponentPlotModel(new DefaultPlotValue(
                     "swing", any

@@ -5,6 +5,13 @@ object T08_ScalaFunctionalCollections extends App{
     override def toString = s"La Personne($name, $age)"
 //    override def toString = "La Personne("+name+", "+age+")"
   }
+//  class Person2{
+//    var name:String;
+//    var age:Int;
+//    Person2(name:String,age:Int){
+//      //this.aa=aa;
+//    }
+//  }
 //  public class Person{
 //    String name;
 //    int age;

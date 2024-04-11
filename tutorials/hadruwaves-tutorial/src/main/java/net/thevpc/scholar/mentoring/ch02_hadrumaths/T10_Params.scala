@@ -16,7 +16,7 @@ object T10_Params extends App {
   var f1 = f(n -> 1.0)
   Plot.title("f0").plot(f0)
   Plot.title("f1").plot(f1)
-  var all = f.inflate(n.in(5, 20))
+  var all = f inflate (n in (5, 20))
   var f5 = all(0)
   all = all :+ g.inflate(n.in(1, 10))
   Plot.title("f*").plot(all)

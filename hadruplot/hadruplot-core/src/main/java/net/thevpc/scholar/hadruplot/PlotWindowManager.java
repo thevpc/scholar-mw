@@ -20,5 +20,6 @@ public interface PlotWindowManager extends PlotComponentDisplayer {
 
     PlotContainer add(String name);
 
-
+    PlotContainer getContainer(PlotPath path);
+    PlotContainer getRootContainer();
 }

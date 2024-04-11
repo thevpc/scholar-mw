@@ -15,5 +15,5 @@ object T02_Complex extends App {
   println(conj(h))
   println(h.conj())
   println(h.conj)
-  println(h conj)
+//  println(h conj)
 }
