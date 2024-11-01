@@ -163,12 +163,12 @@ public class Point implements HSerializable {
     public TsonElement toTsonElement(TsonObjectContext context) {
         switch (dimension) {
             case 1: {
-                return Tson.uplet(Tson.elem(x)).build();
+                return Tson.ofUplet(Tson.of(x)).build();
             }
             case 2: {
-                return Tson.uplet(Tson.elem(x), Tson.elem(y)).build();
+                return Tson.ofUplet(Tson.of(x), Tson.of(y)).build();
             }
         }
-        return Tson.uplet(Tson.elem(x), Tson.elem(y), Tson.elem(z)).build();
+        return Tson.ofUplet(Tson.of(x), Tson.of(y), Tson.of(z)).build();
     }
 }

@@ -90,8 +90,8 @@ public class MathsPlot {
             }
             Tson.setSerializer(
                     b
-                            .setSerializer(SimpleDoubleFormat.class, (SimpleDoubleFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName()))
-                            .setSerializer(PlotBuilder.ListDoubleFormat.class, (PlotBuilder.ListDoubleFormat object, TsonObjectContext context) -> Tson.function(object.getClass().getSimpleName(), context.elem(object.getValues())))
+                            .setSerializer(SimpleDoubleFormat.class, (SimpleDoubleFormat object, TsonObjectContext context) -> Tson.ofFunction(object.getClass().getSimpleName()))
+                            .setSerializer(PlotBuilder.ListDoubleFormat.class, (PlotBuilder.ListDoubleFormat object, TsonObjectContext context) -> Tson.ofFunction(object.getClass().getSimpleName(), context.elem(object.getValues())))
                             .build()
             );
 

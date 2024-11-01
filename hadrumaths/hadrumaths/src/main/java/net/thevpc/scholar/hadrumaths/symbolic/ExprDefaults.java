@@ -2467,8 +2467,8 @@ public class ExprDefaults {
     }
 
     public static TsonElement toTsonElement(Expr me, TsonObjectContext context) {
-        return Tson.function().name("expr").add(
-                Tson.elem(me.toString())
+        return Tson.ofFunction().name("expr").add(
+                Tson.of(me.toString())
         ).build();
     }
 

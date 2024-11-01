@@ -122,11 +122,11 @@ public class ConvergenceResult implements HSerializable {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder obj = Tson.obj(getClass().getSimpleName());
-        obj.add("name", Tson.elem(label));
-        obj.add("threshold", Tson.elem(epsilon));
-        obj.add("err", Tson.elem(relativeError));
-        obj.add("ndex", Tson.elem(varIndex));
+        TsonObjectBuilder obj = Tson.ofObj(getClass().getSimpleName());
+        obj.add("name", Tson.of(label));
+        obj.add("threshold", Tson.of(epsilon));
+        obj.add("err", Tson.of(relativeError));
+        obj.add("ndex", Tson.of(varIndex));
         obj.add("value", context.elem(varValue));
         if (parameters != null && !parameters.isEmpty()) {
             obj.add("config", context.elem(parameters));

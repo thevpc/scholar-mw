@@ -50,7 +50,7 @@ public class HWConfigurationRun extends AbstractHWConfigurationElement {
     }
 
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.obj("configuration")
+        return Tson.ofObj("configuration")
                 .add("name", name().get())
                 .add("description", description().get())
                 .add("parameters", context.elem(parameters.toMap()))

@@ -78,7 +78,7 @@ public class MatrixAWaveguideParallelEvaluator implements MatrixAEvaluator {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.function(getClass().getSimpleName()).build();
+        return Tson.ofFunction(getClass().getSimpleName()).build();
     }
 
 }

@@ -22,7 +22,7 @@ public class ConsDesTriangleCountPrecision implements ConsDesPrecision {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder sb = Tson.obj(getClass().getSimpleName());
+        TsonObjectBuilder sb = Tson.ofObj(getClass().getSimpleName());
         sb.add("count", context.elem(nbre));
         return sb.build();
     }

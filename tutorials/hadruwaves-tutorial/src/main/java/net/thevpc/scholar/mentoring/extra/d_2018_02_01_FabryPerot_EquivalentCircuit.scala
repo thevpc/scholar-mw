@@ -197,11 +197,11 @@ object d_2018_02_01_FabryPerot_EquivalentCircuit {
   def calculEtetha(theta: Double, phi: Double): Complex = {
     var persistentCache = st.getDerivedPersistentCache("Etheta")
     //    persistentCache.setEnabled(true);
-    val dumper = Tson.obj("Etheta")
+    val dumper = Tson.ofObj("Etheta")
       .add("st", Tson.serializer().serialize(st))
-      .add("theta", Tson.elem(theta))
-      .add("r", Tson.elem(r))
-      .add("phi", Tson.elem(phi))
+      .add("theta", Tson.of(theta))
+      .add("r", Tson.of(r))
+      .add("phi", Tson.of(phi))
     //.add("Xvalues", dsteps(0, a, 100))
     // .add("Yvalues", dsteps(-b / 2, b / 2, 100))
     return persistentCache.of("Etheta", dumper).eval(() => calculEthetaEff(theta, phi)).get();
@@ -245,11 +245,11 @@ object d_2018_02_01_FabryPerot_EquivalentCircuit {
     var persistentCache = st.getDerivedPersistentCache("Ephi")
     //    var persistentCache = new PersistenceCacheImpl("Ephi");
     //    persistentCache.setEnabled(true);
-    var dumper = Tson.obj("Ephi")
+    var dumper = Tson.ofObj("Ephi")
       .add("st", Tson.serializer().serialize(st))
-      .add("phi", Tson.elem(phi))
-      .add("r", Tson.elem(r))
-      .add("theta", Tson.elem(theta))
+      .add("phi", Tson.of(phi))
+      .add("r", Tson.of(r))
+      .add("theta", Tson.of(theta))
     //.add("Xvalues", dsteps(0, a, 100))
     //.add("Yvalues", dsteps(-b / 2, b / 2, 100))
     //    return persistentCache.evaluate[Complex]("Ephi", null,new CacheEvaluator {

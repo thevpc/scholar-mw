@@ -76,7 +76,7 @@ public class NumericScalarProductOperator extends AbstractScalarProductOperator 
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder sb = Tson.obj(getClass().getSimpleName());
+        TsonObjectBuilder sb = Tson.ofObj(getClass().getSimpleName());
         sb.add("integrator", context.elem(integrator));
         sb.add("hermitian", context.elem(isHermitian()));
         sb.add("hash", context.elem(Integer.toHexString(hashCode()).toUpperCase()));

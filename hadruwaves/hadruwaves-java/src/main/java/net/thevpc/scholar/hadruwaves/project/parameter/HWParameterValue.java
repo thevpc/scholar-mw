@@ -57,7 +57,7 @@ public class HWParameterValue extends AbstractHWParameterElement {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder obj = Tson.obj("Parameter")
+        TsonObjectBuilder obj = Tson.ofObj("Parameter")
                 .add("name", name().get());
         if (description().get() != null) {
             obj.add("description", description().get());

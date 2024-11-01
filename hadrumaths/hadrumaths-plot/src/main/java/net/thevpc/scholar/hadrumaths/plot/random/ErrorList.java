@@ -120,21 +120,21 @@ public class ErrorList {
                 String id = nextErrorName(cls.getSimpleName());
                 File errorStr = new File(testConfigFolder, id + ".error-string");
                 File errorObj = new File(testConfigFolder, id + ".error-obj");
-                TsonObjectBuilder tsonObj = Tson.obj()
-                        .add("id", Tson.elem(id))
-                        .add("type", Tson.elem(cls.getName()))
-                        .add("value", Tson.elem(String.valueOf(objWithErrors.obj)));
-                TsonArrayBuilder array = Tson.array();
+                TsonObjectBuilder tsonObj = Tson.ofObj()
+                        .add("id", Tson.of(id))
+                        .add("type", Tson.of(cls.getName()))
+                        .add("value", Tson.of(String.valueOf(objWithErrors.obj)));
+                TsonArrayBuilder array = Tson.ofArray();
                 for (ErrorMessage message : objWithErrors.messages) {
                     StringWriter sw = new StringWriter();
                     PrintWriter pw = new PrintWriter(sw);
                     message.message.printStackTrace(pw);
                     array.add(
-                            Tson.obj()
-                                    .add("id", Tson.elem(message.id))
-                                    .add("warning", Tson.elem(message.warning))
-                                    .add("message", Tson.elem(message.message.toString()))
-                                    .add("stacktrace", Tson.elem(sw.toString()))
+                            Tson.ofObj()
+                                    .add("id", Tson.of(message.id))
+                                    .add("warning", Tson.of(message.warning))
+                                    .add("message", Tson.of(message.message.toString()))
+                                    .add("stacktrace", Tson.of(sw.toString()))
                     );
                 }
                 tsonObj.add("messages", array);
@@ -195,7 +195,7 @@ public class ErrorList {
                                 Expr expr = (Expr) IOUtils.loadObject2(errorObj.getPath());
                                 String str = errorStr.exists() ? new String(Files.readAllBytes(errorStr.toPath())) : "";
                                 TsonObject tson = Tson.reader().readElement(str).toObject();
-                                Class<?> type = Class.forName(tson.get("type").getString());
+                                Class<?> type = Class.forName(tson.get("type").stringValue());
                                 e = new ErrorGroup(
                                         name,
                                         type,
@@ -205,10 +205,10 @@ public class ErrorList {
                                     e.messages.add(
                                             new ErrorMessage(
                                                     name,
-                                                    m.get("warning").getBoolean(),
+                                                    m.get("warning").booleanValue(),
                                                     type,
                                                     expr,
-                                                    new RuntimeException(m.get("message").toStr().getString())
+                                                    new RuntimeException(m.get("message").toStr().stringValue())
                                             )
                                     );
                                 }

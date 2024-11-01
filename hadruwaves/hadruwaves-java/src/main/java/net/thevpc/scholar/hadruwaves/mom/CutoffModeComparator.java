@@ -30,6 +30,6 @@ public class CutoffModeComparator implements ModeInfoComparator {
     }
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.function(getClass().getSimpleName()).build();
+        return Tson.ofFunction(getClass().getSimpleName()).build();
     }
 }

@@ -1224,12 +1224,12 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
     }
 
     public TsonElement toTsonElement(TsonObjectContext context, boolean includeFreq, boolean includeSize) {
-        TsonObjectBuilder h = Tson.obj(getClass().getSimpleName());
+        TsonObjectBuilder h = Tson.ofObj(getClass().getSimpleName());
 
         if (!includeFreq && isDefinitionFrequencyDependent()) {
             includeFreq = true;
         }
-        TsonObjectBuilder env = Tson.obj();
+        TsonObjectBuilder env = Tson.ofObj();
         env.add("domain", context.elem(getEnv().getDomain()));
         env.add("borders", context.elem(getEnv().getBorders()));
         env.add("sources", context.elem(getEnv().getSources()));
@@ -1272,7 +1272,7 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
 
         h.add("environment", env);
 
-        TsonObjectBuilder hints = Tson.obj();
+        TsonObjectBuilder hints = Tson.ofObj();
         hints.add("hintInvariance", context.elem(getHintInvariantAxis()));
         hints.add("hintFnModes", context.elem(getHintFnModes()));
         hints.add("hintAxisType", context.elem(getHintAxisType()));
@@ -1483,7 +1483,7 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
 
     private ObjectCache getSingleTestFunctionObjectCache(Expr testFunction) {
         TsonObjectContext context = Tson.serializer().context();
-        TsonElement node = Tson.obj("SingleTestModeScalarProducts")
+        TsonElement node = Tson.ofObj("SingleTestModeScalarProducts")
                 .add("modeFunction", toTsonElement(context, false, false))
                 .add("testFunction", context.elem(testFunction.simplify()))
                 .build();
@@ -1493,11 +1493,11 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
 
     private ObjectCache getMultipleTestFunctionObjectCache(Expr[] testFunctions) {
         TsonObjectContext context = Tson.serializer().context();
-        TsonArrayBuilder testFunction2 = Tson.array().ensureCapacity(testFunctions.length);
+        TsonArrayBuilder testFunction2 = Tson.ofArray().ensureCapacity(testFunctions.length);
         for (Expr testFunction : testFunctions) {
             testFunction2.addAll(context.elem(testFunction.simplify()));
         }
-        TsonElement node = Tson.obj("MultipleTestModeScalarProducts")
+        TsonElement node = Tson.ofObj("MultipleTestModeScalarProducts")
                 .add("modeFunction", toTsonElement(context, false, false))
                 .add("testFunctions", testFunction2)
                 .build();

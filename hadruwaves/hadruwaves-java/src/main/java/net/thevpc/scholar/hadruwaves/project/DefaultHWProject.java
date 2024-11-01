@@ -172,12 +172,12 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
     }
 
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder obj = Tson.obj("project");
+        TsonObjectBuilder obj = Tson.ofObj("project");
         obj
                 .add("uuid", uuid())
                 .add("name", name().get())
                 .add("description", description().get())
-                .add("materials", Tson.array().addAll(materials().values()
+                .add("materials", Tson.ofArray().addAll(materials().values()
                         .stream().map(x -> x.toTsonElement()).collect(Collectors.toList()))
                 )
                 .add("parameters", parameters().toTsonElement())

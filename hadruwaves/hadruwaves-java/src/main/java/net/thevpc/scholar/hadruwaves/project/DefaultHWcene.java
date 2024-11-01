@@ -159,10 +159,10 @@ public class DefaultHWcene implements HWProjectScene {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.obj("scene")
+        return Tson.ofObj("scene")
                 .add("domain", domain == null ? null : domain.toTsonElement(context))
                 .add("components",
-                        Tson.array().addAll(components.stream().map(x -> x.toTsonElement(context)).collect(Collectors.toList()))
+                        Tson.ofArray().addAll(components.stream().map(x -> x.toTsonElement(context)).collect(Collectors.toList()))
                 )
                 .build();
     }

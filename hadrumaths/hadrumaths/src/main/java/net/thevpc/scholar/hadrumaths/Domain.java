@@ -2213,19 +2213,19 @@ public abstract class Domain implements DoubleValue, DoubleToDouble, DoubleToDou
     public TsonElement toTsonElement(TsonObjectContext context) {
         switch (getDimension()) {
             case 1: {
-                return Tson.function("domain", Tson.elem(xmin()), Tson.elem(xmax())).build();
+                return Tson.ofFunction("domain", Tson.of(xmin()), Tson.of(xmax())).build();
             }
             case 2: {
-                return Tson.function("domain",
-                        Tson.elem(xmin()), Tson.elem(xmax()),
-                        Tson.elem(ymin()), Tson.elem(ymax())
+                return Tson.ofFunction("domain",
+                        Tson.of(xmin()), Tson.of(xmax()),
+                        Tson.of(ymin()), Tson.of(ymax())
                 ).build();
             }
         }
-        return Tson.function("domain",
-                Tson.elem(xmin()), Tson.elem(xmax()),
-                Tson.elem(ymin()), Tson.elem(ymax()),
-                Tson.elem(zmin()), Tson.elem(zmax())
+        return Tson.ofFunction("domain",
+                Tson.of(xmin()), Tson.of(xmax()),
+                Tson.of(ymin()), Tson.of(ymax()),
+                Tson.of(zmin()), Tson.of(zmax())
         ).build();
     }
 

@@ -825,7 +825,7 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.doubleComplex(getReal(), getImag());
+        return Tson.ofDoubleComplex(getReal(), getImag());
     }
 
     public Expr multiply(Domain domain) {

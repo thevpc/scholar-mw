@@ -24,7 +24,7 @@ public final class ModeFilter implements ModeIndexFilter {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder sb = Tson.obj(getClass().getSimpleName());
+        TsonObjectBuilder sb = Tson.ofObj(getClass().getSimpleName());
         sb.add("cachedHintFnModeTypes", context.elem(cachedHintFnModeTypes));
         return sb.build();
     }

@@ -74,7 +74,7 @@ public class Element3DParallelipipedTemplate extends AbstractElement3DTemplate {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.obj(getClass().getSimpleName())
+        return Tson.ofObj(getClass().getSimpleName())
                 .add("a",a.toTsonElement(context))
                 .add("b",b.toTsonElement(context))
                 .add("c",c.toTsonElement(context))

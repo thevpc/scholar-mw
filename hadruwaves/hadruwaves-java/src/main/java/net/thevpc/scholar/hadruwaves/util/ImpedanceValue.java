@@ -57,7 +57,7 @@ public final class ImpedanceValue implements Impedance {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.function("impedance", context.elem(value)).build();
+        return Tson.ofFunction("impedance", context.elem(value)).build();
     }
 
 //    public String dump() {

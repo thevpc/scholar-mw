@@ -191,16 +191,16 @@ public class DomainExpr extends AbstractDoubleToDouble /*implements DoubleToDoub
     public TsonElement toTsonElement(TsonObjectContext context) {
         switch (getDimension()) {
             case 1: {
-                return Tson.function("domain", context.elem(xmin()), context.elem(xmax())).build();
+                return Tson.ofFunction("domain", context.elem(xmin()), context.elem(xmax())).build();
             }
             case 2: {
-                return Tson.function("domain",
+                return Tson.ofFunction("domain",
                         context.elem(xmin()), context.elem(xmax()),
                         context.elem(ymin()), context.elem(ymax())
                 ).build();
             }
         }
-        return Tson.function("domain",
+        return Tson.ofFunction("domain",
                 context.elem(xmin()), context.elem(xmax()),
                 context.elem(ymin()), context.elem(ymax()),
                 context.elem(zmin()), context.elem(zmax())

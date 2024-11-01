@@ -22,7 +22,7 @@ public class Annotation3D implements TsonSerializable{
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.obj(getClass().getSimpleName())
+        return Tson.ofObj(getClass().getSimpleName())
                 //TODO add elements here! 
                 .build();
     }
