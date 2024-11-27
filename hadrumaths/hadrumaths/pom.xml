@@ -126,6 +126,11 @@
             <version>1.23.1</version>
         </dependency>
         <dependency>
+            <groupId>net.thevpc.tson</groupId>
+            <artifactId>tson</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <dependency>
             <groupId>net.thevpc.common</groupId>
             <artifactId>thevpc-common-monitor</artifactId>
             <version>1.22.7</version>

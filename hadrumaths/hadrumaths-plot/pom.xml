@@ -37,6 +37,11 @@
             <version>${scholar-version}</version>
         </dependency>
         <dependency>
+            <groupId>net.thevpc.tson</groupId>
+            <artifactId>tson</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <dependency>
             <groupId>net.thevpc.scholar</groupId>
             <artifactId>hadrumaths</artifactId>
             <version>${scholar-version}</version>
