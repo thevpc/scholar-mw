@@ -1,8 +1,9 @@
 package net.thevpc.scholar.mentoring.extra
 import net.thevpc.common.util.{FrequencyFormat, MetricFormat}
 import net.thevpc.scholar.hadrumaths.MathScala._
+import net.thevpc.scholar.hadrumaths.convergence.ConvergenceSolver
 import net.thevpc.scholar.hadruwaves.Physics._
-import net.thevpc.scholar.hadrumaths.{Complex, ConvergenceSolver, DoubleSolverX, Maths}
+import net.thevpc.scholar.hadrumaths.{Complex, DoubleSolverX, Maths}
 
 object Aguili2_20201008 extends App {
   var ε0 = EPS0

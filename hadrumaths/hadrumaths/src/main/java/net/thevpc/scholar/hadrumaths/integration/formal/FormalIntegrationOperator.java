@@ -75,8 +75,8 @@ public class FormalIntegrationOperator extends AbstractIntegrationOperator {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.obj(getClass().getSimpleName())
-                .add("hash", Tson.elem(Integer.toHexString(hashCode()).toUpperCase()))
+        return Tson.ofObj(getClass().getSimpleName())
+                .add("hash", Tson.of(Integer.toHexString(hashCode()).toUpperCase()))
                 .add("spo", context.elem(formalOperator))
                 .build();
     }

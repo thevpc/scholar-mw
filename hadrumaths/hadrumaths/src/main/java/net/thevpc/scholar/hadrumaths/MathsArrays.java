@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.function.ToDoubleFunction;
 
 public class MathsArrays {
-    public static RealDoubleConverter REAL=new RealDoubleConverter();
+
+    public static RealDoubleConverter REAL = new RealDoubleConverter();
 
     /**
      * sqrt(a^2 + b^2) without under/overflow.
@@ -487,6 +488,11 @@ public class MathsArrays {
         if (Double.isInfinite(a) || Double.isInfinite(b)) {
             return Double.POSITIVE_INFINITY;
         }
+        if (Math.abs(a) > Math.abs(b)) {
+            double c = a;
+            a = b;
+            b = c;
+        }
         return Math.abs(b - a) / Math.abs(a);
     }
 
@@ -502,6 +508,11 @@ public class MathsArrays {
         }
         if (a.isInfinite() || b.isInfinite()) {
             return Double.POSITIVE_INFINITY;
+        }
+        if (a.norm() > b.norm()) {
+            Complex c = a;
+            a = b;
+            b = c;
         }
         return (b.minus(a)).absdbl() / a.absdbl();
     }

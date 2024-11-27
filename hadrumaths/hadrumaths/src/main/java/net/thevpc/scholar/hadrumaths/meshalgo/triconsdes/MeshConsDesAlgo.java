@@ -34,7 +34,7 @@ public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
 //    }
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder sb = Tson.obj(getClass().getSimpleName());
+        TsonObjectBuilder sb = Tson.ofObj(getClass().getSimpleName());
         sb.add("options", context.elem(option));
         return sb.build();
     }

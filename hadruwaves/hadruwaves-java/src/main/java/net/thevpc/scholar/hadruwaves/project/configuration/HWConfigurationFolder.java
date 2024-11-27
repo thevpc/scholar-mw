@@ -58,10 +58,10 @@ public class HWConfigurationFolder extends AbstractHWConfigurationElement {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.obj("Folder")
+        return Tson.ofObj("Folder")
                 .add("name", name().get())
                 .add("description", description().get())
-                .add("children", Tson.array().addAll(children().values().stream().map(x -> x.toTsonElement(context)).collect(Collectors.toList())))
+                .add("children", Tson.ofArray().addAll(children().values().stream().map(x -> x.toTsonElement(context)).collect(Collectors.toList())))
                 .build();
     }
 }

@@ -100,6 +100,6 @@ class DomainGeometry extends AbstractGeometry implements Cloneable,TsonSerializa
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.obj("Geometry", null, context.elem(domain)).build();
+        return Tson.ofObj("Geometry", null, context.elem(domain)).build();
     }
 }

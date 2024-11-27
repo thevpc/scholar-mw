@@ -389,7 +389,7 @@ public abstract class TestFunctionsBase implements net.thevpc.scholar.hadruwaves
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder h = Tson.obj(getClass().getSimpleName());
+        TsonObjectBuilder h = Tson.ofObj(getClass().getSimpleName());
         h.add("axisType", context.elem(axisType));
         if (functionsComparator != null) {
             h.add("functionsComparator", context.elem(functionsComparator));

@@ -78,7 +78,7 @@ public final class GridPrecision implements Cloneable, HSerializable {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.obj(getClass().getSimpleName())
+        return Tson.ofObj(getClass().getSimpleName())
                 .add("xmin", context.elem(xmin))
                 .add("xmax", context.elem(xmax))
                 .add("ymin", context.elem(ymin))

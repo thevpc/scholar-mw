@@ -68,7 +68,7 @@ public class HWProjectElementBrickFace implements HWProjectElement {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.obj(index.name())
+        return Tson.ofObj(index.name())
                 .add("name",name.get())
                 .add("boundary",boundary.get())
                 .add("visible",visible.get())

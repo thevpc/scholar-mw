@@ -69,17 +69,36 @@
             <artifactId>thevpc-common-strings</artifactId>
             <version>1.2.19</version>
         </dependency>
-        <dependency>
-            <groupId>net.thevpc.hl</groupId>
-            <artifactId>hadra-build-tool</artifactId>
-            <version>0.1.2</version> <!--updated-->
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>net.thevpc.hl</groupId>-->
+<!--            <artifactId>hadra-build-tool</artifactId>-->
+<!--            <version>0.1.2</version> &lt;!&ndash;updated&ndash;&gt;-->
+<!--        </dependency>-->
         <dependency>
             <groupId>net.thevpc.common</groupId>
             <artifactId>thevpc-common-mvn</artifactId>
             <version>1.1.2</version>
         </dependency>
-
+        <dependency>
+            <groupId>net.thevpc.nuts</groupId>
+            <artifactId>nuts-api</artifactId>
+            <version>0.8.5</version>
+        </dependency>
+        <dependency>
+            <groupId>net.thevpc.tson</groupId>
+            <artifactId>tson</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.thevpc.jeep</groupId>
+            <artifactId>jeep</artifactId>
+            <version>1.2.9</version>
+        </dependency>
+        <dependency>
+            <groupId>net.thevpc.hl</groupId>
+            <artifactId>hadra-lang</artifactId>
+            <version>0.1.1</version>
+        </dependency>
         <!--        <dependency>
             <groupId>java-oo</groupId>
              javac 7:
@@ -105,11 +124,6 @@
             <groupId>net.thevpc.common</groupId>
             <artifactId>thevpc-common-time</artifactId>
             <version>1.23.1</version>
-        </dependency>
-        <dependency>
-            <groupId>net.thevpc.tson</groupId>
-            <artifactId>tson</artifactId>
-            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>net.thevpc.common</groupId>

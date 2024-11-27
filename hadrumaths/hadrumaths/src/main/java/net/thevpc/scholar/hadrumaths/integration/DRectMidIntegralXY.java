@@ -174,7 +174,7 @@ public class DRectMidIntegralXY implements DIntegralXY {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.function(getClass().getSimpleName(), Tson.elem(xprecision), Tson.elem(yprecision), Tson.elem(zprecision))
+        return Tson.ofFunction(getClass().getSimpleName(), Tson.of(xprecision), Tson.of(yprecision), Tson.of(zprecision))
                 .build();
     }
 //    @Override

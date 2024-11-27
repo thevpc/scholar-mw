@@ -27,7 +27,7 @@ public abstract class AbstractGpPattern implements GpPattern {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder h = Tson.obj(getClass().getSimpleName());
+        TsonObjectBuilder h = Tson.ofObj(getClass().getSimpleName());
         return h.build();
     }
 

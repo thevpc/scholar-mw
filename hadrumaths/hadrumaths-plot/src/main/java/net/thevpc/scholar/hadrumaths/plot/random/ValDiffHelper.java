@@ -40,7 +40,7 @@ public class ValDiffHelper {
         Plot.cd("/diff/" + plotDiffCount + "/" + id).title(b).samples(bs).plot(v2);
         for (int i = 0; i < texts.length; i++) {
             TsonPair text = texts[i];
-            Plot.cd("/diff/" + plotDiffCount + "/" + id).title(text.getKey().getString()).plot(new JScrollPane(new JTextArea(text.getValue().getString())));
+            Plot.cd("/diff/" + plotDiffCount + "/" + id).title(text.key().stringValue()).plot(new JScrollPane(new JTextArea(text.value().stringValue())));
         }
         plotDiffCount++;
     }
@@ -187,8 +187,8 @@ public class ValDiffHelper {
         boolean ok = ArrayUtils.equals(doublesA, doublesB);
         if (!ok) {
             this.plotDiff("Incompatibility", "DD_X(Bulk)", "DD_X(Each)", doublesA, doublesB, AbsoluteSamples.absolute(x),
-                    Tson.pair("expr", Tson.elem(expr.toString())),
-                    Tson.pair("domain", Tson.elem(domain.toString())));
+                    Tson.ofPair("expr", Tson.of(expr.toString())),
+                    Tson.ofPair("domain", Tson.of(domain.toString())));
             showDiff("DD_X Diff", doublesA, doublesB, x);
             errorList.addInstanceError(expr, "Invalid values");
             return false;

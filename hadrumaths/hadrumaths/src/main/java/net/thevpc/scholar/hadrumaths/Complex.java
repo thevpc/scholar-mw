@@ -49,26 +49,26 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
 
     @Override
     public String toLatex() {
-        if(isReal()){
+        if (isReal()) {
             return DoubleExpr.of(getReal()).toLatex();
         }
         double imag = getImag();
-        if(isImag()){
-            if(imag==1){
+        if (isImag()) {
+            if (imag == 1) {
                 return "\u00EE";
             }
-            return DoubleExpr.of(imag).toLatex()+"\u00EE";
+            return DoubleExpr.of(imag).toLatex() + "\u00EE";
         }
-        StringBuilder sb=new StringBuilder();
-        if(getReal()!=0) {
+        StringBuilder sb = new StringBuilder();
+        if (getReal() != 0) {
             sb.append(DoubleExpr.of(getReal()).toLatex());
         }
-        if(imag !=0){
-           if(imag>0){
-               sb.append("+\u00EE").append(DoubleExpr.of(imag).toLatex());
-           }else{
-               sb.append("-\u00EE").append(DoubleExpr.of(-imag).toLatex());
-           }
+        if (imag != 0) {
+            if (imag > 0) {
+                sb.append("+\u00EE").append(DoubleExpr.of(imag).toLatex());
+            } else {
+                sb.append("-\u00EE").append(DoubleExpr.of(-imag).toLatex());
+            }
         }
         return toString();
     }
@@ -220,8 +220,8 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
             imag.append("0");
         }
         return new double[]{
-                Double.parseDouble(real.toString()),
-                Double.parseDouble(imag.toString())
+            Double.parseDouble(real.toString()),
+            Double.parseDouble(imag.toString())
         };
     }
 
@@ -439,9 +439,8 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
     }
 
     public boolean equals(Complex c) {
-        return
-                Double.doubleToLongBits(getReal()) == Double.doubleToLongBits(c.getReal()) &&
-                        Double.doubleToLongBits(getImag()) == Double.doubleToLongBits(c.getImag());
+        return Double.doubleToLongBits(getReal()) == Double.doubleToLongBits(c.getReal())
+                && Double.doubleToLongBits(getImag()) == Double.doubleToLongBits(c.getImag());
 //        return
 //                Double.doubleToLongBits(getReal()) == Double.doubleToLongBits(c.getReal())
 //                        && Double.doubleToLongBits(getImag()) == Double.doubleToLongBits(c.getImag())
@@ -625,7 +624,7 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
     @Override
     public double toDouble() {
         if (!isReal()) {
-            throw new ClassCastException("Not Real : "+toString());
+            throw new ClassCastException("Not Real : " + toString());
         }
         return getReal();
     }
@@ -825,7 +824,7 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.doubleComplex(getReal(), getImag());
+        return Tson.ofDoubleComplex(getReal(), getImag());
     }
 
     public Expr multiply(Domain domain) {
@@ -862,23 +861,30 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
 
     @Override
     public Expr mul(Expr other) {
-        switch (other.getType()){
-            case DOUBLE_NBR:return mul(other.toDouble());
-            case DOUBLE_EXPR:return mul(other.toDouble()).mul(other.getDomain());
-            case COMPLEX_NBR:return mul(other.toComplex());
-            case COMPLEX_EXPR:return mul(other.toComplex()).mul(other.getDomain());
+        switch (other.getType()) {
+            case DOUBLE_NBR:
+                return mul(other.toDouble());
+            case DOUBLE_EXPR:
+                return mul(other.toDouble()).mul(other.getDomain());
+            case COMPLEX_NBR:
+                return mul(other.toComplex());
+            case COMPLEX_EXPR:
+                return mul(other.toComplex()).mul(other.getDomain());
         }
         return ExprDefaults.mul(this, other);
     }
 
-
     @Override
     public Expr pow(Expr other) {
-        switch (other.getType()){
-            case DOUBLE_NBR:return pow(other.toDouble());
-            case DOUBLE_EXPR:return pow(other.toDouble()).mul(other.getDomain());
-            case COMPLEX_NBR:return pow(other.toComplex());
-            case COMPLEX_EXPR:return pow(other.toComplex()).mul(other.getDomain());
+        switch (other.getType()) {
+            case DOUBLE_NBR:
+                return pow(other.toDouble());
+            case DOUBLE_EXPR:
+                return pow(other.toDouble()).mul(other.getDomain());
+            case COMPLEX_NBR:
+                return pow(other.toComplex());
+            case COMPLEX_EXPR:
+                return pow(other.toComplex()).mul(other.getDomain());
         }
         return ExprDefaults.pow(this, other);
     }
@@ -893,11 +899,15 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
 
     @Override
     public Expr div(Expr other) {
-        switch (other.getType()){
-            case DOUBLE_NBR:return div(other.toDouble());
-            case DOUBLE_EXPR:return div(other.toDouble()).mul(other.getDomain());
-            case COMPLEX_NBR:return div(other.toComplex());
-            case COMPLEX_EXPR:return div(other.toComplex()).mul(other.getDomain());
+        switch (other.getType()) {
+            case DOUBLE_NBR:
+                return div(other.toDouble());
+            case DOUBLE_EXPR:
+                return div(other.toDouble()).mul(other.getDomain());
+            case COMPLEX_NBR:
+                return div(other.toComplex());
+            case COMPLEX_EXPR:
+                return div(other.toComplex()).mul(other.getDomain());
         }
         return ExprDefaults.div(this, other);
     }
@@ -927,7 +937,6 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
 //    public boolean isDC() {
 //        return true;
 //    }
-
     public Complex sub(double c) {
         return Complex.of(getReal() - c, getImag());
     }
@@ -936,7 +945,6 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
 //    public boolean isDV() {
 //        return true;
 //    }
-
     //    //@Override
 //    public Complex div(Complex other) {
 //        if (other instanceof Complex) {
@@ -1298,7 +1306,6 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
 //    public boolean isComplexExpr() {
 //        return true;
 //    }
-
     @Override
     public Complex[] evalComplex(double x, double[] y, Domain d0) {
         Complex[] complexes = new Complex[y.length];
@@ -1471,7 +1478,6 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
 //    public String dump() {
 //        return toString();
 //    }
-
     public Complex divide(Complex other) {
         return div(other);
     }

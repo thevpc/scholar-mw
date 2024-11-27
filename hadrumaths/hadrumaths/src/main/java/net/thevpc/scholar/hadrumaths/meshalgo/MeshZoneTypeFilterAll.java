@@ -23,7 +23,7 @@ final class MeshZoneTypeFilterAll implements MeshZoneTypeFilter {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.function(getClass().getSimpleName())
+        return Tson.ofFunction(getClass().getSimpleName())
                 .build();
     }
 //    public Dumper getDumpStringHelper() {

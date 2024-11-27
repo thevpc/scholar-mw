@@ -148,7 +148,7 @@ public class DefaultHWSolution extends PropertyBase implements HWSolution {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.obj("solution")
+        return Tson.ofObj("solution")
                 .add("path", filePath().get())
                 .build();
     }

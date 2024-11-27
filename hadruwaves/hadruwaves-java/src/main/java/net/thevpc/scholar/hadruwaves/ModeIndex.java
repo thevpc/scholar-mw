@@ -142,7 +142,7 @@ public final class ModeIndex implements HSerializable {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.function(mtype.name(),Tson.elem(m),Tson.elem(n)).build();
+        return Tson.ofFunction(mtype.name(),Tson.of(m),Tson.of(n)).build();
     }
     public String toString() {
         return  mtype.toString()+m+"."+n;

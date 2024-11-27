@@ -1,0 +1,1 @@
+-Djogl.disable.openglcore=false

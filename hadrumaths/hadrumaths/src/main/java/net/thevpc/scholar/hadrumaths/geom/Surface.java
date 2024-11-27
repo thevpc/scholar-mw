@@ -386,9 +386,9 @@ public class Surface extends AbstractGeometry implements Cloneable {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.obj("surface").addAll(
-                Tson.pair("domain", context.elem(domain)),
-                Tson.pair("points", context.elem(points))
+        return Tson.ofObj("surface").addAll(
+                Tson.ofPair("domain", context.elem(domain)),
+                Tson.ofPair("points", context.elem(points))
         ).build();
     }
 

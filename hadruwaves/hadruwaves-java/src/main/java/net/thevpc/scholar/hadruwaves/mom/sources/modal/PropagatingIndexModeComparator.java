@@ -52,7 +52,7 @@ public class PropagatingIndexModeComparator implements ModeInfoComparator {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder h = Tson.obj(getClass().getSimpleName());
+        TsonObjectBuilder h = Tson.ofObj(getClass().getSimpleName());
         h.add("sources", context.elem(sources));
         return h.build();
     }

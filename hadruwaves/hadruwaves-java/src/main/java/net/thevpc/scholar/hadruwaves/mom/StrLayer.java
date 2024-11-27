@@ -37,9 +37,9 @@ public class StrLayer implements HSerializable, Cloneable {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonFunctionBuilder sb = Tson.function(getClass().getSimpleName());
-        sb.add(Tson.pair("width", context.elem(width)));
-        sb.add(Tson.pair("impedance", context.elem(impedance)));
+        TsonFunctionBuilder sb = Tson.ofFunction(getClass().getSimpleName());
+        sb.add(Tson.ofPair("width", context.elem(width)));
+        sb.add(Tson.ofPair("impedance", context.elem(impedance)));
         return sb.build();
     }
 //    public String dump() {

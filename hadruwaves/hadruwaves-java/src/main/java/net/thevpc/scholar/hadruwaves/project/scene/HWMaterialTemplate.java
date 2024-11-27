@@ -106,7 +106,7 @@ public class HWMaterialTemplate implements HWProjectElement {
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
         return 
-                Tson.obj("Material")
+                Tson.ofObj("Material")
                 .add("name",name.get())
                 .add("description",description.get())
                 .add("permettivity",permettivity.get())

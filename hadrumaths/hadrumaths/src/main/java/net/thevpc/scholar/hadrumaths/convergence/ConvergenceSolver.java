@@ -1,6 +1,7 @@
-package net.thevpc.scholar.hadrumaths;
+package net.thevpc.scholar.hadrumaths.convergence;
 
 import net.hl.lang.IntToDoubleFunction;
+import net.thevpc.scholar.hadrumaths.Maths;
 
 public abstract class ConvergenceSolver {
     private IntToDoubleFunction f;

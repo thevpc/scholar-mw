@@ -284,15 +284,15 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder obj = Tson.obj(getClass().getSimpleName(), new TsonElementBase[]{
-                Tson.pair("name", Tson.elem(getName())),
-                Tson.pair("itr", Tson.elem(getMaxIterations()))
+        TsonObjectBuilder obj = Tson.ofObj(getClass().getSimpleName(), new TsonElementBase[]{
+                Tson.ofPair("name", Tson.of(getName())),
+                Tson.ofPair("itr", Tson.of(getMaxIterations()))
         });
         TreeSet<String> allRuleNames = new TreeSet<>(rules.stream().map(x -> x.getClass().getName()).collect(Collectors.toSet()));
         if (fallbackRule != null) {
             allRuleNames.add(fallbackRule.getClass().getName());
         }
-        obj.add("rulesCount", Tson.elem(allRuleNames.size()));
+        obj.add("rulesCount", Tson.of(allRuleNames.size()));
         obj.add("fingerPrint", context.elem(CacheKey.toHashString(String.join(";", allRuleNames))));
         return obj.build();
     }

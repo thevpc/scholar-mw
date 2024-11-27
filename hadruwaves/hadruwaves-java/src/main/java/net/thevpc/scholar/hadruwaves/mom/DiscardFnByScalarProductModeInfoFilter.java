@@ -27,7 +27,7 @@ class DiscardFnByScalarProductModeInfoFilter implements ModeInfoFilter {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder sb = Tson.obj(getClass().getSimpleName());
+        TsonObjectBuilder sb = Tson.ofObj(getClass().getSimpleName());
         sb.add("exclude", context.elem(excluded));
         return sb.build();
     }

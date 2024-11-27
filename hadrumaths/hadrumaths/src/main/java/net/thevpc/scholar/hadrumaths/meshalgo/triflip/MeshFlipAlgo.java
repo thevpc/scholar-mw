@@ -172,7 +172,7 @@ public class MeshFlipAlgo implements MeshAlgo {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder sb = Tson.obj(getClass().getSimpleName());
+        TsonObjectBuilder sb = Tson.ofObj(getClass().getSimpleName());
         sb.add("options", context.elem(option));
         sb.add("triangles", context.elem(listeTriangle));
         return sb.build();

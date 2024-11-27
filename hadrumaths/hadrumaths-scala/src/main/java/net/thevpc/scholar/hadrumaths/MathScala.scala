@@ -2531,6 +2531,15 @@ object MathScala {
   def derive(f: Expr, axis: Axis): Expr = {
     Maths.derive(f, axis)
   }
+  def deriveX(f: Expr): Expr = {
+    Maths.derive(f, Axis.X)
+  }
+  def deriveY(f: Expr): Expr = {
+    Maths.derive(f, Axis.Y)
+  }
+  def deriveZ(f: Expr): Expr = {
+    Maths.derive(f, Axis.Z)
+  }
 
   def isReal(e: Expr): Boolean = {
     Maths.isReal(e)

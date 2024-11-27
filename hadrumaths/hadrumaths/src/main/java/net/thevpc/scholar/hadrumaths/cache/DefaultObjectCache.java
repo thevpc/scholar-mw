@@ -261,7 +261,7 @@ public class DefaultObjectCache implements ObjectCache {
                 if (line.isEmpty()) {
                     TsonElement e = Tson.reader().readElement(line);
                     count++;
-                    value += e.toObject().get("eval").toObject().get("nanos").getLong();
+                    value += e.toObject().get("eval").toObject().get("nanos").longValue();
                 }
             }
             return count == 0 ? 0 : (value / count);

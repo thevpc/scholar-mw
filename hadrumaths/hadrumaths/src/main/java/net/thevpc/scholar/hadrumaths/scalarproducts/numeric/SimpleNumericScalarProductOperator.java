@@ -99,7 +99,7 @@ public class SimpleNumericScalarProductOperator extends AbstractScalarProductOpe
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder sb = Tson.obj(getClass().getSimpleName());
+        TsonObjectBuilder sb = Tson.ofObj(getClass().getSimpleName());
         sb.add("integrator", context.elem(integrator));
         sb.add("hermitian", context.elem(isHermitian()));
         sb.add("simplifier", context.elem(getSimplifier()));

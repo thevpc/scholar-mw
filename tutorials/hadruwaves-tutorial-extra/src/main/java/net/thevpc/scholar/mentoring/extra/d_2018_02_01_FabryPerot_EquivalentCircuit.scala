@@ -11,7 +11,7 @@ import net.thevpc.scholar.hadruwaves.mom.{MomStructure, StrLayer}
 import net.thevpc.scholar.hadruwaves.project.scene.HWProjectScenePlot
 import net.thevpc.tson.Tson
 
-object d_2018_02_01_FabryPerot_EquivalentCircuitPlot {
+object d_2018_02_01_FabryPerot_EquivalentCircuit {
   Maths.Config.setSimplifierCacheSize(1000000);
   Maths.Config.setCacheEnabled(true);
   var nbthreads = 1
@@ -41,8 +41,8 @@ object d_2018_02_01_FabryPerot_EquivalentCircuitPlot {
   var r = (500 * MM) * 2; // observation point (1m)
 
   // Box
-  var a = (60.0 * MM);
-  var b = (40.0 * MM);
+  var a = (360.0 * MM);
+  var b = (240.0 * MM);
   var ep = 2.5 * MM;
   var dBox = domain(0.0, a, -b / 2, b / 2)
   //Line
@@ -197,11 +197,11 @@ object d_2018_02_01_FabryPerot_EquivalentCircuitPlot {
   def calculEtetha(theta: Double, phi: Double): Complex = {
     var persistentCache = st.getDerivedPersistentCache("Etheta")
     //    persistentCache.setEnabled(true);
-    val dumper = Tson.obj("Etheta")
+    val dumper = Tson.ofObj("Etheta")
       .add("st", Tson.serializer().serialize(st))
-      .add("theta", Tson.elem(theta))
-      .add("r", Tson.elem(r))
-      .add("phi", Tson.elem(phi))
+      .add("theta", Tson.of(theta))
+      .add("r", Tson.of(r))
+      .add("phi", Tson.of(phi))
     //.add("Xvalues", dsteps(0, a, 100))
     // .add("Yvalues", dsteps(-b / 2, b / 2, 100))
     return persistentCache.of("Etheta", dumper).eval(() => calculEthetaEff(theta, phi)).get();
@@ -245,11 +245,11 @@ object d_2018_02_01_FabryPerot_EquivalentCircuitPlot {
     var persistentCache = st.getDerivedPersistentCache("Ephi")
     //    var persistentCache = new PersistenceCacheImpl("Ephi");
     //    persistentCache.setEnabled(true);
-    var dumper = Tson.obj("Ephi")
+    var dumper = Tson.ofObj("Ephi")
       .add("st", Tson.serializer().serialize(st))
-      .add("phi", Tson.elem(phi))
-      .add("r", Tson.elem(r))
-      .add("theta", Tson.elem(theta))
+      .add("phi", Tson.of(phi))
+      .add("r", Tson.of(r))
+      .add("theta", Tson.of(theta))
     //.add("Xvalues", dsteps(0, a, 100))
     //.add("Yvalues", dsteps(-b / 2, b / 2, 100))
     //    return persistentCache.evaluate[Complex]("Ephi", null,new CacheEvaluator {
