@@ -4,10 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.thevpc.scholar.tutorial</groupId>
-    <artifactId>hadruwaves-tutorial-extra</artifactId>
-    <name>net.thevpc.scholar.hadruwaves-tutorial-extra</name>
+    <artifactId>hadruwaves-empty-sacla-project</artifactId>
     <version>1.7</version>
-    <url>http://scala-lang.org</url>
     <properties>
         <scholar-version>3.2.0</scholar-version>
     </properties>
@@ -21,6 +19,11 @@
             <groupId>net.thevpc.scholar</groupId>
             <artifactId>hadruplot-laf</artifactId>
             <version>3.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.thevpc.tson</groupId>
+            <artifactId>tson</artifactId>
+            <version>1.1.0</version>
         </dependency>
     </dependencies>
     <repositories>

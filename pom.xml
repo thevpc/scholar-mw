@@ -12,6 +12,8 @@
         <module>hadrumaths</module>
         <module>hadruwaves</module>
         <module>tutorials/hadruwaves-tutorial</module>
+        <module>tutorials/hadruwaves-tutorial-extra</module>
+        <module>tutorials/hadruwaves-empty-scala-project</module>
 <!--        <module>hadruwaves-studio/hadruwaves-studio-core</module>-->
         <module>hadruwaves-studio/hadruwaves-studio-standalone</module>
 
