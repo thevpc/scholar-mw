@@ -1,0 +1,3 @@
+#!/bin/bash
+#nuts -y net.thevpc.hl:hl --clean --run --root .
+nuts --verbose -yN net.thevpc.hl:hl --clean --run --root src/main/hl/Example1.hl

@@ -859,6 +859,14 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
         return mul(c);
     }
 
+    public Expr times(Expr c) {
+        return mul(c);
+    }
+
+    public Complex times(double c) {
+        return mul(c);
+    }
+
     @Override
     public Expr mul(Expr other) {
         switch (other.getType()) {

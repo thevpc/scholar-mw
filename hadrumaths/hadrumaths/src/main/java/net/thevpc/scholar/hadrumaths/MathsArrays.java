@@ -225,6 +225,27 @@ public class MathsArrays {
         return r.toArray(new double[0][]);
     }
 
+    public static double[][] cross(double[] x, double[] y, double[] z, double[] t, Double4Filter filter) {
+        List<double[]> r = new ArrayList<>(x.length * y.length * z.length * t.length);
+        for (double aX : x) {
+            for (double aY : y) {
+                for (double aZ : z) {
+                    for (double aT : t) {
+                        if (filter == null || filter.accept(aX, aY, aZ, aT)) {
+                            double[] v = new double[4];
+                            v[0] = aX;
+                            v[1] = aY;
+                            v[2] = aZ;
+                            v[3] = aT;
+                            r.add(v);
+                        }
+                    }
+                }
+            }
+        }
+        return r.toArray(new double[0][]);
+    }
+
     public static int[][] cross(int[] x, int[] y) {
         int[][] r = new int[x.length * y.length][2];
         int p = 0;

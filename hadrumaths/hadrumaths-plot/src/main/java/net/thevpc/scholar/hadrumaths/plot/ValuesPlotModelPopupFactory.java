@@ -22,7 +22,7 @@ public class ValuesPlotModelPopupFactory implements PlotModelPopupFactory {
     @Override
     public void preparePopup(PlotModelPopupFactoryContext context) {
         final ValuesPlotModel model = (ValuesPlotModel) context.getModel();
-        if (context.getFunctionsMenu() != null) {
+        if (context.getFunctionsMenu() != null) {context.getFunctionsMenu().removeAll();
             ButtonGroup g = new ButtonGroup();
             for (ToDoubleFunction<Object> toDoubleConverter : PlotDoubleConverter.values()) {
                 JCheckBoxMenuItem f = new JCheckBoxMenuItem(new Plot.DoubleTypeAction(context.getModelProvider(), StringUtils.toCapitalized(toDoubleConverter.toString()), toDoubleConverter));

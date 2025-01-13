@@ -46,7 +46,7 @@ public class ComplexAsDoubleValues {
             return Double.NaN;
         }
     };
-    public static final ToDoubleFunction<Object> IMG = new PlotDoubleConverter.AbstractPlotDoubleConverter("IMG", true) {
+    public static final ToDoubleFunction<Object> IMG = new PlotDoubleConverter.AbstractPlotDoubleConverter("IMAG", true) {
         @Override
         public Object toComplex(double d) {
             return Complex.ZERO;

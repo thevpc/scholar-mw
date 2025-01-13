@@ -199,10 +199,12 @@ public final class Maths {
      * magnetic constant (vacuum permeability)
      */
     public static final double U0 = Math.PI * 4e-7; //N·A−2
+    public static final double μ0 = U0; //N·A−2
     /**
      * electric constant (vacuum permittivity) =1/(u0*C^2)
      */
     public static final double EPS0 = 8.854187817e-12;//F·m−1
+    public static final double ε0 = EPS0;
     /**
      * characteristic impedance of vacuum =1/(u0*C)
      */
@@ -1358,7 +1360,8 @@ public final class Maths {
 
     /////////////////////////////////////////////////////////////////
     // double functions
-    /////////////////////////////////////////////////////////////////
+
+    /// //////////////////////////////////////////////////////////////
     //<editor-fold desc="double functions">
     public static double sin(double x) {
         return Math.sin(x);
@@ -1531,6 +1534,10 @@ public final class Maths {
 
     public static double[][] cross(double[] x, double[] y, double[] z, Double3Filter filter) {
         return MathsArrays.cross(x, y, z, filter);
+    }
+
+    public static double[][] cross(double[] x, double[] y, double[] z, double[] t, Double4Filter filter) {
+        return MathsArrays.cross(x, y, z, t, filter);
     }
 
     @Deprecated
@@ -2161,7 +2168,8 @@ public final class Maths {
 //</editor-fold>
     /////////////////////////////////////////////////////////////////
     // double functions
-    /////////////////////////////////////////////////////////////////
+
+    /// //////////////////////////////////////////////////////////////
     //<editor-fold desc="double functions">
     public static double sqrt(double v, int n) {
         return n == 0 ? 1 : pow(v, 1.0 / n);
@@ -2389,7 +2397,8 @@ public final class Maths {
 
     /////////////////////////////////////////////////////////////////
     // double[] functions
-    /////////////////////////////////////////////////////////////////
+
+    /// //////////////////////////////////////////////////////////////
     //<editor-fold desc="double[] functions">
     public static double[] sin2(double[] x) {
         double[] y = new double[x.length];
@@ -2455,7 +2464,8 @@ public final class Maths {
 
     /////////////////////////////////////////////////////////////////
     // double[] functions
-    /////////////////////////////////////////////////////////////////
+
+    /// //////////////////////////////////////////////////////////////
     //<editor-fold desc="double[] functions">
     public static double sum(double... c) {
         double x = 0;
@@ -2515,7 +2525,8 @@ public final class Maths {
 
     /////////////////////////////////////////////////////////////////
     // double[][] functions
-    /////////////////////////////////////////////////////////////////
+
+    /// //////////////////////////////////////////////////////////////
     //<editor-fold desc="double[][] functions">
     public static double[][] cos(double[][] c) {
         double[][] r = new double[c.length][];
@@ -2699,7 +2710,8 @@ public final class Maths {
 
     /////////////////////////////////////////////////////////////////
     // expression functions
-    /////////////////////////////////////////////////////////////////
+
+    /// //////////////////////////////////////////////////////////////
     //<editor-fold desc="expression functions">
     public static IfExpr If(Expr cond, Expr exp1, Expr exp2) {
         return (IfExpr) EXPR_VECTOR_SPACE.If(cond, exp1, exp2);
@@ -3707,7 +3719,8 @@ public final class Maths {
     //</editor-fold>
     /////////////////////////////////////////////////////////////////
     // general purpose functions
-    /////////////////////////////////////////////////////////////////
+
+    /// //////////////////////////////////////////////////////////////
     //<editor-fold desc="general purpose functions">
     public static void loopOver(Object[][] values, LoopAction action) {
         int[] indexes = new int[values.length];

@@ -1,0 +1,6 @@
+//import package junit:junit#5.0 for test;
+import package net.thevpc.scholar:hadruwaves#3.2.0;
+
+import net.thevpc.scholar.hadruwaves.Hadruwaves.**;
+
+val f = 3.5 * GHZ ;

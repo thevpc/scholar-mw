@@ -14,6 +14,7 @@ import net.thevpc.scholar.hadrumaths.transform.ExpressionTransformer;
 import net.thevpc.scholar.hadrumaths.util.ArrayUtils;
 import net.thevpc.scholar.hadrumaths.util.InternalUnmodifiableArrayList;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -270,9 +271,21 @@ class PlusDoubleToDouble extends Plus implements DoubleToDoubleDefaults.DoubleTo
     }
 }
 
+
 class PlusDoubleToComplex extends Plus implements DoubleToComplex {
+    private static Expr[] expandPlusDoubleToComplex(Expr... expressions){
+        List<Expr> ok=new ArrayList<Expr>();
+        for (Expr e : expressions) {
+            if(e instanceof PlusDoubleToComplex){
+                ok.addAll(e.getChildren());
+            }else{
+                ok.add(e);
+            }
+        }
+        return ok.toArray(new Expr[0]);
+    }
     public PlusDoubleToComplex(Expr... expressions) {
-        super(expressions);
+        super(expandPlusDoubleToComplex(expressions));
     }
 
     public DoubleToDouble getRealDD() {
