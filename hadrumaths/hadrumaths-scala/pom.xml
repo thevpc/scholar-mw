@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.thevpc.scholar</groupId>
     <artifactId>hadrumaths-scala</artifactId>
@@ -24,33 +23,13 @@
         </repository>
     </distributionManagement>    
     <dependencies>
-        <dependency>
-            <groupId>net.thevpc.scholar</groupId>
-            <artifactId>hadrumaths</artifactId>
-            <version>${scholar-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.thevpc.scholar</groupId>
-            <artifactId>hadrumaths-plot</artifactId>
-            <version>${scholar-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.thevpc.scholar</groupId>
-            <artifactId>hadruplot</artifactId>
-            <version>${scholar-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-            <version>2.13.15</version>
-        </dependency>
+        <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadrumaths</artifactId><version>${scholar-version}</version></dependency>
+        <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadrumaths-plot</artifactId><version>${scholar-version}</version></dependency>
+        <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruplot</artifactId><version>${scholar-version}</version></dependency>
+        <dependency><groupId>org.scala-lang</groupId><artifactId>scala-library</artifactId><version>2.13.15</version></dependency>
     </dependencies>
     <repositories>
-        <repository>
-            <id>scala-tools.org</id>
-            <name>Scala-tools Maven2 Repository</name>
-            <url>https://oss.sonatype.org/content/groups/scala-tools</url>
-        </repository>
+        <repository><id>scala-tools.org</id><name>Scala-tools Maven2 Repository</name><url>https://oss.sonatype.org/content/groups/scala-tools</url></repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -140,4 +119,4 @@
             
         </plugins>
     </build>
-</project> 
+</project>

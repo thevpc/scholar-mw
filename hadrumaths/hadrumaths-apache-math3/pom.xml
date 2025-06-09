@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>net.thevpc.scholar</groupId>
@@ -31,17 +30,9 @@
     </distributionManagement>
 
     <dependencies>
-        <dependency>
-            <groupId>net.thevpc.scholar</groupId>
-            <artifactId>hadrumaths</artifactId>
-            <version>3.2.0</version>
-        </dependency>
+        <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadrumaths</artifactId><version>3.2.0</version></dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-math3 -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math3</artifactId>
-            <version>3.2</version>
-        </dependency>
+        <dependency><groupId>org.apache.commons</groupId><artifactId>commons-math3</artifactId><version>3.2</version></dependency>
     </dependencies>
     <build>
         <plugins>
@@ -107,27 +98,12 @@
         </plugins>
     </build>
     <repositories>
-        <repository>
-            <id>jzy3d-snapshots</id>
-            <name>Jzy3d Snapshots</name>
-            <url>http://maven.jzy3d.org/snapshots</url>
-        </repository>
-        <repository>
-            <id>jzy3d-releases</id>
-            <name>Jzy3d Snapshots</name>
-            <url>http://maven.jzy3d.org/releases</url>
-        </repository>
-        <repository>
-            <id>amelentev</id>
-            <url>http://amelentev.github.io/mvnrepo/</url>
-        </repository>
-        <repository>
-            <id>vpc-public-maven</id>
-            <url>https://raw.github.com/thevpc/vpc-public-maven/master</url>
-            <snapshots>
+        <repository><id>jzy3d-snapshots</id><name>Jzy3d Snapshots</name><url>http://maven.jzy3d.org/snapshots</url></repository>
+        <repository><id>jzy3d-releases</id><name>Jzy3d Snapshots</name><url>http://maven.jzy3d.org/releases</url></repository>
+        <repository><id>amelentev</id><url>http://amelentev.github.io/mvnrepo/</url></repository>
+        <repository><id>vpc-public-maven</id><url>https://raw.github.com/thevpc/vpc-public-maven/master</url><snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
-            </snapshots>
-        </repository>
+            </snapshots></repository>
     </repositories>
 </project>

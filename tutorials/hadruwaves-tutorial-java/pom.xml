@@ -1,7 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.thevpc.scholar.tutorial</groupId>
     <artifactId>hadruwaves-tutorial-java</artifactId>
@@ -12,81 +9,25 @@
         <manifold-version>2024.1.27</manifold-version>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>net.thevpc.scholar</groupId>
-            <artifactId>hadruwaves-java</artifactId>
-            <version>${scholar-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.thevpc.scholar</groupId>
-            <artifactId>hadruplot-laf</artifactId>
-            <version>3.2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>systems.manifold</groupId>
-            <artifactId>manifold-delegation-rt</artifactId>
-            <version>${manifold-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>systems.manifold</groupId>
-            <artifactId>manifold-props-rt</artifactId>
-            <version>${manifold-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>systems.manifold</groupId>
-            <artifactId>manifold-graphql-rt</artifactId>
-            <version>${manifold-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>systems.manifold</groupId>
-            <artifactId>manifold-xml-rt</artifactId>
-            <version>${manifold-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>systems.manifold</groupId>
-            <artifactId>manifold-yaml-rt</artifactId>
-            <version>${manifold-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>systems.manifold</groupId>
-            <artifactId>manifold-csv-rt</artifactId>
-            <version>${manifold-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>systems.manifold</groupId>
-            <artifactId>manifold-js-rt</artifactId>
-            <version>${manifold-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>systems.manifold</groupId>
-            <artifactId>manifold-collections</artifactId>
-            <version>${manifold-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>systems.manifold</groupId>
-            <artifactId>manifold-science</artifactId>
-            <version>${manifold-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>systems.manifold</groupId>
-            <artifactId>manifold-templates-rt</artifactId>
-            <version>${manifold-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>systems.manifold</groupId>
-            <artifactId>manifold-tuple-rt</artifactId>
-            <version>${manifold-version}</version>
-        </dependency>
+        <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruwaves-java</artifactId><version>${scholar-version}</version></dependency>
+        <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruplot-laf</artifactId><version>3.2.0</version></dependency>
+        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-delegation-rt</artifactId><version>${manifold-version}</version></dependency>
+        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-props-rt</artifactId><version>${manifold-version}</version></dependency>
+        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-graphql-rt</artifactId><version>${manifold-version}</version></dependency>
+        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-xml-rt</artifactId><version>${manifold-version}</version></dependency>
+        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-yaml-rt</artifactId><version>${manifold-version}</version></dependency>
+        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-csv-rt</artifactId><version>${manifold-version}</version></dependency>
+        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-js-rt</artifactId><version>${manifold-version}</version></dependency>
+        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-collections</artifactId><version>${manifold-version}</version></dependency>
+        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-science</artifactId><version>${manifold-version}</version></dependency>
+        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-templates-rt</artifactId><version>${manifold-version}</version></dependency>
+        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-tuple-rt</artifactId><version>${manifold-version}</version></dependency>
     </dependencies>
     <repositories>
-        <repository>
-            <id>thevpc</id>
-            <url>https://thevpc.net/maven</url>
-            <snapshots>
+        <repository><id>thevpc</id><url>https://thevpc.net/maven</url><snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
-            </snapshots>
-        </repository>
+            </snapshots></repository>
     </repositories>
     <build>
         <plugins>

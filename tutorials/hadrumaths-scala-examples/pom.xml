@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.thevpc.scholar</groupId>
     <artifactId>hadrumaths-scala-examples</artifactId>
@@ -11,21 +10,13 @@
         <scholar-version>3.2.0</scholar-version>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>net.thevpc.scholar</groupId>
-            <artifactId>hadrumaths-scala</artifactId>
-            <version>${scholar-version}</version>
-        </dependency>
+        <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadrumaths-scala</artifactId><version>${scholar-version}</version></dependency>
     </dependencies>
     <repositories>
-        <repository>
-            <id>vpc-public-maven</id>
-            <url>https://raw.github.com/thevpc/vpc-public-maven/master</url>
-            <snapshots>
+        <repository><id>vpc-public-maven</id><url>https://raw.github.com/thevpc/vpc-public-maven/master</url><snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
-            </snapshots>
-        </repository>
+            </snapshots></repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -84,4 +75,4 @@
             </plugin>
         </plugins>
     </build>
-</project> 
+</project>
