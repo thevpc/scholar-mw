@@ -83,7 +83,7 @@ public class GpDomainComparator implements TestFunctionsComparator, Serializable
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder h = Tson.ofObj(getClass().getSimpleName());
+        TsonObjectBuilder h = Tson.ofObjectBuilder(getClass().getSimpleName());
         h.add("compareXFirst", context.elem(compareXFirst));
         return h.build();
     }

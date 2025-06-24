@@ -110,10 +110,11 @@ public class ExpressionRewriterSuite extends AbstractExpressionRewriter {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonArrayBuilder obj = Tson.ofArray(getClass().getSimpleName(), new TsonElementBase[]{
+        TsonArrayBuilder obj = Tson.ofArrayBuilder(getClass().getSimpleName())
+                .addAll(
                 Tson.ofPair("name", Tson.of(getName())),
                 Tson.ofPair("itr", Tson.of(getMaxIterations()))
-        });
+        );
         for (ExpressionRewriter set : sets) {
             obj.add(context.elem(set));
         }

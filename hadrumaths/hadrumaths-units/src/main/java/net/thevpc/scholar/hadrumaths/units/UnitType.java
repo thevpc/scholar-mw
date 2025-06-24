@@ -89,7 +89,7 @@ public class UnitType implements TsonSerializable {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.name(name);
+        return Tson.ofName(name);
     }
 
     public String name() {

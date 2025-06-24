@@ -1294,7 +1294,7 @@ public abstract class AbstractVector<T> implements Vector<T> {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofArray().addAll(stream().map(context::elem)
+        return Tson.ofArrayBuilder().addAll(stream().map(context::elem)
                 .toArray(TsonElementBase[]::new)
         ).build();
     }

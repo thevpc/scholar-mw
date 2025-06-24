@@ -28,7 +28,7 @@ public class FlipSegmentLengthPrecision implements FlipPrecision {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder sb = Tson.ofObj(getClass().getSimpleName());
+        TsonObjectBuilder sb = Tson.ofObjectBuilder(getClass().getSimpleName());
         sb.add("segmentLength", context.elem(longueur));
         return sb.build();
     }

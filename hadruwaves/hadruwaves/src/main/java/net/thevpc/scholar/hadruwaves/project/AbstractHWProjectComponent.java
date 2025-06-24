@@ -94,13 +94,13 @@ public abstract class AbstractHWProjectComponent implements HWProjectComponent {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObj(getClass().getSimpleName())
+        return Tson.ofObjectBuilder(getClass().getSimpleName())
                 .add("name", name.get())
                 .add("description", description.get())
                 .add("enabled", enabled.get())
                 .add("visible", visible.get())
                 .add("annotations",
-                        Tson.ofArray().addAll(
+                        Tson.ofArrayBuilder().addAll(
                                 annotations().stream().map(x -> x.toTsonElement(context)).collect(
                                         Collectors.toList()
                                 ))

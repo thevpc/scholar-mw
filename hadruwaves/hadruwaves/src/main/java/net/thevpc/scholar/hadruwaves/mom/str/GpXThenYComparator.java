@@ -19,7 +19,7 @@ public class GpXThenYComparator implements TestFunctionsComparator, Serializable
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofFunction(getClass().getSimpleName()).build();
+        return Tson.ofUplet(getClass().getSimpleName()).build();
     }
 
     public int compare(DoubleToVector o1, DoubleToVector o2) {

@@ -52,7 +52,7 @@ public abstract class AbstractPropagatingModalSources implements ModalSources {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder h = Tson.ofObj(getClass().getSimpleName());
+        TsonObjectBuilder h = Tson.ofObjectBuilder(getClass().getSimpleName());
         h.add("default", context.elem(defaultSourceCount == 0 ? "%scale" : defaultSourceCount));
         if (sourceCountPerDimension.length > 0) {
             h.add("bydim", context.elem(

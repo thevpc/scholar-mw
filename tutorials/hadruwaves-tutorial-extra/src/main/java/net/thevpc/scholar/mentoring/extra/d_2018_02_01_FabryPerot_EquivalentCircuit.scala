@@ -197,7 +197,7 @@ object d_2018_02_01_FabryPerot_EquivalentCircuit {
   def calculEtetha(theta: Double, phi: Double): Complex = {
     var persistentCache = st.getDerivedPersistentCache("Etheta")
     //    persistentCache.setEnabled(true);
-    val dumper = Tson.ofObj("Etheta")
+    val dumper = Tson.ofObjectBuilder("Etheta")
       .add("st", Tson.serializer().serialize(st))
       .add("theta", Tson.of(theta))
       .add("r", Tson.of(r))
@@ -245,7 +245,7 @@ object d_2018_02_01_FabryPerot_EquivalentCircuit {
     var persistentCache = st.getDerivedPersistentCache("Ephi")
     //    var persistentCache = new PersistenceCacheImpl("Ephi");
     //    persistentCache.setEnabled(true);
-    var dumper = Tson.ofObj("Ephi")
+    var dumper = Tson.ofObjectBuilder("Ephi")
       .add("st", Tson.serializer().serialize(st))
       .add("phi", Tson.of(phi))
       .add("r", Tson.of(r))

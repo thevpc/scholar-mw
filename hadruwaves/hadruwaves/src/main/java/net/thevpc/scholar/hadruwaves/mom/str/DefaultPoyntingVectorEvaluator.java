@@ -31,6 +31,6 @@ public class DefaultPoyntingVectorEvaluator implements PoyntingVectorEvaluator {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofFunction(getClass().getSimpleName()).build();
+        return Tson.ofUplet(getClass().getSimpleName()).build();
     }
 }

@@ -46,7 +46,7 @@ public final class DefaultPlanarSources implements PlanarSources, Cloneable {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofFunction("PlanarSources",context.elem(all)).build();
+        return Tson.ofUplet("PlanarSources",context.elem(all)).build();
     }
 
     @Override

@@ -30,7 +30,7 @@ public class SimpleModeIterator implements ModeIterator {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofFunction(getClass().getSimpleName()).build();
+        return Tson.ofUplet(getClass().getSimpleName()).build();
     }
 
     @Override

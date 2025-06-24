@@ -120,7 +120,7 @@ public class CstPlanarSource implements PlanarSource, Cloneable {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder h = Tson.ofObj(getClass().getSimpleName());
+        TsonObjectBuilder h = Tson.ofObjectBuilder(getClass().getSimpleName());
         h.add("xvalue", context.elem(xvalue));
         h.add("yvalue", context.elem(yvalue));
         h.add("polarization", context.elem(polarization));

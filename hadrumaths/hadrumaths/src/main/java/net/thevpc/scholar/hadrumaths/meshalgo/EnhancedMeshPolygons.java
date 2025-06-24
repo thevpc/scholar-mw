@@ -22,7 +22,7 @@ public class EnhancedMeshPolygons implements HSerializable {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObj(getClass().getSimpleName())
+        return Tson.ofObjectBuilder(getClass().getSimpleName())
                 .add("surface", context.elem(surface))
                 .add("polygons", context.elem(polygon))
                 .build();

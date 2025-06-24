@@ -29,7 +29,7 @@ public final class MeshZoneTypeFilterAccepted implements MeshZoneTypeFilter {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObj(getClass().getSimpleName())
+        return Tson.ofObjectBuilder(getClass().getSimpleName())
                 .add("accepted", context.elem(accepted))
                 .build();
     }

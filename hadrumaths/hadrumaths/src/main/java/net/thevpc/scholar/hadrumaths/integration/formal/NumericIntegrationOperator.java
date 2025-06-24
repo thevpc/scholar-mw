@@ -94,7 +94,7 @@ public class NumericIntegrationOperator extends AbstractIntegrationOperator {
 //    }
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObj(getClass().getSimpleName())
+        return Tson.ofObjectBuilder(getClass().getSimpleName())
                 .add("hash", Tson.of(Integer.toHexString(hashCode()).toUpperCase()))
                 .add("fspo", context.elem(getFormalScalarProductOperator()))
                 .add("nspo", context.elem(getNumericScalarProductOperator()))

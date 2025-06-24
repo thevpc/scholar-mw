@@ -94,7 +94,7 @@ public class Point3DTemplate implements TsonSerializable {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObj()
+        return Tson.ofObjectBuilder()
                 .add("x", x.get())
                 .add("y", y.get())
                 .add("z", z.get())

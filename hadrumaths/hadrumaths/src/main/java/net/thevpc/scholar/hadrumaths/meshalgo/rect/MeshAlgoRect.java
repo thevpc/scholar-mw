@@ -85,7 +85,7 @@ public class MeshAlgoRect implements MeshAlgo, Cloneable {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObj(getClass().getSimpleName())
+        return Tson.ofObjectBuilder(getClass().getSimpleName())
                 .add("dividerX", context.elem(dividerX))
                 .add("dividerY", context.elem(dividerY))
                 .add("minRelativeSizeX", context.elem(minRelativeSizeX))

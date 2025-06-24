@@ -56,11 +56,11 @@ public class HWParameterFolder extends AbstractHWParameterElement {
     
         @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObj("Folder")
+        return Tson.ofObjectBuilder("Folder")
                 .add("name", name().get())
                 .add("description", description().get())
                 .add("children", 
-                        Tson.ofArray().addAll(
+                        Tson.ofArrayBuilder().addAll(
                             childrenHelper.children().values().stream().map(x->x.toTsonElement(context)).collect(Collectors.toList())
                         )
                 )

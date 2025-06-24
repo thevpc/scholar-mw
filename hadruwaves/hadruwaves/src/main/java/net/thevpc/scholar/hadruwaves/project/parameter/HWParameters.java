@@ -43,7 +43,7 @@ public class HWParameters extends PropertyBase implements TsonSerializable {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofArray("Parameters")
+        return Tson.ofArrayBuilder("Parameters")
                 .addAll(children().values().stream().map(x->x.toTsonElement(context)).collect(Collectors.toList()))
                 .build();
     }

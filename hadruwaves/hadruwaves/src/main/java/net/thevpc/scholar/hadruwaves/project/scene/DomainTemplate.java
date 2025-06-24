@@ -80,7 +80,7 @@ public class DomainTemplate implements TsonSerializable {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObj("domain")
+        return Tson.ofObjectBuilder("domain")
                 .add("xmin", xmin().get())
                 .add("xmax", xmax().get())
                 .add("ymin", ymin().get())

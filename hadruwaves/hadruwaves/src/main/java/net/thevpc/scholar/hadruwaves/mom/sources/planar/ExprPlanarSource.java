@@ -54,7 +54,7 @@ public class ExprPlanarSource implements PlanarSource, Cloneable {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder h = Tson.ofObj(getClass().getSimpleName());
+        TsonObjectBuilder h = Tson.ofObjectBuilder(getClass().getSimpleName());
         h.add("fct", context.elem(fct));
         h.add("z0", context.elem(characteristicImpedance));
         return h.build();

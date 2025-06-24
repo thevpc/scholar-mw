@@ -59,7 +59,7 @@ public final class AdmittanceValue implements Impedance {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofFunction("admittance", context.elem(value)).build();
+        return Tson.ofUplet("admittance", context.elem(value)).build();
     }
 
 //    public String dump() {

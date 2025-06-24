@@ -82,7 +82,7 @@ public class CacheKey {
     }
 
     public static CacheKey fct(String name, Object... elements) {
-        return of(Tson.ofFunction(name, Tson.serializer().serializeArray(elements)));
+        return of(Tson.ofUplet(name, Tson.serializer().serializeArray(elements)));
     }
 
     public static CacheKey of(TsonElementBase element) {
@@ -91,12 +91,12 @@ public class CacheKey {
 
     public static CacheKey obj(String name, String a1, Object v1) {
         TsonSerializer s = Tson.serializer();
-        return of(Tson.ofObj(name).add(a1, s.serialize(v1)));
+        return of(Tson.ofObjectBuilder(name).add(a1, s.serialize(v1)));
     }
 
     public static CacheKey obj(String name, String a1, Object v1, String a2, Object v2) {
         TsonSerializer s = Tson.serializer();
-        return of(Tson.ofObj(name)
+        return of(Tson.ofObjectBuilder(name)
                 .add(a1, s.serialize(v1))
                 .add(a2, s.serialize(v2))
         );
@@ -104,7 +104,7 @@ public class CacheKey {
 
     public static CacheKey obj(String name, String a1, Object v1, String a2, Object v2, String a3, Object v3) {
         TsonSerializer s = Tson.serializer();
-        return of(Tson.ofObj(name)
+        return of(Tson.ofObjectBuilder(name)
                 .add(a1, s.serialize(v1))
                 .add(a2, s.serialize(v2))
                 .add(a3, s.serialize(v3))
@@ -113,7 +113,7 @@ public class CacheKey {
 
     public static CacheKey obj(String name, String a1, Object v1, String a2, Object v2, String a3, Object v3, String a4, Object v4) {
         TsonSerializer s = Tson.serializer();
-        return of(Tson.ofObj(name)
+        return of(Tson.ofObjectBuilder(name)
                 .add(a1, s.serialize(v1))
                 .add(a2, s.serialize(v2))
                 .add(a3, s.serialize(v3))
@@ -123,7 +123,7 @@ public class CacheKey {
 
     public static CacheKey obj(String name, String a1, Object v1, String a2, Object v2, String a3, Object v3, String a4, Object v4, String a5, Object v5) {
         TsonSerializer s = Tson.serializer();
-        return of(Tson.ofObj(name)
+        return of(Tson.ofObjectBuilder(name)
                 .add(a1, s.serialize(v1))
                 .add(a2, s.serialize(v2))
                 .add(a3, s.serialize(v3))
@@ -134,7 +134,7 @@ public class CacheKey {
 
     public static CacheKey obj(String name, String a1, Object v1, String a2, Object v2, String a3, Object v3, String a4, Object v4, String a5, Object v5, String a6, Object v6) {
         TsonSerializer s = Tson.serializer();
-        return of(Tson.ofObj(name)
+        return of(Tson.ofObjectBuilder(name)
                 .add(a1, s.serialize(v1))
                 .add(a2, s.serialize(v2))
                 .add(a3, s.serialize(v3))
@@ -146,7 +146,7 @@ public class CacheKey {
 
     public static CacheKey obj(String name, String a1, Object v1, String a2, Object v2, String a3, Object v3, String a4, Object v4, String a5, Object v5, String a6, Object v6, String a7, Object v7) {
         TsonSerializer s = Tson.serializer();
-        return of(Tson.ofObj(name)
+        return of(Tson.ofObjectBuilder(name)
                 .add(a1, s.serialize(v1))
                 .add(a2, s.serialize(v2))
                 .add(a3, s.serialize(v3))
@@ -160,7 +160,7 @@ public class CacheKey {
     public static CacheKey obj(String name, String a1, Object v1, String a2, Object v2, String a3, Object v3, String a4, Object v4, String a5, Object v5
             , String a6, Object v6, String a7, Object v7, String a8, Object v8) {
         TsonSerializer s = Tson.serializer();
-        return of(Tson.ofObj(name)
+        return of(Tson.ofObjectBuilder(name)
                 .add(a1, s.serialize(v1))
                 .add(a2, s.serialize(v2))
                 .add(a3, s.serialize(v3))
@@ -175,7 +175,7 @@ public class CacheKey {
     public static CacheKey obj(String name, String a1, Object v1, String a2, Object v2, String a3, Object v3, String a4, Object v4, String a5, Object v5
             , String a6, Object v6, String a7, Object v7, String a8, Object v8, String a9, Object v9) {
         TsonSerializer s = Tson.serializer();
-        return of(Tson.ofObj(name)
+        return of(Tson.ofObjectBuilder(name)
                 .add(a1, s.serialize(v1))
                 .add(a2, s.serialize(v2))
                 .add(a3, s.serialize(v3))

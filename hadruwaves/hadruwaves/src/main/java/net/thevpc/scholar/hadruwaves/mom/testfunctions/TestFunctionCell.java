@@ -57,7 +57,7 @@ public class TestFunctionCell implements HSerializable {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObj(getClass().getSimpleName())
+        return Tson.ofObjectBuilder(getClass().getSimpleName())
                 .add("name", context.elem(name))
                 .add("domain", context.elem(domain))
                 .add("pattern", context.elem(pattern))

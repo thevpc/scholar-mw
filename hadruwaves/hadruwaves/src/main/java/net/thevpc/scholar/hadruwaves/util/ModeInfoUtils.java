@@ -56,7 +56,7 @@ public final class ModeInfoUtils {
 
         @Override
         public TsonElement toTsonElement(TsonObjectContext context) {
-            return Tson.ofFunction("AllOf",context.elem(all)).build();
+            return Tson.ofUplet("AllOf",context.elem(all)).build();
         }
 
 //        public String dump() {
@@ -98,7 +98,7 @@ public final class ModeInfoUtils {
 
         @Override
         public TsonElement toTsonElement(TsonObjectContext context) {
-            return Tson.ofFunction("invariance", context.elem(axis)).build();
+            return Tson.ofUplet("invariance", context.elem(axis)).build();
         }
 
 //        public String dump() {
@@ -130,7 +130,7 @@ public final class ModeInfoUtils {
 
         @Override
         public TsonElement toTsonElement(TsonObjectContext context) {
-            return Tson.ofFunction("AnyOf",context.elem(all)).build();
+            return Tson.ofUplet("AnyOf",context.elem(all)).build();
         }
 
 //        public String dump() {

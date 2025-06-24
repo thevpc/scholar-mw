@@ -1,16 +1,11 @@
 package net.thevpc.scholar.hadruplot.console;
 
-import net.thevpc.common.i18n.Str;
 import net.thevpc.common.swing.file.FileDropListener;
+import net.thevpc.common.swing.win.InternalWindowsHelper;
 import net.thevpc.common.swing.win.WindowInfo;
 import net.thevpc.common.swing.win.WindowInfoListener;
 import net.thevpc.common.swing.*;
-import net.thevpc.common.swing.win.InternalWindowsHelper;
 import net.thevpc.common.swing.win.WindowPath;
-import net.thevpc.echo.WindowState;
-import net.thevpc.echo.api.components.AppComponent;
-import net.thevpc.echo.api.AppContainerChildren;
-import net.thevpc.echo.impl.DefaultApplication;
 import net.thevpc.swing.plaf.UIPlafManager;
 
 import javax.swing.*;
@@ -18,10 +13,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import net.thevpc.common.props.Path;
+
 import net.thevpc.common.swing.file.ExtensionFileChooserFilter;
 
-import net.thevpc.echo.Application;
 import net.thevpc.scholar.hadruplot.console.extension.PlotConsoleFileSupport;
 
 public class DefaultPlotConsoleFrame2 implements PlotConsoleFrame {
@@ -29,49 +23,38 @@ public class DefaultPlotConsoleFrame2 implements PlotConsoleFrame {
     public static int openFrames = 0;
     PlotConsole console;
     JLabel globalLabel;
-    InternalWindowsHelper wins = new InternalWindowsHelper();
-    private Application app;
+    InternalWindowsHelper wins;
+    private JFrame currentFrame;
+    private JMenuBar menuBar;
+    private JMenu menuFile;
+    private JMenu menuWindows;
+    private JPanel contentPane;
 
     @Override
     public void setTitle(String frameTitle) {
-        app.mainFrame().get().title().set(Str.of(frameTitle));
+        currentFrame.setTitle(frameTitle);
     }
 
     public DefaultPlotConsoleFrame2(PlotConsole console, String title) throws HeadlessException {
         this.console = console;
-        app = new DefaultApplication();
-        app.mainFrame().set(new net.thevpc.echo.Frame(app));
         UIPlafManager.INSTANCE.apply("FlatLight");
-        app.i18n().bundles().add("net.thevpc.scholar.hadruplot.console.HadrumathsPlot");
-        app.start();
-
-        wins.addWindowInfoListener(new WindowInfoListener() {
-            @Override
-            public void onAddFrame(WindowInfo windowInfo) {
-                JComponent component = (JComponent) windowInfo.getComponent();
-                JInternalFrame internalFrame = (JInternalFrame) component.getClientProperty(JInternalFrame.class);
-                final JMenuItem windowMenu = createWindowMenu(internalFrame);
-                component.putClientProperty("menu", windowMenu);
-                app.components().add(
-                        new net.thevpc.echo.Button(null, Str.of(windowInfo.getTitle()), () -> wins.ensureVisible(internalFrame), app),
-                        Path.of("/mainFrame/menuBar/Windows/*")
-                );
-            }
-
-            @Override
-            public void onCloseFrame(WindowInfo windowInfo) {
-                JComponent component = (JComponent) windowInfo.getComponent();
-                JMenuItem windowMenu = (JMenuItem) component.getClientProperty("menu");
-                if (windowMenu != null) {
-                    //windowsMenu.add(windowMenu);
-                }
-            }
-        });
+        //app.i18n().bundles().add("net.thevpc.scholar.hadruplot.console.HadrumathsPlot");
+        //app.start();
+        currentFrame = new JFrame(title);
+        menuBar=new JMenuBar();
+        contentPane = new JPanel(new BorderLayout());
+        wins = new InternalWindowsHelper();
+//        SwingUtilities.invokeLater(() -> {
+//        });
+        currentFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        contentPane.add(menuBar, BorderLayout.NORTH);
+        contentPane.add(wins.getDesktop(), BorderLayout.CENTER);
+        currentFrame.setContentPane(contentPane);
         setTitle(title);
         init();
         prepare();
         setVisible(true);
-
+        currentFrame.pack();
     }
 
     public void prepare() {
@@ -85,47 +68,39 @@ public class DefaultPlotConsoleFrame2 implements PlotConsoleFrame {
     }
 
     public void setVisible(boolean b) {
-        boolean oldV = app.mainFrame().get().state().is(WindowState.ACTIVATED);
-        app.mainFrame().get().state().add(b ? WindowState.ACTIVATED : WindowState.CLOSED);
-//        super.setVisible(b);
-        boolean newV = app.mainFrame().get().state().is(WindowState.ACTIVATED);
-        if (oldV != newV) {
-            if (newV) {
-                openFrames++;
-            } else {
-                openFrames--;
-                if (openFrames <= 0) {
-                    System.exit(0);
-                }
+        boolean h = this.currentFrame.isVisible();
+        if (h != b) {
+            this.currentFrame.setVisible(b);
+            openFrames += b ? 1 : -1;
+            if (openFrames <= 0) {
+                System.exit(0);
             }
         }
     }
 
-//    protected JMenuItem createMenuItem(String name, Action action) {
-//        JMenuItem jmi;
-//        jmi = new JMenuItem(name);
-//        jmi.addActionListener(action);
-//        return jmi;
-//    }
+    protected void prepareWindowsMenu() {
+        menuWindows = new JMenu("Windows");
+        menuBar.add(menuWindows);
+        menuWindows.add(createMenuItem("Tile Windows", () -> wins.tileFrames()));
+        menuWindows.add(createMenuItem("Iconify Windows", () -> wins.iconifyFrames()));
+        menuWindows.add(createMenuItem("Deiconify Windows", () -> wins.deiconifyFrames()));
+        menuWindows.add(createMenuItem("Close Windows", () -> wins.closeFrames()));
+    }
+
     protected void prepareFileMenu() {
-        AppContainerChildren<AppComponent> tools = app.components();
-        tools.addFolder(Path.of("/mainFrame/menuBar/File"));
-        //;
-        tools.add(
-                new net.thevpc.echo.Button("Properties", Str.of("Properties"),
-                        () -> JOptionPane.showMessageDialog(frameComponent(), new PlotConsoleProperties(getConsole()), "Properties", JOptionPane.PLAIN_MESSAGE),
-                        app
-                ), Path.of("/mainFrame/menuBar/File/*")
-        );
-        tools.addSeparator(Path.of("/mainFrame/menuBar/File/*"));
-        tools.add(new net.thevpc.echo.Button("Open",()->loadPlot(),app),Path.of("/mainFrame/menuBar/File/LoadAction"));
-        tools.addSeparator(Path.of("/mainFrame/menuBar/File/*"));
-        tools.add(new net.thevpc.echo.Button("Close",()->closeFrame(),app),Path.of("/mainFrame/menuBar/File/CloseAction"));
-        tools.add(new net.thevpc.echo.Button("Exit",()->exitFrame(),app),Path.of("/mainFrame/menuBar/File/ExitAction"));
-        //Applications.Helper.addViewActions(app);
+        menuFile = new JMenu("File");
+        menuBar.add(menuFile);
+        menuFile.add(createMenuItem("Properties", () -> JOptionPane.showMessageDialog(frameComponent(), new PlotConsoleProperties(getConsole()), "Properties", JOptionPane.PLAIN_MESSAGE)));
+        menuFile.addSeparator();
+        menuFile.add(createMenuItem("Open", () -> loadPlot()));
+        menuFile.addSeparator();
+        menuFile.add(createMenuItem("Close", () -> closeFrame()));
+        menuFile.add(createMenuItem("Exit", () -> exitFrame()));
+
+
 
 //        Applications.Helper.addWindowsActions(app,wins.getDesktop());
-        tools.addSeparator(Path.of("/mainFrame/menuBar/Windows/Separator"));
+//        tools.addSeparator(Path.of("/mainFrame/menuBar/Windows/Separator"));
 
 //        recentFilesMenu = new RecentFilesMenu("Recent Files", new RecentFilesPropertiesModel(new File(System.getProperty("user.dir") + "/.java/plotconsole.xml")));
 //        recentFilesMenu.addFileSelectedListener(
@@ -139,6 +114,16 @@ public class DefaultPlotConsoleFrame2 implements PlotConsoleFrame {
 //                        }
 //                    }
 //                });
+    }
+
+    private JMenuItem createMenuItem(String name, Runnable run) {
+        JMenuItem jMenuItem = new JMenuItem(name);
+        jMenuItem.addActionListener(e -> {
+            if (run != null) {
+                run.run();
+            }
+        });
+        return jMenuItem;
     }
 
 //    protected JMenuBar createMenuBar() {
@@ -155,8 +140,9 @@ public class DefaultPlotConsoleFrame2 implements PlotConsoleFrame {
 //
 ////        toolsWindowsMenu.add(createMenuItem("Locks", new LocksAction()));
 //        windowsMenu = new JMenu("Windows");
-////        JMenuItem tile_windows = new JMenuItem("Tile Windows");
-////        tile_windows.setAction();
+
+    /// /        JMenuItem tile_windows = new JMenuItem("Tile Windows");
+    /// /        tile_windows.setAction();
 //        windowsMenu.add(new AbstractPlotAction("Tile Windows") {
 //            {
 //                putValue(SMALL_ICON, SwingUtilities3.getScaledIcon(DefaultPlotConsoleFrame2.class.getResource("TileWindows.png"),16,16));
@@ -290,7 +276,7 @@ public class DefaultPlotConsoleFrame2 implements PlotConsoleFrame {
 //    }
     private void init() {
         prepareFileMenu();
-
+        prepareWindowsMenu();
 //        try {
 //            setIconImage(new ImageIcon(PlotConsole.class.getResource("PlotConsole.png")).getImage());
 //        }catch (Exception ex){
@@ -351,7 +337,7 @@ public class DefaultPlotConsoleFrame2 implements PlotConsoleFrame {
 
     @Override
     public Component frameComponent() {
-        return (Component) app.mainFrame().get().peer().toolkitComponent();
+        return currentFrame;
     }
 
     @Override
@@ -397,7 +383,7 @@ public class DefaultPlotConsoleFrame2 implements PlotConsoleFrame {
 
     public void closeFrame() {
         setVisible(false);
-        app.mainFrame().get().state().add(WindowState.CLOSED);
+        currentFrame.dispose();
         if (openFrames <= 0) {
             System.exit(0);
         }

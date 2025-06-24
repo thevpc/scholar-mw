@@ -82,6 +82,6 @@ public class ElectricFieldParallelEvaluator implements ElectricFieldEvaluator {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofFunction(getClass().getSimpleName()).build();
+        return Tson.ofUplet(getClass().getSimpleName()).build();
     }
 }

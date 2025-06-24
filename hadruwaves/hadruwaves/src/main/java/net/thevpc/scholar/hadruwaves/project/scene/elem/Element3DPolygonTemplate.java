@@ -47,7 +47,7 @@ public class Element3DPolygonTemplate extends AbstractElement3DTemplate {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofArray(getClass().getSimpleName())
+        return Tson.ofArrayBuilder(getClass().getSimpleName())
                 .addAll(
                         all.stream().map(x -> x.toTsonElement(context))
                                 .collect(Collectors.toList())

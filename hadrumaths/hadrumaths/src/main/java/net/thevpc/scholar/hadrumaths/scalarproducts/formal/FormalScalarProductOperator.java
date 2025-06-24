@@ -428,7 +428,7 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder sb = Tson.ofObj(getClass().getSimpleName());
+        TsonObjectBuilder sb = Tson.ofObjectBuilder(getClass().getSimpleName());
         if (fallback != null) {
             sb.add("fallback", context.elem(fallback));
         }

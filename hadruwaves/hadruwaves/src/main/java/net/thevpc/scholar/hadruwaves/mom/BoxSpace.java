@@ -68,7 +68,7 @@ public final class BoxSpace implements HSerializable {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonFunctionBuilder h = Tson.ofFunction(limit.name());
+        TsonUpletBuilder h = Tson.ofUpletBuilder().name(limit.name());
         if (!limit.equals(Boundary.NOTHING) && !limit.equals(Boundary.INFINITE)) {
             h.add(Tson.ofPair("width", context.elem(width)));
         }

@@ -116,7 +116,9 @@ public class MWStructureHintsManager implements Cloneable, HSerializable {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObj(getClass().getSimpleName(),null, context.elem(parameters)).build();
+        return Tson.ofObjectBuilder(getClass().getSimpleName())
+                .addAll(context.elem(parameters))
+                .build();
     }
 
 //    public Dumper getDumpStringHelper() {

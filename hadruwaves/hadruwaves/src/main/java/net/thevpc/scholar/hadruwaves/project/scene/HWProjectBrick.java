@@ -75,7 +75,7 @@ public class HWProjectBrick extends AbstractHWProjectComponentMaterial implement
     public TsonElement toTsonElement(TsonObjectContext context) {
         TsonObjectBuilder obj = (TsonObjectBuilder) super.toTsonElement(context).builder();
         obj.add("faces",
-                Tson.ofArray().addAll(Arrays.stream(faces)
+                Tson.ofArrayBuilder().addAll(Arrays.stream(faces)
                         .map(x -> x.toTsonElement(context)).collect(Collectors.toList()))
         );
         return obj.build();

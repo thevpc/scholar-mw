@@ -64,7 +64,7 @@ public class DefaultGeometryList extends AbstractGeometry implements GeometryLis
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObj("geometries").addAll(
+        return Tson.ofObjectBuilder("geometries").addAll(
                 Tson.ofPair("domain", context.elem(domain)),
                 Tson.ofPair("polygons", context.elem(list)),
                 Tson.ofPair("attributes", context.elem(attributes))

@@ -120,17 +120,17 @@ public class ErrorList {
                 String id = nextErrorName(cls.getSimpleName());
                 File errorStr = new File(testConfigFolder, id + ".error-string");
                 File errorObj = new File(testConfigFolder, id + ".error-obj");
-                TsonObjectBuilder tsonObj = Tson.ofObj()
+                TsonObjectBuilder tsonObj = Tson.ofObjectBuilder()
                         .add("id", Tson.of(id))
                         .add("type", Tson.of(cls.getName()))
                         .add("value", Tson.of(String.valueOf(objWithErrors.obj)));
-                TsonArrayBuilder array = Tson.ofArray();
+                TsonArrayBuilder array = Tson.ofArrayBuilder();
                 for (ErrorMessage message : objWithErrors.messages) {
                     StringWriter sw = new StringWriter();
                     PrintWriter pw = new PrintWriter(sw);
                     message.message.printStackTrace(pw);
                     array.add(
-                            Tson.ofObj()
+                            Tson.ofObjectBuilder()
                                     .add("id", Tson.of(message.id))
                                     .add("warning", Tson.of(message.warning))
                                     .add("message", Tson.of(message.message.toString()))
@@ -138,11 +138,7 @@ public class ErrorList {
                     );
                 }
                 tsonObj.add("messages", array);
-                try {
-                    Tson.writer().write(errorStr, tsonObj);
-                } catch (IOException e) {
-                    throw new UncheckedIOException(e);
-                }
+                Tson.writer().write(errorStr, tsonObj);
                 IOUtils.saveObject2(errorObj.getPath(), objWithErrors.obj);
             }
         }

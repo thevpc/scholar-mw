@@ -530,7 +530,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder sb = Tson.ofObj(getClass().getSimpleName(), new TsonElementBase[]{Tson.ofPair("version", context.elem("3.0"))});
+        TsonObjectBuilder sb = Tson.ofObjectBuilder(getClass().getSimpleName(), new TsonElementBase[]{Tson.ofPair("version", context.elem("3.0"))});
         sb.add("projectType", context.elem(projectType));
         sb.add("circuitType", context.elem(circuitType));
         sb.add("frequency", context.elem(frequency));

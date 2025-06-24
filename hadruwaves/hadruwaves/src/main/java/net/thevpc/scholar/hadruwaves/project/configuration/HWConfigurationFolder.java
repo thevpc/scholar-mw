@@ -10,6 +10,7 @@ import net.thevpc.common.props.PropertyListener;
 import net.thevpc.common.props.WritableValue;
 import net.thevpc.tson.Tson;
 import net.thevpc.tson.TsonElement;
+import net.thevpc.tson.TsonElementBase;
 import net.thevpc.tson.TsonObjectContext;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 
@@ -58,10 +59,11 @@ public class HWConfigurationFolder extends AbstractHWConfigurationElement {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObj("Folder")
+        return Tson.ofObjectBuilder("Folder")
                 .add("name", name().get())
                 .add("description", description().get())
-                .add("children", Tson.ofArray().addAll(children().values().stream().map(x -> x.toTsonElement(context)).collect(Collectors.toList())))
+                .add("children", Tson.ofArray(
+                        children().values().stream().map(x -> x.toTsonElement(context)).toArray(TsonElementBase[]::new)))
                 .build();
     }
 }

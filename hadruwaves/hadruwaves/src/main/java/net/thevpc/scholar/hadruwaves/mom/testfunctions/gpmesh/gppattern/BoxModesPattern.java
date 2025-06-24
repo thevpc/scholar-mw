@@ -90,7 +90,7 @@ public final class BoxModesPattern implements RectangularGpPattern {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder h = Tson.ofObj(getClass().getSimpleName());
+        TsonObjectBuilder h = Tson.ofObjectBuilder(getClass().getSimpleName());
         h.add("complexity", context.elem(complexity));
         h.add("axisInvariance", context.elem(axisInvariance));
         h.add("inheritInvariance", context.elem(inheritInvariance));

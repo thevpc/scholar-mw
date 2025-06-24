@@ -61,7 +61,7 @@ public class MatrixBPlanarSerialParallelEvaluator implements MatrixBEvaluator {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofFunction(getClass().getSimpleName()).build();
+        return Tson.ofUplet(getClass().getSimpleName()).build();
     }
 
 }

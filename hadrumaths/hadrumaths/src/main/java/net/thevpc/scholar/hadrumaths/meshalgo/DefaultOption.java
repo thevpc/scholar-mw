@@ -25,7 +25,7 @@ public class DefaultOption implements MeshOptions {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObj(getClass().getSimpleName())
+        return Tson.ofObjectBuilder(getClass().getSimpleName())
                 .add("enhancedMeshZone", context.elem(enhancedMeshZone))
                 .build();
     }

@@ -172,12 +172,12 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
     }
 
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder obj = Tson.ofObj("project");
+        TsonObjectBuilder obj = Tson.ofObjectBuilder("project");
         obj
                 .add("uuid", uuid())
                 .add("name", name().get())
                 .add("description", description().get())
-                .add("materials", Tson.ofArray().addAll(materials().values()
+                .add("materials", Tson.ofArrayBuilder().addAll(materials().values()
                         .stream().map(x -> x.toTsonElement()).collect(Collectors.toList()))
                 )
                 .add("parameters", parameters().toTsonElement())
@@ -245,11 +245,7 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
                 throw new UncheckedIOException(ex);
             }
         }
-        try {
-            Tson.writer().write(ff, toTsonElement());
-        } catch (IOException ex) {
-            throw new UncheckedIOException(ex);
-        }
+        Tson.writer().write(ff, toTsonElement());
         for (String p : new String[]{
             "code/scala/src/main/scala",
             "code/java/src/main/java",

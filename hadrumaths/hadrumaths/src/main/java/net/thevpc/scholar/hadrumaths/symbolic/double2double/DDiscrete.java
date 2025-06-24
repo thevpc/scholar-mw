@@ -1025,7 +1025,7 @@ public class DDiscrete extends AbstractDoubleToDouble {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder sb = Tson.ofObj(getClass().getSimpleName());
+        TsonObjectBuilder sb = Tson.ofObjectBuilder(getClass().getSimpleName());
         sb.add("axis", context.elem(axis));
         sb.add("domain", context.elem(domain));
         sb.add("size", context.elem(new int[]{xcount, ycount, zcount}));

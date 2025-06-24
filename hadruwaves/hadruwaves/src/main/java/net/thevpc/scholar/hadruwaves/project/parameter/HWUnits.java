@@ -64,7 +64,7 @@ public class HWUnits extends PropertyBase implements TsonSerializable {
     }
 
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObj("Units")
+        return Tson.ofObjectBuilder("Units")
                 .add("lengthUnit",lengthUnit.get())
                 .add("frequencyUnit",frequencyUnit.get())
                 .add("capacitanceUnit",capacitanceUnit.get())

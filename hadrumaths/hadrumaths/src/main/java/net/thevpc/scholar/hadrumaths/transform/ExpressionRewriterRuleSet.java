@@ -284,7 +284,7 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder obj = Tson.ofObj(getClass().getSimpleName(), new TsonElementBase[]{
+        TsonObjectBuilder obj = Tson.ofObjectBuilder(getClass().getSimpleName(), new TsonElementBase[]{
                 Tson.ofPair("name", Tson.of(getName())),
                 Tson.ofPair("itr", Tson.of(getMaxIterations()))
         });

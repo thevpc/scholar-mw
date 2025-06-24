@@ -1,15 +1,14 @@
 package net.thevpc.scholar.hadruplot.actions;
 
-import net.thevpc.echo.api.Action;
-import net.thevpc.echo.api.ActionEvent;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.io.Serializable;
 
 /**
  * Created by vpc on 1/27/17.
  */
-public abstract class AbstractPlotAction extends AbstractAction implements Serializable, Action {
+public abstract class AbstractPlotAction extends AbstractAction implements Serializable{
     public AbstractPlotAction() {
     }
 
@@ -21,8 +20,8 @@ public abstract class AbstractPlotAction extends AbstractAction implements Seria
         super(name, icon);
     }
 
-    @Override
-    public void run(ActionEvent event) {
-        actionPerformed(null);
-    }
+//    @Override
+//    public void run(ActionEvent event) {
+//        actionPerformed(null);
+//    }
 }

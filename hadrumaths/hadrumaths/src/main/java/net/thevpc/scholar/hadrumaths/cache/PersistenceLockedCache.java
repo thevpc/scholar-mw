@@ -74,16 +74,16 @@ class PersistenceLockedCache<T> implements Callable<T> {
                     objCache.store(cacheItemName, oldValue, storeMon);
                     storeChrono.stop();
                     log.log(Level.SEVERE, "[PersistenceCache] " + cacheItemName + " evaluated in " + computeChrono + " ; stored to disk in " + storeChrono + " (" + objCache.getObjectCacheFile(cacheItemName).getFile() + ")");
-                    TsonObjectBuilder stat = Tson.ofObj();
+                    TsonObjectBuilder stat = Tson.ofObjectBuilder();
                     stat.add(Tson.ofPair("name", Tson.of(cacheItemName)));
                     stat.add(Tson.ofPair("eval",
-                            Tson.ofObj(
+                            Tson.ofObjectBuilder(
                                     Tson.ofPair("nanos", Tson.of(computeChrono.getTime())),
                                     Tson.ofPair("str", Tson.of(computeChrono.getDuration().toString()))
                             ))
                     );
                     stat.add(Tson.ofPair("store",
-                            Tson.ofObj(
+                            Tson.ofObjectBuilder(
                                     Tson.ofPair("nanos", Tson.of(storeChrono.getTime())),
                                     Tson.ofPair("str", Tson.of(computeChrono.getDuration().toString()))
                             ))
@@ -99,7 +99,7 @@ class PersistenceLockedCache<T> implements Callable<T> {
                         boolean longLoadNDetected = timeThresholdMilli > 0 && loadChrono.getTime() > timeThresholdMilli * 1000000;
                         stat.add(Tson.ofPair(
                                 "load",
-                                Tson.ofObj(
+                                Tson.ofObjectBuilder(
                                         Tson.ofPair("nanos", Tson.of(loadChrono.getTime())),
                                         Tson.ofPair("str", Tson.of(computeChrono.getDuration().toString()))
                                 )));

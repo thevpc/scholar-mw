@@ -134,11 +134,7 @@ public class DefaultHWSolution extends PropertyBase implements HWSolution {
         if (f == null || f.length() == 0) {
             throw new UncheckedIOException(new IOException("Missing File"));
         }
-        try {
-            Tson.writer().write(new File(f), toTsonElement());
-        } catch (IOException ex) {
-            throw new UncheckedIOException(ex);
-        }
+        Tson.writer().write(new File(f), toTsonElement());
     }
 
     @Override
@@ -148,7 +144,7 @@ public class DefaultHWSolution extends PropertyBase implements HWSolution {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObj("solution")
+        return Tson.ofObjectBuilder("solution")
                 .add("path", filePath().get())
                 .build();
     }

@@ -308,7 +308,7 @@ public class DQuadIntegralXY implements DIntegralXY {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofFunction(getClass().getSimpleName(),
+        return Tson.ofUplet(getClass().getSimpleName(),
                 Tson.ofPair("tolerance", Tson.of(tolerance)),
                 Tson.ofPair("hminCoeff", Tson.of(hminCoeff)),
                 Tson.ofPair("hmaxCoeff", Tson.of(hmaxCoeff)),

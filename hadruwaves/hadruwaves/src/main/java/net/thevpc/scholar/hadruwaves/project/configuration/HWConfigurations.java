@@ -128,7 +128,7 @@ public class HWConfigurations extends PropertyBase implements TsonSerializable {
 
     @Override
     public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofArray("Configurations")
+        return Tson.ofArrayBuilder("Configurations")
                 .addAll(children().values().stream().map(x -> x.toTsonElement(context)).collect(Collectors.toList()))
                 .build();
     }

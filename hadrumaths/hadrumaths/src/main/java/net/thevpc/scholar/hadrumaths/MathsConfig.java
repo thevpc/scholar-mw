@@ -106,13 +106,13 @@ public final class MathsConfig {
         }
         Tson.setSerializer(
                 b
-                        .setSerializer(DefaultTimeDurationFormat.class, (DefaultTimeDurationFormat object, TsonObjectContext context) -> Tson.ofFunction(object.getClass().getSimpleName()))
-                        .setSerializer(ToStringDoubleFormat.class, (ToStringDoubleFormat object, TsonObjectContext context) -> Tson.ofFunction(object.getClass().getSimpleName()))
-                        .setSerializer(PercentDoubleFormat.class, (PercentDoubleFormat object, TsonObjectContext context) -> Tson.ofFunction(object.getClass().getSimpleName()))
-                        .setSerializer(DecimalDoubleFormat.class, (DecimalDoubleFormat object, TsonObjectContext context) -> Tson.ofFunction(object.getClass().getSimpleName(), Tson.of(object.toPattern())))
-                        .setSerializer(FrequencyFormat.class, (FrequencyFormat object, TsonObjectContext context) -> Tson.ofFunction(object.getClass().getSimpleName(), Tson.of(object.toPattern())))
-                        .setSerializer(BytesSizeFormat.class, (BytesSizeFormat object, TsonObjectContext context) -> Tson.ofFunction(object.getClass().getSimpleName(), Tson.of(object.toPattern())))
-                        .setSerializer(MetricFormat.class, (MetricFormat object, TsonObjectContext context) -> Tson.ofFunction(object.getClass().getSimpleName(), Tson.of(object.toPattern())))
+                        .setSerializer(DefaultTimeDurationFormat.class, (DefaultTimeDurationFormat object, TsonObjectContext context) -> Tson.ofUplet(object.getClass().getSimpleName()))
+                        .setSerializer(ToStringDoubleFormat.class, (ToStringDoubleFormat object, TsonObjectContext context) -> Tson.ofUplet(object.getClass().getSimpleName()))
+                        .setSerializer(PercentDoubleFormat.class, (PercentDoubleFormat object, TsonObjectContext context) -> Tson.ofUplet(object.getClass().getSimpleName()))
+                        .setSerializer(DecimalDoubleFormat.class, (DecimalDoubleFormat object, TsonObjectContext context) -> Tson.ofUplet(object.getClass().getSimpleName(), Tson.of(object.toPattern())))
+                        .setSerializer(FrequencyFormat.class, (FrequencyFormat object, TsonObjectContext context) -> Tson.ofUplet(object.getClass().getSimpleName(), Tson.of(object.toPattern())))
+                        .setSerializer(BytesSizeFormat.class, (BytesSizeFormat object, TsonObjectContext context) -> Tson.ofUplet(object.getClass().getSimpleName(), Tson.of(object.toPattern())))
+                        .setSerializer(MetricFormat.class, (MetricFormat object, TsonObjectContext context) -> Tson.ofUplet(object.getClass().getSimpleName(), Tson.of(object.toPattern())))
                         .build()
         );
     }
