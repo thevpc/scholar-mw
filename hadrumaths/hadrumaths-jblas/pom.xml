@@ -3,14 +3,14 @@
 
     <groupId>net.thevpc.scholar</groupId>
     <artifactId>hadrumaths-jblas</artifactId>
-    <version>3.2.0</version> <!--updated-->
+    <version>3.3.0</version> <!--updated-->
     <name>net.thevpc.scholar.hadrumaths-jblas</name>
     <packaging>jar</packaging>
 
     <url>https://github.com/thevpc/scholar-mw</url>
 
     <properties>
-        <scholar-version>3.2.0</scholar-version>
+        <scholar-version>3.3.0</scholar-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <github.global.server>github</github.global.server>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -30,7 +30,7 @@
     </distributionManagement>
 
     <dependencies>
-        <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadrumaths</artifactId><version>3.2.0</version></dependency>
+        <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadrumaths</artifactId><version>3.3.0</version></dependency>
         <dependency><groupId>org.jblas</groupId><artifactId>jblas</artifactId><version>1.2.4</version></dependency>
         <dependency><groupId>org.junit.jupiter</groupId><artifactId>junit-jupiter-api</artifactId><version>5.5.2</version><scope>test</scope></dependency>
     </dependencies>
