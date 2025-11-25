@@ -1,9 +1,11 @@
 package net.thevpc.scholar.hadruwaves.mom;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
+
+import net.thevpc.nuts.elem.NObjectElementBuilder;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.ModeInfo;
 import net.thevpc.scholar.hadruwaves.ModeInfoFilter;
 
@@ -26,9 +28,9 @@ class DiscardFnByScalarProductModeInfoFilter implements ModeInfoFilter {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder sb = Tson.ofObjectBuilder(getClass().getSimpleName());
-        sb.add("exclude", context.elem(excluded));
+    public NElement toElement() {
+        NObjectElementBuilder sb = NElement.ofObjectBuilder(getClass().getSimpleName());
+        sb.add("exclude", NElementHelper.elem(excluded));
         return sb.build();
     }
 
