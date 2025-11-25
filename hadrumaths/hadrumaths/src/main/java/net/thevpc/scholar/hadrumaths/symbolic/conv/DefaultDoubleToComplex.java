@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.conv;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.format.ObjectFormat;
 import net.thevpc.scholar.hadrumaths.format.ObjectFormatContext;
@@ -90,6 +91,11 @@ public class DefaultDoubleToComplex implements DoubleToComplex {
             return ZERO;
         }
         return new DefaultDoubleToComplex(real);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("DefaultDoubleToComplex");
     }
 
     public boolean isInvariant(Axis axis) {
