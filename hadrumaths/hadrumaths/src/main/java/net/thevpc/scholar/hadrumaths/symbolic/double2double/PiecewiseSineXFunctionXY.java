@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.thevpc.scholar.hadrumaths.symbolic.Range;
@@ -37,6 +38,12 @@ public class PiecewiseSineXFunctionXY extends PieceXFunction {
         this.factor = factor;
 //        name=("PiecewiseSine" + nbrPeriods);
     }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("PiecewiseSineXFunctionXY");
+    }
+
 
     public double getFactor() {
         return factor;
