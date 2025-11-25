@@ -1,8 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.geom.Geometry;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
 import net.thevpc.scholar.hadrumaths.symbolic.double2complex.DefaultComplexValue;
@@ -823,8 +821,8 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofDoubleComplex(getReal(), getImag());
+    public NElement toElement() {
+        return NElement.ofDoubleComplex(getReal(), getImag());
     }
 
     public Expr multiply(Domain domain) {
