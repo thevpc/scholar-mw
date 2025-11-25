@@ -9,7 +9,7 @@ import net.thevpc.common.props.WritableValue;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 import net.thevpc.scholar.hadruwaves.project.HWSolution;
 
-public class AbstractHWConfigurationElement implements HWConfigurationElement {
+public abstract class AbstractHWConfigurationElement implements HWConfigurationElement {
 
     protected final WritableValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
     protected final WritableValue<HWSolution> solution = Props.of("solution").valueOf(HWSolution.class, null);
