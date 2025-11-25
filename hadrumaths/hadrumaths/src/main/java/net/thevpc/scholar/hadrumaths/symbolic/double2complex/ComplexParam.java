@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2complex;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.Range;
 import net.thevpc.scholar.hadrumaths.symbolic.Param;
@@ -17,6 +18,11 @@ public class ComplexParam extends AbstractDoubleToComplex implements /*IDDx,*/Pa
     public ComplexParam(String name) {
         super();
         paramName = name;
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("ComplexParam",NElement.ofName(paramName));
     }
 
     @Override
