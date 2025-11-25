@@ -1,9 +1,10 @@
 package net.thevpc.scholar.hadrumaths.scalarproducts.numeric;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
+
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.integration.DIntegralXY;
@@ -14,6 +15,7 @@ import net.thevpc.scholar.hadrumaths.symbolic.ExprType;
 import net.thevpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.thevpc.scholar.hadrumaths.transform.ExpressionRewriterRuleSet;
 import net.thevpc.scholar.hadrumaths.transform.IdentityExpressionRewriterRule;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 public class NumericScalarProductOperator extends AbstractScalarProductOperator {
 
@@ -75,11 +77,11 @@ public class NumericScalarProductOperator extends AbstractScalarProductOperator 
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder sb = Tson.ofObjectBuilder(getClass().getSimpleName());
-        sb.add("integrator", context.elem(integrator));
-        sb.add("hermitian", context.elem(isHermitian()));
-        sb.add("hash", context.elem(Integer.toHexString(hashCode()).toUpperCase()));
+    public NElement toElement() {
+        NObjectElementBuilder sb = NElement.ofObjectBuilder(getClass().getSimpleName());
+        sb.add("integrator", NElementHelper.elem(integrator));
+        sb.add("hermitian", NElementHelper.elem(isHermitian()));
+        sb.add("hash", NElementHelper.elem(Integer.toHexString(hashCode()).toUpperCase()));
         return sb.build();
     }
 
