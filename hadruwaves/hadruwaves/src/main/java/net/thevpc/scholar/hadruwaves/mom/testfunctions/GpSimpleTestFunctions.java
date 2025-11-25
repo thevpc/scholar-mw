@@ -1,14 +1,16 @@
 package net.thevpc.scholar.hadruwaves.mom.testfunctions;
 
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+import net.thevpc.nuts.elem.NElement;
+
+
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.geom.Geometry;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.common.mon.ProgressMonitor;
 
 import net.thevpc.common.mon.MonitoredAction;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.GpPattern;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 
@@ -52,9 +54,9 @@ public class GpSimpleTestFunctions extends TestFunctionsBase implements Cloneabl
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder h = super.toTsonElement(context).toObject().builder();
-        h.add("cells", context.elem(cells));
+    public NElement toElement() {
+        NObjectElementBuilder h = super.toElement().toObject().get().builder();
+        h.add("cells", NElementHelper.elem(cells));
         return h.build();
     }
 
