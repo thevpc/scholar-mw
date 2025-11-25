@@ -1,9 +1,10 @@
 package net.thevpc.scholar.hadruwaves.mom.str.zsfractalmodel;
 
 import net.thevpc.common.mon.ProgressMonitors;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+import net.thevpc.nuts.elem.NElement;
+
+
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.plot.convergence.ConvergenceConfig;
 import net.thevpc.scholar.hadrumaths.plot.convergence.ConvergenceEvaluator;
@@ -12,6 +13,7 @@ import net.thevpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.thevpc.scholar.hadrumaths.meshalgo.rect.GridPrecision;
 import net.thevpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.ModeInfo;
 import net.thevpc.scholar.hadruwaves.WallBorders;
 import net.thevpc.scholar.hadruwaves.mom.*;
@@ -76,10 +78,10 @@ public class MomStructureFractalZop extends MomStructure {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder o=super.toTsonElement(context).toObject().builder();
-        o.add("realK", context.elem(realK));
-        o.add("directGp", context.elem(directMesh));
+    public NElement toElement() {
+        NObjectElementBuilder o=super.toElement().toObject().get().builder();
+        o.add("realK", NElementHelper.elem(realK));
+        o.add("directGp", NElementHelper.elem(directMesh));
         return o.build();
     }
 //    @Override
