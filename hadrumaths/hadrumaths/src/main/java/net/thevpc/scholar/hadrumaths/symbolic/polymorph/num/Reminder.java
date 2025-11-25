@@ -5,6 +5,7 @@
  */
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.num;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -287,6 +288,11 @@ class ReminderDoubleToDouble extends Reminder implements DoubleToDoubleDefaults.
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Reminder");
+    }
+
+    @Override
     public double evalDoubleSimple(double a, double b) {
         return a % b;
     }
@@ -296,6 +302,12 @@ class ReminderDoubleToComplex extends Reminder implements DoubleToComplexDefault
     public ReminderDoubleToComplex(Expr first, Expr second) {
         super(first, second);
     }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Reminder");
+    }
+
     @Override
     public Complex aggregateComplex(Complex a, Complex b) {
         return a.rem(b);
@@ -325,6 +337,12 @@ class ReminderDoubleToVectorDVDC extends Reminder implements DoubleToVectorDefau
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Reminder");
+    }
+
+
+    @Override
     public ComplexVector evalVectorSimple(ComplexVector dv, Complex dc) {
         return dv.rem(dc);
     }
@@ -336,6 +354,12 @@ class ReminderDoubleToMatrixDMDC extends Reminder implements DoubleToMatrixDefau
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Reminder");
+    }
+
+
+    @Override
     public ComplexMatrix evalMatrixSimple(ComplexMatrix dv, Complex dc) {
         return dv.rem(dc);
     }
@@ -345,6 +369,12 @@ class ReminderDoubleToMatrixDMDM extends Reminder implements DoubleToMatrixDefau
     public ReminderDoubleToMatrixDMDM(Expr first, Expr second) {
         super(first, second);
     }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Reminder");
+    }
+
 
     @Override
     public ComplexMatrix evalMatrixSimple(ComplexMatrix dv, ComplexMatrix dc) {
