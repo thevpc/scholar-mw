@@ -6,12 +6,12 @@
     <version>1.7</version>
     <url>http://scala-lang.org</url>
     <properties>
-        <scholar-version>3.2.0</scholar-version>
+        <scholar-version>3.3.0</scholar-version>
     </properties>
     <dependencies>
         <dependency><artifactId>hadruwaves-scala</artifactId><groupId>net.thevpc.scholar</groupId><version>${scholar-version}</version></dependency>
-        <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruplot-laf</artifactId><version>3.2.0</version></dependency>
-        <dependency><groupId>net.thevpc.tson</groupId><artifactId>tson</artifactId><version>1.2.0</version></dependency>
+        <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruplot-laf</artifactId><version>3.3.0</version></dependency>
+        <dependency><groupId>net.thevpc.nuts</groupId><artifactId>nuts</artifactId><version>0.8.9</version></dependency>
     </dependencies>
     <repositories>
         <repository><id>thevpc</id><url>https://thevpc.net/maven</url><snapshots>
