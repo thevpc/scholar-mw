@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.num;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -123,6 +124,11 @@ class SqrtnDoubleToComplex extends Sqrtn implements DoubleToComplexDefaults.Doub
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Sqrtn");
+    }
+
+    @Override
     public Complex aggregateComplex(Complex a) {
         return a.sqrt(n);
     }
@@ -132,6 +138,11 @@ class SqrtnDoubleToComplex extends Sqrtn implements DoubleToComplexDefaults.Doub
 class SqrtnDoubleToVector extends Sqrtn implements DoubleToVectorDefaults.DoubleToVectorUnaryDV {
     public SqrtnDoubleToVector(Expr arg, int n) {
         super(arg, n);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Sqrtn");
     }
 
     @Override
@@ -145,6 +156,10 @@ class SqrtnDoubleToMatrix extends Sqrtn implements DoubleToMatrixDefaults.Double
         super(arg, n);
     }
 
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Sqrtn");
+    }
     @Override
     public ComplexMatrix aggregateMatrix(ComplexMatrix m) {
         return m.sqrt(n);
