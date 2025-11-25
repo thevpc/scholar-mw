@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.trigo;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -115,6 +116,10 @@ class AtanDoubleToDouble extends Atan implements DoubleToDoubleDefaults.DoubleTo
     public double evalDoubleSimple(double x) {
         return Maths.atan(x);
     }
+    @Override
+    public NElement toElement() {
+        return NElement.ofString("Atan(double)");
+    }
 
 }
 
@@ -128,6 +133,10 @@ class AtanDoubleToComplex extends Atan implements DoubleToComplexDefaults.Double
         return a.atan();
     }
 
+    @Override
+    public NElement toElement() {
+        return NElement.ofString("Atan(Complex)");
+    }
 
 }
 
@@ -140,6 +149,11 @@ class AtanDoubleToVector extends Atan implements DoubleToVectorDefaults.DoubleTo
     public ComplexVector aggregateVector(ComplexVector v) {
         return v.atan();
     }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofString("Atan(ComplexVector)");
+    }
 }
 
 class AtanDoubleToMatrix extends Atan implements DoubleToMatrixDefaults.DoubleToMatrixUnaryDM {
@@ -150,6 +164,11 @@ class AtanDoubleToMatrix extends Atan implements DoubleToMatrixDefaults.DoubleTo
     @Override
     public ComplexMatrix aggregateMatrix(ComplexMatrix m) {
         return m.atan();
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofString("Atan(ComplexMatrix)");
     }
 
 }
