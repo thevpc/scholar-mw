@@ -18,8 +18,8 @@
     <dependencies>
 
         <dependency><groupId>net.thevpc.common.pheromone</groupId><artifactId>vpc-pheromone-app</artifactId><version>1.0.0</version></dependency>
-        <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruwaves</artifactId><version>3.2.0</version></dependency>
-        <dependency><groupId>net.thevpc.tson</groupId><artifactId>tson.tson</artifactId><version>1.2.0</version></dependency>
+        <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruwaves</artifactId><version>3.3.0</version></dependency>
+        <dependency><groupId>net.thevpc.nuts</groupId><artifactId>nuts</artifactId><version>0.8.9</version></dependency>
         <dependency><groupId>net.thevpc.common</groupId><artifactId>thevpc-common-utils</artifactId><version>1.23.2</version></dependency>
     </dependencies>
 
