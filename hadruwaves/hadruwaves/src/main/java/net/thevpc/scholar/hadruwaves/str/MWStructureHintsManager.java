@@ -5,12 +5,13 @@
  */
 package net.thevpc.scholar.hadruwaves.str;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.AxisXY;
 import net.thevpc.scholar.hadrumaths.HSerializable;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.ModeType;
 import net.thevpc.scholar.hadruwaves.mom.HintAxisType;
 
@@ -115,9 +116,9 @@ public class MWStructureHintsManager implements Cloneable, HSerializable {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObjectBuilder(getClass().getSimpleName())
-                .addAll(context.elem(parameters))
+    public NElement toElement() {
+        return NElement.ofObjectBuilder(getClass().getSimpleName())
+                .addAll(NElementHelper.elem(parameters))
                 .build();
     }
 
