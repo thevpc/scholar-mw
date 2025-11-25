@@ -1,8 +1,10 @@
 package net.thevpc.scholar.hadruwaves.mom.sources.modal;
 
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+import net.thevpc.nuts.elem.NElement;
+
+
+import net.thevpc.nuts.elem.NObjectElementBuilder;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.ModeIndex;
 import net.thevpc.scholar.hadruwaves.ModeInfo;
 import net.thevpc.scholar.hadruwaves.mom.ModeFunctions;
@@ -54,9 +56,9 @@ public class UserModalSources extends AbstractPropagatingModalSources {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder h = super.toTsonElement(context).toObject().builder();
-        h.add("modes",context.elem(userDefined));
+    public NElement toElement() {
+        NObjectElementBuilder h = super.toElement().toObject().get().builder();
+        h.add("modes", NElementHelper.elem(userDefined));
         return h.build();
     }
 
