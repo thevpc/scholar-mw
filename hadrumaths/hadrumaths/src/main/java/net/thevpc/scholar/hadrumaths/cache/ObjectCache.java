@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadrumaths.cache;
 
 import net.thevpc.common.mon.ProgressMonitor;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.io.HFile;
 
 import java.util.concurrent.Callable;
@@ -32,9 +32,9 @@ public interface ObjectCache {
 
     Object load(String name, Object o);
 
-    void addStat(TsonElement statName);
+    void addStat(NElement statName);
 
-    void addSetItem(String setName, TsonElement item);
+    void addSetItem(String setName, NElement item);
 
     long getStat(String statName);
 
