@@ -5,6 +5,7 @@
  */
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.num;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.util.internal.NonStateField;
@@ -12,9 +13,9 @@ import net.thevpc.scholar.hadrumaths.symbolic.*;
 import net.thevpc.scholar.hadrumaths.transform.ExpressionTransform;
 import net.thevpc.scholar.hadrumaths.transform.ExpressionTransformer;
 import net.thevpc.scholar.hadrumaths.util.ArrayUtils;
-import net.thevpc.scholar.hadrumaths.util.InternalUnmodifiableArrayList;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,20 +33,20 @@ public abstract class Plus implements OperatorExpr {
                 Plus e = (Plus) expression;
                 Expr[] e2 = new Expr[e.expressions.size()];
                 for (int i = 0; i < e2.length; i++) {
-                    e2[i] = ExpressionTransformFactory.transform(e.expressions.array[i], transform);
+                    e2[i] = ExpressionTransformFactory.transform(e.expressions.get(i), transform);
                 }
                 return Plus.of(e2);
             }
         });
     }
 
-    protected InternalUnmodifiableArrayList<Expr> expressions;
+    protected java.util.List<Expr> expressions;
     @NonStateField
     protected Domain _domain;
     protected ComponentDimension componentDimension;
 
     protected Plus(Expr... expressions) {
-        this.expressions = new InternalUnmodifiableArrayList<>(expressions);
+        this.expressions = Arrays.asList(expressions);
 //        boolean someUnconstrained=false;
 //        boolean someConstrained=false;
         Domain d = expressions[0].getDomain();
@@ -147,7 +148,7 @@ public abstract class Plus implements OperatorExpr {
         return ExprDefaults.isNaNAny(expressions);
     }
 
-    public List<Expr> getChildren() {
+    public java.util.List<Expr> getChildren() {
         return expressions;
     }
 
@@ -168,7 +169,7 @@ public abstract class Plus implements OperatorExpr {
         if (other.isReal()) {
             return mul(other.toDouble());
         }
-        Expr[] expr2 = ArrayUtils.copy(expressions.array);
+        Expr[] expr2 = expressions.toArray(new Expr[0]);
         for (int i = 0; i < expr2.length; i++) {
             expr2[i] = expr2[i].mul(other);
         }
@@ -192,7 +193,7 @@ public abstract class Plus implements OperatorExpr {
 
     @Override
     public Expr mul(Domain domain) {
-        Expr[] expr2 = ArrayUtils.copy(expressions.array);
+        Expr[] expr2 = expressions.toArray(new Expr[0]);
         for (int i = 0; i < expr2.length; i++) {
             expr2[i] = expr2[i].mul(domain);
         }
@@ -204,7 +205,7 @@ public abstract class Plus implements OperatorExpr {
         if (other == 0) {
             return Maths.ZERO;
         }
-        Expr[] expr2 = ArrayUtils.copy(expressions.array);
+        Expr[] expr2 = expressions.toArray(new Expr[0]);
         for (int i = 0; i < expr2.length; i++) {
             expr2[i] = expr2[i].mul(other);
         }
@@ -269,6 +270,11 @@ class PlusDoubleToDouble extends Plus implements DoubleToDoubleDefaults.DoubleTo
         }
         return d;
     }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Plus", NElement.ofName("a"), NElement.ofName("b"));
+    }
 }
 
 
@@ -292,9 +298,9 @@ class PlusDoubleToComplex extends Plus implements DoubleToComplex {
         if (ExprDefaults.is(ExprType.DOUBLE_DOUBLE, expressions)) {
             return new PlusDoubleToDouble(this);
         }
-        Expr[] expressions2 = new Expr[expressions.array.length];
-        for (int i = 0; i < expressions.array.length; i++) {
-            expressions2[i] = expressions.array[i].toDC().getRealDD();
+        Expr[] expressions2 = new Expr[expressions.size()];
+        for (int i = 0; i < expressions.size(); i++) {
+            expressions2[i] = expressions.get(i).toDC().getRealDD();
         }
         return Maths.sum(expressions2).toDD();
     }
@@ -303,9 +309,9 @@ class PlusDoubleToComplex extends Plus implements DoubleToComplex {
         if (ExprDefaults.is(ExprType.DOUBLE_DOUBLE, expressions)) {
             return Maths.DZERO(getDomain().getDimension());
         }
-        Expr[] expressions2 = new Expr[expressions.array.length];
-        for (int i = 0; i < expressions.array.length; i++) {
-            expressions2[i] = expressions.array[i].toDC().getImagDD();
+        Expr[] expressions2 = new Expr[expressions.size()];
+        for (int i = 0; i < expressions.size(); i++) {
+            expressions2[i] = expressions.get(i).toDC().getImagDD();
         }
         return new PlusDoubleToDouble(expressions2);
     }
@@ -336,6 +342,10 @@ class PlusDoubleToComplex extends Plus implements DoubleToComplex {
         }
         return c.toComplex();
     }
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Plus", NElement.ofName("a"), NElement.ofName("b"));
+    }
 }
 
 class PlusDoubleToVector extends Plus implements DoubleToVector {
@@ -354,6 +364,11 @@ class PlusDoubleToVector extends Plus implements DoubleToVector {
     @Override
     public int hashCode() {
         return super.hashCode() * 31 + cs;
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Plus", NElement.ofName("a"), NElement.ofName("b"));
     }
 
     @Override
@@ -428,28 +443,33 @@ class PlusDoubleToMatrix extends Plus implements DoubleToMatrix {
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Plus", NElement.ofName("a"), NElement.ofName("b"));
+    }
+
+    @Override
     public ComplexMatrix evalMatrix(double x, BooleanMarker defined) {
-        ComplexMatrix c = expressions.array[0].toDM().evalMatrix(x, defined);
-        for (int i = 1; i < expressions.array.length; i++) {
-            c = c.add(expressions.array[i].toDM().evalMatrix(x, defined));
+        ComplexMatrix c = expressions.get(0).toDM().evalMatrix(x, defined);
+        for (int i = 1; i < expressions.size(); i++) {
+            c = c.add(expressions.get(i).toDM().evalMatrix(x, defined));
         }
         return c;
     }
 
     @Override
     public ComplexMatrix evalMatrix(double x, double y, BooleanMarker defined) {
-        ComplexMatrix c = expressions.array[0].toDM().evalMatrix(x, y, defined);
-        for (int i = 1; i < expressions.array.length; i++) {
-            c = c.add(expressions.array[i].toDM().evalMatrix(x, y, defined));
+        ComplexMatrix c = expressions.get(0).toDM().evalMatrix(x, y, defined);
+        for (int i = 1; i < expressions.size(); i++) {
+            c = c.add(expressions.get(i).toDM().evalMatrix(x, y, defined));
         }
         return c;
     }
 
     @Override
     public ComplexMatrix evalMatrix(double x, double y, double z, BooleanMarker defined) {
-        ComplexMatrix c = expressions.array[0].toDM().evalMatrix(x, y, z, defined);
-        for (int i = 1; i < expressions.array.length; i++) {
-            c = c.add(expressions.array[i].toDM().evalMatrix(x, y, z, defined));
+        ComplexMatrix c = expressions.get(0).toDM().evalMatrix(x, y, z, defined);
+        for (int i = 1; i < expressions.size(); i++) {
+            c = c.add(expressions.get(i).toDM().evalMatrix(x, y, z, defined));
         }
         return c;
     }
@@ -459,11 +479,11 @@ class PlusDoubleToMatrix extends Plus implements DoubleToMatrix {
             if (isNarrow(ExprDim.SCALAR) && (row != col || col != 0)) {
                 return Maths.DZEROXY;
             }
-            DoubleToMatrix[] m = new DoubleToMatrix[expressions.array.length];
+            DoubleToMatrix[] m = new DoubleToMatrix[expressions.size()];
             ComponentDimension dd = null;
 
-            for (int i = 0; i < expressions.array.length; i++) {
-                m[i] = expressions.array[i].toDM();
+            for (int i = 0; i < expressions.size(); i++) {
+                m[i] = expressions.get(i).toDM();
                 ComponentDimension d = m[i].getComponentDimension();
                 if (d.equals(ComponentDimension.SCALAR)) {
                     //scalar , ok
@@ -479,13 +499,13 @@ class PlusDoubleToMatrix extends Plus implements DoubleToMatrix {
                 dd = ComponentDimension.SCALAR;
             }
             if (dd.equals(ComponentDimension.SCALAR)) {
-                Expr[] inner = new Expr[expressions.array.length];
+                Expr[] inner = new Expr[expressions.size()];
                 for (int i = 0; i < inner.length; i++) {
                     inner[i] = m[i].getComponent(row, col);
                 }
                 return Plus.of(inner);
             } else {
-                Expr[] inner = new Expr[expressions.array.length];
+                Expr[] inner = new Expr[expressions.size()];
                 for (int i = 0; i < inner.length; i++) {
                     inner[i] = m[i].getComponent(row, col);
                 }
