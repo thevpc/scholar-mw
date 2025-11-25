@@ -1,16 +1,16 @@
 package net.thevpc.scholar.hadruwaves.project.scene;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
-import net.thevpc.tson.TsonSerializable;
+
+import net.thevpc.nuts.elem.NElement;
+
+import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.scholar.hadrumaths.geom.Point;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.thevpc.Point3D;
 import net.thevpc.scholar.hadruwaves.project.Props2;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 import net.thevpc.scholar.hadruwaves.props.WritablePExpression;
 
-public class Point3DTemplate implements TsonSerializable {
+public class Point3DTemplate implements NToElement {
 
     private WritablePExpression<Double> x = Props2.of("x").exprLenOf(0.0);
     private WritablePExpression<Double> y = Props2.of("y").exprLenOf(0.0);
@@ -93,8 +93,8 @@ public class Point3DTemplate implements TsonSerializable {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObjectBuilder()
+    public NElement toElement() {
+        return NElement.ofObjectBuilder()
                 .add("x", x.get())
                 .add("y", y.get())
                 .add("z", z.get())
