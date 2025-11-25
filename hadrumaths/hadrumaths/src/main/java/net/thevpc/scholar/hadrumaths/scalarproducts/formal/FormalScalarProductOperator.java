@@ -2,13 +2,14 @@ package net.thevpc.scholar.hadrumaths.scalarproducts.formal;
 
 import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.common.mon.ProgressMonitors;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
+
 import net.thevpc.common.time.Chronometer;
 import net.thevpc.common.collections.ClassMap;
 import net.thevpc.common.util.IntTuple2;
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.ExpressionRewriterFactory;
@@ -27,6 +28,7 @@ import net.thevpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.thevpc.scholar.hadrumaths.transform.ExpressionRewriterRuleSet;
 import net.thevpc.scholar.hadrumaths.transform.ExpressionRewriterSuite;
 import net.thevpc.common.util.IntPairIterator;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -427,13 +429,13 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder sb = Tson.ofObjectBuilder(getClass().getSimpleName());
+    public NElement toElement() {
+        NObjectElementBuilder sb = NElement.ofObjectBuilder(getClass().getSimpleName());
         if (fallback != null) {
-            sb.add("fallback", context.elem(fallback));
+            sb.add("fallback", NElementHelper.elem(fallback));
         }
-        sb.add("hermitian", context.elem(isHermitian()));
-        sb.add("hash", context.elem(Integer.toHexString(hashCode()).toUpperCase()));
+        sb.add("hermitian", NElementHelper.elem(isHermitian()));
+        sb.add("hash", NElementHelper.elem(Integer.toHexString(hashCode()).toUpperCase()));
         return sb.build();
     }
 
