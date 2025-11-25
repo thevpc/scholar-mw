@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.trigo;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -112,6 +113,11 @@ class ConjDoubleToDouble extends Conj implements DoubleToDoubleDefaults.DoubleTo
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Conj");
+    }
+
+    @Override
     public double evalDoubleSimple(double x) {
         return Maths.conj(x);
     }
@@ -120,6 +126,11 @@ class ConjDoubleToDouble extends Conj implements DoubleToDoubleDefaults.DoubleTo
 class ConjDoubleToComplex extends Conj implements DoubleToComplexDefaults.DoubleToComplexUnaryDC {
     public ConjDoubleToComplex(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Conj");
     }
 
     @Override
@@ -136,6 +147,11 @@ class ConjDoubleToVector extends Conj implements DoubleToVectorDefaults.DoubleTo
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Conj");
+    }
+
+    @Override
     public ComplexVector aggregateVector(ComplexVector v) {
         return v.conj();
     }
@@ -145,6 +161,11 @@ class ConjDoubleToVector extends Conj implements DoubleToVectorDefaults.DoubleTo
 class ConjDoubleToMatrix extends Conj implements DoubleToMatrixDefaults.DoubleToMatrixUnaryDM {
     public ConjDoubleToMatrix(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Conj");
     }
 
     @Override
