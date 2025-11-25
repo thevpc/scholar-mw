@@ -4,9 +4,9 @@ import net.thevpc.common.props.ObservableValue;
 import net.thevpc.common.props.Props;
 import net.thevpc.common.props.WritableString;
 import net.thevpc.common.props.WritableValue;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadruwaves.Material;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 import net.thevpc.scholar.hadruwaves.project.HWProjectElement;
@@ -104,9 +104,9 @@ public class HWMaterialTemplate implements HWProjectElement {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
+    public NElement toElement() {
         return 
-                Tson.ofObjectBuilder("Material")
+                NElement.ofObjectBuilder("Material")
                 .add("name",name.get())
                 .add("description",description.get())
                 .add("permettivity",permettivity.get())
