@@ -1,10 +1,11 @@
 package net.thevpc.scholar.hadrumaths.meshalgo;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.HSerializable;
 import net.thevpc.scholar.hadrumaths.geom.Triangle;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.awt.*;
 import java.util.Collections;
@@ -21,10 +22,10 @@ public class EnhancedMeshPolygons implements HSerializable {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObjectBuilder(getClass().getSimpleName())
-                .add("surface", context.elem(surface))
-                .add("polygons", context.elem(polygon))
+    public NElement toElement() {
+        return NElement.ofObjectBuilder(getClass().getSimpleName())
+                .add("surface", NElementHelper.elem(surface))
+                .add("polygons", NElementHelper.elem(polygon))
                 .build();
     }
 
