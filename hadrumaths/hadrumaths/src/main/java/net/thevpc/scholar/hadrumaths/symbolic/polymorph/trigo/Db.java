@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.trigo;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -112,6 +113,11 @@ class DbDoubleToDouble extends Db implements DoubleToDoubleDefaults.DoubleToDoub
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Div");
+    }
+
+    @Override
     public double evalDoubleSimple(double x) {
         return Maths.db(x);
     }
@@ -121,6 +127,11 @@ class DbDoubleToDouble extends Db implements DoubleToDoubleDefaults.DoubleToDoub
 class DbDoubleToComplex extends Db implements DoubleToComplexDefaults.DoubleToComplexUnaryDC {
     public DbDoubleToComplex(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Div");
     }
 
     @Override
@@ -135,6 +146,10 @@ class DbDoubleToVector extends Db implements DoubleToVectorDefaults.DoubleToVect
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Div");
+    }
+    @Override
     public ComplexVector aggregateVector(ComplexVector v) {
         return v.db();
     }
@@ -145,6 +160,10 @@ class DbDoubleToMatrix extends Db implements DoubleToMatrixDefaults.DoubleToMatr
         super(arg);
     }
 
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Div");
+    }
     @Override
     public ComplexMatrix aggregateMatrix(ComplexMatrix m) {
         return m.db();
