@@ -1,4 +1,4 @@
-import package net.thevpc.scholar:hadruwaves#3.2.0;
+import package net.thevpc.scholar:hadruwaves#3.3.0;
 
     var f = 5 * GHZ
     //box
