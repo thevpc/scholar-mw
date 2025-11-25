@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.thevpc.nuts.toolbox</groupId>
     <artifactId>hadrubox</artifactId>
-    <version>3.2.0.0</version>
+    <version>3.3.0.0</version>
     <packaging>jar</packaging>
     <name>net.thevpc.scholar.hadruwaves.hadruwaves-box</name>
 
@@ -159,7 +159,7 @@
     </build>
     
     <dependencies>
-        <dependency><groupId>net.thevpc.nuts.lib</groupId><artifactId>nlib-template</artifactId><version>0.8.4.0</version></dependency>
+        <dependency><groupId>net.thevpc.nuts</groupId><artifactId>nuts</artifactId><version>0.8.8.0</version></dependency>
     </dependencies>
     
     <repositories>
