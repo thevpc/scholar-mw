@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2vector;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToMatrix;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
@@ -64,6 +65,11 @@ public class VDiscrete extends AbstractDoubleToVector implements Normalizable {
         values[2] = fz;
         domain = values[0].getDomain().expand(values[1].getDomain()).expand(values[2].getDomain());
         componentDimension = ComponentDimension.VECTOR3;
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("VDiscrete");
     }
 
     public Coordinates getCoordinates() {
