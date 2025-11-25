@@ -9,9 +9,9 @@ import net.thevpc.scholar.hadruwaves.project.scene.Point3DTemplate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.geom.Point;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 
@@ -46,10 +46,10 @@ public class Element3DPolygonTemplate extends AbstractElement3DTemplate {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofArrayBuilder(getClass().getSimpleName())
+    public NElement toElement() {
+        return NElement.ofArrayBuilder(getClass().getSimpleName())
                 .addAll(
-                        all.stream().map(x -> x.toTsonElement(context))
+                        all.stream().map(x -> x.toElement())
                                 .collect(Collectors.toList())
                 )
                 .build();
