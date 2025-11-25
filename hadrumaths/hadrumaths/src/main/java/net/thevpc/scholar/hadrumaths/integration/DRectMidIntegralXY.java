@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadrumaths.integration;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 
 /**
@@ -173,9 +173,9 @@ public class DRectMidIntegralXY implements DIntegralXY {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofUplet(getClass().getSimpleName(), Tson.of(xprecision), Tson.of(yprecision), Tson.of(zprecision))
-                .build();
+    public NElement toElement() {
+        return NElement.ofUplet(getClass().getSimpleName(), NElement.ofInt(xprecision), NElement.ofInt(yprecision), NElement.ofInt(zprecision))
+                ;
     }
 //    @Override
 //    public String dump() {
