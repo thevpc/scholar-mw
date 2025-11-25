@@ -4,10 +4,11 @@
  */
 package net.thevpc.scholar.hadruwaves.mom.sources.planar;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
+
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.geom.Geometry;
@@ -19,6 +20,7 @@ import net.thevpc.scholar.hadrumaths.meshalgo.triconsdes.MeshConsDesAlgo;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.Expr;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.mom.sources.PlanarSource;
 
 import java.util.ArrayList;
@@ -119,13 +121,13 @@ public class CstPlanarSource implements PlanarSource, Cloneable {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder h = Tson.ofObjectBuilder(getClass().getSimpleName());
-        h.add("xvalue", context.elem(xvalue));
-        h.add("yvalue", context.elem(yvalue));
-        h.add("polarization", context.elem(polarization));
-        h.add("z0", context.elem(characteristicImpedance));
-        h.add("geometries", context.elem(geometryList));
+    public NElement toElement() {
+        NObjectElementBuilder h = NElement.ofObjectBuilder(getClass().getSimpleName());
+        h.add("xvalue", NElementHelper.elem(xvalue));
+        h.add("yvalue", NElementHelper.elem(yvalue));
+        h.add("polarization", NElementHelper.elem(polarization));
+        h.add("z0", NElementHelper.elem(characteristicImpedance));
+        h.add("geometries", NElementHelper.elem(geometryList));
         return h.build();
     }
 
