@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.BooleanMarker;
 import net.thevpc.scholar.hadrumaths.Domain;
@@ -28,6 +29,11 @@ public class DDyIntegralX extends AbstractDoubleToDouble {
 
     public DDyIntegralX(DoubleToDouble base) {
         this(base, new DQuadIntegralXY(), base.getDomain().xmin(), base.getDomain().xmax());
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("DDyIntegralX");
     }
 
     /**
