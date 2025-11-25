@@ -3,14 +3,14 @@
 
     <groupId>net.thevpc.scholar</groupId>
     <artifactId>hadruplot-jzy3</artifactId>
-    <version>3.2.0</version>
+    <version>3.3.0</version>
     <name>net.thevpc.scholar.hadruplot.hadruplot-jzy3</name>
     <packaging>jar</packaging>
 
     <url>https://github.com/thevpc/scholar-mw</url>
 
     <properties>
-        <scholar-version>3.2.0</scholar-version>
+        <scholar-version>3.3.0</scholar-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <github.global.server>github</github.global.server>
     </properties>
@@ -28,7 +28,7 @@
     </distributionManagement>
 
     <dependencies>
-        <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruplot-core</artifactId><version>3.2.0</version></dependency>
+        <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruplot-core</artifactId><version>3.3.0</version></dependency>
         <dependency><groupId>org.jzy3d</groupId><artifactId>jzy3d-api</artifactId><version>1.0.3</version></dependency>
     </dependencies>
     <build>
