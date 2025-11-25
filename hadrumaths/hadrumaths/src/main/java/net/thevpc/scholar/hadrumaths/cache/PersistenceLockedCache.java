@@ -1,11 +1,13 @@
 package net.thevpc.scholar.hadrumaths.cache;
 
 import net.thevpc.common.mon.ProgressMonitor;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonObjectBuilder;
+
+
 import net.thevpc.common.time.Chronometer;
 import net.thevpc.common.time.DatePart;
 import net.thevpc.common.time.TimeDuration;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
@@ -74,18 +76,18 @@ class PersistenceLockedCache<T> implements Callable<T> {
                     objCache.store(cacheItemName, oldValue, storeMon);
                     storeChrono.stop();
                     log.log(Level.SEVERE, "[PersistenceCache] " + cacheItemName + " evaluated in " + computeChrono + " ; stored to disk in " + storeChrono + " (" + objCache.getObjectCacheFile(cacheItemName).getFile() + ")");
-                    TsonObjectBuilder stat = Tson.ofObjectBuilder();
-                    stat.add(Tson.ofPair("name", Tson.of(cacheItemName)));
-                    stat.add(Tson.ofPair("eval",
-                            Tson.ofObjectBuilder(
-                                    Tson.ofPair("nanos", Tson.of(computeChrono.getTime())),
-                                    Tson.ofPair("str", Tson.of(computeChrono.getDuration().toString()))
+                    NObjectElementBuilder stat = NElement.ofObjectBuilder();
+                    stat.add(NElement.ofPair("name", NElement.ofString(cacheItemName)));
+                    stat.add(NElement.ofPair("eval",
+                            NElement.ofObject(
+                                    NElement.ofPair("nanos", NElement.ofLong(computeChrono.getTime())),
+                                    NElement.ofPair("str", NElement.ofString(computeChrono.getDuration().toString()))
                             ))
                     );
-                    stat.add(Tson.ofPair("store",
-                            Tson.ofObjectBuilder(
-                                    Tson.ofPair("nanos", Tson.of(storeChrono.getTime())),
-                                    Tson.ofPair("str", Tson.of(computeChrono.getDuration().toString()))
+                    stat.add(NElement.ofPair("store",
+                            NElement.ofObject(
+                                    NElement.ofPair("nanos", NElement.ofLong(storeChrono.getTime())),
+                                    NElement.ofPair("str", NElement.ofString(computeChrono.getDuration().toString()))
                             ))
                     );
                     if (persistenceCache.isLogLoadStatsEnabled()) {
@@ -97,14 +99,14 @@ class PersistenceLockedCache<T> implements Callable<T> {
                         }
                         loadChrono.stop();
                         boolean longLoadNDetected = timeThresholdMilli > 0 && loadChrono.getTime() > timeThresholdMilli * 1000000;
-                        stat.add(Tson.ofPair(
+                        stat.add(NElement.ofPair(
                                 "load",
-                                Tson.ofObjectBuilder(
-                                        Tson.ofPair("nanos", Tson.of(loadChrono.getTime())),
-                                        Tson.ofPair("str", Tson.of(computeChrono.getDuration().toString()))
+                                NElement.ofObject(
+                                        NElement.ofPair("nanos", NElement.ofLong(loadChrono.getTime())),
+                                        NElement.ofPair("str", NElement.ofString(computeChrono.getDuration().toString()))
                                 )));
                         if (longLoadNDetected) {
-                            stat.add(Tson.ofPair("slowLoading", Tson.of(true)));
+                            stat.add(NElement.ofPair("slowLoading", NElement.ofBoolean(true)));
                             log.log(Level.WARNING, "[PersistenceCache] " + cacheItemName + " reloading took too long (" + loadChrono + " > " +
                                     TimeDuration.ofMillis(timeThresholdMilli).toString(DatePart.SECOND) + ")");
                         }
