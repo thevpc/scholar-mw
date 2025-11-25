@@ -6,7 +6,7 @@ Vain Ruling Web Framework (VRWF) code generation tool
 ## Installation
 **vr-box** is installable using [nuts](https://github.com/thevpc/nuts) tool. 
 
-Please check that nuts version is 0.5.5 or newer is instaleld than type
+Please check that nuts version is 0.8.9 or newer is installed than type
 
 ```
 nuts install -y vr-box
@@ -18,7 +18,7 @@ net.thevpc.nuts.toolbox:vr-box#1.13.15.0 installed successfully. Set as default.
 ```
 
 ## Requirements
-nuts version 0.5.5 or late
+nuts version 0.8.9 or late
 Java Runtime Environment (JRE) or Java Development Kit (JDK) version 8 or later
 
 ## Creating a new project using vr-box
