@@ -5,9 +5,10 @@
 
 package net.thevpc.scholar.hadrumaths.meshalgo;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
+
 
 import java.util.Arrays;
 import java.util.TreeSet;
@@ -28,9 +29,9 @@ public final class MeshZoneTypeFilterAccepted implements MeshZoneTypeFilter {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObjectBuilder(getClass().getSimpleName())
-                .add("accepted", context.elem(accepted))
+    public NElement toElement() {
+        return NElement.ofObjectBuilder(getClass().getSimpleName())
+                .add("accepted", NElementHelper.elem(accepted))
                 .build();
     }
 //    public Dumper getDumpStringHelper() {
