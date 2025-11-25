@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.geom.DefaultPolygon;
 import net.thevpc.scholar.hadrumaths.geom.Point;
@@ -47,6 +48,11 @@ public class Polyhedron extends AbstractDoubleToDouble {
             triangle = new Triangle(polygon);
             baricenter = triangle.getBarycenter();
         }
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Polyhedron");
     }
 
     @Override
