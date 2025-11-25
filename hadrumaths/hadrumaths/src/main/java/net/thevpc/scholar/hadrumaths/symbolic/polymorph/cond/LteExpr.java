@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.cond;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 
@@ -12,6 +13,12 @@ public class LteExpr extends AbstractComparatorExpr {
     private LteExpr(DoubleToDouble xarg, DoubleToDouble yarg) {
         super(xarg, yarg, xarg.getDomain().intersect(yarg.getDomain()));
     }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("LteExpr");
+    }
+
 
     @Override
     public String getOperatorName() {
