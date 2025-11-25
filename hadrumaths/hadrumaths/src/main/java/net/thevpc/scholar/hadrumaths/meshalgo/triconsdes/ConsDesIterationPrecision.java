@@ -1,10 +1,12 @@
 package net.thevpc.scholar.hadrumaths.meshalgo.triconsdes;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
+
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.geom.Triangle;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.util.List;
 
@@ -22,9 +24,9 @@ public class ConsDesIterationPrecision implements ConsDesPrecision {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder sb = Tson.ofObjectBuilder(getClass().getSimpleName());
-        sb.add("complexity", context.elem(iteration));
+    public NElement toElement() {
+        NObjectElementBuilder sb = NElement.ofObjectBuilder(getClass().getSimpleName());
+        sb.add("complexity", NElementHelper.elem(iteration));
         return sb.build();
     }
 
