@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.trigo;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -119,6 +120,11 @@ class AsinhDoubleToComplex extends Asinh implements DoubleToComplexDefaults.Doub
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Asinh");
+    }
+
+    @Override
     public Complex aggregateComplex(Complex a) {
         return a.asinh();
     }
@@ -132,6 +138,11 @@ class AsinhDoubleToVector extends Asinh implements DoubleToVectorDefaults.Double
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Asinh");
+    }
+
+    @Override
     public ComplexVector aggregateVector(ComplexVector v) {
         return v.asinh();
     }
@@ -140,6 +151,11 @@ class AsinhDoubleToVector extends Asinh implements DoubleToVectorDefaults.Double
 class AsinhDoubleToMatrix extends Asinh implements DoubleToMatrixDefaults.DoubleToMatrixUnaryDM {
     public AsinhDoubleToMatrix(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Asinh");
     }
 
     @Override
