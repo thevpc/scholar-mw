@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.cond;
 
-import net.thevpc.tson.impl.util.UnmodifiableArrayList;
+
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.thevpc.scholar.hadrumaths.format.ObjectFormatParamSet;
@@ -9,6 +9,7 @@ import net.thevpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.thevpc.scholar.hadrumaths.symbolic.ExprDefaults;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.AbstractDoubleToDouble;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import net.thevpc.scholar.hadrumaths.util.internal.IgnoreRandomGeneration;
@@ -32,11 +33,11 @@ public abstract class AbstractComparatorExpr extends AbstractDoubleToDouble {
         });
     }
 
-    protected UnmodifiableArrayList<DoubleToDouble> expressions;
+    protected List<DoubleToDouble> expressions;
     protected Domain domain;
 
     public AbstractComparatorExpr(DoubleToDouble xargument, DoubleToDouble yargument, Domain domain) {
-        expressions = UnmodifiableArrayList.ofRef(new DoubleToDouble[]{xargument.toDD(), yargument.toDD()});
+        expressions = Arrays.asList(new DoubleToDouble[]{xargument.toDD(), yargument.toDD()});
         this.domain = domain;
     }
 
