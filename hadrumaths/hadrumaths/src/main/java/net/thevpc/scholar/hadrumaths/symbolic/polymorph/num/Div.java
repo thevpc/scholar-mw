@@ -5,6 +5,7 @@
  */
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.num;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
 import net.thevpc.scholar.hadrumaths.transform.ExpressionTransform;
@@ -299,6 +300,12 @@ class DivDoubleToDouble extends Div implements DoubleToDoubleDefaults.DoubleToDo
     public double evalDoubleSimple(double a, double b) {
         return a / b;
     }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Div", NElement.ofName("double"), NElement.ofName("double"));
+    }
+
 }
 
 class DivDoubleToComplex extends Div implements DoubleToComplexDefaults.DoubleToComplexDCDC {
@@ -309,6 +316,11 @@ class DivDoubleToComplex extends Div implements DoubleToComplexDefaults.DoubleTo
     @Override
     public Complex aggregateComplex(Complex a, Complex b) {
         return a.div(b);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Div", NElement.ofName("Complex"), NElement.ofName("Conplex"));
     }
 }
 
@@ -321,8 +333,11 @@ class DivDoubleToVectorDVDC extends Div implements DoubleToVectorDefaults.Double
     public ComplexVector evalVectorSimple(ComplexVector a, Complex b) {
         return a.div(b);
     }
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Div", NElement.ofName("ComplexVector"), NElement.ofName("Vector"));
+    }
 }
-
 class DivDoubleToVectorDCDV extends Div implements DoubleToVectorDefaults.DoubleToVectorDCDV {
     public DivDoubleToVectorDCDV(Expr first, Expr second) {
         super(first.toDC(), second.toDV());
@@ -331,6 +346,11 @@ class DivDoubleToVectorDCDV extends Div implements DoubleToVectorDefaults.Double
     @Override
     public ComplexVector evalVectorSimple(Complex a, ComplexVector b) {
         return b.inv().mul(a);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Div", NElement.ofName("Complex"), NElement.ofName("ComplexVector"));
     }
 }
 
@@ -343,6 +363,11 @@ class DivDoubleToVectorDVDV extends Div implements DoubleToVectorDefaults.Double
     public ComplexVector evalVectorSimple(ComplexVector a, ComplexVector b) {
         return a.toMatrix().div(b.toMatrix()).toVector();
     }
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Div", NElement.ofName("ComplexVector"), NElement.ofName("ComplexVector"));
+    }
+
 }
 
 class DivDoubleToMatrixDCDM extends Div implements DoubleToMatrixDefaults.DoubleToMatrixDCDM {
@@ -354,6 +379,11 @@ class DivDoubleToMatrixDCDM extends Div implements DoubleToMatrixDefaults.Double
     public ComplexMatrix evalMatrixSimple(Complex a, ComplexMatrix b) {
         return b.inv().mul(a);
     }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Div", NElement.ofName("ComplexVector"), NElement.ofName("ComplexVector"));
+    }
 }
 
 class DivDoubleToMatrixDMDC extends Div implements DoubleToMatrixDefaults.DoubleToMatrixDMDC {
@@ -364,6 +394,11 @@ class DivDoubleToMatrixDMDC extends Div implements DoubleToMatrixDefaults.Double
     @Override
     public ComplexMatrix evalMatrixSimple(ComplexMatrix a, Complex b) {
         return a.div(b);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Div", NElement.ofName("ComplexMatrix"), NElement.ofName("Complex"));
     }
 }
 
@@ -377,6 +412,10 @@ class DivDoubleToMatrixDVDM extends Div implements DoubleToMatrixDefaults.Double
         return a.toMatrix().div(b);
     }
 
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Div", NElement.ofName("ComplexVector"), NElement.ofName("ComplexMatrix"));
+    }
 }
 
 class DivDoubleToMatrixDMDV extends Div implements DoubleToMatrixDefaults.DoubleToMatrixDMDV {
@@ -387,6 +426,11 @@ class DivDoubleToMatrixDMDV extends Div implements DoubleToMatrixDefaults.Double
     @Override
     public ComplexMatrix evalMatrixSimple(ComplexMatrix a, ComplexVector b) {
         return a.div(b.toMatrix());
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Div", NElement.ofName("ComplexMatrix"), NElement.ofName("ComplexVector"));
     }
 }
 
@@ -400,5 +444,9 @@ class DivDoubleToMatrixDMDM extends Div implements DoubleToMatrixDefaults.Double
         return a.div(b);
     }
 
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Div", NElement.ofName("ComplexMatrix"), NElement.ofName("ComplexMatrix"));
+    }
 }
 
