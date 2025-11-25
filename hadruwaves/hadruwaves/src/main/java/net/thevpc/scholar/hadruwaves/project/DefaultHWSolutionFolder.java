@@ -1,6 +1,7 @@
 package net.thevpc.scholar.hadruwaves.project;
 
 import net.thevpc.common.props.WritableLiMap;
+import net.thevpc.nuts.elem.NElement;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -11,6 +12,10 @@ public class DefaultHWSolutionFolder extends AbstractHWSolutionElement implement
     public DefaultHWSolutionFolder(String name) {
         super("solution-folder");
         name().set(name);
+    }
+
+    public NElement toElement() {
+        return NElement.ofObject("solution-folder");
     }
 
     @Override
