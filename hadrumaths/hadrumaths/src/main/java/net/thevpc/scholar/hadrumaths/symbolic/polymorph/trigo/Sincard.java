@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.trigo;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -112,6 +113,11 @@ class SincardDoubleToDouble extends Sincard implements DoubleToDoubleDefaults.Do
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Sincard");
+    }
+
+    @Override
     public double evalDoubleSimple(double x) {
         return Maths.sincard(x);
     }
@@ -119,6 +125,11 @@ class SincardDoubleToDouble extends Sincard implements DoubleToDoubleDefaults.Do
 class SincardDoubleToComplex extends Sincard implements DoubleToComplexDefaults.DoubleToComplexUnaryDC {
     public SincardDoubleToComplex(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Sincard");
     }
 
     @Override
@@ -134,6 +145,11 @@ class SincardDoubleToVector extends Sincard implements DoubleToVectorDefaults.Do
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Sincard");
+    }
+
+    @Override
     public ComplexVector aggregateVector(ComplexVector v) {
         return v.sincard();
     }
@@ -142,6 +158,11 @@ class SincardDoubleToVector extends Sincard implements DoubleToVectorDefaults.Do
 class SincardDoubleToMatrix extends Sincard implements DoubleToMatrixDefaults.DoubleToMatrixUnaryDM {
     public SincardDoubleToMatrix(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Sincard");
     }
 
     @Override
