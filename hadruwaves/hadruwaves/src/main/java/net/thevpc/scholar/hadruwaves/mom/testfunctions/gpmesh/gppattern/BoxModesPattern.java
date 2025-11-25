@@ -1,15 +1,17 @@
 package net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
+
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.CosXCosY;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.common.mon.ProgressMonitor;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.ModeInfo;
 import net.thevpc.scholar.hadruwaves.ModeType;
 import net.thevpc.scholar.hadruwaves.Boundary;
@@ -89,18 +91,18 @@ public final class BoxModesPattern implements RectangularGpPattern {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder h = Tson.ofObjectBuilder(getClass().getSimpleName());
-        h.add("complexity", context.elem(complexity));
-        h.add("axisInvariance", context.elem(axisInvariance));
-        h.add("inheritInvariance", context.elem(inheritInvariance));
-        h.add("inheritSymmetry", context.elem(inheritSymmetry));
-        h.add("axisSymmetry", context.elem(axisSymmetry));
-        h.add("keepNormalization", context.elem(keepNormalization));
-        h.add("keepAllModes", context.elem(keepAllModes));
-        h.add("maxLoopCount", context.elem(maxLoopCount));
-        h.add("includedFunctions", context.elem(includedFunctions));
-        h.add("excludedFunctions", context.elem(excludedFunctions));
+    public NElement toElement() {
+        NObjectElementBuilder h = NElement.ofObjectBuilder(getClass().getSimpleName());
+        h.add("complexity", NElementHelper.elem(complexity));
+        h.add("axisInvariance", NElementHelper.elem(axisInvariance));
+        h.add("inheritInvariance", NElementHelper.elem(inheritInvariance));
+        h.add("inheritSymmetry", NElementHelper.elem(inheritSymmetry));
+        h.add("axisSymmetry", NElementHelper.elem(axisSymmetry));
+        h.add("keepNormalization", NElementHelper.elem(keepNormalization));
+        h.add("keepAllModes", NElementHelper.elem(keepAllModes));
+        h.add("maxLoopCount", NElementHelper.elem(maxLoopCount));
+        h.add("includedFunctions", NElementHelper.elem(includedFunctions));
+        h.add("excludedFunctions", NElementHelper.elem(excludedFunctions));
         return h.build();
     }
 
