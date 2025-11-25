@@ -2,14 +2,16 @@ package net.thevpc.scholar.hadruwaves.mom.testfunctions;
 
 import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.common.mon.ProgressMonitors;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
+
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.cache.ObjectCache;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.symbolic.ExprDefaults;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadrumaths.util.PlatformUtils;
 import net.thevpc.scholar.hadruwaves.mom.HintAxisType;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
@@ -388,11 +390,11 @@ public abstract class TestFunctionsBase implements net.thevpc.scholar.hadruwaves
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder h = Tson.ofObjectBuilder(getClass().getSimpleName());
-        h.add("axisType", context.elem(axisType));
+    public NElement toElement() {
+        NObjectElementBuilder h = NElement.ofObjectBuilder(getClass().getSimpleName());
+        h.add("axisType", NElementHelper.elem(axisType));
         if (functionsComparator != null) {
-            h.add("functionsComparator", context.elem(functionsComparator));
+            h.add("functionsComparator", NElementHelper.elem(functionsComparator));
         }
         return h.build();
     }
