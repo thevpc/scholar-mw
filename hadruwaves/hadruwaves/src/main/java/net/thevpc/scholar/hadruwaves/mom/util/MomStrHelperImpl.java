@@ -5,8 +5,8 @@
 
 package net.thevpc.scholar.hadruwaves.mom.util;
 
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.ComplexMatrix;
 import net.thevpc.scholar.hadrumaths.cache.ObjectCache;
 import net.thevpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
@@ -133,8 +133,8 @@ public class MomStrHelperImpl implements MomStrHelper {
         return momStructure.dump();
     }
 
-    public TsonElement toTsonElement(TsonObjectContext context){
-        return momStructure.toTsonElement(context);
+    public NElement toElement(){
+        return momStructure.toElement();
     }
 
 
