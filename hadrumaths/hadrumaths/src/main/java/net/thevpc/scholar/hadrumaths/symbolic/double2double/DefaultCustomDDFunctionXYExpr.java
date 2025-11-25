@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.format.ObjectFormat;
 import net.thevpc.scholar.hadrumaths.format.ObjectFormatContext;
@@ -7,8 +8,8 @@ import net.thevpc.scholar.hadrumaths.symbolic.*;
 import net.thevpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.thevpc.scholar.hadrumaths.transform.ExpressionRewriterRule;
 import net.thevpc.scholar.hadrumaths.transform.RewriteResult;
-import net.thevpc.scholar.hadrumaths.util.InternalUnmodifiableArrayList;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -56,12 +57,17 @@ public class DefaultCustomDDFunctionXYExpr extends AbstractComposedDoubleToDoubl
 
     private final CustomDDFunctionXYDefinition definition;
     private final Domain domain;
-    private final InternalUnmodifiableArrayList<DoubleToDouble> args;
+    private final List<DoubleToDouble> args;
 
     public DefaultCustomDDFunctionXYExpr(DoubleToDouble xarg, DoubleToDouble yarg, CustomDDFunctionXYDefinition definition) {
-        this.args = new InternalUnmodifiableArrayList(new DoubleToDouble[]{xarg, yarg});
+        this.args = Arrays.asList(new DoubleToDouble[]{xarg, yarg});
         this.definition = definition;
         this.domain = xarg.getDomain().intersect(yarg.getDomain());
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("DefaultCustomDDFunctionXYExpr");
     }
 
     @Override
@@ -95,13 +101,13 @@ public class DefaultCustomDDFunctionXYExpr extends AbstractComposedDoubleToDoubl
     @Override
     public double evalDouble(double x, double y, double z, BooleanMarker defined) {
         BooleanRef a = BooleanMarker.ref();
-        double xx = args.array[0].evalDouble(x, y, z, a);
+        double xx = args.get(0).evalDouble(x, y, z, a);
         if (!a.get()) {
             return 0;
         }
         a.unset();
 
-        double yy = args.array[1].evalDouble(x, y, z, a);
+        double yy = args.get(1).evalDouble(x, y, z, a);
         if (!a.get()) {
             return 0;
         }
@@ -112,13 +118,13 @@ public class DefaultCustomDDFunctionXYExpr extends AbstractComposedDoubleToDoubl
     @Override
     public double evalDouble(double x, BooleanMarker defined) {
         BooleanRef a = BooleanMarker.ref();
-        double xx = args.array[0].evalDouble(x, a);
+        double xx = args.get(0).evalDouble(x, a);
         if (!a.get()) {
             return 0;
         }
         a.unset();
 
-        double yy = args.array[1].evalDouble(x, a);
+        double yy = args.get(1).evalDouble(x, a);
         if (!a.get()) {
             return 0;
         }
@@ -129,13 +135,13 @@ public class DefaultCustomDDFunctionXYExpr extends AbstractComposedDoubleToDoubl
     @Override
     public double evalDouble(double x, double y, BooleanMarker defined) {
         BooleanRef a = BooleanMarker.ref();
-        double xx = args.array[0].evalDouble(x, y, a);
+        double xx = args.get(0).evalDouble(x, y, a);
         if (!a.get()) {
             return 0;
         }
         a.unset();
 
-        double yy = args.array[1].evalDouble(x, y, a);
+        double yy = args.get(1).evalDouble(x, y, a);
         if (!a.get()) {
             return 0;
         }
