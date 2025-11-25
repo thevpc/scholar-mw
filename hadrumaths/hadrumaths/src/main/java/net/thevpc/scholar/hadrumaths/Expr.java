@@ -1,7 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.geom.Geometry;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
 
@@ -374,8 +373,8 @@ public interface Expr extends HSerializable {
         return false;
     }
 
-    default TsonElement toTsonElement(TsonObjectContext context) {
-        return ExprDefaults.toTsonElement(this, context);
+    default NElement toElement() {
+        return ExprDefaults.toElement(this);
     }
 
     default Expr mul(Domain domain) {
