@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadrumaths.meshalgo.rect;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.geom.Geometry;
@@ -10,6 +10,7 @@ import net.thevpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZoneShape;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZoneType;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -84,14 +85,14 @@ public class MeshAlgoRect implements MeshAlgo, Cloneable {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObjectBuilder(getClass().getSimpleName())
-                .add("dividerX", context.elem(dividerX))
-                .add("dividerY", context.elem(dividerY))
-                .add("minRelativeSizeX", context.elem(minRelativeSizeX))
-                .add("minRelativeSizeY", context.elem(minRelativeSizeY))
-                .add("maxRelativeSizeX", context.elem(maxRelativeSizeX))
-                .add("maxRelativeSizeY", context.elem(maxRelativeSizeY))
+    public NElement toElement() {
+        return NElement.ofObjectBuilder(getClass().getSimpleName())
+                .add("dividerX", NElementHelper.elem(dividerX))
+                .add("dividerY", NElementHelper.elem(dividerY))
+                .add("minRelativeSizeX", NElementHelper.elem(minRelativeSizeX))
+                .add("minRelativeSizeY", NElementHelper.elem(minRelativeSizeY))
+                .add("maxRelativeSizeX", NElementHelper.elem(maxRelativeSizeX))
+                .add("maxRelativeSizeY", NElementHelper.elem(maxRelativeSizeY))
                 .build();
     }
 
