@@ -1569,6 +1569,7 @@ public final class Maths {
     }
 
     public static Expr derive(Expr f, Axis axis) {
+        f=f.simplify();
         return Config.getFunctionDerivatorManager().derive(f, axis).simplify();
     }
 
