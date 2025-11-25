@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.complex2complex;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
 
@@ -20,6 +21,11 @@ public class DefaultCustomCCFunctionXExpr implements CustomCCFunctionXExpr {
     public DefaultCustomCCFunctionXExpr(DoubleToComplex arg, CustomCCFunctionXDefinition definition) {
         this.arg = arg;
         this.definition = definition;
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("DefaultCustomCCFunctionXExpr");
     }
 
     @Override
