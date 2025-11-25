@@ -3,10 +3,11 @@ package net.thevpc.scholar.hadruwaves.mom.sources.planar;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.mom.sources.*;
 import java.util.Collection;
 import java.util.List;
@@ -45,8 +46,8 @@ public final class DefaultPlanarSources implements PlanarSources, Cloneable {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofUplet("PlanarSources",context.elem(all)).build();
+    public NElement toElement() {
+        return NElement.ofUplet("PlanarSources", NElementHelper.elem(all));
     }
 
     @Override
