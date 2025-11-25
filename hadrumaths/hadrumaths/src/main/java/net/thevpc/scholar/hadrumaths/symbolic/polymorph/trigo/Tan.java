@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.trigo;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -114,6 +115,12 @@ class TanDoubleToDouble extends Tan implements DoubleToDoubleDefaults.DoubleToDo
     public double evalDoubleSimple(double x) {
         return Maths.tan(x);
     }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Tan");
+    }
+
 }
 
 class TanDoubleToComplex extends Tan implements DoubleToComplexDefaults.DoubleToComplexUnaryDC {
@@ -121,6 +128,10 @@ class TanDoubleToComplex extends Tan implements DoubleToComplexDefaults.DoubleTo
         super(arg);
     }
 
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Tan");
+    }
     @Override
     public Complex aggregateComplex(Complex a) {
         return a.tan();
@@ -133,6 +144,10 @@ class TanDoubleToVector extends Tan implements DoubleToVectorDefaults.DoubleToVe
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Tan");
+    }
+    @Override
     public ComplexVector aggregateVector(ComplexVector v) {
         return v.tan();
     }
@@ -143,6 +158,10 @@ class TanDoubleToMatrix extends Tan implements DoubleToMatrixDefaults.DoubleToMa
         super(arg);
     }
 
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Tan");
+    }
     @Override
     public ComplexMatrix aggregateMatrix(ComplexMatrix m) {
         return m.tan();
