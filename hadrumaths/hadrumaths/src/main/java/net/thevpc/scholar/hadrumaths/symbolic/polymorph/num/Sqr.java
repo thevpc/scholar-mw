@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.num;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -114,6 +115,12 @@ class SqrDoubleToDouble extends Sqr implements DoubleToDoubleDefaults.DoubleToDo
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Sqr");
+    }
+
+
+    @Override
     public double evalDoubleSimple(double x) {
         return Maths.sqr(x);
     }
@@ -122,6 +129,11 @@ class SqrDoubleToDouble extends Sqr implements DoubleToDoubleDefaults.DoubleToDo
 class SqrDoubleToComplex extends Sqr implements DoubleToComplexDefaults.DoubleToComplexUnaryDC {
     public SqrDoubleToComplex(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Sqr");
     }
 
     @Override
@@ -137,6 +149,12 @@ class SqrDoubleToVector extends Sqr implements DoubleToVectorDefaults.DoubleToVe
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Sqr");
+    }
+
+
+    @Override
     public ComplexVector aggregateVector(ComplexVector v) {
         return v.sqr();
     }
@@ -146,6 +164,12 @@ class SqrDoubleToMatrix extends Sqr implements DoubleToMatrixDefaults.DoubleToMa
     public SqrDoubleToMatrix(Expr arg) {
         super(arg);
     }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Sqr");
+    }
+
 
     @Override
     public ComplexMatrix aggregateMatrix(ComplexMatrix m) {
