@@ -1,11 +1,13 @@
 package net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+import net.thevpc.nuts.elem.NElement;
+
+
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.Axis;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.Boundary;
 import net.thevpc.scholar.hadruwaves.WallBorders;
 import net.thevpc.scholar.hadruwaves.mom.ModeFunctions;
@@ -39,11 +41,11 @@ public final class SinIntelliPattern extends AbstractGpPatternPQ {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder h = super.toTsonElement(context).toObject().builder();
-        h.add("xinvariance", context.elem(xinvariance));
-        h.add("yinvariance", context.elem(yinvariance));
-        h.add("selectedFunctions", context.elem(selectedFunctions));
+    public NElement toElement() {
+        NObjectElementBuilder h = super.toElement().toObject().get().builder();
+        h.add("xinvariance", NElementHelper.elem(xinvariance));
+        h.add("yinvariance", NElementHelper.elem(yinvariance));
+        h.add("selectedFunctions", NElementHelper.elem(selectedFunctions));
         return h.build();
     }
 
