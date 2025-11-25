@@ -1,9 +1,11 @@
 package net.thevpc.scholar.hadrumaths.cache;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElementBase;
-import net.thevpc.tson.TsonSerializer;
+
+
+
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.Maths;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -82,109 +84,108 @@ public class CacheKey {
     }
 
     public static CacheKey fct(String name, Object... elements) {
-        return of(Tson.ofUplet(name, Tson.serializer().serializeArray(elements)));
+        return of(NElement.ofUplet(name, NElementHelper.elem(elements)));
     }
 
-    public static CacheKey of(TsonElementBase element) {
-        return new CacheKey(Maths.Config.getTsonSerializer().serialize(element).toString(false));
+    public static CacheKey of(NElement element) {
+        return new CacheKey(NElementHelper.elem(element).toString(false));
     }
 
     public static CacheKey obj(String name, String a1, Object v1) {
-        TsonSerializer s = Tson.serializer();
-        return of(Tson.ofObjectBuilder(name).add(a1, s.serialize(v1)));
+        return of(NElement.ofObjectBuilder(name).add(a1, NElementHelper.elem(v1)));
     }
 
     public static CacheKey obj(String name, String a1, Object v1, String a2, Object v2) {
-        TsonSerializer s = Tson.serializer();
-        return of(Tson.ofObjectBuilder(name)
-                .add(a1, s.serialize(v1))
-                .add(a2, s.serialize(v2))
+
+        return of(NElement.ofObjectBuilder(name)
+                .add(a1, NElementHelper.elem(v1))
+                .add(a2, NElementHelper.elem(v2))
         );
     }
 
     public static CacheKey obj(String name, String a1, Object v1, String a2, Object v2, String a3, Object v3) {
-        TsonSerializer s = Tson.serializer();
-        return of(Tson.ofObjectBuilder(name)
-                .add(a1, s.serialize(v1))
-                .add(a2, s.serialize(v2))
-                .add(a3, s.serialize(v3))
+
+        return of(NElement.ofObjectBuilder(name)
+                .add(a1, NElementHelper.elem(v1))
+                .add(a2, NElementHelper.elem(v2))
+                .add(a3, NElementHelper.elem(v3))
         );
     }
 
     public static CacheKey obj(String name, String a1, Object v1, String a2, Object v2, String a3, Object v3, String a4, Object v4) {
-        TsonSerializer s = Tson.serializer();
-        return of(Tson.ofObjectBuilder(name)
-                .add(a1, s.serialize(v1))
-                .add(a2, s.serialize(v2))
-                .add(a3, s.serialize(v3))
-                .add(a4, s.serialize(v4))
+
+        return of(NElement.ofObjectBuilder(name)
+                .add(a1, NElementHelper.elem(v1))
+                .add(a2, NElementHelper.elem(v2))
+                .add(a3, NElementHelper.elem(v3))
+                .add(a4, NElementHelper.elem(v4))
         );
     }
 
     public static CacheKey obj(String name, String a1, Object v1, String a2, Object v2, String a3, Object v3, String a4, Object v4, String a5, Object v5) {
-        TsonSerializer s = Tson.serializer();
-        return of(Tson.ofObjectBuilder(name)
-                .add(a1, s.serialize(v1))
-                .add(a2, s.serialize(v2))
-                .add(a3, s.serialize(v3))
-                .add(a4, s.serialize(v4))
-                .add(a5, s.serialize(v5))
+
+        return of(NElement.ofObjectBuilder(name)
+                .add(a1, NElementHelper.elem(v1))
+                .add(a2, NElementHelper.elem(v2))
+                .add(a3, NElementHelper.elem(v3))
+                .add(a4, NElementHelper.elem(v4))
+                .add(a5, NElementHelper.elem(v5))
         );
     }
 
     public static CacheKey obj(String name, String a1, Object v1, String a2, Object v2, String a3, Object v3, String a4, Object v4, String a5, Object v5, String a6, Object v6) {
-        TsonSerializer s = Tson.serializer();
-        return of(Tson.ofObjectBuilder(name)
-                .add(a1, s.serialize(v1))
-                .add(a2, s.serialize(v2))
-                .add(a3, s.serialize(v3))
-                .add(a4, s.serialize(v4))
-                .add(a5, s.serialize(v5))
-                .add(a6, s.serialize(v6))
+
+        return of(NElement.ofObjectBuilder(name)
+                .add(a1, NElementHelper.elem(v1))
+                .add(a2, NElementHelper.elem(v2))
+                .add(a3, NElementHelper.elem(v3))
+                .add(a4, NElementHelper.elem(v4))
+                .add(a5, NElementHelper.elem(v5))
+                .add(a6, NElementHelper.elem(v6))
         );
     }
 
     public static CacheKey obj(String name, String a1, Object v1, String a2, Object v2, String a3, Object v3, String a4, Object v4, String a5, Object v5, String a6, Object v6, String a7, Object v7) {
-        TsonSerializer s = Tson.serializer();
-        return of(Tson.ofObjectBuilder(name)
-                .add(a1, s.serialize(v1))
-                .add(a2, s.serialize(v2))
-                .add(a3, s.serialize(v3))
-                .add(a4, s.serialize(v4))
-                .add(a5, s.serialize(v5))
-                .add(a6, s.serialize(v6))
-                .add(a7, s.serialize(v7))
+
+        return of(NElement.ofObjectBuilder(name)
+                .add(a1, NElementHelper.elem(v1))
+                .add(a2, NElementHelper.elem(v2))
+                .add(a3, NElementHelper.elem(v3))
+                .add(a4, NElementHelper.elem(v4))
+                .add(a5, NElementHelper.elem(v5))
+                .add(a6, NElementHelper.elem(v6))
+                .add(a7, NElementHelper.elem(v7))
         );
     }
 
     public static CacheKey obj(String name, String a1, Object v1, String a2, Object v2, String a3, Object v3, String a4, Object v4, String a5, Object v5
             , String a6, Object v6, String a7, Object v7, String a8, Object v8) {
-        TsonSerializer s = Tson.serializer();
-        return of(Tson.ofObjectBuilder(name)
-                .add(a1, s.serialize(v1))
-                .add(a2, s.serialize(v2))
-                .add(a3, s.serialize(v3))
-                .add(a4, s.serialize(v4))
-                .add(a5, s.serialize(v5))
-                .add(a6, s.serialize(v6))
-                .add(a7, s.serialize(v7))
-                .add(a8, s.serialize(v8))
+
+        return of(NElement.ofObjectBuilder(name)
+                .add(a1, NElementHelper.elem(v1))
+                .add(a2, NElementHelper.elem(v2))
+                .add(a3, NElementHelper.elem(v3))
+                .add(a4, NElementHelper.elem(v4))
+                .add(a5, NElementHelper.elem(v5))
+                .add(a6, NElementHelper.elem(v6))
+                .add(a7, NElementHelper.elem(v7))
+                .add(a8, NElementHelper.elem(v8))
         );
     }
 
     public static CacheKey obj(String name, String a1, Object v1, String a2, Object v2, String a3, Object v3, String a4, Object v4, String a5, Object v5
             , String a6, Object v6, String a7, Object v7, String a8, Object v8, String a9, Object v9) {
-        TsonSerializer s = Tson.serializer();
-        return of(Tson.ofObjectBuilder(name)
-                .add(a1, s.serialize(v1))
-                .add(a2, s.serialize(v2))
-                .add(a3, s.serialize(v3))
-                .add(a4, s.serialize(v4))
-                .add(a5, s.serialize(v5))
-                .add(a6, s.serialize(v6))
-                .add(a7, s.serialize(v7))
-                .add(a8, s.serialize(v8))
-                .add(a9, s.serialize(v9))
+
+        return of(NElement.ofObjectBuilder(name)
+                .add(a1, NElementHelper.elem(v1))
+                .add(a2, NElementHelper.elem(v2))
+                .add(a3, NElementHelper.elem(v3))
+                .add(a4, NElementHelper.elem(v4))
+                .add(a5, NElementHelper.elem(v5))
+                .add(a6, NElementHelper.elem(v6))
+                .add(a7, NElementHelper.elem(v7))
+                .add(a8, NElementHelper.elem(v8))
+                .add(a9, NElementHelper.elem(v9))
         );
     }
 
@@ -197,10 +198,10 @@ public class CacheKey {
                 throw new IllegalArgumentException("Empty Key");
             }
             case 1: {
-                return new CacheKey(Maths.Config.getTsonSerializer().serialize(elements[0]).toString(false));
+                return new CacheKey(NElementHelper.elem(elements[0]).toString(false));
             }
         }
-        return new CacheKey(Maths.Config.getTsonSerializer().serialize(elements).toString(false));
+        return new CacheKey(NElementHelper.elem(elements).toString(false));
     }
 
     public static CacheKey load(String string) {
@@ -211,7 +212,7 @@ public class CacheKey {
         if (stringToHash instanceof String) {
             return toHashString((String) stringToHash);
         }
-        return toHashString(Tson.serializer().serialize(stringToHash).toString());
+        return toHashString(NElementHelper.elem(stringToHash).toString());
     }
 
     @Override
