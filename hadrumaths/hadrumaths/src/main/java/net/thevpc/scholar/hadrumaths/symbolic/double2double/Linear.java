@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.IgnoreRandomGeneration;
 import net.thevpc.scholar.hadrumaths.symbolic.ExprType;
@@ -25,6 +26,11 @@ public final class Linear extends AbstractDoubleToDouble {
         this.a = a;
         this.b = b;
         this.c = c;
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Linear",NElement.ofDouble(a),NElement.ofDouble(b),NElement.ofDouble(c));
     }
 
     protected static Domain detectDomain(double a, double b, double c, Domain domain) {
