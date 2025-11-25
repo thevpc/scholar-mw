@@ -2,15 +2,17 @@ package net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 
 import java.util.Map;
 
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+import net.thevpc.nuts.elem.NElement;
+
+
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZoneType;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZoneTypeFilter;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 import net.thevpc.scholar.hadrumaths.Axis;
@@ -60,11 +62,11 @@ public final class Rooftop2DPattern extends RectMeshAttachGpPattern {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder h = super.toTsonElement(context).toObject().builder();
-        h.add("invariance", context.elem(invariance));
-        h.add("alwaysAttachForX", context.elem(alwaysAttachForX));
-        h.add("alwaysAttachForY", context.elem(alwaysAttachForY));
+    public NElement toElement() {
+        NObjectElementBuilder h = super.toElement().toObject().get().builder();
+        h.add("invariance", NElementHelper.elem(invariance));
+        h.add("alwaysAttachForX", NElementHelper.elem(alwaysAttachForX));
+        h.add("alwaysAttachForY", NElementHelper.elem(alwaysAttachForY));
         return h.build();
     }
 
