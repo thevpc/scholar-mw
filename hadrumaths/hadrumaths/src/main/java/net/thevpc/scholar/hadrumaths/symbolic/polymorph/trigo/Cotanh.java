@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.trigo;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -116,6 +117,10 @@ class CotanhDoubleToDouble extends Cotanh implements DoubleToDoubleDefaults.Doub
         return Maths.cotanh(x);
     }
 
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Contanh");
+    }
 }
 
 class CotanhDoubleToComplex extends Cotanh implements DoubleToComplexDefaults.DoubleToComplexUnaryDC {
@@ -129,6 +134,10 @@ class CotanhDoubleToComplex extends Cotanh implements DoubleToComplexDefaults.Do
     }
 
 
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Contanh");
+    }
 }
 
 class CotanhDoubleToVector extends Cotanh implements DoubleToVectorDefaults.DoubleToVectorUnaryDV {
@@ -140,6 +149,10 @@ class CotanhDoubleToVector extends Cotanh implements DoubleToVectorDefaults.Doub
     public ComplexVector aggregateVector(ComplexVector v) {
         return v.cotanh();
     }
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Contanh");
+    }
 }
 
 class CotanhDoubleToMatrix extends Cotanh implements DoubleToMatrixDefaults.DoubleToMatrixUnaryDM {
@@ -150,5 +163,9 @@ class CotanhDoubleToMatrix extends Cotanh implements DoubleToMatrixDefaults.Doub
     @Override
     public ComplexMatrix aggregateMatrix(ComplexMatrix m) {
         return m.cotanh();
+    }
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Contanh");
     }
 }
