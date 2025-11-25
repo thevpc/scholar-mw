@@ -5,6 +5,7 @@
  */
 package net.thevpc.scholar.hadrumaths.symbolic.conv;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.BooleanMarker;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToComplex;
@@ -21,6 +22,11 @@ public class Imag extends AbstractDCxyToDDxyExpr {
 
     public Imag(DoubleToComplex base) {
         super(base);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Imag");
     }
 
     @Override
