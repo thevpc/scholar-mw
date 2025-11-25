@@ -1,6 +1,7 @@
 package net.thevpc.scholar.hadrumaths.plot.random;
 
-import net.thevpc.tson.Tson;
+
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.DoubleParam;
@@ -439,8 +440,8 @@ public class ExprChecker {
                 testValHelper.showDiff("Incompatibility[D1][C1]", v1c, info.c1, x);
                 errorList.addInstanceError(info.expr, "Incompatibility between DD_X && DC_X  :: " + info.expr);
                 testValHelper.plotDiff("Incompatibility", "C1", "D1", info.c1, v1c, null,
-                        Tson.ofPair("expr", Tson.of(info.expr.toString())),
-                        Tson.ofPair("domain", Tson.of(info.expr.getDomain().toString()))
+                        NElement.ofPair("expr", NElement.ofString(info.expr.toString())),
+                        NElement.ofPair("domain", NElement.ofString(info.expr.getDomain().toString()))
                 );
             }
         }
@@ -448,8 +449,8 @@ public class ExprChecker {
             Complex[][] v2c = ArrayUtils.toComplex(info.v2);
             if (!Arrays.deepEquals(info.c2, v2c)) {
                 testValHelper.plotDiff("Incompatibility", "C2", "D2", info.c2, v2c, null,
-                        Tson.ofPair("expr", Tson.of(info.expr.toString())),
-                        Tson.ofPair("domain", Tson.of(info.expr.getDomain().toString())));
+                        NElement.ofPair("expr", NElement.ofString(info.expr.toString())),
+                        NElement.ofPair("domain", NElement.ofString(info.expr.getDomain().toString())));
 
                 Domain d = validExpr.getDomain();
                 Domain domain = d.intersect(Maths.domain(-10, 10, -10, 10));
@@ -465,8 +466,8 @@ public class ExprChecker {
             Complex[][][] v3c = ArrayUtils.toComplex(info.v3);
             if (!Arrays.deepEquals(info.c3, v3c)) {
                 testValHelper.plotDiff("Incompatibility", "C3", "D3", info.c3, v3c, null,
-                        Tson.ofPair("expr", Tson.of(info.expr.toString())),
-                        Tson.ofPair("domain", Tson.of(info.expr.getDomain().toString())));
+                        NElement.ofPair("expr", NElement.ofString(info.expr.toString())),
+                        NElement.ofPair("domain", NElement.ofString(info.expr.getDomain().toString())));
 
                 Domain d = validExpr.getDomain();
                 Domain domain = d.intersect(Maths.domain(-10, 10, -10, 10, -10, 10));
@@ -528,8 +529,8 @@ public class ExprChecker {
         boolean ok = ArrayUtils.equals(doublesA, doublesB);
         if (!ok) {
             testValHelper.plotDiff("Incompatibility", "DD_X(Bulk)", "DD_X(Each)", doublesA, doublesB, AbsoluteSamples.absolute(x),
-                    Tson.ofPair("expr", Tson.of(expr.toString())),
-                    Tson.ofPair("domain", Tson.of(expr.getDomain().toString())));
+                    NElement.ofPair("expr", NElement.ofString(expr.toString())),
+                    NElement.ofPair("domain", NElement.ofString(expr.getDomain().toString())));
 //            Plot.title(":" + e).xsamples(x).plot();
 //            Plot.title(":" + e).xsamples(x).plot((Object) );
 //            JOptionPane.showConfirmDialog(null,null);
@@ -591,8 +592,8 @@ public class ExprChecker {
             System.out.println("Problem :: " + expr);
             if (!ok) {
                 testValHelper.plotDiff("Incompatibility", "DD_XY(Bulk)", "DD_XY(Each)", doublesA, doublesB, AbsoluteSamples.absolute(x, y),
-                        Tson.ofPair("expr", Tson.of(expr.toString())),
-                        Tson.ofPair("domain", Tson.of(expr.getDomain().toString())));
+                        NElement.ofPair("expr", NElement.ofString(expr.toString())),
+                        NElement.ofPair("domain", NElement.ofString(expr.getDomain().toString())));
 //                Plot.title("DD_XY(Bulk):" + e).xsamples(x).ysamples(y).plot((Object) doublesA);
 //                Plot.title("DD_XY(Each):" + e).xsamples(x).ysamples(y).plot((Object) doublesB);
                 testValHelper.showDiff("DD_XY Diff", doublesA, doublesB, x, y);
@@ -656,8 +657,8 @@ public class ExprChecker {
         if (!ok) {
             error.set();
             testValHelper.plotDiff("Incompatibility", "DD_XYZ(Bulk)", "DD_XYZ(Each)", doublesA, doublesB, AbsoluteSamples.absolute(x, y, z),
-                    Tson.ofPair("expr", Tson.of(e.toString())),
-                    Tson.ofPair("domain", Tson.of(e.getDomain().toString())));
+                    NElement.ofPair("expr", NElement.ofString(e.toString())),
+                    NElement.ofPair("domain", NElement.ofString(e.getDomain().toString())));
             testValHelper.showDiff("DD_XYZ Diff", doublesA, doublesB, x, y, z);
             errorList.addInstanceError(e, "checkDoubleToDoubleXYZ:Invalid values");
         } else {
@@ -704,8 +705,8 @@ public class ExprChecker {
         if (!ok) {
             error.set();
             testValHelper.plotDiff("Incompatibility", "DC_X(Bulk)", "DC_X(Each)", doublesA, doublesB, AbsoluteSamples.absolute(x),
-                    Tson.ofPair("expr", Tson.of(e.toString())),
-                    Tson.ofPair("domain", Tson.of(e.getDomain().toString())));
+                    NElement.ofPair("expr", NElement.ofString(e.toString())),
+                    NElement.ofPair("domain", NElement.ofString(e.getDomain().toString())));
             testValHelper.showDiff("DC_X Diff", doublesA, doublesB, x);
             errorList.addInstanceError(e, "checkDoubleToComplexX:Invalid values");
         } else {
@@ -751,8 +752,8 @@ public class ExprChecker {
         if (!ok) {
             error.set();
             testValHelper.plotDiff("Incompatibility", "DC_XY(Bulk)", "DC_XY(Each)", doublesA, doublesB, AbsoluteSamples.absolute(x, y),
-                    Tson.ofPair("expr", Tson.of(e.toString())),
-                    Tson.ofPair("domain", Tson.of(e.getDomain().toString())));
+                    NElement.ofPair("expr", NElement.ofString(e.toString())),
+                    NElement.ofPair("domain", NElement.ofString(e.getDomain().toString())));
             testValHelper.showDiff("DC_XY Diff", doublesA, doublesB, x, y);
             errorList.addInstanceError(e, "Invalid values");
         } else {
@@ -803,8 +804,8 @@ public class ExprChecker {
             error.set();
             System.out.println("Problem :: " + e);
             testValHelper.plotDiff("Incompatibility", "DC_XYZ(Bulk)", "DC_XYZ(Each)", doublesA, doublesB, AbsoluteSamples.absolute(x, y, z),
-                    Tson.ofPair("expr", Tson.of(e.toString())),
-                    Tson.ofPair("domain", Tson.of(e.getDomain().toString())));
+                    NElement.ofPair("expr", NElement.ofString(e.toString())),
+                    NElement.ofPair("domain", NElement.ofString(e.getDomain().toString())));
             testValHelper.showDiff("DC_XYZ Diff", doublesA, doublesB, x, y, z);
             errorList.addInstanceError(e, "Invalid values");
         } else {
