@@ -3,19 +3,19 @@ package net.thevpc.scholar.hadruwaves.project.configuration;
 import net.thevpc.common.props.*;
 import net.thevpc.common.props.impl.DefaultPropertyListeners;
 import net.thevpc.common.props.impl.PropertyBase;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonSerializable;
+
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import net.thevpc.common.props.impl.PropertyAdjusterContext;
-import net.thevpc.tson.TsonObjectContext;
+
 import net.thevpc.scholar.hadruwaves.project.HWSolution;
 
-public class HWConfigurations extends PropertyBase implements TsonSerializable {
+public class HWConfigurations extends PropertyBase implements NToElement {
 
     private HWConfigurationFolderHelper childrenHelper = new HWConfigurationFolderHelper(null, () -> project().get());
     private WritableValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
@@ -127,9 +127,9 @@ public class HWConfigurations extends PropertyBase implements TsonSerializable {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofArrayBuilder("Configurations")
-                .addAll(children().values().stream().map(x -> x.toTsonElement(context)).collect(Collectors.toList()))
+    public NElement toElement() {
+        return NElement.ofArrayBuilder("Configurations")
+                .addAll(children().values().stream().map(x -> x.toElement()).collect(Collectors.toList()))
                 .build();
     }
 
