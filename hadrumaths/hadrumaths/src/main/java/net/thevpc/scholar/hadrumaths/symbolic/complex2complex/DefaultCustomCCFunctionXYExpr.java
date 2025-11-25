@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.complex2complex;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
 import net.thevpc.scholar.hadrumaths.util.internal.NonStateField;
@@ -27,6 +28,11 @@ public class DefaultCustomCCFunctionXYExpr implements CustomCCFunctionXYExpr {
         this.yargument = yarg;
         this.domain = xarg.getDomain().expand(yarg.getDomain());
         this.definition = definition;
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("DefaultCustomCCFunctionXYExpr");
     }
 
     @Override
