@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.DoubleValidator;
 
@@ -43,6 +44,12 @@ public final class CosXPlusY extends AbstractDoubleToDouble {
         this.c = c;
         //name=(((a != 0 || b != 0) ? "cos(ax+by+c)" : "") + ((c != 0 || d != 0) ? "cos(cy+d)" : ""));
     }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("CosXPlusY");
+    }
+
 
     protected static Domain detectDomain(double amp, double b, Domain domain) {
         if (domain == null) {
