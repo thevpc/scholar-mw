@@ -3,9 +3,9 @@ package net.thevpc.scholar.hadrumaths;
 import net.thevpc.common.mon.LogProgressMonitor;
 import net.thevpc.common.strings.StringConverter;
 import net.thevpc.common.strings.StringUtils;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonObjectContext;
-import net.thevpc.tson.TsonSerializer;
+
+
+import net.thevpc.nuts.elem.*;
 import net.thevpc.common.util.*;
 import net.thevpc.common.collections.*;
 import net.thevpc.common.time.*;
@@ -28,6 +28,7 @@ import net.thevpc.scholar.hadrumaths.util.dump.DumpManager;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -36,14 +37,13 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import net.thevpc.tson.TsonSerializerBuilder;
 
 public final class MathsConfig {
 
     public static final MathsConfig INSTANCE = new MathsConfig();
     private final DumpManager dumpManager = new DumpManager();
     private final String defaultRootCachePath = "${user.home}/.cache/hadrumaths";
-    private TsonSerializer tsonSerializer;
+    private NElements elemsStore;
     private ComplexMatrixFactory defaultLargeComplexMatrixFactory = null;
     private String largeMatrixCachePath = "${cache.folder}/large-matrix";
     private int simplifierCacheSize = 2000;
@@ -96,25 +96,34 @@ public final class MathsConfig {
     }
 
     private MathsConfig() {
-        TsonSerializer ser = Tson.serializer();
-        TsonSerializerBuilder b = null;
-        if (ser == null) {
-            b = Tson.serializer()
-                    .builder();
-        } else {
-            b = ser.builder();
-        }
-        Tson.setSerializer(
-                b
-                        .setSerializer(DefaultTimeDurationFormat.class, (DefaultTimeDurationFormat object, TsonObjectContext context) -> Tson.ofUplet(object.getClass().getSimpleName()))
-                        .setSerializer(ToStringDoubleFormat.class, (ToStringDoubleFormat object, TsonObjectContext context) -> Tson.ofUplet(object.getClass().getSimpleName()))
-                        .setSerializer(PercentDoubleFormat.class, (PercentDoubleFormat object, TsonObjectContext context) -> Tson.ofUplet(object.getClass().getSimpleName()))
-                        .setSerializer(DecimalDoubleFormat.class, (DecimalDoubleFormat object, TsonObjectContext context) -> Tson.ofUplet(object.getClass().getSimpleName(), Tson.of(object.toPattern())))
-                        .setSerializer(FrequencyFormat.class, (FrequencyFormat object, TsonObjectContext context) -> Tson.ofUplet(object.getClass().getSimpleName(), Tson.of(object.toPattern())))
-                        .setSerializer(BytesSizeFormat.class, (BytesSizeFormat object, TsonObjectContext context) -> Tson.ofUplet(object.getClass().getSimpleName(), Tson.of(object.toPattern())))
-                        .setSerializer(MetricFormat.class, (MetricFormat object, TsonObjectContext context) -> Tson.ofUplet(object.getClass().getSimpleName(), Tson.of(object.toPattern())))
-                        .build()
-        );
+        NElementMapperStore ms = getElements().mapperStore();
+        ms.setMapper(DefaultTimeDurationFormat.class, new ClassNameNElementMapper<DefaultTimeDurationFormat>());
+        ms.setMapper(PercentDoubleFormat.class, new ClassNameNElementMapper<ToStringDoubleFormat>());
+        ms.setMapper(ToStringDoubleFormat.class, new ClassNameNElementMapper<PercentDoubleFormat>());
+        ms.setMapper(DecimalDoubleFormat.class, new NElementMapper<DecimalDoubleFormat>() {
+            @Override
+            public NElement createElement(DecimalDoubleFormat object, Type typeOfSrc, NElementFactoryContext context) {
+                return NElement.ofUplet(object.getClass().getSimpleName(), NElement.ofString(object.toPattern()));
+            }
+        });
+        ms.setMapper(FrequencyFormat.class, new NElementMapper<FrequencyFormat>() {
+            @Override
+            public NElement createElement(FrequencyFormat object, Type typeOfSrc, NElementFactoryContext context) {
+                return NElement.ofUplet(object.getClass().getSimpleName(), NElement.ofString(object.toPattern()));
+            }
+        });
+        ms.setMapper(BytesSizeFormat.class, new NElementMapper<BytesSizeFormat>() {
+            @Override
+            public NElement createElement(BytesSizeFormat object, Type typeOfSrc, NElementFactoryContext context) {
+                return NElement.ofUplet(object.getClass().getSimpleName(), NElement.ofString(object.toPattern()));
+            }
+        });
+        ms.setMapper(MetricFormat.class, new NElementMapper<MetricFormat>() {
+            @Override
+            public NElement createElement(MetricFormat object, Type typeOfSrc, NElementFactoryContext context) {
+                return NElement.ofUplet(object.getClass().getSimpleName(), NElement.ofString(object.toPattern()));
+            }
+        });
     }
 
     public boolean isCompressCache() {
@@ -647,13 +656,17 @@ public final class MathsConfig {
         return this;
     }
 
-    public TsonSerializer getTsonSerializer() {
-        return tsonSerializer == null ? Tson.serializer() : tsonSerializer;
+    public NElements getElements() {
+        if(elemsStore==null){
+            elemsStore=NElements.of();
+        }
+        return elemsStore;
     }
 
-    public MathsConfig setTsonSerializer(TsonSerializer tsonSerializer) {
-        this.tsonSerializer = tsonSerializer;
-        return this;
+    private static class ClassNameNElementMapper<T> implements NElementMapper<T> {
+        @Override
+        public NElement createElement(T object, Type typeOfSrc, NElementFactoryContext context) {
+            return NElement.ofUplet(object.getClass().getSimpleName());
+        }
     }
-
 }
