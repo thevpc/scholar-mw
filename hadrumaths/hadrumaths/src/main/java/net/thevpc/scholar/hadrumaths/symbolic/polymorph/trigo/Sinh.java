@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.trigo;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -113,6 +114,12 @@ class SinhDoubleToDouble extends Sinh implements DoubleToDoubleDefaults.DoubleTo
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Sinh");
+    }
+
+
+    @Override
     public double evalDoubleSimple(double x) {
         return Maths.sinh(x);
     }
@@ -122,6 +129,11 @@ class SinhDoubleToDouble extends Sinh implements DoubleToDoubleDefaults.DoubleTo
 class SinhDoubleToComplex extends Sinh implements DoubleToComplexDefaults.DoubleToComplexUnaryDC {
     public SinhDoubleToComplex(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Sinh");
     }
 
     @Override
@@ -137,6 +149,11 @@ class SinhDoubleToVector extends Sinh implements DoubleToVectorDefaults.DoubleTo
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Sinh");
+    }
+
+    @Override
     public ComplexVector aggregateVector(ComplexVector v) {
         return v.sinh();
     }
@@ -146,6 +163,11 @@ class SinhDoubleToVector extends Sinh implements DoubleToVectorDefaults.DoubleTo
 class SinhDoubleToMatrix extends Sinh implements DoubleToMatrixDefaults.DoubleToMatrixUnaryDM {
     public SinhDoubleToMatrix(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Sinh");
     }
 
     @Override
