@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadruwaves.project.scene.elem;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.geom.Dimension;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.elements.Element3D;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.math.Vector3D;
@@ -73,12 +73,12 @@ public class Element3DParallelipipedTemplate extends AbstractElement3DTemplate {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObjectBuilder(getClass().getSimpleName())
-                .add("a",a.toTsonElement(context))
-                .add("b",b.toTsonElement(context))
-                .add("c",c.toTsonElement(context))
-                .add("d",d.toTsonElement(context))
+    public NElement toElement() {
+        return NElement.ofObjectBuilder(getClass().getSimpleName())
+                .add("a",a.toElement())
+                .add("b",b.toElement())
+                .add("c",c.toElement())
+                .add("d",d.toElement())
                 .build()
                 ;
     }
