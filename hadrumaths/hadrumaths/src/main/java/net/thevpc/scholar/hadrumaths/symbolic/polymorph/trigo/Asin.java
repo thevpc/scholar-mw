@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.trigo;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -118,6 +119,11 @@ class AsinDoubleToDouble extends Asin implements DoubleToDoubleDefaults.DoubleTo
         return Maths.asin(x);
     }
 
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("ASin");
+    }
+
 }
 
 class AsinDoubleToComplex extends Asin implements DoubleToComplexDefaults.DoubleToComplexUnaryDC {
@@ -130,6 +136,10 @@ class AsinDoubleToComplex extends Asin implements DoubleToComplexDefaults.Double
         return a.asin();
     }
 
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("ASin");
+    }
 }
 
 class AsinDoubleToVector extends Asin implements DoubleToVectorDefaults.DoubleToVectorUnaryDV {
@@ -142,6 +152,10 @@ class AsinDoubleToVector extends Asin implements DoubleToVectorDefaults.DoubleTo
         return v.asin();
     }
 
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("ASin");
+    }
 }
 
 class AsinDoubleToMatrix extends Asin implements DoubleToMatrixDefaults.DoubleToMatrixUnaryDM {
@@ -154,5 +168,9 @@ class AsinDoubleToMatrix extends Asin implements DoubleToMatrixDefaults.DoubleTo
         return m.asin();
     }
 
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("ASin");
+    }
 
 }
