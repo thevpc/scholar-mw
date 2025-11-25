@@ -1,11 +1,13 @@
 package net.thevpc.scholar.hadrumaths.meshalgo.triconsdes;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
+
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.geom.*;
 import net.thevpc.scholar.hadrumaths.meshalgo.*;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,9 +35,9 @@ public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
 //        return h.toString();
 //    }
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder sb = Tson.ofObjectBuilder(getClass().getSimpleName());
-        sb.add("options", context.elem(option));
+    public NElement toElement() {
+        NObjectElementBuilder sb = NElement.ofObjectBuilder(getClass().getSimpleName());
+        sb.add("options", NElementHelper.elem(option));
         return sb.build();
     }
 
