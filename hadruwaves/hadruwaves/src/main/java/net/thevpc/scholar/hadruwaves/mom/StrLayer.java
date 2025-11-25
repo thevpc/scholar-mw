@@ -8,9 +8,12 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.thevpc.tson.*;
+
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NUpletElementBuilder;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.HSerializable;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.Physics;
 import net.thevpc.scholar.hadruwaves.util.Impedance;
 
@@ -36,10 +39,10 @@ public class StrLayer implements HSerializable, Cloneable {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonUpletBuilder sb = Tson.ofUpletBuilder().name(getClass().getSimpleName());
-        sb.add(Tson.ofPair("width", context.elem(width)));
-        sb.add(Tson.ofPair("impedance", context.elem(impedance)));
+    public NElement toElement() {
+        NUpletElementBuilder sb = NElement.ofUpletBuilder().name(getClass().getSimpleName());
+        sb.add(NElement.ofPair("width", NElementHelper.elem(width)));
+        sb.add(NElement.ofPair("impedance", NElementHelper.elem(impedance)));
         return sb.build();
     }
 //    public String dump() {
