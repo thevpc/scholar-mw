@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.trigo;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -11,7 +12,7 @@ import java.util.Objects;
 /**
  * Created by vpc on 4/30/14.
  */
-@CanProduceClass({DoubleToDouble.class,DoubleToComplex.class,DoubleToVector.class,DoubleToMatrix.class})
+@CanProduceClass({DoubleToDouble.class, DoubleToComplex.class, DoubleToVector.class, DoubleToMatrix.class})
 public abstract class Cos implements FunctionExpr {
     private static final long serialVersionUID = 1L;
     private final Expr arg;
@@ -43,13 +44,14 @@ public abstract class Cos implements FunctionExpr {
                 return new CosDoubleToMatrix(e);
             }
             default: {
-                throw new IllegalArgumentException("Unsupported type "+e.getType());
+                throw new IllegalArgumentException("Unsupported type " + e.getType());
             }
         }
     }
+
     @Override
     public String toLatex() {
-        StringBuilder sb=new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         sb.append("\\text{").append(getName()).append("}\\left(");
         sb.append(arg.toLatex());
         sb.append("\\right)");
@@ -71,7 +73,7 @@ public abstract class Cos implements FunctionExpr {
 
     @Override
     public int hashCode() {
-        return getClass().getName().hashCode()*31+arg.hashCode();
+        return getClass().getName().hashCode() * 31 + arg.hashCode();
     }
 
     @Override
@@ -106,9 +108,15 @@ public abstract class Cos implements FunctionExpr {
 
 
 }
+
 class CosDoubleToDouble extends Cos implements DoubleToDoubleDefaults.DoubleToDoubleUnaryDD {
     public CosDoubleToDouble(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Cos");
     }
 
     @Override
@@ -117,9 +125,15 @@ class CosDoubleToDouble extends Cos implements DoubleToDoubleDefaults.DoubleToDo
     }
 
 }
+
 class CosDoubleToComplex extends Cos implements DoubleToComplexDefaults.DoubleToComplexUnaryDC {
     public CosDoubleToComplex(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Cos");
     }
 
     @Override
@@ -134,6 +148,11 @@ class CosDoubleToVector extends Cos implements DoubleToVectorDefaults.DoubleToVe
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Cos");
+    }
+
+    @Override
     public ComplexVector aggregateVector(ComplexVector v) {
         return v.cos();
     }
@@ -142,6 +161,11 @@ class CosDoubleToVector extends Cos implements DoubleToVectorDefaults.DoubleToVe
 class CosDoubleToMatrix extends Cos implements DoubleToMatrixDefaults.DoubleToMatrixUnaryDM {
     public CosDoubleToMatrix(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Cos");
     }
 
     @Override
