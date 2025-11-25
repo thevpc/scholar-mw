@@ -1,10 +1,11 @@
 package net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 
 import net.thevpc.common.mon.ProgressMonitor;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
+
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.Domain;
@@ -26,8 +27,8 @@ public abstract class AbstractGpPattern implements GpPattern {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder h = Tson.ofObjectBuilder(getClass().getSimpleName());
+    public NElement toElement() {
+        NObjectElementBuilder h = NElement.ofObjectBuilder(getClass().getSimpleName());
         return h.build();
     }
 
