@@ -1,15 +1,15 @@
 package net.thevpc.scholar.hadruwaves.project.scene;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
-import net.thevpc.tson.TsonSerializable;
+
+import net.thevpc.nuts.elem.NElement;
+
+import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadruwaves.project.Props2;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 import net.thevpc.scholar.hadruwaves.props.WritablePExpression;
 
-public class DomainTemplate implements TsonSerializable {
+public class DomainTemplate implements NToElement {
 
     private final WritablePExpression<Double> xmin = Props2.of("xmin").exprLenOf(Double.NEGATIVE_INFINITY);
     private final WritablePExpression<Double> xmax = Props2.of("xmax").exprLenOf(Double.POSITIVE_INFINITY);
@@ -79,8 +79,8 @@ public class DomainTemplate implements TsonSerializable {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObjectBuilder("domain")
+    public NElement toElement() {
+        return NElement.ofObjectBuilder("domain")
                 .add("xmin", xmin().get())
                 .add("xmax", xmax().get())
                 .add("ymin", ymin().get())
