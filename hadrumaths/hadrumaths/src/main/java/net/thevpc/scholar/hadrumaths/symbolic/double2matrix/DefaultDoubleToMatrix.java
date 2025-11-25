@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2matrix;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.IgnoreRandomGeneration;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -91,6 +92,12 @@ public class DefaultDoubleToMatrix extends AbstractDoubleToMatrix {
         componentDimension = ComponentDimension.of(rows, cols);
         components = fx;
     }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("DoubleToMatrix");
+    }
+
 
 //    @Deprecated
 //    public static DoubleToVector add(DoubleToVector one, DoubleToVector another) {
