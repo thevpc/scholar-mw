@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2vector;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToDouble;
@@ -75,6 +76,12 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector {
             }
         }
     }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("DoubleToVector");
+    }
+
 
     @Deprecated
     public static DoubleToVector add(DoubleToVector one, DoubleToVector another) {
