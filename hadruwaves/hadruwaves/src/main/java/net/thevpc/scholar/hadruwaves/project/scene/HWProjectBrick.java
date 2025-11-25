@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadruwaves.project.scene;
 
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.elements.Element3D;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.thevpc.Element3DRenderPrefs;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.thevpc.element3d.Element3DParallelipiped;
@@ -10,10 +11,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
+
 import net.thevpc.scholar.hadruwaves.Boundary;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 
@@ -72,11 +73,12 @@ public class HWProjectBrick extends AbstractHWProjectComponentMaterial implement
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder obj = (TsonObjectBuilder) super.toTsonElement(context).builder();
+    public NElement toElement() {
+        NObjectElementBuilder obj = (NObjectElementBuilder) super.toElement().builder();
         obj.add("faces",
-                Tson.ofArrayBuilder().addAll(Arrays.stream(faces)
-                        .map(x -> x.toTsonElement(context)).collect(Collectors.toList()))
+                NElement.ofArrayBuilder().addAll(Arrays.stream(faces)
+                        .map(x -> x.toElement()).collect(Collectors.toList()))
+                        .build()
         );
         return obj.build();
     }
