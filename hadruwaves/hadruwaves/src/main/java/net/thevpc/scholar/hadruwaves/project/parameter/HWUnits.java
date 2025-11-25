@@ -3,10 +3,10 @@ package net.thevpc.scholar.hadruwaves.project.parameter;
 import net.thevpc.common.props.*;
 import net.thevpc.common.props.impl.DefaultPropertyListeners;
 import net.thevpc.common.props.impl.PropertyBase;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
-import net.thevpc.tson.TsonSerializable;
+
+import net.thevpc.nuts.elem.NElement;
+
+import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.scholar.hadrumaths.units.CapacitanceUnit;
 import net.thevpc.scholar.hadrumaths.units.ConductanceUnit;
 import net.thevpc.scholar.hadrumaths.units.CurrentUnit;
@@ -20,9 +20,10 @@ import net.thevpc.scholar.hadrumaths.units.TemperatureUnit;
 import net.thevpc.scholar.hadrumaths.units.TimeUnit;
 import net.thevpc.scholar.hadrumaths.units.UnitType;
 import net.thevpc.scholar.hadrumaths.units.VoltageUnit;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 
-public class HWUnits extends PropertyBase implements TsonSerializable {
+public class HWUnits extends PropertyBase implements NToElement {
 
     protected WritableValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
     private DefaultPropertyListeners listeners = new DefaultPropertyListeners(this);
@@ -63,19 +64,19 @@ public class HWUnits extends PropertyBase implements TsonSerializable {
         return listeners;
     }
 
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObjectBuilder("Units")
-                .add("lengthUnit",lengthUnit.get())
-                .add("frequencyUnit",frequencyUnit.get())
-                .add("capacitanceUnit",capacitanceUnit.get())
-                .add("conductanceUnit",conductanceUnit.get())
-                .add("currentUnit",currentUnit.get())
-                .add("inductanceUnit",inductanceUnit.get())
-                .add("powerUnit",powerUnit.get())
-                .add("resistanceUnit",resistanceUnit.get())
-                .add("temperatureUnit",temperatureUnit.get())
-                .add("timeUnit",timeUnit.get())
-                .add("voltageUnit",voltageUnit.get())
+    public NElement toElement() {
+        return NElement.ofObjectBuilder("Units")
+                .add("lengthUnit", NElementHelper.elem(lengthUnit.get()))
+                .add("frequencyUnit",NElementHelper.elem(frequencyUnit.get()))
+                .add("capacitanceUnit",NElementHelper.elem(capacitanceUnit.get()))
+                .add("conductanceUnit",NElementHelper.elem(conductanceUnit.get()))
+                .add("currentUnit",NElementHelper.elem(currentUnit.get()))
+                .add("inductanceUnit",NElementHelper.elem(inductanceUnit.get()))
+                .add("powerUnit",NElementHelper.elem(powerUnit.get()))
+                .add("resistanceUnit",NElementHelper.elem(resistanceUnit.get()))
+                .add("temperatureUnit",NElementHelper.elem(temperatureUnit.get()))
+                .add("timeUnit",NElementHelper.elem(timeUnit.get()))
+                .add("voltageUnit",NElementHelper.elem(voltageUnit.get()))
                 .build();
     }
 
