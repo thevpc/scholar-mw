@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2matrix;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.Param;
 import net.thevpc.scholar.hadrumaths.symbolic.Range;
@@ -18,6 +19,11 @@ public class MatrixParam extends AbstractDoubleToMatrix implements /*IDDx,*/Para
     public MatrixParam(String name) {
         super();
         paramName = name;
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("MatrixParam",NElement.ofString(paramName));
     }
 
     @Override
