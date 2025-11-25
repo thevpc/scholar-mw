@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadrumaths.integration.formal;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.integration.AbstractIntegrationOperator;
 import net.thevpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
@@ -15,6 +15,7 @@ import net.thevpc.scholar.hadrumaths.symbolic.ExprType;
 import net.thevpc.scholar.hadrumaths.symbolic.polymorph.num.Mul;
 import net.thevpc.scholar.hadrumaths.symbolic.polymorph.num.Plus;
 import net.thevpc.scholar.hadrumaths.transform.ExpressionRewriter;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.util.List;
 
@@ -93,11 +94,11 @@ public class NumericIntegrationOperator extends AbstractIntegrationOperator {
 //        return sb;
 //    }
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObjectBuilder(getClass().getSimpleName())
-                .add("hash", Tson.of(Integer.toHexString(hashCode()).toUpperCase()))
-                .add("fspo", context.elem(getFormalScalarProductOperator()))
-                .add("nspo", context.elem(getNumericScalarProductOperator()))
+    public NElement toElement() {
+        return NElement.ofObjectBuilder(getClass().getSimpleName())
+                .add("hash", NElement.ofString(Integer.toHexString(hashCode()).toUpperCase()))
+                .add("fspo", NElementHelper.elem(getFormalScalarProductOperator()))
+                .add("nspo", NElementHelper.elem(getNumericScalarProductOperator()))
                 .build();
     }
 
