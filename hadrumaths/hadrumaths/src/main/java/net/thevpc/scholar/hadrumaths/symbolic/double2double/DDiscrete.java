@@ -1,9 +1,10 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
+
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.thevpc.scholar.hadrumaths.format.impl.AbstractObjectFormat;
@@ -14,6 +15,7 @@ import net.thevpc.scholar.hadrumaths.symbolic.ExprType;
 import net.thevpc.scholar.hadrumaths.symbolic.Range;
 import net.thevpc.scholar.hadrumaths.symbolic.double2complex.CDiscrete;
 import net.thevpc.scholar.hadrumaths.util.ArrayUtils;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -1024,14 +1026,14 @@ public class DDiscrete extends AbstractDoubleToDouble {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder sb = Tson.ofObjectBuilder(getClass().getSimpleName());
-        sb.add("axis", context.elem(axis));
-        sb.add("domain", context.elem(domain));
-        sb.add("size", context.elem(new int[]{xcount, ycount, zcount}));
-        sb.add("step", context.elem(new double[]{dx, dy, dz}));
-        sb.add("values", context.elem(values));
-        sb.add("hash", context.elem(Integer.toHexString(hashCode()).toUpperCase()));
+    public NElement toElement() {
+        NObjectElementBuilder sb = NElement.ofObjectBuilder(getClass().getSimpleName());
+        sb.add("axis", NElementHelper.elem(axis));
+        sb.add("domain", NElementHelper.elem(domain));
+        sb.add("size", NElementHelper.elem(new int[]{xcount, ycount, zcount}));
+        sb.add("step", NElementHelper.elem(new double[]{dx, dy, dz}));
+        sb.add("values", NElementHelper.elem(values));
+        sb.add("hash", NElementHelper.elem(Integer.toHexString(hashCode()).toUpperCase()));
         return sb.build();
     }
 
