@@ -1,9 +1,11 @@
 package net.thevpc.scholar.hadrumaths.geom;
 
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+import net.thevpc.nuts.elem.NElement;
+
+
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Domain;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -29,10 +31,10 @@ public class FractalDPloygonListHolder extends DefaultGeometryList implements Fr
 //    }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder r = super.toTsonElement(context).toObject().builder();
-        return r.add("translation", context.elem(translation))
-                .add("base", context.elem(base))
+    public NElement toElement() {
+        NObjectElementBuilder r = super.toElement().toObject().get().builder();
+        return r.add("translation", NElementHelper.elem(translation))
+                .add("base", NElementHelper.elem(base))
                 .build();
     }
 
