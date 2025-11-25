@@ -5,6 +5,7 @@
  */
 package net.thevpc.scholar.hadrumaths.symbolic.conv;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.BooleanMarker;
 import net.thevpc.scholar.hadrumaths.Expr;
@@ -35,6 +36,11 @@ public class Real extends AbstractDCxyToDDxyExpr {
 //            }
 //        }
         return getArg().isInvariant(axis);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Real");
     }
 
     @Override
