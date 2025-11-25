@@ -10,16 +10,15 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.concurrent.Callable;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
-import net.thevpc.tson.TsonSerializable;
+
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NToElement;
 
 /**
  *
  * @author vpc
  */
-public class UnitType implements TsonSerializable {
+public class UnitType implements NToElement {
 
     private static final Map<String, UnitType> vals = new LinkedHashMap<>();
 
@@ -88,8 +87,8 @@ public class UnitType implements TsonSerializable {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofName(name);
+    public NElement toElement() {
+        return NElement.ofName(name);
     }
 
     public String name() {
