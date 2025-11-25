@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.ExpressionsDebug;
 import net.thevpc.scholar.hadrumaths.util.internal.DoubleValidator;
@@ -31,7 +32,7 @@ public final class CosXCosY extends AbstractDoubleToDouble {
                     @DoubleValidator(NaN = false) double c,
                     @DoubleValidator(NaN = false) double d, Domain domain) {
         this.domain = detectDomain(amp, c, domain);
-        if(ExpressionsDebug.DEBUG) {
+        if (ExpressionsDebug.DEBUG) {
 //            if (Double.isNaN(amp)) {
 //                throw new IllegalArgumentException("CosXCosY amp=NaN");
 //            }
@@ -66,6 +67,11 @@ public final class CosXCosY extends AbstractDoubleToDouble {
         hash = 31 * hash + Double.hashCode(d);
         hash = 31 * hash + domain.hashCode();
         this.eagerHashCode = hash;
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("CosXY", NElement.ofDouble(amp), NElement.ofDouble(a), NElement.ofDouble(b), NElement.ofDouble(c), NElement.ofDouble(d));
     }
 
     protected static Domain detectDomain(double amp, double c, Domain domain) {
@@ -382,7 +388,7 @@ public final class CosXCosY extends AbstractDoubleToDouble {
 
     @Override
     public String toLatex() {
-        throw new UnsupportedOperationException("Not Implemented toLatex for "+getClass().getName());
+        throw new UnsupportedOperationException("Not Implemented toLatex for " + getClass().getName());
     }
 
 }
