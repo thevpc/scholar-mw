@@ -1,13 +1,15 @@
 package net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+import net.thevpc.nuts.elem.NElement;
+
+
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.geom.Geometry;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZoneType;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZoneTypeFilter;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,9 +32,9 @@ public abstract class RectMeshAttachGpPattern extends AbstractGpPattern implemen
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder h = super.toTsonElement(context).toObject().builder();
-        h.add("filter", context.elem(filter));
+    public NElement toElement() {
+        NObjectElementBuilder h = super.toElement().toObject().get().builder();
+        h.add("filter", NElementHelper.elem(filter));
         return h.build();
     }
 
