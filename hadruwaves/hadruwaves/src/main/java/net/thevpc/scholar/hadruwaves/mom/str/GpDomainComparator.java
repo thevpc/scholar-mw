@@ -1,15 +1,17 @@
 package net.thevpc.scholar.hadruwaves.mom.str;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
+
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 
 import java.io.Serializable;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToDouble;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 public class GpDomainComparator implements TestFunctionsComparator, Serializable {
     private boolean compareXFirst;
@@ -82,9 +84,9 @@ public class GpDomainComparator implements TestFunctionsComparator, Serializable
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder h = Tson.ofObjectBuilder(getClass().getSimpleName());
-        h.add("compareXFirst", context.elem(compareXFirst));
+    public NElement toElement() {
+        NObjectElementBuilder h = NElement.ofObjectBuilder(getClass().getSimpleName());
+        h.add("compareXFirst", NElementHelper.elem(compareXFirst));
         return h.build();
     }
 
