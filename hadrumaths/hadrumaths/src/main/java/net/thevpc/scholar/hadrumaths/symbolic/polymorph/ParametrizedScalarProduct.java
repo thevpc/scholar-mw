@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.thevpc.scholar.hadrumaths.format.ObjectFormatParamSet;
@@ -230,6 +231,11 @@ class ParametrizedScalarProductDoubleToDouble extends ParametrizedScalarProduct 
 class ParametrizedScalarProductDoubleToComplex extends ParametrizedScalarProduct implements DoubleToComplexDefaults.DoubleToComplexNormal {
     public ParametrizedScalarProductDoubleToComplex(Expr first, Expr second) {
         super(first, second);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("ParametrizedScalarProductDoubleToComplex");
     }
 
     @Override
