@@ -1,8 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.thevpc.scholar.hadrumaths.format.ObjectFormatParamSet;
@@ -2467,9 +2465,9 @@ public class ExprDefaults {
         return mul;
     }
 
-    public static TsonElement toTsonElement(Expr me, TsonObjectContext context) {
-        return Tson.ofUpletBuilder().name("expr").add(
-                Tson.of(me.toString())
+    public static NElement toElement(Expr me) {
+        return NElement.ofUpletBuilder().name("expr").add(
+                NElement.ofString(me.toString())
         ).build();
     }
 
