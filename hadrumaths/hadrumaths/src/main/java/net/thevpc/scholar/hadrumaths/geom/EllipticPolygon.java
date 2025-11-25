@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.geom;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.GeometryFactory;
 import net.thevpc.scholar.hadrumaths.Maths;
@@ -19,6 +20,11 @@ public class EllipticPolygon extends AbstractGeometry implements PolygonBuilder,
     private int sides = 24;
     private double arcRatio = 1;
     private double phase;
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("EllipticPolygon");
+    }
 
     public Point getCenter() {
         return center;
