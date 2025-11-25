@@ -1,6 +1,7 @@
 package net.thevpc.scholar.mentoring.extra
 
 import net.thevpc.common.time.Chronometer
+import net.thevpc.nuts.elem.NElement
 import net.thevpc.scholar.hadrumaths.MathScala._
 import net.thevpc.scholar.hadruwaves.Physics._
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector
@@ -9,7 +10,6 @@ import net.thevpc.scholar.hadruwaves.Material
 import net.thevpc.scholar.hadruwaves.mom.BoxSpace.{matchedLoad, shortCircuit}
 import net.thevpc.scholar.hadruwaves.mom.{MomStructure, StrLayer}
 import net.thevpc.scholar.hadruwaves.project.scene.HWProjectScenePlot
-import net.thevpc.tson.Tson
 
 object d_2018_02_01_FabryPerot_EquivalentCircuit {
   Maths.Config.setSimplifierCacheSize(1000000);
@@ -197,11 +197,11 @@ object d_2018_02_01_FabryPerot_EquivalentCircuit {
   def calculEtetha(theta: Double, phi: Double): Complex = {
     var persistentCache = st.getDerivedPersistentCache("Etheta")
     //    persistentCache.setEnabled(true);
-    val dumper = Tson.ofObjectBuilder("Etheta")
-      .add("st", Tson.serializer().serialize(st))
-      .add("theta", Tson.of(theta))
-      .add("r", Tson.of(r))
-      .add("phi", Tson.of(phi))
+    val dumper = NElement.ofObjectBuilder("Etheta")
+      .add("st", NElement.serializer().serialize(st))
+      .add("theta", NElement.ofDouble(theta))
+      .add("r", NElement.ofDouble(r))
+      .add("phi", NElement.ofDouble(phi))
     //.add("Xvalues", dsteps(0, a, 100))
     // .add("Yvalues", dsteps(-b / 2, b / 2, 100))
     return persistentCache.of("Etheta", dumper).eval(() => calculEthetaEff(theta, phi)).get();
@@ -245,11 +245,11 @@ object d_2018_02_01_FabryPerot_EquivalentCircuit {
     var persistentCache = st.getDerivedPersistentCache("Ephi")
     //    var persistentCache = new PersistenceCacheImpl("Ephi");
     //    persistentCache.setEnabled(true);
-    var dumper = Tson.ofObjectBuilder("Ephi")
+    var dumper = NElement.ofObjectBuilder("Ephi")
       .add("st", Tson.serializer().serialize(st))
-      .add("phi", Tson.of(phi))
-      .add("r", Tson.of(r))
-      .add("theta", Tson.of(theta))
+      .add("phi", NElement.ofDouble(phi))
+      .add("r", NElement.ofDouble(r))
+      .add("theta", NElement.ofDouble(theta))
     //.add("Xvalues", dsteps(0, a, 100))
     //.add("Yvalues", dsteps(-b / 2, b / 2, 100))
     //    return persistentCache.evaluate[Complex]("Ephi", null,new CacheEvaluator {
