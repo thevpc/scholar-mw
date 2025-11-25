@@ -2,9 +2,9 @@ package net.thevpc.scholar.hadruwaves.mom.str.momstr;
 
 import net.thevpc.common.mon.MonitoredAction;
 import net.thevpc.common.mon.ProgressMonitors;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.common.mon.ProgressMonitor;
@@ -61,7 +61,7 @@ public class DefaultSourceEvaluator implements SourceEvaluator {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofUplet(getClass().getSimpleName()).build();
+    public NElement toElement() {
+        return NElement.ofUplet(getClass().getSimpleName());
     }
 }
