@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadrumaths.geom;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.HSerializable;
 import net.thevpc.scholar.hadrumaths.Maths;
 
@@ -114,15 +114,15 @@ public class Dimension implements HSerializable {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
+    public NElement toElement() {
         switch (dimension) {
             case 1: {
-                return Tson.ofUplet(Tson.of(x)).build();
+                return NElement.ofUplet(NElement.ofDouble(x));
             }
             case 2: {
-                return Tson.ofUplet(Tson.of(x), Tson.of(y)).build();
+                return NElement.ofUplet(NElement.ofDouble(x), NElement.ofDouble(y));
             }
         }
-        return Tson.ofUplet(Tson.of(x), Tson.of(y), Tson.of(z)).build();
+        return NElement.ofUplet(NElement.ofDouble(x), NElement.ofDouble(y), NElement.ofDouble(z));
     }
 }
