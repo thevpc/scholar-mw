@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.trigo;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -113,6 +114,11 @@ class TanhDoubleToDouble extends Tanh implements DoubleToDoubleDefaults.DoubleTo
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Tanh");
+    }
+
+    @Override
     public double evalDoubleSimple(double x) {
         return Maths.tanh(x);
     }
@@ -122,6 +128,11 @@ class TanhDoubleToDouble extends Tanh implements DoubleToDoubleDefaults.DoubleTo
 class TanhDoubleToComplex extends Tanh implements DoubleToComplexDefaults.DoubleToComplexUnaryDC {
     public TanhDoubleToComplex(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Tanh");
     }
 
     @Override
@@ -136,6 +147,11 @@ class TanhDoubleToVector extends Tanh implements DoubleToVectorDefaults.DoubleTo
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Tanh");
+    }
+
+    @Override
     public ComplexVector aggregateVector(ComplexVector v) {
         return v.tanh();
     }
@@ -144,6 +160,11 @@ class TanhDoubleToVector extends Tanh implements DoubleToVectorDefaults.DoubleTo
 class TanhDoubleToMatrix extends Tanh implements DoubleToMatrixDefaults.DoubleToMatrixUnaryDM {
     public TanhDoubleToMatrix(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Tanh");
     }
 
     @Override
