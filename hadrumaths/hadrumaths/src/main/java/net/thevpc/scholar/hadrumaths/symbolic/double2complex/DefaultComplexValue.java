@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2complex;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
 import net.thevpc.scholar.hadrumaths.util.ArrayUtils;
@@ -28,6 +29,11 @@ public class DefaultComplexValue implements DoubleToComplex, ComplexValue {
         this.imag = Maths.expr(value.getImag(), domain);
         this.value = value;
         this.domain = value.isZero() ? Domain.ZERO(domain == null ? 1 : domain.getDimension()) : domain == null ? Domain.FULLX : domain;
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("DefaultComplexValue");
     }
 
     public static DefaultComplexValue of(Complex value) {
