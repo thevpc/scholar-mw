@@ -4,10 +4,11 @@ import net.thevpc.common.props.Props;
 import net.thevpc.common.props.WritableBoolean;
 import net.thevpc.common.props.WritableString;
 import net.thevpc.common.props.WritableValue;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
+
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.units.ParamUnit;
 import net.thevpc.scholar.hadrumaths.units.UnitType;
 
@@ -56,17 +57,17 @@ public class HWParameterValue extends AbstractHWParameterElement {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder obj = Tson.ofObjectBuilder("Parameter")
+    public NElement toElement() {
+        NObjectElementBuilder obj = NElement.ofObjectBuilder("Parameter")
                 .add("name", name().get());
         if (description().get() != null) {
             obj.add("description", description().get());
         }
         if (type().get() != null) {
-            obj.add("type", type().get().toTsonElement(context));
+            obj.add("type", type().get().toElement());
         }
         if (unit().get() != null) {
-            obj.add("unit", (Enum) unit().get());
+            obj.add("unit", NElement.ofEnum((Enum) unit().get()));
         }
         return obj.build();
     }
