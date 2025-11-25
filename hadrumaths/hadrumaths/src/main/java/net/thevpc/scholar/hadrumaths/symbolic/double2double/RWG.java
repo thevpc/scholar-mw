@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.geom.*;
 import net.thevpc.scholar.hadrumaths.symbolic.Range;
@@ -45,6 +46,11 @@ public final class RWG extends AbstractDoubleToDouble {
         this.polygon1 = i.polygon1;
         this.polygon2 = i.polygon2;
         this.domain = i.domain;
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Rwg");
     }
 
     private FinalInfo init(double max, Polygon triangle1, Polygon triangle2) {
