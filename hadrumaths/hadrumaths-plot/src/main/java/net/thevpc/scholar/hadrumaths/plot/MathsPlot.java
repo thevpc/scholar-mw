@@ -5,17 +5,19 @@
  */
 package net.thevpc.scholar.hadrumaths.plot;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import net.thevpc.common.mvn.PomId;
 import net.thevpc.common.mvn.PomIdResolver;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElementFactoryContext;
+import net.thevpc.nuts.elem.NElementMapper;
 import net.thevpc.scholar.hadruplot.*;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonObjectContext;
-import net.thevpc.tson.TsonSerializer;
-import net.thevpc.tson.TsonSerializerBuilder;
+
+
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.plot.convergence.ConvergenceConfig;
 import net.thevpc.scholar.hadrumaths.plot.convergence.ConvergenceEvaluator;
@@ -38,7 +40,6 @@ import net.thevpc.scholar.hadruplot.console.params.ParamSet;
 import net.thevpc.scholar.hadruplot.util.SimpleDoubleFormat;
 
 /**
- *
  * @author vpc
  */
 public class MathsPlot {
@@ -79,21 +80,20 @@ public class MathsPlot {
             old.add(DefaultPlotModelFactory.INSTANCE);
             old.addAll(Arrays.asList(PlotConfigManager.getPlotModelFactories()));
             PlotConfigManager.setPlotModelFactories(old.toArray(new PlotModelFactory[0]));
-
-            TsonSerializer ser = Tson.serializer();
-            TsonSerializerBuilder b = null;
-            if (ser == null) {
-                b = Tson.serializer()
-                        .builder();
-            } else {
-                b = ser.builder();
-            }
-            Tson.setSerializer(
-                    b
-                            .setSerializer(SimpleDoubleFormat.class, (SimpleDoubleFormat object, TsonObjectContext context) -> Tson.ofUplet(object.getClass().getSimpleName()))
-                            .setSerializer(PlotBuilder.ListDoubleFormat.class, (PlotBuilder.ListDoubleFormat object, TsonObjectContext context) -> Tson.ofUplet(object.getClass().getSimpleName(), context.elem(object.getValues())))
-                            .build()
-            );
+            Maths.Config.getElements().mapperStore()
+                    .setMapper(SimpleDoubleFormat.class, new NElementMapper<SimpleDoubleFormat>() {
+                        @Override
+                        public NElement createElement(SimpleDoubleFormat object, Type typeOfSrc, NElementFactoryContext context) {
+                            return NElement.ofUplet(object.getClass().getSimpleName());
+                        }
+                    })
+                    .setMapper(PlotBuilder.ListDoubleFormat.class, new NElementMapper<PlotBuilder.ListDoubleFormat>() {
+                        @Override
+                        public NElement createElement(PlotBuilder.ListDoubleFormat object, Type typeOfSrc, NElementFactoryContext context) {
+                            return Maths.Config.getElements().toElement(object.getValues());
+                        }
+                    })
+            ;
 
             PlotConfigManager.getPlotHyperCubeResolvers()
                     .add(new ClassResolver<PlotHyperCube>() {
