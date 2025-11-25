@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.Maths;
@@ -24,6 +25,11 @@ public class SinSeqYZ extends RefDoubleToDouble {
 
     public SinSeqYZ(boolean maxNorth, boolean maxEast, boolean maxSouth, boolean maxWest, DoubleParam m, DoubleParam n, Domain domain) {
         init(maxNorth, maxEast, maxSouth, maxWest, m, n, domain);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("SinSeqYZ");
     }
 
     private void init(boolean maxNorth, boolean maxEast, boolean maxSouth, boolean maxWest, DoubleParam m, DoubleParam n, Domain domain) {
