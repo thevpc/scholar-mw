@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.geom;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.GeometryFactory;
 import net.thevpc.scholar.hadrumaths.Maths;
@@ -20,6 +21,11 @@ public class RegularPolygon extends AbstractGeometry implements PolygonBuilder {
 
     public Point getCenter() {
         return center;
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("RegularPolygon");
     }
 
     public RegularPolygon setCenter(Point center) {
