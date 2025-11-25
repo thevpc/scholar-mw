@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.geom;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.GeometryFactory;
 import net.thevpc.scholar.hadrumaths.Maths;
@@ -21,6 +22,11 @@ public class Triangle extends AbstractGeometry implements Serializable, PolygonB
         }
     };
     private static final long serialVersionUID = 1L;
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Triangle");
+    }
 
 //    public static void main(String[] args) {
 ////        p1 = {Point@2401} "(0.011174111111111109,-8.333333333333332E-4)"
