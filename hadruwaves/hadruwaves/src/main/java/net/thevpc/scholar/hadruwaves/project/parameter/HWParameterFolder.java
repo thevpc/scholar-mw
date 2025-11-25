@@ -5,9 +5,9 @@ import net.thevpc.common.props.WritableLiMap;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 
 public class HWParameterFolder extends AbstractHWParameterElement {
     private HWParameterFolderHelper childrenHelper = new HWParameterFolderHelper(this, () -> project().get());
@@ -55,16 +55,15 @@ public class HWParameterFolder extends AbstractHWParameterElement {
     }
     
         @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObjectBuilder("Folder")
+    public NElement toElement() {
+        return NElement.ofObjectBuilder("Folder")
                 .add("name", name().get())
                 .add("description", description().get())
                 .add("children", 
-                        Tson.ofArrayBuilder().addAll(
-                            childrenHelper.children().values().stream().map(x->x.toTsonElement(context)).collect(Collectors.toList())
-                        )
-                )
-                .build();
+                        NElement.ofArrayBuilder().addAll(
+                            childrenHelper.children().values().stream().map(x->x.toElement()).collect(Collectors.toList())
+                        ).build()
+                ).build();
     }
 
 }
