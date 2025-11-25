@@ -1,8 +1,9 @@
 package net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+import net.thevpc.nuts.elem.NElement;
+
+
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.geom.*;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
@@ -11,6 +12,7 @@ import net.thevpc.scholar.hadrumaths.meshalgo.MeshZoneType;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.DDiscrete;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.RWG;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 import java.util.*;
@@ -53,12 +55,12 @@ public final class RWGPattern extends AbstractGpPattern implements TriangularGpP
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder h = super.toTsonElement(context).toObject().builder();
-        h.add("x", context.elem(x));
-        h.add("y", context.elem(y));
-        h.add("gridx", context.elem(gridx));
-        h.add("gridy", context.elem(gridy));
+    public NElement toElement() {
+        NObjectElementBuilder h = super.toElement().toObject().get().builder();
+        h.add("x", NElementHelper.elem(x));
+        h.add("y", NElementHelper.elem(y));
+        h.add("gridx", NElementHelper.elem(gridx));
+        h.add("gridy", NElementHelper.elem(gridy));
         return h.build();
     }
 
