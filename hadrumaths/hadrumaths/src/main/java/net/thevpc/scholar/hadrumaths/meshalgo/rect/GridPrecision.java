@@ -1,9 +1,10 @@
 package net.thevpc.scholar.hadrumaths.meshalgo.rect;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.HSerializable;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -77,12 +78,12 @@ public final class GridPrecision implements Cloneable, HSerializable {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObjectBuilder(getClass().getSimpleName())
-                .add("xmin", context.elem(xmin))
-                .add("xmax", context.elem(xmax))
-                .add("ymin", context.elem(ymin))
-                .add("ymax", context.elem(ymax))
+    public NElement toElement() {
+        return NElement.ofObjectBuilder(getClass().getSimpleName())
+                .add("xmin", NElementHelper.elem(xmin))
+                .add("xmax", NElementHelper.elem(xmax))
+                .add("ymin", NElementHelper.elem(ymin))
+                .add("ymax", NElementHelper.elem(ymax))
                 .build();
     }
 //    public String dump() {
