@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.polymorph.num.Mul;
 
@@ -13,6 +14,10 @@ public class YY extends AxisFunction {
         super(domain.dimension() < 2 ? domain.expandDimension(2) : domain, Axis.Y);
     }
 
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("YY");
+    }
 
     @Override
     public double evalDoubleSimple(double x) {
