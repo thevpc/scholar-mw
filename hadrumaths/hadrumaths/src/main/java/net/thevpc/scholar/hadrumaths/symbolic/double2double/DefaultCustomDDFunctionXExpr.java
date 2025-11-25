@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.format.ObjectFormat;
 import net.thevpc.scholar.hadrumaths.format.ObjectFormatContext;
@@ -36,6 +37,12 @@ public class DefaultCustomDDFunctionXExpr extends AbstractComposedDoubleToDouble
         this.definition = definition;
         this.args = InternalUnmodifiableSingletonList.of(arg);
     }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("DefaultCustomDDFunctionXExpr");
+    }
+
 
     @Override
     public Expr newInstance(Expr... arguments) {
