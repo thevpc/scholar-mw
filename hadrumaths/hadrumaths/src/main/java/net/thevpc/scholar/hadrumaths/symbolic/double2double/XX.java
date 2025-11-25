@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.Domain;
@@ -14,6 +15,11 @@ public class XX extends AxisFunction {
 
     public XX(Domain domain) {
         super(domain, Axis.X);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("XX");
     }
 
 
