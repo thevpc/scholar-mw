@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.trigo;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
 
@@ -111,6 +112,12 @@ class AcosDoubleToDouble extends Acos implements DoubleToDoubleDefaults.DoubleTo
         super(arg);
     }
 
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Acos");
+    }
+
     @Override
     public double evalDoubleSimple(double x) {
         return Maths.acos(x);
@@ -120,6 +127,11 @@ class AcosDoubleToDouble extends Acos implements DoubleToDoubleDefaults.DoubleTo
 class AcosDoubleToComplex extends Acos implements DoubleToComplexDefaults.DoubleToComplexUnaryDC {
     public AcosDoubleToComplex(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Acos");
     }
 
     @Override
@@ -135,6 +147,11 @@ class AcosDoubleToVector extends Acos implements DoubleToVectorDefaults.DoubleTo
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Acos");
+    }
+
+    @Override
     public ComplexVector aggregateVector(ComplexVector v) {
         return v.acos();
     }
@@ -144,6 +161,11 @@ class AcosDoubleToVector extends Acos implements DoubleToVectorDefaults.DoubleTo
 class AcosDoubleToMatrix extends Acos implements DoubleToMatrixDefaults.DoubleToMatrixUnaryDM {
     public AcosDoubleToMatrix(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Acos");
     }
 
     @Override
