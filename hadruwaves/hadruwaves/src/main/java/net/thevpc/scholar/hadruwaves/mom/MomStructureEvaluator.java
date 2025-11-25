@@ -1,8 +1,9 @@
 package net.thevpc.scholar.hadruwaves.mom;
 
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.HSerializable;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.mom.str.*;
 import net.thevpc.scholar.hadruwaves.mom.str.momstr.*;
 import net.thevpc.scholar.hadruwaves.str.*;
@@ -182,42 +183,42 @@ public class MomStructureEvaluator implements HSerializable {
     }
 
     //@Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        Map<String, TsonElement> builders = new HashMap<>();
+    public NElement toElement() {
+        Map<String, NElement> builders = new HashMap<>();
         if (matrixAEvaluator != null) {
-            builders.put("matrixA", context.elem(matrixAEvaluator));
+            builders.put("matrixA", NElementHelper.elem(matrixAEvaluator));
         }
         if (matrixBEvaluator != null) {
-            builders.put("matrixB", context.elem(matrixBEvaluator));
+            builders.put("matrixB", NElementHelper.elem(matrixBEvaluator));
         }
         if (matrixUnknownEvaluator != null) {
-            builders.put("matrixUnknown", context.elem(matrixUnknownEvaluator));
+            builders.put("matrixUnknown", NElementHelper.elem(matrixUnknownEvaluator));
         }
         if (electricFieldEvaluator != null) {
-            builders.put("electricField", context.elem(electricFieldEvaluator));
+            builders.put("electricField", NElementHelper.elem(electricFieldEvaluator));
         }
         if (farFieldEvaluator != null) {
-            builders.put("farField", context.elem(farFieldEvaluator));
+            builders.put("farField", NElementHelper.elem(farFieldEvaluator));
         }
         if (electricFieldFundamentalEvaluator != null) {
-            builders.put("electricFieldFundamental", context.elem(electricFieldFundamentalEvaluator));
+            builders.put("electricFieldFundamental", NElementHelper.elem(electricFieldFundamentalEvaluator));
         }
         if (currentEvaluator != null) {
-            builders.put("current", context.elem(currentEvaluator));
+            builders.put("current", NElementHelper.elem(currentEvaluator));
         }
         if (testFieldEvaluator != null) {
-            builders.put("testField", context.elem(testFieldEvaluator));
+            builders.put("testField", NElementHelper.elem(testFieldEvaluator));
         }
         if (poyntingVectorEvaluator != null) {
-            builders.put("poyntingVector", context.elem(poyntingVectorEvaluator));
+            builders.put("poyntingVector", NElementHelper.elem(poyntingVectorEvaluator));
         }
         if (magneticFieldEvaluator != null) {
-            builders.put("magneticField", context.elem(magneticFieldEvaluator));
+            builders.put("magneticField", NElementHelper.elem(magneticFieldEvaluator));
         }
         if (zinEvaluator != null) {
-            builders.put("zin", context.elem(zinEvaluator));
+            builders.put("zin", NElementHelper.elem(zinEvaluator));
         }
-        return context.elem(builders);
+        return NElementHelper.elem(builders);
     }
 
     public ZinEvaluator createZinEvaluator() {
