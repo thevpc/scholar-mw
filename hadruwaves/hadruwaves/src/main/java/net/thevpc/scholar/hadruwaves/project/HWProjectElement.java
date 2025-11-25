@@ -6,13 +6,14 @@
 package net.thevpc.scholar.hadruwaves.project;
 
 import net.thevpc.common.props.ObservableValue;
-import net.thevpc.tson.TsonSerializable;
+import net.thevpc.nuts.elem.NToElement;
+import net.thevpc.nuts.elem.NToElement;
 
 /**
  *
  * @author vpc
  */
-public interface HWProjectElement extends TsonSerializable{
+public interface HWProjectElement extends NToElement {
 
     ObservableValue<HWSolution> solution();
 
