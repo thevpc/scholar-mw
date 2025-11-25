@@ -1,14 +1,16 @@
 package net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+import net.thevpc.nuts.elem.NElement;
+
+
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Domain;
 
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.DDiscrete;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 import static net.thevpc.scholar.hadrumaths.Maths.*;
@@ -36,13 +38,13 @@ public final class EchelonPattern extends RectMeshAttachGpPattern {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder h = super.toTsonElement(context).toObject().builder();
-        h.add("gridx", context.elem(gridx));
-        h.add("gridy", context.elem(gridy));
-        h.add("xaxis", context.elem(xaxis));
-        h.add("yaxis", context.elem(yaxis));
-        h.add("value", context.elem(value));
+    public NElement toElement() {
+        NObjectElementBuilder h = super.toElement().toObject().get().builder();
+        h.add("gridx", NElementHelper.elem(gridx));
+        h.add("gridy", NElementHelper.elem(gridy));
+        h.add("xaxis", NElementHelper.elem(xaxis));
+        h.add("yaxis", NElementHelper.elem(yaxis));
+        h.add("value", NElementHelper.elem(value));
         return h.build();
     }
 
