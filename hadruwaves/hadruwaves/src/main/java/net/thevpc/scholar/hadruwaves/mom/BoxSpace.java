@@ -1,9 +1,12 @@
 package net.thevpc.scholar.hadruwaves.mom;
 
-import net.thevpc.tson.*;
+
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NUpletElementBuilder;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.HSerializable;
 import net.thevpc.scholar.hadrumaths.Maths;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.Material;
 
 import java.util.Objects;
@@ -67,14 +70,14 @@ public final class BoxSpace implements HSerializable {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonUpletBuilder h = Tson.ofUpletBuilder().name(limit.name());
+    public NElement toElement() {
+        NUpletElementBuilder h = NElement.ofUpletBuilder().name(limit.name());
         if (!limit.equals(Boundary.NOTHING) && !limit.equals(Boundary.INFINITE)) {
-            h.add(Tson.ofPair("width", context.elem(width)));
+            h.add(NElement.ofPair("width", NElementHelper.elem(width)));
         }
 
         if (!limit.equals(Boundary.NOTHING)) {
-            h.add(Tson.ofPair("material", context.elem(material)));
+            h.add(NElement.ofPair("material", NElementHelper.elem(material)));
         }
         return h.build();
     }
