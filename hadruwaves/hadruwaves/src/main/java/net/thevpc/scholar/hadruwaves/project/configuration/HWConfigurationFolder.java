@@ -8,10 +8,10 @@ import java.util.stream.Collectors;
 import net.thevpc.common.props.PropertyEvent;
 import net.thevpc.common.props.PropertyListener;
 import net.thevpc.common.props.WritableValue;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonElementBase;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
+
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 
 public class HWConfigurationFolder extends AbstractHWConfigurationElement {
@@ -58,12 +58,12 @@ public class HWConfigurationFolder extends AbstractHWConfigurationElement {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObjectBuilder("Folder")
+    public NElement toElement() {
+        return NElement.ofObjectBuilder("Folder")
                 .add("name", name().get())
                 .add("description", description().get())
-                .add("children", Tson.ofArray(
-                        children().values().stream().map(x -> x.toTsonElement(context)).toArray(TsonElementBase[]::new)))
+                .add("children", NElement.ofArray(
+                        children().values().stream().map(x -> x.toElement()).toArray(NElement[]::new)))
                 .build();
     }
 }
