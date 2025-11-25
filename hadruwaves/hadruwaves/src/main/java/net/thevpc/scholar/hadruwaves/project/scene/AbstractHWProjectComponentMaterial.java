@@ -2,6 +2,7 @@ package net.thevpc.scholar.hadruwaves.project.scene;
 
 import net.thevpc.common.props.Props;
 import net.thevpc.common.props.WritableValue;
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.elements.Element3D;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.thevpc.Element3DRenderPrefs;
 import net.thevpc.scholar.hadruwaves.Material;
@@ -10,9 +11,9 @@ import net.thevpc.scholar.hadruwaves.project.AbstractHWProjectComponent;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+import net.thevpc.nuts.elem.NElement;
+
+
 import net.thevpc.scholar.hadrumaths.plot.d3.BoundDomain;
 import net.thevpc.scholar.hadruwaves.Boundary;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
@@ -120,13 +121,13 @@ public abstract class AbstractHWProjectComponentMaterial extends AbstractHWProje
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder obj = (TsonObjectBuilder) super.toTsonElement(context).builder();
+    public NElement toElement() {
+        NObjectElementBuilder obj = (NObjectElementBuilder) super.toElement().builder();
         if (material.get() != null) {
-            obj.add("material", material.get().toTsonElement(context));
+            obj.add("material", material.get().toElement());
         }
         if (geometry.get() != null) {
-            obj.add("geometry", geometry.get().toTsonElement(context));
+            obj.add("geometry", geometry.get().toElement());
         }
         return obj.build();
     }
