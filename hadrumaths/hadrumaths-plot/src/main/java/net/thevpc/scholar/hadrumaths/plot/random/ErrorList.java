@@ -1,7 +1,8 @@
 package net.thevpc.scholar.hadrumaths.plot.random;
 
 import net.thevpc.common.io.IOUtils;
-import net.thevpc.tson.*;
+
+import net.thevpc.nuts.elem.*;
 import net.thevpc.scholar.hadrumaths.Expr;
 
 import java.io.*;
@@ -120,25 +121,26 @@ public class ErrorList {
                 String id = nextErrorName(cls.getSimpleName());
                 File errorStr = new File(testConfigFolder, id + ".error-string");
                 File errorObj = new File(testConfigFolder, id + ".error-obj");
-                TsonObjectBuilder tsonObj = Tson.ofObjectBuilder()
-                        .add("id", Tson.of(id))
-                        .add("type", Tson.of(cls.getName()))
-                        .add("value", Tson.of(String.valueOf(objWithErrors.obj)));
-                TsonArrayBuilder array = Tson.ofArrayBuilder();
+                NObjectElementBuilder obj = NElement.ofObjectBuilder()
+                        .add("id", NElement.ofString(id))
+                        .add("type", NElement.ofString(cls.getName()))
+                        .add("value", NElement.ofString(String.valueOf(objWithErrors.obj)));
+                NArrayElementBuilder array = NElement.ofArrayBuilder();
                 for (ErrorMessage message : objWithErrors.messages) {
                     StringWriter sw = new StringWriter();
                     PrintWriter pw = new PrintWriter(sw);
                     message.message.printStackTrace(pw);
                     array.add(
-                            Tson.ofObjectBuilder()
-                                    .add("id", Tson.of(message.id))
-                                    .add("warning", Tson.of(message.warning))
-                                    .add("message", Tson.of(message.message.toString()))
-                                    .add("stacktrace", Tson.of(sw.toString()))
+                            NElement.ofObjectBuilder()
+                                    .add("id", NElement.ofString(message.id))
+                                    .add("warning", NElement.ofBoolean(message.warning))
+                                    .add("message", NElement.ofString(message.message.toString()))
+                                    .add("stacktrace", NElement.ofString(sw.toString()))
+                                    .build()
                     );
                 }
-                tsonObj.add("messages", array);
-                Tson.writer().write(errorStr, tsonObj);
+                obj.add("messages", array.build());
+                NElementFormat.ofPlainTson(obj).print(errorStr);
                 IOUtils.saveObject2(errorObj.getPath(), objWithErrors.obj);
             }
         }
@@ -190,21 +192,21 @@ public class ErrorList {
                             try {
                                 Expr expr = (Expr) IOUtils.loadObject2(errorObj.getPath());
                                 String str = errorStr.exists() ? new String(Files.readAllBytes(errorStr.toPath())) : "";
-                                TsonObject tson = Tson.reader().readElement(str).toObject();
-                                Class<?> type = Class.forName(tson.get("type").stringValue());
+                                NObjectElement obj = NElementParser.ofTson().parse(str).asObject().get();
+                                Class<?> type = Class.forName(obj.get("type").get().asStringValue().get());
                                 e = new ErrorGroup(
                                         name,
                                         type,
                                         expr);
-                                for (TsonElement me : tson.get("messages").toArray()) {
-                                    TsonObject m = me.toObject();
+                                for (NElement me : obj.getArray("messages").get()) {
+                                    NObjectElement m = me.toObject().get();
                                     e.messages.add(
                                             new ErrorMessage(
                                                     name,
-                                                    m.get("warning").booleanValue(),
+                                                    m.get("warning").get().asBooleanValue().get(),
                                                     type,
                                                     expr,
-                                                    new RuntimeException(m.get("message").toStr().stringValue())
+                                                    new RuntimeException(m.get("message").get().asStringValue().get())
                                             )
                                     );
                                 }
