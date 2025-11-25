@@ -1,6 +1,7 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
 import net.thevpc.common.collections.MapUtils;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.Maths;
@@ -175,6 +176,11 @@ public class Rooftop extends RefDoubleToDouble {
             throw new RuntimeException("Rooftop Pattern should include either X or Y");
         }
         refValue = (Maths.esum(list)).toDD();
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Rooftop");
     }
 
     private Expr rooftopPartX(boolean asc, Domain domain) {
