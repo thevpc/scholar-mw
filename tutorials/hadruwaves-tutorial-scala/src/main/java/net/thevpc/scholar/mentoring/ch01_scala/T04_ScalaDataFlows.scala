@@ -19,6 +19,7 @@ object T04_ScalaDataFlows extends App{
 
   // conditional expression
   var b= if (a<=3)  10 else 15 // b =10 for this example, { and } are not mandatory
+  //var b= (a<=3)?  10 : 15 // b =10 for this example, { and } are not mandatory
   //b=a<=3?10:15
   var i=8;
   while(i>0){
