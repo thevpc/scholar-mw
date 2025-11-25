@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.function.Predicate;
 import net.thevpc.common.props.ObservableValue;
 import net.thevpc.common.props.WritableList;
-import net.thevpc.tson.TsonSerializable;
+import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 
-public interface HWProjectScene extends TsonSerializable{
+public interface HWProjectScene extends NToElement{
 
     ObservableValue<HWProject> project();
 
