@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.trigo;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -111,6 +112,11 @@ class CotanDoubleToDouble extends Cotan implements DoubleToDoubleDefaults.Double
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Cotan");
+    }
+
+    @Override
     public double evalDoubleSimple(double x) {
         return Maths.cotan(x);
     }
@@ -119,6 +125,11 @@ class CotanDoubleToDouble extends Cotan implements DoubleToDoubleDefaults.Double
 class CotanDoubleToComplex extends Cotan implements DoubleToComplexDefaults.DoubleToComplexUnaryDC {
     public CotanDoubleToComplex(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Cotan");
     }
 
     @Override
@@ -134,6 +145,11 @@ class CotanDoubleToVector extends Cotan implements DoubleToVectorDefaults.Double
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Cotan");
+    }
+
+    @Override
     public ComplexVector aggregateVector(ComplexVector v) {
         return v.cotan();
     }
@@ -142,6 +158,11 @@ class CotanDoubleToVector extends Cotan implements DoubleToVectorDefaults.Double
 class CotanDoubleToMatrix extends Cotan implements DoubleToMatrixDefaults.DoubleToMatrixUnaryDM {
     public CotanDoubleToMatrix(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Cotan");
     }
 
     @Override
