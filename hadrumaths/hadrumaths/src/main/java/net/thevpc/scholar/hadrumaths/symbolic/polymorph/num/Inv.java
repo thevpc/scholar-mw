@@ -5,6 +5,7 @@
  */
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.num;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -190,6 +191,11 @@ class InvDoubleToDouble extends Inv implements DoubleToDoubleDefaults.DoubleToDo
         return 1 / x;
     }
 
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Inv");
+    }
+
 }
 
 class InvDoubleToComplex extends Inv implements DoubleToComplexDefaults.DoubleToComplexUnaryDC {//WithUnaryExprHelperDoubleToComplex
@@ -202,6 +208,11 @@ class InvDoubleToComplex extends Inv implements DoubleToComplexDefaults.DoubleTo
     public Complex aggregateComplex(Complex a) {
         return a.inv();
     }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Inv");
+    }
 }
 
 class InvDoubleToVector extends Inv implements DoubleToVectorDefaults.DoubleToVectorUnaryDV {
@@ -212,6 +223,11 @@ class InvDoubleToVector extends Inv implements DoubleToVectorDefaults.DoubleToVe
     @Override
     public ComplexVector aggregateVector(ComplexVector v) {
         return v.inv();
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Inv");
     }
 }
 
@@ -225,4 +241,8 @@ class InvDoubleToMatrix extends Inv implements DoubleToMatrixDefaults.DoubleToMa
         return m.inv();
     }
 
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Inv");
+    }
 }
