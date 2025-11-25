@@ -4,12 +4,15 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
+
+import net.thevpc.nuts.elem.NObjectElementBuilder;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.mom.ModeFunctions;
 import net.thevpc.scholar.hadruwaves.mom.sources.Sources;
+
 import static net.thevpc.scholar.hadruwaves.Physics.waveLength;
 
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
@@ -34,7 +37,7 @@ public abstract class AbstractPropagatingModalSources implements ModalSources {
     }
 
     public int getSourceCountForDimensions(ModeFunctions fn) {
-        int x = ((int) (Math.max(fn.getEnv().getDomain().xwidth(),fn.getEnv().getDomain().ywidth()) / waveLength(fn.getEnv().getFrequency()))) + 1;
+        int x = ((int) (Math.max(fn.getEnv().getDomain().xwidth(), fn.getEnv().getDomain().ywidth()) / waveLength(fn.getEnv().getFrequency()))) + 1;
         int val = (x < 0 || x >= this.sourceCountPerDimension.length) ? this.defaultSourceCount : this.sourceCountPerDimension[x - 1];
         if (val == 0) {
             return x;
@@ -51,13 +54,13 @@ public abstract class AbstractPropagatingModalSources implements ModalSources {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder h = Tson.ofObjectBuilder(getClass().getSimpleName());
-        h.add("default", context.elem(defaultSourceCount == 0 ? "%scale" : defaultSourceCount));
+    public NElement toElement() {
+        NObjectElementBuilder h = NElement.ofObjectBuilder(getClass().getSimpleName());
+        h.add("default", NElementHelper.elem(defaultSourceCount == 0 ? "%scale" : defaultSourceCount));
         if (sourceCountPerDimension.length > 0) {
-            h.add("bydim", context.elem(
-                    Arrays.stream(sourceCountPerDimension).boxed().map(x->x>0?String.valueOf(x):"*")
-                    .toArray()
+            h.add("bydim", NElementHelper.elem(
+                    Arrays.stream(sourceCountPerDimension).boxed().map(x -> x > 0 ? String.valueOf(x) : "*")
+                            .toArray()
             ));
         }
         return h.build();
@@ -76,7 +79,7 @@ public abstract class AbstractPropagatingModalSources implements ModalSources {
             throw new RuntimeException(ex);
         }
     }
-    
+
     public void setStructure(MomStructure str) {
         //throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -86,8 +89,8 @@ public abstract class AbstractPropagatingModalSources implements ModalSources {
     }
 
     public int[] getSourceCountPerDimension() {
-        int[] cpy=new int[sourceCountPerDimension.length];
-        System.arraycopy(sourceCountPerDimension,0,cpy,0,sourceCountPerDimension.length);
+        int[] cpy = new int[sourceCountPerDimension.length];
+        System.arraycopy(sourceCountPerDimension, 0, cpy, 0, sourceCountPerDimension.length);
         return cpy;
     }
 
@@ -104,7 +107,7 @@ public abstract class AbstractPropagatingModalSources implements ModalSources {
 
     @Override
     public int hashCode() {
-        int result = getClass().getName().hashCode()*31+defaultSourceCount;
+        int result = getClass().getName().hashCode() * 31 + defaultSourceCount;
         result = 31 * result + Arrays.hashCode(sourceCountPerDimension);
         return result;
     }
