@@ -4,14 +4,16 @@
  */
 package net.thevpc.scholar.hadruwaves.mom.sources.planar;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
+
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.geom.Geometry;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.mom.sources.PlanarSource;
 
 import java.util.logging.Level;
@@ -53,10 +55,10 @@ public class ExprPlanarSource implements PlanarSource, Cloneable {
 
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder h = Tson.ofObjectBuilder(getClass().getSimpleName());
-        h.add("fct", context.elem(fct));
-        h.add("z0", context.elem(characteristicImpedance));
+    public NElement toElement() {
+        NObjectElementBuilder h = NElement.ofObjectBuilder(getClass().getSimpleName());
+        h.add("fct", NElementHelper.elem(fct));
+        h.add("z0", NElementHelper.elem(characteristicImpedance));
         return h.build();
     }
 
