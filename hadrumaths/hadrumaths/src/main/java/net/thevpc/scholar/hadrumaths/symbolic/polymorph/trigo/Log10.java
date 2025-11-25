@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.trigo;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -112,6 +113,11 @@ class Log10DoubleToDouble extends Log10 implements DoubleToDoubleDefaults.Double
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Log10");
+    }
+
+    @Override
     public double evalDoubleSimple(double x) {
         return Maths.log10(x);
     }
@@ -119,6 +125,11 @@ class Log10DoubleToDouble extends Log10 implements DoubleToDoubleDefaults.Double
 class Log10DoubleToComplex extends Log10 implements DoubleToComplexDefaults.DoubleToComplexUnaryDC {
     public Log10DoubleToComplex(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Log10");
     }
 
     @Override
