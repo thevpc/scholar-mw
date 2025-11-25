@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.trigo;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -113,6 +114,11 @@ class SinDoubleToDouble extends Sin implements DoubleToDoubleDefaults.DoubleToDo
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Sin");
+    }
+
+    @Override
     public double evalDoubleSimple(double x) {
         return Maths.sin(x);
     }
@@ -121,6 +127,11 @@ class SinDoubleToDouble extends Sin implements DoubleToDoubleDefaults.DoubleToDo
 class SinDoubleToComplex extends Sin implements DoubleToComplexDefaults.DoubleToComplexUnaryDC {
     public SinDoubleToComplex(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Sin");
     }
 
     @Override
@@ -136,6 +147,11 @@ class SinDoubleToVector extends Sin implements DoubleToVectorDefaults.DoubleToVe
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Sin");
+    }
+
+    @Override
     public ComplexVector aggregateVector(ComplexVector v) {
         return v.sin();
     }
@@ -145,6 +161,11 @@ class SinDoubleToVector extends Sin implements DoubleToVectorDefaults.DoubleToVe
 class SinDoubleToMatrix extends Sin implements DoubleToMatrixDefaults.DoubleToMatrixUnaryDM {
     public SinDoubleToMatrix(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Sin");
     }
 
     @Override
