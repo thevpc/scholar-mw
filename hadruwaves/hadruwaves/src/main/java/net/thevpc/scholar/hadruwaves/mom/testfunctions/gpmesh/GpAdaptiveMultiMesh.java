@@ -2,10 +2,11 @@ package net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh;
 
 import net.thevpc.common.mon.MonitoredAction;
 import net.thevpc.common.mon.ProgressMonitor;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+import net.thevpc.nuts.elem.NElement;
+
+
 import net.thevpc.common.collections.MapUtils;
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Expressions;
@@ -17,6 +18,7 @@ import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.symbolic.double2vector.DefaultDoubleToVector;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 import net.thevpc.scholar.hadruwaves.mom.TestFunctionsSymmetry;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.TestFunctionCell;
@@ -224,10 +226,10 @@ public class GpAdaptiveMultiMesh extends TestFunctionsBase implements Cloneable 
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder h = super.toTsonElement(context).toObject().builder();
-        h.add("cells", context.elem(cells));
-        h.add("domain", context.elem(domain));
+    public NElement toElement() {
+        NObjectElementBuilder h = super.toElement().toObject().get().builder();
+        h.add("cells", NElementHelper.elem(cells));
+        h.add("domain", NElementHelper.elem(domain));
         return h.build();
     }
 
