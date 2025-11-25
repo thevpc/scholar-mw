@@ -1,10 +1,12 @@
 package net.thevpc.scholar.hadrumaths.plot.convergence;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
+
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.HSerializable;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -121,19 +123,19 @@ public class ConvergenceResult implements HSerializable {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder obj = Tson.ofObjectBuilder(getClass().getSimpleName());
-        obj.add("name", Tson.of(label));
-        obj.add("threshold", Tson.of(epsilon));
-        obj.add("err", Tson.of(relativeError));
-        obj.add("ndex", Tson.of(varIndex));
-        obj.add("value", context.elem(varValue));
+    public NElement toElement() {
+        NObjectElementBuilder obj = NElement.ofObjectBuilder(getClass().getSimpleName());
+        obj.add("name", NElement.ofString(label));
+        obj.add("threshold", NElement.ofDouble(epsilon));
+        obj.add("err", NElement.ofDouble(relativeError));
+        obj.add("ndex", NElement.ofInt(varIndex));
+        obj.add("value", NElementHelper.elem(varValue));
         if (parameters != null && !parameters.isEmpty()) {
-            obj.add("config", context.elem(parameters));
+            obj.add("config", NElementHelper.elem(parameters));
         }
 //        h.add("value", String.valueOf(value));
         if (subResult != null) {
-            obj.add("subResult", context.elem(subResult));
+            obj.add("subResult", NElementHelper.elem(subResult));
         }
         return null;
     }
