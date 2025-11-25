@@ -3,7 +3,7 @@
     <groupId>net.thevpc.scholar</groupId>
     <artifactId>hadruplot-build</artifactId>
     <name>net.thevpc.scholar.hadruplot</name>
-    <version>3.2.0</version>
+    <version>3.3.0</version>
     <packaging>pom</packaging>
     <modules>
         <module>hadruplot-core</module>
