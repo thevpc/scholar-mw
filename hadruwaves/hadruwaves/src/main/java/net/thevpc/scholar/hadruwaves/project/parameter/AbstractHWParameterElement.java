@@ -6,7 +6,7 @@ import net.thevpc.common.props.WritableString;
 import net.thevpc.common.props.WritableValue;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 
-public class AbstractHWParameterElement implements HWParameterElement{
+public abstract class AbstractHWParameterElement implements HWParameterElement{
     protected WritableValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
     protected WritableValue<HWParameterFolder> parent = Props.of("parent").valueOf(HWParameterFolder.class, null);
     protected WritableString parentPath = Props.of("parentPath").stringOf(null);
