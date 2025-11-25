@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.cond;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.util.internal.NonStateField;
@@ -173,6 +174,11 @@ class IfExprDoubleToComplex extends IfExpr implements DoubleToComplexDefaults.Do
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("IfExpr");
+    }
+
+    @Override
     public Complex evalComplex(double x, BooleanMarker defined) {
         if (contains(x)) {
             BooleanRef defined1 = BooleanMarker.ref();
@@ -240,6 +246,11 @@ class IfExprDoubleToDouble extends IfExpr implements DoubleToDoubleDefaults.Doub
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("IfExpr");
+    }
+
+    @Override
     public double evalDouble(double x, double y, double z, BooleanMarker defined) {
         if (contains(x, y, z)) {
             BooleanRef defined1 = BooleanMarker.ref();
@@ -300,6 +311,11 @@ class IfExprDoubleToVector extends IfExpr implements DoubleToVector/*Defaults.Do
     public IfExprDoubleToVector(Expr xarg) {
         super(xarg);
         cs = 1;
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("IfExpr");
     }
 
     public IfExprDoubleToVector(Expr xarg, Expr yarg) {
@@ -405,6 +421,13 @@ class IfExprDoubleToMatrix extends IfExpr implements DoubleToMatrix/*Defaults.Do
     public IfExprDoubleToMatrix(Expr xarg, Expr yarg, Expr zarg) {
         super(xarg, yarg, zarg);
     }
+
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("IfExpr");
+    }
+
 
     @Override
     public ComplexMatrix evalMatrix(double x, BooleanMarker defined) {
