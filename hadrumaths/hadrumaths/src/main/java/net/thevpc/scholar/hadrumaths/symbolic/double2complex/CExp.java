@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2complex;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -26,6 +27,11 @@ public class CExp implements DoubleToComplex {
 
     public CExp(double amp, double a, double b, Domain domain) {
         this(Complex.of(amp), a, b, domain);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("CExp");
     }
 
     /**
