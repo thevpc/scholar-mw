@@ -3,8 +3,9 @@ package net.thevpc.scholar.hadruwaves.project;
 import net.thevpc.common.props.*;
 import net.thevpc.common.props.impl.DefaultPropertyListeners;
 import net.thevpc.common.props.impl.PropertyBase;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
+
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElementFormat;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,7 +13,7 @@ import java.io.UncheckedIOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
-import net.thevpc.tson.TsonObjectContext;
+
 
 public class DefaultHWSolution extends PropertyBase implements HWSolution {
 
@@ -134,7 +135,7 @@ public class DefaultHWSolution extends PropertyBase implements HWSolution {
         if (f == null || f.length() == 0) {
             throw new UncheckedIOException(new IOException("Missing File"));
         }
-        Tson.writer().write(new File(f), toTsonElement());
+        NElementFormat.ofPlainTson(toElement()).print(new File(f));
     }
 
     @Override
@@ -143,8 +144,8 @@ public class DefaultHWSolution extends PropertyBase implements HWSolution {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObjectBuilder("solution")
+    public NElement toElement() {
+        return NElement.ofObjectBuilder("solution")
                 .add("path", filePath().get())
                 .build();
     }
