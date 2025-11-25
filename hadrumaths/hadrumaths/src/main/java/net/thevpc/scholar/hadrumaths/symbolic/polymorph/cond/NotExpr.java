@@ -1,6 +1,7 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.cond;
 
-import net.thevpc.tson.impl.util.UnmodifiableArrayList;
+
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.thevpc.scholar.hadrumaths.format.impl.AbstractObjectFormat;
@@ -8,6 +9,7 @@ import net.thevpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.thevpc.scholar.hadrumaths.symbolic.ExprDefaults;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.AbstractDoubleToDouble;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,10 +30,15 @@ public class NotExpr extends AbstractDoubleToDouble {
         });
     }
 
-    private final UnmodifiableArrayList<DoubleToDouble> expressions;
+    private final List<DoubleToDouble> expressions;
 
     private NotExpr(Expr arg) {
-        expressions = UnmodifiableArrayList.ofRef(new DoubleToDouble[]{arg.toDD()});
+        expressions = Arrays.asList(new DoubleToDouble[]{arg.toDD()});
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("NotExpr");
     }
 
     @Override
