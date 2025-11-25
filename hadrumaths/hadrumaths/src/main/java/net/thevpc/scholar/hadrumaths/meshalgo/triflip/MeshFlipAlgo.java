@@ -1,11 +1,13 @@
 package net.thevpc.scholar.hadrumaths.meshalgo.triflip;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
+
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.geom.*;
 import net.thevpc.scholar.hadrumaths.meshalgo.*;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -171,10 +173,10 @@ public class MeshFlipAlgo implements MeshAlgo {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder sb = Tson.ofObjectBuilder(getClass().getSimpleName());
-        sb.add("options", context.elem(option));
-        sb.add("triangles", context.elem(listeTriangle));
+    public NElement toElement() {
+        NObjectElementBuilder sb = NElement.ofObjectBuilder(getClass().getSimpleName());
+        sb.add("options", NElementHelper.elem(option));
+        sb.add("triangles", NElementHelper.elem(listeTriangle));
         return sb.build();
     }
 
