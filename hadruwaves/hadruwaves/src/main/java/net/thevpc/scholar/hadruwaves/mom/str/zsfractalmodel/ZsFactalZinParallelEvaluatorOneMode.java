@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadruwaves.mom.str.zsfractalmodel;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.ComplexMatrix;
 import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.scholar.hadrumaths.Maths;
@@ -85,7 +85,7 @@ public class ZsFactalZinParallelEvaluatorOneMode implements ZinEvaluator {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofUplet(getClass().getSimpleName()).build();
+    public NElement toElement() {
+        return NElement.ofUplet(getClass().getSimpleName());
     }
 }
