@@ -9,10 +9,11 @@
 
 package net.thevpc.scholar.hadruwaves.util;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.Axis;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.ModeInfo;
 import net.thevpc.scholar.hadruwaves.ModeInfoFilter;
 
@@ -55,8 +56,8 @@ public final class ModeInfoUtils {
         }
 
         @Override
-        public TsonElement toTsonElement(TsonObjectContext context) {
-            return Tson.ofUplet("AllOf",context.elem(all)).build();
+        public NElement toElement() {
+            return NElement.ofUplet("AllOf", NElementHelper.elem(all));
         }
 
 //        public String dump() {
@@ -97,8 +98,8 @@ public final class ModeInfoUtils {
         }
 
         @Override
-        public TsonElement toTsonElement(TsonObjectContext context) {
-            return Tson.ofUplet("invariance", context.elem(axis)).build();
+        public NElement toElement() {
+            return NElement.ofUplet("invariance", NElementHelper.elem(axis));
         }
 
 //        public String dump() {
@@ -129,8 +130,8 @@ public final class ModeInfoUtils {
         }
 
         @Override
-        public TsonElement toTsonElement(TsonObjectContext context) {
-            return Tson.ofUplet("AnyOf",context.elem(all)).build();
+        public NElement toElement() {
+            return NElement.ofUplet("AnyOf",NElementHelper.elem(all));
         }
 
 //        public String dump() {
