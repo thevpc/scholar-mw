@@ -1,14 +1,13 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
-import net.thevpc.tson.TsonSerializable;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.scholar.hadrumaths.geom.*;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.awt.geom.Path2D;
 
-class DomainGeometry extends AbstractGeometry implements Cloneable,TsonSerializable {
+class DomainGeometry extends AbstractGeometry implements Cloneable, NToElement {
     private final Domain domain;
 
     public DomainGeometry(Domain domain) {
@@ -99,7 +98,7 @@ class DomainGeometry extends AbstractGeometry implements Cloneable,TsonSerializa
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObjectBuilder("Geometry").add(context.elem(domain)).build();
+    public NElement toElement() {
+        return NElement.ofObjectBuilder("Geometry").add(NElementHelper.elem(domain)).build();
     }
 }
