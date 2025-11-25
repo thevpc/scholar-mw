@@ -1,9 +1,10 @@
 package net.thevpc.scholar.hadrumaths.meshalgo.triflip;
 
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.geom.Triangle;
 import net.thevpc.scholar.hadrumaths.meshalgo.DefaultOption;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.util.List;
 
@@ -18,9 +19,9 @@ public class OptionFlip extends DefaultOption {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return super.toTsonElement(context).toObject().builder()
-                .add("precision", context.elem(precision))
+    public NElement toElement() {
+        return super.toElement().asObject().get().builder()
+                .add("precision", NElementHelper.elem(precision))
                 .build();
     }
 
