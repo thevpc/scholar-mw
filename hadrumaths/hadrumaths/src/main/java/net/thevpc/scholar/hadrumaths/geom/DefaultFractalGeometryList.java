@@ -1,8 +1,9 @@
 package net.thevpc.scholar.hadrumaths.geom;
 
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NObjectElementBuilder;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
+
 
 /**
  * @author : vpc
@@ -68,10 +69,10 @@ public abstract class DefaultFractalGeometryList extends DefaultGeometryList imp
     public abstract DefaultFractalGeometryList newInstance(int level, Geometry domain);
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder r = super.toTsonElement(context).toObject().builder();
-        return r.add("level", context.elem(level))
-                .add("base", context.elem(basePolygon))
+    public NElement toElement() {
+        NObjectElementBuilder r = super.toElement().toObject().get().builder();
+        return r.add("level", NElementHelper.elem(level))
+                .add("base", NElementHelper.elem(basePolygon))
                 .build();
     }
 
