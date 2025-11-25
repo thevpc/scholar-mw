@@ -6,8 +6,8 @@
 package net.thevpc.scholar.hadruwaves.project;
 
 import net.thevpc.common.props.*;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonSerializable;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurations;
 import net.thevpc.scholar.hadruwaves.project.parameter.HWParameters;
 import net.thevpc.scholar.hadruwaves.project.scene.HWMaterialTemplate;
@@ -19,7 +19,7 @@ import net.thevpc.scholar.hadruwaves.project.parameter.HWUnits;
  *
  * @author vpc
  */
-public interface HWProject extends TsonSerializable, HWSolutionElement, Property, FileObject {
+public interface HWProject extends NToElement, HWSolutionElement, Property, FileObject {
 
     String uuid();
 
@@ -43,5 +43,5 @@ public interface HWProject extends TsonSerializable, HWSolutionElement, Property
     
     void requirePersistent();
 
-    void load(TsonElement tson);
+    void load(NElement elem);
 }
