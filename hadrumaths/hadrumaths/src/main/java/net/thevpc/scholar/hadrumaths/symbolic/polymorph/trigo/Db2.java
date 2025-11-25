@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.trigo;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -112,6 +113,11 @@ class Db2DoubleToDouble extends Db2 implements DoubleToDoubleDefaults.DoubleToDo
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Db2");
+    }
+
+    @Override
     public double evalDoubleSimple(double x) {
         return Maths.db2(x);
     }
@@ -121,6 +127,11 @@ class Db2DoubleToDouble extends Db2 implements DoubleToDoubleDefaults.DoubleToDo
 class Db2DoubleToComplex extends Db2 implements DoubleToComplexDefaults.DoubleToComplexUnaryDC {
     public Db2DoubleToComplex(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Db2");
     }
 
     @Override
@@ -137,6 +148,11 @@ class Db2DoubleToVector extends Db2 implements DoubleToVectorDefaults.DoubleToVe
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Db2");
+    }
+
+    @Override
     public ComplexVector aggregateVector(ComplexVector v) {
         return v.db2();
     }
@@ -145,6 +161,11 @@ class Db2DoubleToVector extends Db2 implements DoubleToVectorDefaults.DoubleToVe
 class Db2DoubleToMatrix extends Db2 implements DoubleToMatrixDefaults.DoubleToMatrixUnaryDM {
     public Db2DoubleToMatrix(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Db2");
     }
 
     @Override
