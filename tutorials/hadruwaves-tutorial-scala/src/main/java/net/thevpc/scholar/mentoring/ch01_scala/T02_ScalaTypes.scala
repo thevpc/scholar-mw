@@ -12,7 +12,7 @@ object T02_ScalaTypes extends App{
   var d_a1 : Int=_; // this is an integer (32 bits)
   var d_a2 : Double=3 // this is a double (64 bits)
   var d_a3 : Character='3' // this is a character (16bits)
-  var d_a4 : Boolean=true // this is a boolean
+  // var d_a4 : 1=true // this is a boolean
   var d_a5 : Float=3.0F // this is a float (32bits)
   var d_a6 : Long=300L // this is a long (64bits)
   println(d_a1)
