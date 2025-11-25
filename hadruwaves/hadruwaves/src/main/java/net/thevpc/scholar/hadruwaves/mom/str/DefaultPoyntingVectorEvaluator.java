@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadruwaves.mom.str;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.common.mon.ProgressMonitor;
@@ -30,7 +30,7 @@ public class DefaultPoyntingVectorEvaluator implements PoyntingVectorEvaluator {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofUplet(getClass().getSimpleName()).build();
+    public NElement toElement() {
+        return NElement.ofUplet(getClass().getSimpleName());
     }
 }
