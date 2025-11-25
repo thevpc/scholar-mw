@@ -1,6 +1,9 @@
 package net.thevpc.scholar.hadrumaths.transform;
 
-import net.thevpc.tson.*;
+import net.thevpc.nuts.elem.NArrayElementBuilder;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
+
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.cache.CacheEnabled;
 import net.thevpc.scholar.hadrumaths.symbolic.ExprType;
@@ -109,14 +112,12 @@ public class ExpressionRewriterSuite extends AbstractExpressionRewriter {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonArrayBuilder obj = Tson.ofArrayBuilder(getClass().getSimpleName())
-                .addAll(
-                Tson.ofPair("name", Tson.of(getName())),
-                Tson.ofPair("itr", Tson.of(getMaxIterations()))
-        );
+    public NElement toElement() {
+        NArrayElementBuilder obj = NElement.ofArrayBuilder(getClass().getSimpleName())
+                .add(NElement.ofPair("name", NElement.ofString(getName())))
+                .add(NElement.ofPair("itr", NElement.ofInt(getMaxIterations())));
         for (ExpressionRewriter set : sets) {
-            obj.add(context.elem(set));
+            obj.add(NElementHelper.elem(set));
         }
         return obj.build();
     }
