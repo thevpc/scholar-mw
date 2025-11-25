@@ -1,12 +1,12 @@
 package net.thevpc.scholar.hadruwaves.project;
 
 import net.thevpc.common.props.*;
-import net.thevpc.tson.TsonSerializable;
+import net.thevpc.nuts.elem.NToElement;
 
 import java.util.List;
 import java.util.function.Predicate;
 
-public interface HWSolution extends TsonSerializable, Property, FileObject {
+public interface HWSolution extends NToElement, Property, FileObject {
 
     WritableString name();
 
