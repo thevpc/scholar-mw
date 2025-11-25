@@ -121,7 +121,7 @@ public class HadruwavesStudioV2Impl implements HadruwavesStudio {
         }
         if (o instanceof HWProject) {
             HWProject p = new DefaultHWProject();
-            p.load(((HWProject) o).toTsonElement());
+            p.load(((HWProject) o).toElement());
             o = p;
         }
         o.filePath().set(null);
