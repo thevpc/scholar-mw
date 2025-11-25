@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.geom;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.FormatFactory;
 
@@ -53,6 +54,10 @@ public class DefaultPolygon extends AbstractGeometry implements Cloneable, Polyg
         rect=toSurface().isRectangular();
     }
 
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Polygon");
+    }
 
 //    public Polygon(Area a) {
 //        PathIterator pi = a.getPathIterator(null);
