@@ -1,7 +1,10 @@
 package net.thevpc.scholar.hadruwaves.mom.modes;
 
 import net.thevpc.common.mon.*;
-import net.thevpc.tson.*;
+
+import net.thevpc.nuts.elem.NArrayElementBuilder;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.Vector;
 import net.thevpc.scholar.hadrumaths.cache.*;
@@ -10,6 +13,7 @@ import net.thevpc.scholar.hadrumaths.io.HFileFilter;
 import net.thevpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.symbolic.ExprType;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.*;
 import net.thevpc.scholar.hadruwaves.mom.*;
 import net.thevpc.scholar.hadruwaves.mom.sources.Sources;
@@ -1219,32 +1223,32 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
 //        return getDumpStringHelper(true, true);
 //    }
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return toTsonElement(context, true, true);
+    public NElement toElement() {
+        return toElement(true, true);
     }
 
-    public TsonElement toTsonElement(TsonObjectContext context, boolean includeFreq, boolean includeSize) {
-        TsonObjectBuilder h = Tson.ofObjectBuilder(getClass().getSimpleName());
+    public NElement toElement(boolean includeFreq, boolean includeSize) {
+        NObjectElementBuilder h = NElement.ofObjectBuilder(getClass().getSimpleName());
 
         if (!includeFreq && isDefinitionFrequencyDependent()) {
             includeFreq = true;
         }
-        TsonObjectBuilder env = Tson.ofObjectBuilder();
-        env.add("domain", context.elem(getEnv().getDomain()));
-        env.add("borders", context.elem(getEnv().getBorders()));
-        env.add("sources", context.elem(getEnv().getSources()));
-        env.add("layers", context.elem(getEnv().getLayers()));
-        env.add("firstBoxSpace", context.elem(getEnv().getFirstBoxSpace()));
-        env.add("secondBoxSpace", context.elem(getEnv().getSecondBoxSpace()));
+        NObjectElementBuilder env = NElement.ofObjectBuilder();
+        env.add("domain", NElementHelper.elem(getEnv().getDomain()));
+        env.add("borders", NElementHelper.elem(getEnv().getBorders()));
+        env.add("sources", NElementHelper.elem(getEnv().getSources()));
+        env.add("layers", NElementHelper.elem(getEnv().getLayers()));
+        env.add("firstBoxSpace", NElementHelper.elem(getEnv().getFirstBoxSpace()));
+        env.add("secondBoxSpace", NElementHelper.elem(getEnv().getSecondBoxSpace()));
 
         if (includeFreq) {
-            env.add("frequency", context.elem(getEnv().getFrequency()));
+            env.add("frequency", NElementHelper.elem(getEnv().getFrequency()));
         }
         if (includeSize) {
-            h.add("size", context.elem(size));
+            h.add("size", NElementHelper.elem(size));
         }
         if (complex) {
-            h.add("complex", context.elem(complex));
+            h.add("complex", NElementHelper.elem(complex));
         }
         List<Object> modeFilters = new ArrayList<>();
         if (modeIndexFilters != null) {
@@ -1253,33 +1257,33 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
         if (modeInfoFilters != null) {
             modeFilters.addAll(modeInfoFilters);
         }
-        h.add("filters", context.elem(modeFilters));
+        h.add("filters", NElementHelper.elem(modeFilters));
         if (modeInfoComparator != null) {
-            h.add("comparator", context.elem(modeInfoComparator));
+            h.add("comparator", NElementHelper.elem(modeInfoComparator));
         }
         if (modeIterator != null) {
-            h.add("iterator", context.elem(modeIterator));
+            h.add("iterator", NElementHelper.elem(modeIterator));
         }
 
         switch (getEnv().getBorders()) {
             case PPPP: {
-                h.add("polarization", context.elem(polarization));
-                h.add("xphase", context.elem(xphase));
-                h.add("yphase", context.elem(yphase));
+                h.add("polarization", NElementHelper.elem(polarization));
+                h.add("xphase", NElementHelper.elem(xphase));
+                h.add("yphase", NElementHelper.elem(yphase));
                 break;
             }
         }
 
-        h.add("environment", env);
+        h.add("environment", env.build());
 
-        TsonObjectBuilder hints = Tson.ofObjectBuilder();
-        hints.add("hintInvariance", context.elem(getHintInvariantAxis()));
-        hints.add("hintFnModes", context.elem(getHintFnModes()));
-        hints.add("hintAxisType", context.elem(getHintAxisType()));
-        hints.add("hintInvariantAxis", context.elem(getHintInvariantAxis()));
-        hints.add("hintSymmetryAxis", context.elem(getHintSymmetry()));
-        hints.add("hintInvertTETMForZin", context.elem(isHintInvertTETMForZmode()));
-        h.add("hints", hints);
+        NObjectElementBuilder hints = NElement.ofObjectBuilder();
+        hints.add("hintInvariance", NElementHelper.elem(getHintInvariantAxis()));
+        hints.add("hintFnModes", NElementHelper.elem(getHintFnModes()));
+        hints.add("hintAxisType", NElementHelper.elem(getHintAxisType()));
+        hints.add("hintInvariantAxis", NElementHelper.elem(getHintInvariantAxis()));
+        hints.add("hintSymmetryAxis", NElementHelper.elem(getHintSymmetry()));
+        hints.add("hintInvertTETMForZin", NElementHelper.elem(isHintInvertTETMForZmode()));
+        h.add("hints", hints.build());
         return h.build();
     }
 
@@ -1482,24 +1486,22 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
     }
 
     private ObjectCache getSingleTestFunctionObjectCache(Expr testFunction) {
-        TsonObjectContext context = Tson.serializer().context();
-        TsonElement node = Tson.ofObjectBuilder("SingleTestModeScalarProducts")
-                .add("modeFunction", toTsonElement(context, false, false))
-                .add("testFunction", context.elem(testFunction.simplify()))
+        NElement node = NElement.ofObjectBuilder("SingleTestModeScalarProducts")
+                .add("modeFunction", toElement(false, false))
+                .add("testFunction", NElementHelper.elem(testFunction.simplify()))
                 .build();
         PersistenceCache persistenceCache = PersistenceCacheBuilder.of().name("SingleTestModeScalarProducts").monitorFactory(getEnv().getMonitorFactory()).build();
         return persistenceCache.getObjectCache(CacheKey.of(node), true);
     }
 
     private ObjectCache getMultipleTestFunctionObjectCache(Expr[] testFunctions) {
-        TsonObjectContext context = Tson.serializer().context();
-        TsonArrayBuilder testFunction2 = Tson.ofArrayBuilder().ensureCapacity(testFunctions.length);
+        NArrayElementBuilder testFunction2 = NElement.ofArrayBuilder();
         for (Expr testFunction : testFunctions) {
-            testFunction2.addAll(context.elem(testFunction.simplify()));
+            testFunction2.addAll(new NElement[]{NElementHelper.elem(testFunction.simplify())});
         }
-        TsonElement node = Tson.ofObjectBuilder("MultipleTestModeScalarProducts")
-                .add("modeFunction", toTsonElement(context, false, false))
-                .add("testFunctions", testFunction2)
+        NElement node = NElement.ofObjectBuilder("MultipleTestModeScalarProducts")
+                .add("modeFunction", toElement(false, false))
+                .add("testFunctions", testFunction2.build())
                 .build();
         PersistenceCache persistenceCache = PersistenceCacheBuilder.of().name("MultipleTestModeScalarProducts").monitorFactory(getEnv().getMonitorFactory()).build();
         return persistenceCache.getObjectCache(CacheKey.of(node), true);
