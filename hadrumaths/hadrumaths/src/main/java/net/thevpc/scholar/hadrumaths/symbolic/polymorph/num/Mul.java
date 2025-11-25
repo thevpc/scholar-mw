@@ -5,6 +5,7 @@
  */
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.num;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.util.internal.NonStateField;
@@ -13,7 +14,7 @@ import net.thevpc.scholar.hadrumaths.symbolic.double2matrix.DefaultDoubleToMatri
 import net.thevpc.scholar.hadrumaths.transform.ExpressionTransform;
 import net.thevpc.scholar.hadrumaths.transform.ExpressionTransformer;
 import net.thevpc.scholar.hadrumaths.util.ArrayUtils;
-import net.thevpc.scholar.hadrumaths.util.InternalUnmodifiableArrayList;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,11 +33,11 @@ public abstract class Mul implements OperatorExpr {
             public Expr transform(Expr expression, ExpressionTransform transform) {
                 Mul e = (Mul) expression;
 //                ExpressionTransform t = transform;
-                Expr[] e2 = new Expr[e.expressions.array.length];
+                Expr[] e2 = new Expr[e.expressions.size()];
                 for (int i = 0; i < e2.length; i++) {
-                    e2[i] = ExpressionTransformFactory.transform(e.expressions.array[i], transform);
+                    e2[i] = ExpressionTransformFactory.transform(e.expressions.get(i), transform);
                 }
-                return Maths.sum(e.expressions.array);
+                return Maths.sum(e.expressions.toArray(new Expr[0]));
             }
         });
     }
@@ -45,7 +46,7 @@ public abstract class Mul implements OperatorExpr {
     protected Domain _domain;
     @NonStateField
     protected int _eagerHashCode;
-    protected InternalUnmodifiableArrayList<Expr> expressions;
+    protected List<Expr> expressions;
 
     protected Mul(Expr[] expressions,int hash) {
         List<Expr> all = new ArrayList<>(expressions.length);
@@ -61,8 +62,8 @@ public abstract class Mul implements OperatorExpr {
             }
         }
         _eagerHashCode=hash;
-        this.expressions = new InternalUnmodifiableArrayList<>(all.toArray(new Expr[0]));
-        if (this.expressions.array.length < 1) {
+        this.expressions = all;
+        if (this.expressions.size() < 1) {
             throw new IllegalArgumentException();
         }
         Domain d = expressions[0].getDomain();
@@ -76,7 +77,7 @@ public abstract class Mul implements OperatorExpr {
     }
 
     public int size() {
-        return expressions.array.length;
+        return expressions.size();
     }
 
     @Override
@@ -127,14 +128,14 @@ public abstract class Mul implements OperatorExpr {
         if (other.isReal()) {
             return mul(other.toDouble());
         }
-        Expr[] expr2 = ArrayUtils.copy(expressions.array);
+        Expr[] expr2 = expressions.toArray(new Expr[0]);
         expr2[0] = expr2[0].mul(other);
         return Maths.prod(expr2);
     }
 
     @Override
     public Expr mul(Domain domain) {
-        Expr[] expr2 = ArrayUtils.copy(expressions.array);
+        Expr[] expr2 = expressions.toArray(new Expr[0]);
         for (int i = 0; i < expr2.length; i++) {
             expr2[i] = expr2[i].mul(domain);
         }
@@ -146,7 +147,7 @@ public abstract class Mul implements OperatorExpr {
         if (other == 0) {
             return Maths.ZERO;
         }
-        Expr[] expr2 = ArrayUtils.copy(expressions.array);
+        Expr[] expr2 = expressions.toArray(new Expr[0]);
         expr2[0] = expr2[0].mul(other);
         return Maths.prod(expr2);
     }
@@ -253,18 +254,23 @@ class MulDoubleToDouble extends Mul implements DoubleToDoubleDefaults.DoubleToDo
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Mul");
+    }
+
+    @Override
     public double evalDouble(double x, double y, double z, BooleanMarker defined) {
         //test if x,y,z is in the intersection of domains
         if (contains(x, y, z)) {
             BooleanRef rdefined = BooleanMarker.ref();
-            double c = expressions.array[0].toDD().evalDouble(x, y, z, rdefined);
+            double c = expressions.get(0).toDD().evalDouble(x, y, z, rdefined);
             if (!rdefined.get()) {
                 return 0;
             }
             rdefined.reset();
             int size = size();
             for (int i = 1; i < size; i++) {
-                c *= (expressions.array[i].toDD().evalDouble(x, y, z, rdefined));
+                c *= (expressions.get(i).toDD().evalDouble(x, y, z, rdefined));
                 if (!rdefined.get()) {
                     return 0;
                 }
@@ -280,14 +286,14 @@ class MulDoubleToDouble extends Mul implements DoubleToDoubleDefaults.DoubleToDo
         //test if x,y,z is in the intersection of domains
         if (contains(x)) {
             BooleanRef rdefined = BooleanMarker.ref();
-            double c = expressions.array[0].toDD().evalDouble(x, rdefined);
+            double c = expressions.get(0).toDD().evalDouble(x, rdefined);
             if (!rdefined.get()) {
                 return 0;
             }
             rdefined.reset();
             int size = size();
             for (int i = 1; i < size; i++) {
-                c *= (expressions.array[i].toDD().evalDouble(x, rdefined));
+                c *= (expressions.get(i).toDD().evalDouble(x, rdefined));
                 if (!rdefined.get()) {
                     return 0;
                 }
@@ -303,14 +309,14 @@ class MulDoubleToDouble extends Mul implements DoubleToDoubleDefaults.DoubleToDo
         //test if x,y,z is in the intersection of domains
         if (contains(x, y)) {
             BooleanRef rdefined = BooleanMarker.ref();
-            double c = expressions.array[0].toDD().evalDouble(x, y, rdefined);
+            double c = expressions.get(0).toDD().evalDouble(x, y, rdefined);
             if (!rdefined.get()) {
                 return 0;
             }
             rdefined.reset();
             int size = size();
             for (int i = 1; i < size; i++) {
-                c *= (expressions.array[i].toDD().evalDouble(x, y, rdefined));
+                c *= (expressions.get(i).toDD().evalDouble(x, y, rdefined));
                 if (!rdefined.get()) {
                     return 0;
                 }
@@ -337,6 +343,11 @@ class MulDoubleToComplex extends Mul implements DoubleToComplex {
 
     public MulDoubleToComplex(Expr... expressions) {
         super(expressions,664688323);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Rooftop");
     }
 
     @Override
@@ -423,6 +434,10 @@ class MulDoubleToVector extends Mul implements DoubleToVector {
                 cs = 1;
             }
         }
+    }
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Rooftop");
     }
 
     @Override
@@ -595,6 +610,11 @@ class MulDoubleToMatrix extends Mul implements DoubleToMatrix {
                 dim = ComponentDimension.of(dim.rows, d2.columns);
             }
         }
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Rooftop");
     }
 
     @Override
