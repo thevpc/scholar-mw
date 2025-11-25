@@ -1,9 +1,10 @@
 package net.thevpc.scholar.hadrumaths.geom;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.Domain;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.awt.geom.Path2D;
 import java.util.*;
@@ -63,11 +64,11 @@ public class DefaultGeometryList extends AbstractGeometry implements GeometryLis
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObjectBuilder("geometries").addAll(
-                Tson.ofPair("domain", context.elem(domain)),
-                Tson.ofPair("polygons", context.elem(list)),
-                Tson.ofPair("attributes", context.elem(attributes))
+    public NElement toElement() {
+        return NElement.ofObjectBuilder("geometries").addAll(
+                NElement.ofPair("domain", NElementHelper.elem(domain)),
+                NElement.ofPair("polygons", NElementHelper.elem(list)),
+                NElement.ofPair("attributes", NElementHelper.elem(attributes))
         ).build();
     }
 
