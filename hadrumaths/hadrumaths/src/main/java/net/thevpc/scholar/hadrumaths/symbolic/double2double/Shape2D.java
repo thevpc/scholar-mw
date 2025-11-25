@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.geom.DefaultPolygon;
 import net.thevpc.scholar.hadrumaths.geom.Geometry;
@@ -27,6 +28,12 @@ public final class Shape2D extends AbstractDoubleToDouble {
     public Shape2D(Domain domain) {
         this(Maths.sqrt(domain.xwidth() * domain.ywidth()), GeometryFactory.createPolygon(domain));
     }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Shape2D");
+    }
+
 
     @Override
     public Domain getDomain() {
@@ -264,6 +271,6 @@ public final class Shape2D extends AbstractDoubleToDouble {
 
     @Override
     public String toLatex() {
-        throw new UnsupportedOperationException("Not Implemented toLatex for "+getClass().getName());
+        throw new UnsupportedOperationException("Not Implemented toLatex for " + getClass().getName());
     }
 }
