@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.trigo;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -112,6 +113,12 @@ class AcotanDoubleToDouble extends Acotan implements DoubleToDoubleDefaults.Doub
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Acotan");
+    }
+
+
+    @Override
     public double evalDoubleSimple(double x) {
         return Maths.acotan(x);
     }
@@ -119,6 +126,11 @@ class AcotanDoubleToDouble extends Acotan implements DoubleToDoubleDefaults.Doub
 class AcotanDoubleToComplex extends Acotan implements DoubleToComplexDefaults.DoubleToComplexUnaryDC {
     public AcotanDoubleToComplex(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Acotan");
     }
 
     @Override
@@ -134,6 +146,11 @@ class AcotanDoubleToVector extends Acotan implements DoubleToVectorDefaults.Doub
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Acotan");
+    }
+
+    @Override
     public ComplexVector aggregateVector(ComplexVector v) {
         return v.acotan();
     }
@@ -146,9 +163,13 @@ class AcotanDoubleToMatrix extends Acotan implements DoubleToMatrixDefaults.Doub
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Acotan");
+    }
+
+    @Override
     public ComplexMatrix aggregateMatrix(ComplexMatrix m) {
         return m.acotan();
     }
-
 
 }
