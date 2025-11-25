@@ -1,14 +1,16 @@
 package net.thevpc.scholar.hadrumaths.cache;
 
 import net.thevpc.common.mon.*;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
+
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElementParser;
 import net.thevpc.scholar.hadrumaths.BooleanMarker;
 import net.thevpc.scholar.hadrumaths.BooleanRef;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.io.DefaultCacheObjectSerializedForm;
 import net.thevpc.scholar.hadrumaths.io.FailStrategy;
 import net.thevpc.scholar.hadrumaths.io.HFile;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.io.*;
 import java.util.LinkedHashSet;
@@ -109,7 +111,7 @@ public class DefaultObjectCache implements ObjectCache {
         return persistenceCache.getFile(key, name);
     }
 
-    public void log(TsonElement statName) {
+    public void log(NElement statName) {
 
         PrintStream ps = null;
         try {
@@ -174,7 +176,7 @@ public class DefaultObjectCache implements ObjectCache {
     }
 
     @Override
-    public void addStat(TsonElement item) {
+    public void addStat(NElement item) {
 
         PrintStream ps = null;
         try {
@@ -194,7 +196,7 @@ public class DefaultObjectCache implements ObjectCache {
     }
 
     @Override
-    public void addSetItem(String setName, TsonElement item) {
+    public void addSetItem(String setName, NElement item) {
         if (!getSet(setName).contains(item)) {
             PrintStream ps = null;
             try {
@@ -216,8 +218,8 @@ public class DefaultObjectCache implements ObjectCache {
         }
     }
 
-    public Set<TsonElement> getSet(String setName) {
-        LinkedHashSet<TsonElement> set = new LinkedHashSet<>();
+    public Set<NElement> getSet(String setName) {
+        LinkedHashSet<NElement> set = new LinkedHashSet<>();
         BufferedReader in = null;
         try {
             DumpCacheFile cfile = getFile(setName + CACHE_LOG_SUFFIX);
@@ -228,7 +230,7 @@ public class DefaultObjectCache implements ObjectCache {
                 while ((line = in.readLine()) != null) {
                     String trimmed = line.trim();
                     if (trimmed.length() > 0) {
-                        set.add(Tson.reader().readElement(trimmed));
+                        set.add(NElementParser.ofTson().parse(trimmed));
                     }
                 }
             }
@@ -259,9 +261,9 @@ public class DefaultObjectCache implements ObjectCache {
             while ((line = in.readLine()) != null) {
                 line = line.trim();
                 if (line.isEmpty()) {
-                    TsonElement e = Tson.reader().readElement(line);
+                    NElement e = NElementParser.ofTson().parse(line);
                     count++;
-                    value += e.toObject().get("eval").toObject().get("nanos").longValue();
+                    value += e.toObject().get().get("eval").get().toObject().get().get("nanos").get().asLongValue().get();
                 }
             }
             return count == 0 ? 0 : (value / count);
