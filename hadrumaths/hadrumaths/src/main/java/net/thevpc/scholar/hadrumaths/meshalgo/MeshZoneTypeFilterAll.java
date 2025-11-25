@@ -5,9 +5,9 @@
 
 package net.thevpc.scholar.hadrumaths.meshalgo;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 
 /**
  * @author vpc
@@ -22,9 +22,9 @@ final class MeshZoneTypeFilterAll implements MeshZoneTypeFilter {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofUplet(getClass().getSimpleName())
-                .build();
+    public NElement toElement() {
+        return NElement.ofUplet(getClass().getSimpleName())
+                ;
     }
 //    public Dumper getDumpStringHelper() {
 //        Dumper h = new Dumper(this);
