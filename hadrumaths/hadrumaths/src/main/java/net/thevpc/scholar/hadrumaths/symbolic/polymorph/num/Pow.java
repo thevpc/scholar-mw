@@ -5,6 +5,7 @@
  */
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.num;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -264,6 +265,10 @@ class PowDoubleToDouble extends Pow implements DoubleToDoubleDefaults.DoubleToDo
         super(first.toDD(), second.toDD());
     }
 
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Pow");
+    }
 
     @Override
     public double evalDoubleSimple(double a, double b) {
@@ -277,6 +282,11 @@ class PowDoubleToComplex extends Pow implements DoubleToComplexDefaults.DoubleTo
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Pow");
+    }
+
+    @Override
     public Complex aggregateComplex(Complex a, Complex b) {
         return a.pow(b);
     }
@@ -285,6 +295,11 @@ class PowDoubleToComplex extends Pow implements DoubleToComplexDefaults.DoubleTo
 class PowDoubleToVectorDVDC extends Pow implements DoubleToVectorDefaults.DoubleToVectorDVDC {
     public PowDoubleToVectorDVDC(Expr first, Expr second) {
         super(first.toDV(), second.toDC());
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Pow");
     }
 
     @Override
@@ -300,6 +315,11 @@ class PowDoubleToVectorDCDV extends Pow implements DoubleToVectorDefaults.Double
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Pow");
+    }
+
+    @Override
     public ComplexVector evalVectorSimple(Complex a, ComplexVector b) {
         return b.neg().add(a);
     }
@@ -309,6 +329,12 @@ class PowDoubleToVectorDVDV extends Pow implements DoubleToVectorDefaults.Double
     public PowDoubleToVectorDVDV(Expr first, Expr second) {
         super(first.toDV(), second.toDV());
     }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Pow");
+    }
+
     @Override
     public ComplexVector evalVectorSimple(ComplexVector a, ComplexVector b) {
         return a.sub(b);
@@ -318,6 +344,11 @@ class PowDoubleToVectorDVDV extends Pow implements DoubleToVectorDefaults.Double
 class PowDoubleToMatrixDCDM extends Pow implements DoubleToMatrixDefaults.DoubleToMatrixDCDM {
     public PowDoubleToMatrixDCDM(Expr first, Expr second) {
         super(first.toDC(), second.toDM());
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Pow");
     }
 
     @Override
@@ -333,6 +364,11 @@ class PowDoubleToMatrixDMDC extends Pow implements DoubleToMatrixDefaults.Double
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Pow");
+    }
+
+    @Override
     public ComplexMatrix evalMatrixSimple(ComplexMatrix a, Complex b) {
         return a.sub(b);
     }
@@ -342,6 +378,11 @@ class PowDoubleToMatrixDMDC extends Pow implements DoubleToMatrixDefaults.Double
 class PowDoubleToMatrixDVDM extends Pow implements DoubleToMatrixDefaults.DoubleToMatrixDVDM {
     public PowDoubleToMatrixDVDM(Expr first, Expr second) {
         super(first.toDV(), second.toDM());
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Pow");
     }
 
     @Override
@@ -356,6 +397,11 @@ class PowDoubleToMatrixDMDV extends Pow implements DoubleToMatrixDefaults.Double
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Pow");
+    }
+
+    @Override
     public ComplexMatrix evalMatrixSimple(ComplexMatrix a, ComplexVector b) {
         return a.sub(b.toMatrix());
     }
@@ -365,6 +411,11 @@ class PowDoubleToMatrixDMDV extends Pow implements DoubleToMatrixDefaults.Double
 class PowDoubleToMatrixDMDM extends Pow implements DoubleToMatrixDefaults.DoubleToMatrixDMDM {
     public PowDoubleToMatrixDMDM(Expr first, Expr second) {
         super(first.toDM(), second.toDM());
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Pow");
     }
 
     @Override
