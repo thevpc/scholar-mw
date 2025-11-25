@@ -1,9 +1,10 @@
 package net.thevpc.scholar.hadruwaves;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NObjectElementBuilder;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
+
 
 import java.util.EnumSet;
 import java.util.Arrays;
@@ -23,9 +24,9 @@ public final class ModeFilter implements ModeIndexFilter {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder sb = Tson.ofObjectBuilder(getClass().getSimpleName());
-        sb.add("cachedHintFnModeTypes", context.elem(cachedHintFnModeTypes));
+    public NElement toElement() {
+        NObjectElementBuilder sb = NElement.ofObjectBuilder(getClass().getSimpleName());
+        sb.add("cachedHintFnModeTypes", NElementHelper.elem(cachedHintFnModeTypes));
         return sb.build();
     }
 //    public String dump() {
