@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadruwaves.mom.modes;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadruwaves.ModeIndex;
 import net.thevpc.scholar.hadruwaves.ModeIterator;
 import net.thevpc.scholar.hadruwaves.mom.ModeFunctions;
@@ -29,8 +29,8 @@ public class DefaultModeIterator implements ModeIterator {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofUplet(getClass().getSimpleName()).build();
+    public NElement toElement() {
+        return NElement.ofUplet(getClass().getSimpleName());
     }
     @Override
     public boolean equals(Object o) {
