@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadrumaths.integration;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.DDyIntegralX;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.DDzIntegralXY;
@@ -307,13 +307,13 @@ public class DQuadIntegralXY implements DIntegralXY {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofUplet(getClass().getSimpleName(),
-                Tson.ofPair("tolerance", Tson.of(tolerance)),
-                Tson.ofPair("hminCoeff", Tson.of(hminCoeff)),
-                Tson.ofPair("hmaxCoeff", Tson.of(hmaxCoeff)),
-                Tson.ofPair("maxfcnt", Tson.of(maxfcnt))
-        ).build();
+    public NElement toElement() {
+        return NElement.ofUplet(getClass().getSimpleName(),
+                NElement.ofPair("tolerance", NElement.ofDouble(tolerance)),
+                NElement.ofPair("hminCoeff", NElement.ofDouble(hminCoeff)),
+                NElement.ofPair("hmaxCoeff", NElement.ofDouble(hmaxCoeff)),
+                NElement.ofPair("maxfcnt", NElement.ofInt(maxfcnt))
+        );
     }
 }
 
