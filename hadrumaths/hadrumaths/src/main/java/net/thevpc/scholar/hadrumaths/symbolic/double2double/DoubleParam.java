@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.Range;
 import net.thevpc.scholar.hadrumaths.symbolic.Param;
@@ -18,6 +19,11 @@ public class DoubleParam extends AbstractDoubleToDouble implements /*IDDx,*/Para
     public DoubleParam(String name) {
         super();
         paramName = name;
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("DoubleParam",NElement.ofName(paramName));
     }
 
     @Override
