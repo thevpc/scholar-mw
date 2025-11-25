@@ -1,12 +1,13 @@
 package net.thevpc.scholar.hadrumaths.geom;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.common.util.MinMax;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.DomainScaleTool;
 import net.thevpc.scholar.hadrumaths.GeometryFactory;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.awt.*;
 import java.awt.geom.Area;
@@ -385,10 +386,10 @@ public class Surface extends AbstractGeometry implements Cloneable {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObjectBuilder("surface").addAll(
-                Tson.ofPair("domain", context.elem(domain)),
-                Tson.ofPair("points", context.elem(points))
+    public NElement toElement() {
+        return NElement.ofObjectBuilder("surface").addAll(
+                NElement.ofPair("domain", NElementHelper.elem(domain)),
+                NElement.ofPair("points", NElementHelper.elem(points))
         ).build();
     }
 
