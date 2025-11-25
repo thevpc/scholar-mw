@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 
@@ -28,6 +29,10 @@ public final class UFunction extends AbstractDoubleToDouble {
         this.d = d;
         this.e = e;
 //        name=("Ux");
+    }
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("UFunction");
     }
 
     @Override
