@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Stack;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.plot.d3.BoundDomain;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 import net.thevpc.scholar.hadruwaves.project.scene.HWProjectComponentGroup;
@@ -158,11 +158,12 @@ public class DefaultHWcene implements HWProjectScene {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObjectBuilder("scene")
-                .add("domain", domain == null ? null : domain.toTsonElement(context))
+    public NElement toElement() {
+        return NElement.ofObjectBuilder("scene")
+                .add("domain", domain == null ? null : domain.toElement())
                 .add("components",
-                        Tson.ofArrayBuilder().addAll(components.stream().map(x -> x.toTsonElement(context)).collect(Collectors.toList()))
+                        NElement.ofArrayBuilder().addAll(components.stream().map(x -> x.toElement()).collect(Collectors.toList()))
+                                .build()
                 )
                 .build();
     }
