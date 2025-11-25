@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadruwaves.mom.str;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.util.dump.Dumper;
 
@@ -18,8 +18,8 @@ public class GpXThenYComparator implements TestFunctionsComparator, Serializable
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofUplet(getClass().getSimpleName()).build();
+    public NElement toElement() {
+        return NElement.ofUplet(getClass().getSimpleName());
     }
 
     public int compare(DoubleToVector o1, DoubleToVector o2) {
