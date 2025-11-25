@@ -5,9 +5,9 @@ import net.thevpc.common.props.Props;
 import net.thevpc.common.props.WritableBoolean;
 import net.thevpc.common.props.WritableString;
 import net.thevpc.common.props.WritableValue;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadruwaves.Boundary;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 import net.thevpc.scholar.hadruwaves.project.HWProjectElement;
@@ -67,8 +67,8 @@ public class HWProjectElementBrickFace implements HWProjectElement {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObjectBuilder(index.name())
+    public NElement toElement() {
+        return NElement.ofObjectBuilder(index.name())
                 .add("name",name.get())
                 .add("boundary",boundary.get())
                 .add("visible",visible.get())
