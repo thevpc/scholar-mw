@@ -2,9 +2,9 @@ package net.thevpc.scholar.hadruwaves.mom;
 
 import net.thevpc.common.mon.MonitoredAction;
 import net.thevpc.common.mon.ProgressMonitor;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.cache.CacheKey;
 import net.thevpc.scholar.hadrumaths.cache.ObjectCache;
@@ -20,8 +20,8 @@ public class FarFieldEvaluatorPEC implements FarFieldEvaluator {
     public static final FarFieldEvaluator INSTANCE = new FarFieldEvaluatorPEC();
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofUplet(getClass().getSimpleName()).build();
+    public NElement toElement() {
+        return NElement.ofUplet(getClass().getSimpleName());
     }
 
     @Override
