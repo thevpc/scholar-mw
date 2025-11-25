@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.Range;
 
@@ -23,6 +24,12 @@ final public class RooftopXFunctionXY extends PieceXFunction {
         this.axis = axis;
 //        name=("RoofTop" + nbrPeriods);
     }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("RooftopXFunctionXY");
+    }
+
 
     public RooftopXFunctionXY getSymmetricX() {
         switch (axis) {
