@@ -1,9 +1,10 @@
 package net.thevpc.scholar.hadrumaths.scalarproducts.numeric;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
+
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.Maths;
@@ -15,6 +16,7 @@ import net.thevpc.scholar.hadrumaths.symbolic.ExprType;
 import net.thevpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.thevpc.scholar.hadrumaths.transform.ExpressionRewriterRuleSet;
 import net.thevpc.scholar.hadrumaths.transform.IdentityExpressionRewriterRule;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.util.Objects;
 
@@ -98,11 +100,11 @@ public class SimpleNumericScalarProductOperator extends AbstractScalarProductOpe
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder sb = Tson.ofObjectBuilder(getClass().getSimpleName());
-        sb.add("integrator", context.elem(integrator));
-        sb.add("hermitian", context.elem(isHermitian()));
-        sb.add("simplifier", context.elem(getSimplifier()));
+    public NElement toElement() {
+        NObjectElementBuilder sb = NElement.ofObjectBuilder(getClass().getSimpleName());
+        sb.add("integrator", NElementHelper.elem(integrator));
+        sb.add("hermitian", NElementHelper.elem(isHermitian()));
+        sb.add("simplifier", NElementHelper.elem(getSimplifier()));
         return sb.build();
     }
 
