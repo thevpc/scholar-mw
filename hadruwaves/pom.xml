@@ -3,7 +3,7 @@
     <groupId>net.thevpc.scholar</groupId>
     <artifactId>hadruwaves-build</artifactId>
     <name>net.thevpc.scholar.hadruwaves-build</name>
-    <version>3.2.0</version>
+    <version>3.3.0</version>
     <packaging>pom</packaging>
     <modules>
         <module>hadruwaves</module>
