@@ -1,11 +1,12 @@
 package net.thevpc.scholar.hadruwaves.mom.testfunctions;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.HSerializable;
 import net.thevpc.scholar.hadrumaths.geom.GeometryList;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.GpPattern;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshAlgo;
@@ -56,15 +57,15 @@ public class TestFunctionCell implements HSerializable {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObjectBuilder(getClass().getSimpleName())
-                .add("name", context.elem(name))
-                .add("domain", context.elem(domain))
-                .add("pattern", context.elem(pattern))
-                .add("polygonList", context.elem(areaGeometryList))
-                .add("symmetry", context.elem(symmetry))
-                .add("meshAlgo", context.elem(meshAlgo))
-                .add("invariance", context.elem(invariance))
+    public NElement toElement() {
+        return NElement.ofObjectBuilder(getClass().getSimpleName())
+                .add("name", NElementHelper.elem(name))
+                .add("domain", NElementHelper.elem(domain))
+                .add("pattern", NElementHelper.elem(pattern))
+                .add("polygonList", NElementHelper.elem(areaGeometryList))
+                .add("symmetry", NElementHelper.elem(symmetry))
+                .add("meshAlgo", NElementHelper.elem(meshAlgo))
+                .add("invariance", NElementHelper.elem(invariance))
                 .build();
     }
 
