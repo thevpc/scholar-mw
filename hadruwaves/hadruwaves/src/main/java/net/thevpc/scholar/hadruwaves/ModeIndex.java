@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadruwaves;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.HSerializable;
 import net.thevpc.scholar.hadrumaths.Maths;
 
@@ -141,8 +141,8 @@ public final class ModeIndex implements HSerializable {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofUplet(mtype.name(),Tson.of(m),Tson.of(n)).build();
+    public NElement toElement() {
+        return NElement.ofUplet(mtype.name(),NElement.ofInt(m),NElement.ofInt(n));
     }
     public String toString() {
         return  mtype.toString()+m+"."+n;
