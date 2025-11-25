@@ -5,8 +5,10 @@
  */
 package net.thevpc.scholar.hadrumaths.transform;
 
-import net.thevpc.tson.*;
+
 import net.thevpc.common.collections.ClassMap;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.FormatFactory;
 import net.thevpc.scholar.hadrumaths.Maths;
@@ -18,6 +20,7 @@ import net.thevpc.scholar.hadrumaths.symbolic.ExprDefaults;
 import net.thevpc.scholar.hadrumaths.symbolic.ExprType;
 import net.thevpc.scholar.hadrumaths.symbolic.polymorph.Any;
 import net.thevpc.scholar.hadrumaths.transform.navigaterules.ExprNavRule;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadrumaths.util.dump.DumpManager;
 
 import java.util.*;
@@ -283,17 +286,17 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder obj = Tson.ofObjectBuilder(getClass().getSimpleName(), new TsonElementBase[]{
-                Tson.ofPair("name", Tson.of(getName())),
-                Tson.ofPair("itr", Tson.of(getMaxIterations()))
+    public NElement toElement() {
+        NObjectElementBuilder obj = NElement.ofObjectBuilder(getClass().getSimpleName()).addAll(new NElement[]{
+                NElement.ofPair("name", NElement.ofString(getName())),
+                NElement.ofPair("itr", NElement.ofInt(getMaxIterations()))
         });
         TreeSet<String> allRuleNames = new TreeSet<>(rules.stream().map(x -> x.getClass().getName()).collect(Collectors.toSet()));
         if (fallbackRule != null) {
             allRuleNames.add(fallbackRule.getClass().getName());
         }
-        obj.add("rulesCount", Tson.of(allRuleNames.size()));
-        obj.add("fingerPrint", context.elem(CacheKey.toHashString(String.join(";", allRuleNames))));
+        obj.add("rulesCount", NElement.ofInt(allRuleNames.size()));
+        obj.add("fingerPrint", NElementHelper.elem(CacheKey.toHashString(String.join(";", allRuleNames))));
         return obj.build();
     }
 
