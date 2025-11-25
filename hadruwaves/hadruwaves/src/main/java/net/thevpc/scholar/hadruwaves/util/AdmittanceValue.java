@@ -1,9 +1,10 @@
 package net.thevpc.scholar.hadruwaves.util;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.Complex;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.util.Objects;
 
@@ -58,8 +59,8 @@ public final class AdmittanceValue implements Impedance {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofUplet("admittance", context.elem(value)).build();
+    public NElement toElement() {
+        return NElement.ofUplet("admittance", NElementHelper.elem(value));
     }
 
 //    public String dump() {
