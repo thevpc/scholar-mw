@@ -1,10 +1,11 @@
 package net.thevpc.scholar.hadrumaths.symbolic;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.AbstractDoubleToDouble;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -188,23 +189,23 @@ public class DomainExpr extends AbstractDoubleToDouble /*implements DoubleToDoub
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
+    public NElement toElement() {
         switch (getDimension()) {
             case 1: {
-                return Tson.ofUplet("domain", context.elem(xmin()), context.elem(xmax())).build();
+                return NElement.ofUplet("domain", NElementHelper.elem(xmin()), NElementHelper.elem(xmax()));
             }
             case 2: {
-                return Tson.ofUplet("domain",
-                        context.elem(xmin()), context.elem(xmax()),
-                        context.elem(ymin()), context.elem(ymax())
-                ).build();
+                return NElement.ofUplet("domain",
+                        NElementHelper.elem(xmin()), NElementHelper.elem(xmax()),
+                        NElementHelper.elem(ymin()), NElementHelper.elem(ymax())
+                );
             }
         }
-        return Tson.ofUplet("domain",
-                context.elem(xmin()), context.elem(xmax()),
-                context.elem(ymin()), context.elem(ymax()),
-                context.elem(zmin()), context.elem(zmax())
-        ).build();
+        return NElement.ofUplet("domain",
+                NElementHelper.elem(xmin()), NElementHelper.elem(xmax()),
+                NElementHelper.elem(ymin()), NElementHelper.elem(ymax()),
+                NElementHelper.elem(zmin()), NElementHelper.elem(zmax())
+        );
     }
 
     @Override
