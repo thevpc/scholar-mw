@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.Range;
 
@@ -32,6 +33,10 @@ final public class Rooftop2DFunctionXY extends PieceXFunction {
 //            crestValue=Math2.scalarProduct(this,this);
 //        }
 //        name=("RoofTop2D(" + type + ")");
+    }
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Rooftop2DFunctionXY");
     }
 
     @Override
