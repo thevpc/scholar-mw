@@ -1,12 +1,13 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonElementBase;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
+
 import net.thevpc.common.util.TypeName;
 import net.thevpc.scholar.hadrumaths.symbolic.Param;
 import net.thevpc.scholar.hadrumaths.util.ArrayUtils;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadrumaths.util.PlatformUtils;
 
 import java.io.File;
@@ -1293,11 +1294,12 @@ public abstract class AbstractVector<T> implements Vector<T> {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofArrayBuilder().addAll(stream().map(context::elem)
-                .toArray(TsonElementBase[]::new)
+    public NElement toElement() {
+        return NElement.ofArrayBuilder().addAll(stream().map(x->NElementHelper.elem(x))
+                .toArray(NElement[]::new)
         ).build();
     }
+
 
     protected IllegalArgumentException throwReadOnly() {
         return new IllegalArgumentException("Read Only Vector : " + getClass().getName());
