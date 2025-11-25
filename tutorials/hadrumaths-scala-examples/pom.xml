@@ -4,10 +4,10 @@
     <artifactId>hadrumaths-scala-examples</artifactId>
     <name>net.thevpc.scholar.hadrumaths-scala-examples</name>
     <packaging>jar</packaging>
-    <version>3.2.0</version>
+    <version>3.3.0</version>
     <url>https://github.com/thevpc/scholar-mw</url>
     <properties>
-        <scholar-version>3.2.0</scholar-version>
+        <scholar-version>3.3.0</scholar-version>
     </properties>
     <dependencies>
         <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadrumaths-scala</artifactId><version>${scholar-version}</version></dependency>
