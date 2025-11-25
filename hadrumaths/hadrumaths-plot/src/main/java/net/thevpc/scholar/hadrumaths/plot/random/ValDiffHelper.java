@@ -1,7 +1,8 @@
 package net.thevpc.scholar.hadrumaths.plot.random;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonPair;
+
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Expr;
@@ -35,12 +36,12 @@ public class ValDiffHelper {
 
     }
 
-    public void plotDiff(String id, String a, String b, Object v1, Object v2, AbsoluteSamples bs, TsonPair... texts) {
+    public void plotDiff(String id, String a, String b, Object v1, Object v2, AbsoluteSamples bs, NPairElement... texts) {
         Plot.cd("/diff/" + plotDiffCount + "/" + id).title(a).samples(bs).plot(v1);
         Plot.cd("/diff/" + plotDiffCount + "/" + id).title(b).samples(bs).plot(v2);
         for (int i = 0; i < texts.length; i++) {
-            TsonPair text = texts[i];
-            Plot.cd("/diff/" + plotDiffCount + "/" + id).title(text.key().stringValue()).plot(new JScrollPane(new JTextArea(text.value().stringValue())));
+            NPairElement text = texts[i];
+            Plot.cd("/diff/" + plotDiffCount + "/" + id).title(text.key().asStringValue().get()).plot(new JScrollPane(new JTextArea(text.value().asStringValue().get())));
         }
         plotDiffCount++;
     }
@@ -187,8 +188,8 @@ public class ValDiffHelper {
         boolean ok = ArrayUtils.equals(doublesA, doublesB);
         if (!ok) {
             this.plotDiff("Incompatibility", "DD_X(Bulk)", "DD_X(Each)", doublesA, doublesB, AbsoluteSamples.absolute(x),
-                    Tson.ofPair("expr", Tson.of(expr.toString())),
-                    Tson.ofPair("domain", Tson.of(domain.toString())));
+                    NElement.ofPair("expr", NElement.ofString(expr.toString())),
+                    NElement.ofPair("domain", NElement.ofString(domain.toString())));
             showDiff("DD_X Diff", doublesA, doublesB, x);
             errorList.addInstanceError(expr, "Invalid values");
             return false;
