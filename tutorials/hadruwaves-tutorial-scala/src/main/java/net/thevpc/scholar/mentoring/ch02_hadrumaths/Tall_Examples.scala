@@ -1,5 +1,6 @@
 package net.thevpc.scholar.mentoring.ch02_hadrumaths
 
+import com.jogamp.opengl.GLProfile
 import net.thevpc.scholar.hadrumaths.MathScala._
 import net.thevpc.scholar.hadrumaths._
 import net.thevpc.scholar.hadruplot.Plot
@@ -11,12 +12,12 @@ object Tall_Examples {
     var allFx = fx.inflate(n.in(1, 5))
     Plot.plot(fx(n->2.0))
     Plot.plot(allFx)
-    Plot.plot(deriveX(fx)(n->2.0))
+    Plot.plot(deriveX(fx(n->2.0)))
     var m = matrix(
       3, (i: Int, j: Int) => i + î * j + i - j
     )
     var v = columnVector(10, (i: Int) => 0 * î + 3 * i)
-    println(det(m) * inv(m));
-    plot(v*m)
+    //println(det(m) * inv(m));
+    //plot(v*m)
   }
 }
