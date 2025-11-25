@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.num;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -11,7 +12,7 @@ import java.util.Objects;
 /**
  * Created by vpc on 4/30/14.
  */
-@CanProduceClass({/*DoubleToDouble.class,*/DoubleToComplex.class,DoubleToVector.class,DoubleToMatrix.class})
+@CanProduceClass({/*DoubleToDouble.class,*/DoubleToComplex.class, DoubleToVector.class, DoubleToMatrix.class})
 public abstract class Sqrt implements FunctionExpr {
     private static final long serialVersionUID = 1L;
     private final Expr arg;
@@ -22,12 +23,12 @@ public abstract class Sqrt implements FunctionExpr {
 
     @Override
     public int hashCode() {
-        return getClass().getName().hashCode()*31+arg.hashCode();
+        return getClass().getName().hashCode() * 31 + arg.hashCode();
     }
 
     @Override
     public String toLatex() {
-        StringBuilder sb=new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         sb.append("\\sqrt{").append(arg.toLatex()).append("}");
         return sb.toString();
     }
@@ -108,15 +109,21 @@ public abstract class Sqrt implements FunctionExpr {
                 return new SqrtDoubleToMatrix(e);
             }
             default: {
-                throw new IllegalArgumentException("Unsupported type "+e.getType());
+                throw new IllegalArgumentException("Unsupported type " + e.getType());
             }
         }
     }
 
 }
- class SqrtDoubleToComplex extends Sqrt implements DoubleToComplexDefaults.DoubleToComplexUnaryDC {
+
+class SqrtDoubleToComplex extends Sqrt implements DoubleToComplexDefaults.DoubleToComplexUnaryDC {
     public SqrtDoubleToComplex(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Sqrt");
     }
 
     @Override
@@ -125,9 +132,14 @@ public abstract class Sqrt implements FunctionExpr {
     }
 }
 
- class SqrtDoubleToVector extends Sqrt implements DoubleToVectorDefaults.DoubleToVectorUnaryDV {
+class SqrtDoubleToVector extends Sqrt implements DoubleToVectorDefaults.DoubleToVectorUnaryDV {
     public SqrtDoubleToVector(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Sqrt");
     }
 
     @Override
@@ -140,6 +152,11 @@ public abstract class Sqrt implements FunctionExpr {
 class SqrtDoubleToMatrix extends Sqrt implements DoubleToMatrixDefaults.DoubleToMatrixUnaryDM {
     public SqrtDoubleToMatrix(Expr arg) {
         super(arg);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Sqrt");
     }
 
     @Override
