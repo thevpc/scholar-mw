@@ -5,6 +5,7 @@
  */
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
 import net.thevpc.scholar.hadrumaths.symbolic.polymorph.num.Inv;
@@ -565,6 +566,11 @@ class AnyDoubleToVector extends Any implements DoubleToVector {
     }
 
     @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Any");
+    }
+
+    @Override
     public DoubleToComplex getComponent(Axis a) {
         return
                 //wrap(
@@ -612,6 +618,11 @@ class AnyDoubleToVector extends Any implements DoubleToVector {
 class AnyDoubleToComplex extends Any implements DoubleToComplex {
     public AnyDoubleToComplex(Expr object, String name, Map<String, Object> properties) {
         super(object, name, properties);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Any");
     }
 
     @Override
@@ -675,6 +686,11 @@ class AnyDoubleToComplex extends Any implements DoubleToComplex {
 class AnyDoubleToDouble extends Any implements DoubleToDoubleDefaults.DoubleToDoubleNormal {
     public AnyDoubleToDouble(Expr object, String name, Map<String, Object> properties) {
         super(object, name, properties);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Any");
     }
 
     @Override
@@ -751,6 +767,11 @@ class AnyDoubleToDouble extends Any implements DoubleToDoubleDefaults.DoubleToDo
 class AnyDoubleToMatrix extends Any implements DoubleToMatrix {
     public AnyDoubleToMatrix(Expr object, String name, Map<String, Object> properties) {
         super(object, name, properties);
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Any");
     }
 
     @Override
