@@ -4,9 +4,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import net.thevpc.common.props.*;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadruplot.libraries.calc3d.elements.Element3D;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 import net.thevpc.scholar.hadruwaves.project.scene.Annotation3D;
@@ -93,17 +93,17 @@ public abstract class AbstractHWProjectComponent implements HWProjectComponent {
     protected abstract List<Element3D> toElements3DImpl(HWConfigurationRun configuration);
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObjectBuilder(getClass().getSimpleName())
+    public NElement toElement() {
+        return NElement.ofObjectBuilder(getClass().getSimpleName())
                 .add("name", name.get())
                 .add("description", description.get())
                 .add("enabled", enabled.get())
                 .add("visible", visible.get())
                 .add("annotations",
-                        Tson.ofArrayBuilder().addAll(
-                                annotations().stream().map(x -> x.toTsonElement(context)).collect(
+                        NElement.ofArrayBuilder().addAll(
+                                annotations().stream().map(x -> x.toElement()).collect(
                                         Collectors.toList()
-                                ))
+                                )).build()
                 )
                 .build();
     }
