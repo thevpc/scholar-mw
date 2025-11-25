@@ -7,8 +7,10 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import net.thevpc.common.props.*;
 import net.thevpc.common.props.impl.DefaultPropertyListeners;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
+
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NElementFormat;
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurations;
 import net.thevpc.scholar.hadruwaves.project.parameter.HWParameterValue;
@@ -18,8 +20,8 @@ import net.thevpc.scholar.hadruwaves.project.scene.HWMaterialTemplate;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import net.thevpc.common.strings.StringUtils;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+
+
 import net.thevpc.scholar.hadruwaves.Material;
 import net.thevpc.scholar.hadruwaves.project.scene.AbstractHWProjectComponentMaterial;
 import net.thevpc.scholar.hadruwaves.project.scene.HWProjectScene;
@@ -171,20 +173,21 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
         return scene;
     }
 
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder obj = Tson.ofObjectBuilder("project");
+    public NElement toElement() {
+        NObjectElementBuilder obj = NElement.ofObjectBuilder("project");
         obj
                 .add("uuid", uuid())
                 .add("name", name().get())
                 .add("description", description().get())
-                .add("materials", Tson.ofArrayBuilder().addAll(materials().values()
-                        .stream().map(x -> x.toTsonElement()).collect(Collectors.toList()))
+                .add("materials", NElement.ofArrayBuilder().addAll(materials().values()
+                        .stream().map(x -> x.toElement()).collect(Collectors.toList()))
+                        .build()
                 )
-                .add("parameters", parameters().toTsonElement())
-                .add("units", units().toTsonElement())
-                .add("configurations", configurations().toTsonElement());
+                .add("parameters", parameters().toElement())
+                .add("units", units().toElement())
+                .add("configurations", configurations().toElement());
         if (scene().get() != null) {
-            obj.add("scene", scene().get().toTsonElement());
+            obj.add("scene", scene().get().toElement());
         }
 
         return obj.build();
@@ -245,7 +248,7 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
                 throw new UncheckedIOException(ex);
             }
         }
-        Tson.writer().write(ff, toTsonElement());
+        NElementFormat.ofPlainTson(toElement()).print(ff);
         for (String p : new String[]{
             "code/scala/src/main/scala",
             "code/java/src/main/java",
@@ -351,7 +354,7 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
     }
 
     @Override
-    public void load(TsonElement tson) {
+    public void load(NElement elem) {
         //example!!
         new MicrostripProjectTemplate().load(this);
     }
