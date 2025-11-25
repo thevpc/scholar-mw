@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.DefaultDoubleValue;
 
@@ -24,6 +25,10 @@ public final class DoubleExpr implements DoubleToDoubleDefaults.DoubleToDoubleSi
         this.value = cst;
     }
 
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("DoubleExpr",NElement.ofDouble(value));
+    }
 
     @Override
     public String toLatex() {
