@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.thevpc.scholar.hadrumaths.symbolic.Range;
@@ -44,6 +45,11 @@ public class PiecewiseSine2XFunctionXY extends PieceXFunction {
             }
         });
         this.crestValue = crestValue;
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("PiecewiseSine2XFunctionXY");
     }
 
 
