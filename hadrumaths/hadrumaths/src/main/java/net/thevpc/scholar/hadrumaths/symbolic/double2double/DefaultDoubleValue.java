@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
 import net.thevpc.scholar.hadrumaths.symbolic.double2complex.DefaultComplexValue;
@@ -77,6 +78,12 @@ public final class DefaultDoubleValue implements DoubleToDoubleDefaults.DoubleTo
         }
         return new DefaultDoubleValue(cst, domain);
     }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("DoubleValue");
+    }
+
 
     public DoubleToDouble mul(double factor, Domain newDomain) {
         return DefaultDoubleValue.of(factor * value,
