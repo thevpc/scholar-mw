@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.trigo;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -114,6 +115,10 @@ class LogDoubleToDouble extends Log implements DoubleToDoubleDefaults.DoubleToDo
     public double evalDoubleSimple(double x) {
         return Maths.log(x);
     }
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Log");
+    }
 }
 
 class LogDoubleToComplex extends Log implements DoubleToComplexDefaults.DoubleToComplexUnaryDC {
@@ -125,6 +130,11 @@ class LogDoubleToComplex extends Log implements DoubleToComplexDefaults.DoubleTo
     public Complex aggregateComplex(Complex a) {
         return a.neg();
     }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Log");
+    }
 }
 
 class LogDoubleToVector extends Log implements DoubleToVectorDefaults.DoubleToVectorUnaryDV {
@@ -132,6 +142,10 @@ class LogDoubleToVector extends Log implements DoubleToVectorDefaults.DoubleToVe
         super(arg);
     }
 
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Log");
+    }
     @Override
     public ComplexVector aggregateVector(ComplexVector v) {
         return v.neg();
@@ -143,6 +157,10 @@ class LogDoubleToMatrix extends Log implements DoubleToMatrixDefaults.DoubleToMa
         super(arg);
     }
 
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Log");
+    }
     @Override
     public ComplexMatrix aggregateMatrix(ComplexMatrix m) {
         return m.log();
