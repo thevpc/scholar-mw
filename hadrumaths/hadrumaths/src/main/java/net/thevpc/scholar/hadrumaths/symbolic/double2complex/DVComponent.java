@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2complex;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.format.ObjectFormat;
 import net.thevpc.scholar.hadrumaths.format.ObjectFormatContext;
@@ -34,6 +35,11 @@ public class DVComponent implements DoubleToComplex {
     public DVComponent(DoubleToVector vector, int componentIndex) {
         this.vector = vector;
         this.componentIndex = componentIndex;
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("DVComponent");
     }
 
     public boolean isInvariant(Axis axis) {
