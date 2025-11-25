@@ -5,9 +5,9 @@ import net.thevpc.common.props.WritableMap;
 import net.thevpc.common.props.WritableValue;
 import net.thevpc.common.strings.StringConverter;
 import net.thevpc.common.strings.StringUtils;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.plot.d3.BoundDomain;
 import net.thevpc.scholar.hadrumaths.symbolic.Param;
@@ -15,6 +15,7 @@ import net.thevpc.scholar.hadrumaths.units.ConvParamUnit;
 import net.thevpc.scholar.hadrumaths.units.MulParamUnit;
 import net.thevpc.scholar.hadrumaths.units.ParamUnit;
 import net.thevpc.scholar.hadrumaths.units.UnitType;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.project.EvalExprResult;
 import net.thevpc.scholar.hadruwaves.project.HWProjectComponent;
 import net.thevpc.scholar.hadruwaves.project.parameter.HWParameterValue;
@@ -49,11 +50,11 @@ public class HWConfigurationRun extends AbstractHWConfigurationElement {
         return solver;
     }
 
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofObjectBuilder("configuration")
+    public NElement toElement() {
+        return NElement.ofObjectBuilder("configuration")
                 .add("name", name().get())
                 .add("description", description().get())
-                .add("parameters", context.elem(parameters.toMap()))
+                .add("parameters", NElementHelper.elem(parameters.toMap()))
                 .build();
     }
 
