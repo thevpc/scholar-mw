@@ -3,8 +3,10 @@ package net.thevpc.scholar.hadruwaves.mom;
 import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.common.mon.ProgressMonitorFactory;
 import net.thevpc.common.mon.ProgressMonitors;
-import net.thevpc.tson.*;
+
 import net.thevpc.common.time.Chronometer;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Vector;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.cache.CacheKey;
@@ -15,6 +17,7 @@ import net.thevpc.scholar.hadrumaths.geom.Polygon;
 import net.thevpc.scholar.hadrumaths.io.HadrumathsIOUtils;
 import net.thevpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.*;
 import net.thevpc.scholar.hadruwaves.builders.*;
 import net.thevpc.scholar.hadruwaves.mom.builders.MomMatrixABuilder;
@@ -384,7 +387,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
                 this.modeFunctions.addModeInfoFilter(new DiscardFnByScalarProductModeInfoFilter(excludedFns));
             }
         }
-        buildHash = CacheKey.of(toTsonElement());
+        buildHash = CacheKey.of(toElement());
     }
 
     public MomStructure load(MWStructure st) {
@@ -420,7 +423,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
 
     public String dump() {
         build();
-        return toTsonElement().toString(false);
+        return toElement().toString(false);
     }
 
     @Override
@@ -524,40 +527,41 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
     }
 
     private String dump0() {
-        return toTsonElement().toString(false);
+        return toElement().toString(false);
 //        return getDumpStringHelper().toString();
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder sb = Tson.ofObjectBuilder(getClass().getSimpleName(), new TsonElementBase[]{Tson.ofPair("version", context.elem("3.0"))});
-        sb.add("projectType", context.elem(projectType));
-        sb.add("circuitType", context.elem(circuitType));
-        sb.add("frequency", context.elem(frequency));
-        sb.add("domain", context.elem(domain));
-        sb.add("borders", context.elem(borders));
+    public NElement toElement() {
+        NObjectElementBuilder sb = NElement.ofObjectBuilder(getClass().getSimpleName());
+        sb.addAll(new NElement[]{NElement.ofPair("version", NElementHelper.elem("3.0"))});
+        sb.add("projectType", NElementHelper.elem(projectType));
+        sb.add("circuitType", NElementHelper.elem(circuitType));
+        sb.add("frequency", NElementHelper.elem(frequency));
+        sb.add("domain", NElementHelper.elem(domain));
+        sb.add("borders", NElementHelper.elem(borders));
 
-        sb.add("firstBoxSpace", context.elem(firstBoxSpace));
-        sb.add("secondBoxSpace", context.elem(secondBoxSpace));
+        sb.add("firstBoxSpace", NElementHelper.elem(firstBoxSpace));
+        sb.add("secondBoxSpace", NElementHelper.elem(secondBoxSpace));
 
-        sb.add("testFunctions", context.elem(testFunctions));
+        sb.add("testFunctions", NElementHelper.elem(testFunctions));
 //        sb.addElement("testFunctions.count", context.defaultObjectToElement(testFunctionsCount));
-        sb.add("modeFunctions", context.elem(modeFunctions).toObject().builder().remove("environment"));
-        sb.add("sources", context.elem(sources));
-        sb.add("layers", context.elem(getLayers()));
+        sb.add("modeFunctions", NElementHelper.elem(modeFunctions).toObject().get().builder().remove("environment").build());
+        sb.add("sources", NElementHelper.elem(sources));
+        sb.add("layers", NElementHelper.elem(getLayers()));
 
         if (serialZs != null) {
-            sb.add("serialZs", context.elem(serialZs));
+            sb.add("serialZs", NElementHelper.elem(serialZs));
         }
         if (fractalScale != 0) {
-            sb.add("fractalScale", context.elem(fractalScale));
+            sb.add("fractalScale", NElementHelper.elem(fractalScale));
         }
-        sb.add("builders", context.elem(evaluator()));
-//        sb.add("evaluator", context.elem(evaluator()));
-        sb.add("scalarProductOperator", context.elem(getScalarProductOperator()));
+        sb.add("builders", NElementHelper.elem(evaluator()));
+//        sb.add("evaluator", NElementHelper.elem(evaluator()));
+        sb.add("scalarProductOperator", NElementHelper.elem(getScalarProductOperator()));
 
-        sb.add("parameters", context.elem(getParameters()));
-        sb.add("hints", context.elem(getHintsManager()));
+        sb.add("parameters", NElementHelper.elem(getParameters()));
+        sb.add("hints", NElementHelper.elem(getHintsManager()));
         return sb.build();
     }
 
@@ -977,7 +981,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
     public MomMatrixABuilder matrixA() {
         ObjectCache cc = getPersistentCache().getObjectCache(getKey(), true);
         if (cc != null) {
-            cc.addSetItem("name", Tson.of(getName()));
+            cc.addSetItem("name", NElement.ofString(getName()));
         }
         return new DefaultMomMatrixABuilder(this);
     }
