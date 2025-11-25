@@ -1,9 +1,9 @@
 package net.thevpc.scholar.hadruwaves;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+
+import net.thevpc.nuts.elem.NElement;
+
+
 
 public abstract class SimpleModeIndexFilter implements ModeIndexFilter {
     private boolean frequencyDependent;
@@ -18,9 +18,9 @@ public abstract class SimpleModeIndexFilter implements ModeIndexFilter {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder sb = Tson.ofObjectBuilder(getClass().getSimpleName());
-        sb.add("frequencyDependent", context.elem(frequencyDependent));
+    public NElement toElement() {
+        NObjectElementBuilder sb = NElement.ofObjectBuilder(getClass().getSimpleName());
+        sb.add("frequencyDependent", NElementHelper.elem(frequencyDependent));
         return sb.build();
     }
 //    public Dumper getDumpStringHelper() {
