@@ -1,8 +1,9 @@
 package net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh;
 
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectBuilder;
-import net.thevpc.tson.TsonObjectContext;
+import net.thevpc.nuts.elem.NElement;
+
+
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.common.collections.MapUtils;
 import net.thevpc.scholar.hadrumaths.geom.*;
@@ -12,6 +13,7 @@ import net.thevpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
 import net.thevpc.common.mon.ProgressMonitor;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.mom.CircuitType;
 import net.thevpc.scholar.hadruwaves.mom.TestFunctions;
 import net.thevpc.scholar.hadruwaves.mom.TestFunctionsSymmetry;
@@ -317,17 +319,17 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        TsonObjectBuilder h = super.toTsonElement(context).toObject().builder();
+    public NElement toElement() {
+        NObjectElementBuilder h = super.toElement().toObject().get().builder();
         arr();
         for (CircuitType circuitType : CircuitType.values()) {
-            h.add(circuitType.toString(), context.elem(polygons[circuitType.ordinal()]));
+            h.add(circuitType.toString(), NElementHelper.elem(polygons[circuitType.ordinal()]));
         }
-        h.add("symmetry", context.elem(getSymmetry()));
-        h.add("pattern", context.elem(getPattern()));
-        h.add("invariance", context.elem(getInvariance()));
+        h.add("symmetry", NElementHelper.elem(getSymmetry()));
+        h.add("pattern", NElementHelper.elem(getPattern()));
+        h.add("invariance", NElementHelper.elem(getInvariance()));
 //        System.out.println("meshAlgo = " + meshAlgo.dump());
-        h.add("meshAlgo", context.elem(meshAlgo));
+        h.add("meshAlgo", NElementHelper.elem(meshAlgo));
         return h.build();
     }
 
