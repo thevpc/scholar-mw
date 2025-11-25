@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.num;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -117,6 +118,10 @@ class AbsDoubleToDouble extends Abs implements DoubleToDoubleDefaults.DoubleToDo
         return Maths.abs(x);
     }
 
+    @Override
+    public NElement toElement() {
+        return NElement.ofString("Abs(double)");
+    }
 }
 
 class AbsDoubleToComplex extends Abs implements DoubleToComplexDefaults.DoubleToComplexUnaryDC {
@@ -128,7 +133,10 @@ class AbsDoubleToComplex extends Abs implements DoubleToComplexDefaults.DoubleTo
     public Complex aggregateComplex(Complex a) {
         return a.abs();
     }
-
+    @Override
+    public NElement toElement() {
+        return NElement.ofString("Abs(Complex)");
+    }
 }
 
 class AbsDoubleToVector extends Abs implements DoubleToVectorDefaults.DoubleToVectorUnaryDV {
@@ -139,6 +147,10 @@ class AbsDoubleToVector extends Abs implements DoubleToVectorDefaults.DoubleToVe
     @Override
     public ComplexVector aggregateVector(ComplexVector v) {
         return v.abs();
+    }
+    @Override
+    public NElement toElement() {
+        return NElement.ofString("Abs(ComplexVector)");
     }
 
 }
@@ -151,6 +163,10 @@ class AbsDoubleToMatrix extends Abs implements DoubleToMatrixDefaults.DoubleToMa
     @Override
     public ComplexMatrix aggregateMatrix(ComplexMatrix m) {
         return m.abs();
+    }
+    @Override
+    public NElement toElement() {
+        return NElement.ofString("Abs(MQtrix)");
     }
 
 }
