@@ -1,8 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.geom.*;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
 import net.thevpc.scholar.hadrumaths.symbolic.double2complex.DefaultComplexValue;
@@ -2210,23 +2208,23 @@ public abstract class Domain implements DoubleValue, DoubleToDouble, DoubleToDou
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
+    public NElement toElement() {
         switch (getDimension()) {
             case 1: {
-                return Tson.ofUplet("domain", Tson.of(xmin()), Tson.of(xmax())).build();
+                return NElement.ofUplet("domain", NElement.ofDouble(xmin()), NElement.ofDouble(xmax()));
             }
             case 2: {
-                return Tson.ofUplet("domain",
-                        Tson.of(xmin()), Tson.of(xmax()),
-                        Tson.of(ymin()), Tson.of(ymax())
-                ).build();
+                return NElement.ofUplet("domain",
+                        NElement.ofDouble(xmin()), NElement.ofDouble(xmax()),
+                        NElement.ofDouble(ymin()), NElement.ofDouble(ymax())
+                );
             }
         }
-        return Tson.ofUplet("domain",
-                Tson.of(xmin()), Tson.of(xmax()),
-                Tson.of(ymin()), Tson.of(ymax()),
-                Tson.of(zmin()), Tson.of(zmax())
-        ).build();
+        return NElement.ofUplet("domain",
+                NElement.ofDouble(xmin()), NElement.ofDouble(xmax()),
+                NElement.ofDouble(ymin()), NElement.ofDouble(ymax()),
+                NElement.ofDouble(zmin()), NElement.ofDouble(zmax())
+        );
     }
 
     public Domain multiply(Domain other) {
