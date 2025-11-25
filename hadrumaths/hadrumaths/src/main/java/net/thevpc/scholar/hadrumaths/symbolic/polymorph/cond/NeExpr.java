@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.polymorph.cond;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 
@@ -11,6 +12,11 @@ public class NeExpr extends AbstractComparatorExpr {
 
     private NeExpr(DoubleToDouble xarg, DoubleToDouble yarg) {
         super(xarg, yarg, xarg.getDomain().intersect(yarg.getDomain()));
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("Ne");
     }
 
     @Override
@@ -33,7 +39,7 @@ public class NeExpr extends AbstractComparatorExpr {
 
     @Override
     public String toLatex() {
-        StringBuilder sb=new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         sb.append("{").append(getChild(0).toLatex()).append("}");
         sb.append("\\neq");
         sb.append("{").append(getChild(1).toLatex()).append("}");
