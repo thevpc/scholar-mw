@@ -7,16 +7,16 @@ import java.util.stream.Collectors;
 import net.thevpc.common.props.*;
 import net.thevpc.common.props.impl.DefaultPropertyListeners;
 import net.thevpc.common.props.impl.PropertyBase;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
-import net.thevpc.tson.TsonSerializable;
+
+import net.thevpc.nuts.elem.NElement;
+
+import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.scholar.hadrumaths.units.ParamUnit;
 import net.thevpc.scholar.hadrumaths.units.UnitType;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 
-public class HWParameters extends PropertyBase implements TsonSerializable {
+public class HWParameters extends PropertyBase implements NToElement {
 
     protected WritableValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
     private HWParameterFolderHelper childrenHelper = new HWParameterFolderHelper(null, () -> project().get());
@@ -42,9 +42,9 @@ public class HWParameters extends PropertyBase implements TsonSerializable {
     }
 
     @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return Tson.ofArrayBuilder("Parameters")
-                .addAll(children().values().stream().map(x->x.toTsonElement(context)).collect(Collectors.toList()))
+    public NElement toElement() {
+        return NElement.ofArrayBuilder("Parameters")
+                .addAll(children().values().stream().map(x->x.toElement()).collect(Collectors.toList()))
                 .build();
     }
 
