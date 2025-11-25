@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.integration.DIntegralXY;
 import net.thevpc.scholar.hadrumaths.integration.DQuadIntegralXY;
@@ -49,6 +50,12 @@ public class DDzIntegralXY extends AbstractDoubleToDouble {
         this.y0 = y0;
         this.y1 = y1;
     }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofNamedObject("DDzIntegralXY");
+    }
+
 
     public List<Expr> getChildren() {
         return Arrays.asList(new Expr[]{base});
