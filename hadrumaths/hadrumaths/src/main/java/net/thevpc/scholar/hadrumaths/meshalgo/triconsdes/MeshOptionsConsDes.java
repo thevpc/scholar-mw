@@ -1,10 +1,11 @@
 package net.thevpc.scholar.hadrumaths.meshalgo.triconsdes;
 
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonObjectContext;
+import net.thevpc.nuts.elem.NElement;
+
 import net.thevpc.scholar.hadrumaths.geom.GeomUtils;
 import net.thevpc.scholar.hadrumaths.geom.Triangle;
 import net.thevpc.scholar.hadrumaths.meshalgo.DefaultOption;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.awt.*;
 import java.util.List;
@@ -22,9 +23,9 @@ public class MeshOptionsConsDes extends DefaultOption {
     public MeshOptionsConsDes setMaxIterations(int max) {
         return setPrecision(new ConsDesIterationPrecision(max));
     }    @Override
-    public TsonElement toTsonElement(TsonObjectContext context) {
-        return super.toTsonElement(context).toObject().builder()
-                .add("precision", context.elem(precision))
+    public NElement toElement() {
+        return super.toElement().toObject().get().builder()
+                .add("precision", NElementHelper.elem(precision))
                 .build();
     }
 
