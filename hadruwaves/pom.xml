@@ -10,6 +10,7 @@
         <module>hadruwaves-java</module>
         <module>hadruwaves-puppets</module>
         <module>hadruwaves-scala</module>
+        <module>ntexup-extension-hadruwaves</module>
     </modules>
 
 </project>
