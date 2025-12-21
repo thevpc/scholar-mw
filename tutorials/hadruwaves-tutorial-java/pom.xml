@@ -83,7 +83,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
 
                 <!-- version 3.8.0+ is necessary to support Java 10+ -->
-                <version>3.13.0</version>
+                <version>3.14.1</version>
 
                 <configuration>
                     <encoding>UTF-8</encoding>
