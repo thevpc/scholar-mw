@@ -2,7 +2,8 @@ package net.thevpc.scholar.hadruwaves;
 
 
 import net.thevpc.nuts.elem.NElement;
-
+import net.thevpc.nuts.elem.NObjectElementBuilder;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 
 public abstract class SimpleModeIndexFilter implements ModeIndexFilter {
