@@ -546,7 +546,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
 
         sb.add("testFunctions", NElementHelper.elem(testFunctions));
 //        sb.addElement("testFunctions.count", context.defaultObjectToElement(testFunctionsCount));
-        sb.add("modeFunctions", NElementHelper.elem(modeFunctions).toObject().get().builder().remove("environment").build());
+        sb.add("modeFunctions", NElementHelper.elem(modeFunctions).toObject().get().builder().removeEntry("environment").build());
         sb.add("sources", NElementHelper.elem(sources));
         sb.add("layers", NElementHelper.elem(getLayers()));
 
