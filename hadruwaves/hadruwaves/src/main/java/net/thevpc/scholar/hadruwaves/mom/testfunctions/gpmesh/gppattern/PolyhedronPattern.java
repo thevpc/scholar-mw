@@ -3,6 +3,7 @@ package net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 import net.thevpc.nuts.elem.NElement;
 
 
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.FunctionFactory;
 import net.thevpc.scholar.hadrumaths.Maths;
@@ -10,6 +11,7 @@ import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.DDiscrete;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.Polyhedron;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 /**
