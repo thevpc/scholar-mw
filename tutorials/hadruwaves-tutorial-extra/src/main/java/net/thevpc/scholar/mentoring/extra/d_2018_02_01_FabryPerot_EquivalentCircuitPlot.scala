@@ -1,11 +1,12 @@
 package net.thevpc.scholar.mentoring.extra
 
 import net.thevpc.common.time.Chronometer
-import net.thevpc.nuts.elem.NElement
+import net.thevpc.nuts.elem.{NElement, NElementUtils}
 import net.thevpc.scholar.hadrumaths.MathScala._
 import net.thevpc.scholar.hadruwaves.Physics._
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector
 import net.thevpc.scholar.hadrumaths._
+import net.thevpc.scholar.hadrumaths.util.NElementHelper
 import net.thevpc.scholar.hadruwaves.Material
 import net.thevpc.scholar.hadruwaves.mom.BoxSpace.{matchedLoad, shortCircuit}
 import net.thevpc.scholar.hadruwaves.mom.{MomStructure, StrLayer}
@@ -198,7 +199,7 @@ object d_2018_02_01_FabryPerot_EquivalentCircuitPlot {
     var persistentCache = st.getDerivedPersistentCache("Etheta")
     //    persistentCache.setEnabled(true);
     val dumper = NElement.ofObjectBuilder("Etheta")
-      .add("st", NElement.serializer().serialize(st))
+      .add("st", NElementHelper.elem(st))
       .add("theta", NElement.ofDouble(theta))
       .add("r", NElement.ofDouble(r))
       .add("phi", NElement.ofDouble(phi))
@@ -246,10 +247,10 @@ object d_2018_02_01_FabryPerot_EquivalentCircuitPlot {
     //    var persistentCache = new PersistenceCacheImpl("Ephi");
     //    persistentCache.setEnabled(true);
     var dumper = NElement.ofObjectBuilder("Ephi")
-      .add("st", Tson.serializer().serialize(st))
-      .add("phi", NElement.of(phi))
-      .add("r", NElement.of(r))
-      .add("theta", NElement.of(theta))
+      .add("st", NElementHelper.elem(st))
+      .add("phi", NElement.ofDouble(phi))
+      .add("r", NElement.ofDouble(r))
+      .add("theta", NElement.ofDouble(theta))
     //.add("Xvalues", dsteps(0, a, 100))
     //.add("Yvalues", dsteps(-b / 2, b / 2, 100))
     //    return persistentCache.evaluate[Complex]("Ephi", null,new CacheEvaluator {
