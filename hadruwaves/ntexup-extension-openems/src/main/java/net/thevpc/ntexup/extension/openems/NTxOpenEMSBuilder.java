@@ -1,22 +1,20 @@
-package net.thevpc.ntexup.extension.hadruwaves;
+package net.thevpc.ntexup.extension.openems;
 
 import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
 import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
 import net.thevpc.ntexup.api.parser.NTxAllArgumentReader;
 import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
-import net.thevpc.ntexup.extension.mwsimulator.*;
-import net.thevpc.nuts.util.*;
-import net.thevpc.scholar.hadruwaves.mom.*;
+import net.thevpc.ntexup.extension.mwsimulator.NTxMwSimulationUtils;
 
 
 /**
  *
  */
-public class NTxHadruwavesBuilder implements NTxNodeBuilder {
+public class NTxOpenEMSBuilder implements NTxNodeBuilder {
 
     @Override
     public void build(NTxNodeBuilderContext builderContext) {
-        builderContext.id("hadruwaves")
+        builderContext.id("openems")
                 .parseParam()
                 .matchesAny().end()
                 .processChildren(this::processChildren)
@@ -29,7 +27,7 @@ public class NTxHadruwavesBuilder implements NTxNodeBuilder {
     }
 
     public void renderMain(NTxNodeRendererContext rendererContext) {
-        MoMStrSimulationQuery q = MoMQueryBuilder.resolveMoMStrSimulationQuery(rendererContext);
+        OpenEMSStrSimulationQuery q = OpenEMSStrSimulationQueryBuilder.resolveQuery(rendererContext);
         NTxMwSimulationUtils.doRender(rendererContext,q);
     }
 }

@@ -1,65 +1,49 @@
-package net.thevpc.ntexup.extension.hadruwaves;
+package net.thevpc.ntexup.extension.mwsimulator;
 
 import net.thevpc.nuts.concurrent.NCachedValue;
 import net.thevpc.nuts.concurrent.NCallable;
 import net.thevpc.nuts.time.NDuration;
 import net.thevpc.nuts.util.NExceptions;
+import net.thevpc.nuts.util.NStringUtils;
 
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.function.Function;
 
-public class NTxHadruwavesBuilderMomRunner {
+public class NTxSimulationRunner {
     private ExecutorService executorService;
-    private Map<String, NCachedValue<RunningProcess>> cachedResults = new ConcurrentHashMap<>();
+    private Map<String, NCachedValue<NTxSimulationRunningProcess>> cachedResults = new ConcurrentHashMap<>();
 
-    public NTxHadruwavesBuilderMomRunner() {
+    public NTxSimulationRunner() {
         executorService = Executors.newFixedThreadPool(3);
     }
 
-    public interface RunningProcess {
 
-        <T> void putVar(String key, T value);
-
-        <T> T getVar(String key);
-
-        <T> T computeVar(String key, Function<String, T> supplier);
-
-        String id();
-
-        String name();
-
-        boolean isDone();
-
-        boolean isRunning();
-
-        String getError();
-
-        Object getResult();
-    }
-
-
-    public <T> RunningProcess add(NCallable<T> def, String name, String hash) {
-        NCachedValue<RunningProcess> cv = cachedResults.computeIfAbsent(hash, t -> NCachedValue.of(() ->
+    public <T> NTxSimulationRunningProcess add(NCallable<T> def, NTxStrSimulationQuery query) {
+        NCachedValue<NTxSimulationRunningProcess> cv = cachedResults.computeIfAbsent(query.hash, t -> NCachedValue.of(() ->
                 {
-                    synchronized (NTxHadruwavesBuilderMomRunner.this) {
+                    synchronized (NTxSimulationRunner.this) {
                         String taskId = UUID.randomUUID().toString();
                         Future<T> f = executorService.submit(def);
-                        return new MyRunningProcess<T>(taskId, name, f);
+                        return new MyNTxSimulationRunningProcess<T>(taskId, NStringUtils.firstNonBlank(
+                                query.compute==null?null:query.compute.name(),
+                                query.computeName,
+                                "Result"
+                        ), f);
                     }
                 }
         )).setExpiry(NDuration.ofHours(1));
         return cv.get();
     }
 
-    private static class MyRunningProcess<T> implements RunningProcess {
+    private static class MyNTxSimulationRunningProcess<T> implements NTxSimulationRunningProcess {
         private final String taskId;
         private final String name;
         private final Future<T> f;
         private final Map<String, Object> vars = new ConcurrentHashMap<>();
 
-        public MyRunningProcess(String taskId, String name, Future<T> f) {
+        public MyNTxSimulationRunningProcess(String taskId, String name, Future<T> f) {
             this.taskId = taskId;
             this.name = name;
             this.f = f;
