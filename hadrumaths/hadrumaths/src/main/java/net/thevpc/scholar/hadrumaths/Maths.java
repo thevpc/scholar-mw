@@ -7,6 +7,7 @@ import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.common.mon.ProgressMonitors;
 import net.thevpc.common.util.*;
 import net.thevpc.common.time.*;
+import net.thevpc.nuts.Nuts;
 import net.thevpc.scholar.hadrumaths.cache.PersistenceCacheBuilder;
 import net.thevpc.scholar.hadrumaths.expeval.ExpressionManagerFactory;
 import net.thevpc.scholar.hadrumaths.geom.Geometry;
@@ -50,7 +51,9 @@ import java.util.logging.Logger;
 
 @JeepImported(ElementType.TYPE)
 public final class Maths {
-
+    static {
+        Nuts.require();
+    }
     //<editor-fold desc="constants functions">
     public static final double PI = Math.PI;
     public static final double TWO_PI = 2 * Math.PI;
