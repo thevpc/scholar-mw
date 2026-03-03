@@ -3,6 +3,7 @@ package net.thevpc.scholar.hadrumaths.plot;
 import net.thevpc.common.util.TypeName;
 import net.thevpc.scholar.hadrumaths.DoubleVector;
 import net.thevpc.scholar.hadrumaths.Maths;
+import net.thevpc.scholar.hadrumaths.ToDoubleArrayAware;
 import net.thevpc.scholar.hadrumaths.Vector;
 import net.thevpc.scholar.hadruplot.PlotBuilder;
 import net.thevpc.scholar.hadruplot.extension.PlotBuilderSupport;
@@ -14,6 +15,10 @@ public class MathsPlotBuilderSupport implements PlotBuilderSupport {
 
     @Override
     public boolean xsamples(Object xvalue, PlotBuilder builder) {
+        if (xvalue instanceof ToDoubleArrayAware) {
+            builder.xsamples(((ToDoubleArrayAware) xvalue).toDoubleArray());
+            return true;
+        }
         if (xvalue instanceof Vector) {
             Vector lxvalue = (Vector) xvalue;
             if (lxvalue.length() == 0) {
@@ -36,6 +41,10 @@ public class MathsPlotBuilderSupport implements PlotBuilderSupport {
 
     @Override
     public boolean ysamples(Object xvalue, PlotBuilder builder) {
+        if (xvalue instanceof ToDoubleArrayAware) {
+            builder.ysamples(((ToDoubleArrayAware) xvalue).toDoubleArray());
+            return true;
+        }
         if (xvalue instanceof Vector) {
             DoubleVector to = (DoubleVector) ((Vector) xvalue).to(Maths.$DOUBLE);
             builder.ysamples(to.toDoubleArray());
@@ -46,6 +55,10 @@ public class MathsPlotBuilderSupport implements PlotBuilderSupport {
 
     @Override
     public boolean zsamples(Object xvalue, PlotBuilder builder) {
+        if (xvalue instanceof ToDoubleArrayAware) {
+            builder.zsamples(((ToDoubleArrayAware) xvalue).toDoubleArray());
+            return true;
+        }
         if (xvalue instanceof Vector) {
             DoubleVector to = (DoubleVector) ((Vector) xvalue).to(Maths.$DOUBLE);
             builder.zsamples(to.toDoubleArray());
