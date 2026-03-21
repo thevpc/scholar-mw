@@ -6,6 +6,7 @@ import net.thevpc.scholar.hadrumaths.geom.*;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.awt.geom.Path2D;
+import java.util.Objects;
 
 class DomainGeometry extends AbstractGeometry implements Cloneable, NToElement {
     private final Domain domain;
@@ -89,7 +90,7 @@ class DomainGeometry extends AbstractGeometry implements Cloneable, NToElement {
 
         DomainGeometry that = (DomainGeometry) o;
 
-        return domain != null ? domain.equals(that.domain) : that.domain == null;
+        return Objects.equals(domain, that.domain);
     }
 
     @Override
@@ -99,6 +100,9 @@ class DomainGeometry extends AbstractGeometry implements Cloneable, NToElement {
 
     @Override
     public NElement toElement() {
-        return NElement.ofObjectBuilder("Geometry").add(NElementHelper.elem(domain)).build();
+        return NElement.ofObjectBuilder("DomainGeometry")
+                .add(NElementHelper.elem(domain))
+                .addIf("properties", NElementHelper.elem(getProperties()), NElementHelper.blankPredicate())
+                .build();
     }
 }
