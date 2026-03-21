@@ -140,7 +140,7 @@ public class ErrorList {
                     );
                 }
                 obj.add("messages", array.build());
-                NElementFormat.ofPlainTson(obj).print(errorStr);
+                NElementWriter.ofPlainTson().print(obj,errorStr);
                 IOUtils.saveObject2(errorObj.getPath(), objWithErrors.obj);
             }
         }
@@ -192,7 +192,7 @@ public class ErrorList {
                             try {
                                 Expr expr = (Expr) IOUtils.loadObject2(errorObj.getPath());
                                 String str = errorStr.exists() ? new String(Files.readAllBytes(errorStr.toPath())) : "";
-                                NObjectElement obj = NElementParser.ofTson().parse(str).asObject().get();
+                                NObjectElement obj = NElementReader.ofTson().read(str).asObject().get();
                                 Class<?> type = Class.forName(obj.get("type").get().asStringValue().get());
                                 e = new ErrorGroup(
                                         name,
