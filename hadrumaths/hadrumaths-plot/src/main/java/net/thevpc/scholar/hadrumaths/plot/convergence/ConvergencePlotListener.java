@@ -31,9 +31,6 @@ public class ConvergencePlotListener implements ConvergenceListener {
 
     @Override
     public void progress(ConvergenceResult result) {
-        System.out.println(result.getLabel() + ": err = " + result.getRelativeError()
-                + "; threshold=" + result.getStabilityThreshold() + "; val=" + result.getValue()
-                + "; pars=" + result.getParameters());
         errors.add(result.getRelativeError() / result.getConfig().getThreshold());
         values.add(result.getValue());
         getFrame();
