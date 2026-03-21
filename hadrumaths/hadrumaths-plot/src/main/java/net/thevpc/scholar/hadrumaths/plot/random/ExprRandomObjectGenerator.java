@@ -450,9 +450,6 @@ public class ExprRandomObjectGenerator extends RandomObjectGenerator<ExprRandomO
                     return Domain.ofBounds(b1[0], b1[1], b2[0], b2[1], b3[0], b3[1]);
                 });
                 Object random = rnd.random();
-                if (((Domain) random).isInfinite()) {
-                    System.out.println("Why");
-                }
                 return random;
             }
         });
