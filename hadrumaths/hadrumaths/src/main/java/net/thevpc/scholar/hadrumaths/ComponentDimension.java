@@ -5,12 +5,14 @@
  */
 package net.thevpc.scholar.hadrumaths;
 
+import net.thevpc.nuts.elem.NElement;
+
 import java.io.Serializable;
 
 /**
  * @author vpc
  */
-public class ComponentDimension implements Serializable {
+public class ComponentDimension implements HSerializable {
     private static final ComponentDimension[][] CACHE = new ComponentDimension[3][3];
     private static final int CACHE_SIZE = CACHE.length;
     public static final ComponentDimension SCALAR = of(1, 1);
@@ -23,6 +25,22 @@ public class ComponentDimension implements Serializable {
     public ComponentDimension(int rows, int columns) {
         this.rows = rows;
         this.columns = columns;
+    }
+
+    @Override
+    public NElement toElement() {
+        switch (columns) {
+            case 1:{
+                if (rows==1) {
+                    return NElement.ofName("SCALAR");
+                }
+                if(rows>1) {
+                    return NElement.ofName("VECTOR"+rows);
+                }
+                return NElement.ofArray("VECTOR",NElement.ofInt(rows));
+            }
+        }
+        return NElement.ofArray("MATRIX",NElement.ofInt(columns),NElement.ofInt(rows));
     }
 
     public static ComponentDimension min(ComponentDimension a, ComponentDimension b) {
