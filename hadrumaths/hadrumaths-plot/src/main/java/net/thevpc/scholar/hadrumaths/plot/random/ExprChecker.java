@@ -95,10 +95,6 @@ public class ExprChecker {
             }
 
             Expr validExpr = replaceSpecial(expr);
-//            if (!validExpr.equals(expr)) {
-//                System.out.println("CHECK  :: " + expr);
-//                System.out.println("\tAS :: " + validExpr);
-//            }
             ok &= checkExpressionDD(info, validExpr);
             ok &= checkExpressionDC(info, validExpr);
             ok &= checkExpressionDV(info, validExpr);
@@ -498,7 +494,6 @@ public class ExprChecker {
 
     public double[] checkDoubleToDoubleX(DoubleToDouble expr, BooleanMarker error) {
         double[] doublesA = null;
-//        System.out.println("EXPRESSION= " + e);
         Domain d = expr.getDomain();
         Domain domain = d.intersect(Maths.xdomain(-10, 10));
         domain = isDomainMargins() ? domain.expandAll(5, 5) : domain;
@@ -524,16 +519,11 @@ public class ExprChecker {
             errorList.addInstanceError(expr, "Undefined with non zero value");
         }
         testValHelper.normalize(doublesB);
-//        System.out.println(d);
-//        System.out.println(domain);
         boolean ok = ArrayUtils.equals(doublesA, doublesB);
         if (!ok) {
             testValHelper.plotDiff("Incompatibility", "DD_X(Bulk)", "DD_X(Each)", doublesA, doublesB, AbsoluteSamples.absolute(x),
                     NElement.ofPair("expr", NElement.ofString(expr.toString())),
                     NElement.ofPair("domain", NElement.ofString(expr.getDomain().toString())));
-//            Plot.title(":" + e).xsamples(x).plot();
-//            Plot.title(":" + e).xsamples(x).plot((Object) );
-//            JOptionPane.showConfirmDialog(null,null);
             testValHelper.showDiff("DD_X Diff", doublesA, doublesB, x);
             errorList.addInstanceError(expr, "Invalid values");
         } else {
@@ -555,20 +545,17 @@ public class ExprChecker {
 
     public double[][] checkDoubleToDoubleXY(DoubleToDouble expr, BooleanMarker error) {
         double[][] doublesA = null;
-//        System.out.println("EXPRESSION= " + e);
         Domain d = expr.getDomain();
         Domain domain = d.intersect(Maths.domain(-10, 10, -10, 10));
         domain = isDomainMargins() ? domain.expandAll(5, 5) : domain;
         AbsoluteSamples relative = domain.toAbsolute(Samples.relative(xprecision, yprecision));
         double[] x = relative.getX();
         double[] y = relative.getY();
-//        System.out.println("-------------------------------");
         doublesA = expr.evalDouble(x, y);
 
         double[][] doublesB = new double[y.length][x.length];
         testValHelper.normalize(doublesA);
         boolean undefinedWithNonZero = false;
-//        System.out.println("-------------------------------");
         for (int j = 0; j < y.length; j++) {
             for (int k = 0; k < x.length; k++) {
                 BooleanRef defined = BooleanMarker.ref();
@@ -582,25 +569,16 @@ public class ExprChecker {
                 doublesB[j][k] = v;
             }
         }
-//        System.out.println("END -------------------------------");
         testValHelper.normalize(doublesB);
-//        System.out.println(d);
-//        System.out.println(domain);
         boolean ok = ArrayUtils.equals(doublesA, doublesB);
         if (!ok || undefinedWithNonZero) {
             error.set();
-            System.out.println("Problem :: " + expr);
             if (!ok) {
                 testValHelper.plotDiff("Incompatibility", "DD_XY(Bulk)", "DD_XY(Each)", doublesA, doublesB, AbsoluteSamples.absolute(x, y),
                         NElement.ofPair("expr", NElement.ofString(expr.toString())),
                         NElement.ofPair("domain", NElement.ofString(expr.getDomain().toString())));
-//                Plot.title("DD_XY(Bulk):" + e).xsamples(x).ysamples(y).plot((Object) doublesA);
-//                Plot.title("DD_XY(Each):" + e).xsamples(x).ysamples(y).plot((Object) doublesB);
                 testValHelper.showDiff("DD_XY Diff", doublesA, doublesB, x, y);
             }
-//            System.out.println(Arrays.deepToString(doublesA));
-//            System.out.println(Arrays.deepToString(doublesB));
-//            JOptionPane.showConfirmDialog(null,null);
             String errorString = Arrays.asList(!ok ? "Values do not match" : "", undefinedWithNonZero ? "Undefined with non zero" : "").stream().filter(s -> !s.isEmpty()).collect(Collectors.joining());
             errorList.addInstanceError(expr, "checkDoubleToDoubleXY:" + errorString);
         } else {
@@ -622,7 +600,6 @@ public class ExprChecker {
 
     public double[][][] checkDoubleToDoubleXYZ(DoubleToDouble e, BooleanMarker error) {
         double[][][] doublesA = null;
-//        System.out.println("EXPRESSION= " + e);
         Domain d = e.getDomain();
         Domain domain = d.intersect(Maths.domain(-10, 10, -10, 10, -10, 10));
         domain = isDomainMargins() ? domain.expandAll(5, 5) : domain;
@@ -651,8 +628,6 @@ public class ExprChecker {
             errorList.addInstanceError(e, "checkDoubleToDoubleXYZ:Undefined with non zero value");
         }
         testValHelper.normalize(doublesB);
-//        System.out.println(d);
-//        System.out.println(domain);
         boolean ok = ArrayUtils.equals(doublesA, doublesB);
         if (!ok) {
             error.set();
@@ -699,8 +674,6 @@ public class ExprChecker {
             errorList.addInstanceError(e, "checkDoubleToComplexX:Undefined with non zero value");
         }
         testValHelper.normalize(doublesB);
-//        System.out.println(d);
-//        System.out.println(domain);
         boolean ok = ArrayUtils.equals(doublesA, doublesB);
         if (!ok) {
             error.set();
@@ -746,8 +719,6 @@ public class ExprChecker {
             errorList.addInstanceError(e, "checkDoubleToComplexX:Undefined with non zero value");
         }
         testValHelper.normalize(doublesB);
-//        System.out.println(d);
-//        System.out.println(domain);
         boolean ok = ArrayUtils.equals(doublesA, doublesB);
         if (!ok) {
             error.set();
@@ -766,7 +737,6 @@ public class ExprChecker {
 
     public Complex[][][] checkDoubleToComplexXYZ(DoubleToComplex e, BooleanMarker error) {
         Complex[][][] doublesA = null;
-//        System.out.println("EXPRESSION= " + e);
         Domain d = e.getDomain();
         Domain domain = d.intersect(Maths.domain(-10, 10, -10, 10, -10, 10));
         domain = isDomainMargins() ? domain.expandAll(5, 5) : domain;
@@ -802,7 +772,6 @@ public class ExprChecker {
         boolean ok = ArrayUtils.equals(doublesA, doublesB);
         if (!ok) {
             error.set();
-            System.out.println("Problem :: " + e);
             testValHelper.plotDiff("Incompatibility", "DC_XYZ(Bulk)", "DC_XYZ(Each)", doublesA, doublesB, AbsoluteSamples.absolute(x, y, z),
                     NElement.ofPair("expr", NElement.ofString(e.toString())),
                     NElement.ofPair("domain", NElement.ofString(e.getDomain().toString())));
@@ -935,15 +904,6 @@ public class ExprChecker {
                 this.getErrorList().addOpErrorCount(1);
             }
         }
-//        for (int i = 0; i < count; i++) {
-//            System.out.println("Iteration " + (i + 1));
-//            try {
-//                this.checkExpression(generator.randomObject(Expr.class));
-//            } catch (ExprRandomObjectGenerator.GenerateException ex) {
-//                //ignore
-//            }
-//        }
-//        this.getErrorList().save();
         this.getErrorList().writeSummary();
     }
 
@@ -999,7 +959,6 @@ public class ExprChecker {
         this.checkAllClasses();
         this.getErrorList().writeSummary();
         for (int i = 0; i < count; i++) {
-            System.out.println("Iteration " + (i + 1));
             try {
                 this.checkExpression(generator.randomObject(Expr.class));
             } catch (ExprRandomObjectGenerator.GenerateException ex) {
