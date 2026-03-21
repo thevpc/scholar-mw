@@ -13,23 +13,6 @@ public abstract class LargeComplexMatrix extends AbstractComplexMatrix implement
     private int rows;
     private int columns;
 
-//    public static void main(String[] args) {
-//        try {
-//            File file = new File("/home/vpc/zzz/abc");
-//
-//            Matrix m = Maths.getLargeMatrixFactory().newMatrix("[1 2 3 ; 1 3 2]");
-//            Matrix m2 = Maths.getLargeMatrixFactory().newMatrix(m);
-//            System.out.println(m.format(null,null));
-//            System.out.println(m2.format(null,null));
-////            ObjectCache.storeObject(file, m);
-//
-////            Matrix o = (Matrix) ObjectCache.loadObject(file, null);
-////            System.out.println(o.toString(null,null));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     public LargeComplexMatrix(long id, int rows, int columns, LargeComplexMatrixFactory factory) {
         setLargeFactory(factory);
         this.largeMatrixId = id;
