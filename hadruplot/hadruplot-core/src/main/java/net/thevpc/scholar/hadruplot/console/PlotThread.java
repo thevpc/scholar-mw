@@ -4,6 +4,7 @@ import net.thevpc.common.mon.AbstractProgressMonitor;
 import net.thevpc.common.swing.SwingUtilities3;
 import net.thevpc.common.swing.win.WindowPath;
 import net.thevpc.common.time.Chronometer;
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.scholar.hadruplot.console.params.ParamSet;
 import net.thevpc.scholar.hadruplot.console.yaxis.PlotAxis;
 import net.thevpc.scholar.hadruplot.console.yaxis.YType;
@@ -83,11 +84,11 @@ public class PlotThread extends AbstractProgressMonitor {
                     plotter.run(action.next());
                 }
             } catch (IllegalArgumentException e) {
-                plotter.getLog().error(e);
+                plotter.getLog().log(NMsg.ofC("%s",e));
             } catch (ThreadDeath e) {
                 //do nothing
             } catch (Throwable e) {
-                plotter.getLog().error(e);
+                plotter.getLog().log(NMsg.ofC("%s",e));
             }
             SwingUtilities3.invokeLater(new Runnable() {
                 @Override
@@ -95,7 +96,7 @@ public class PlotThread extends AbstractProgressMonitor {
                     plotter.ticMonitor();
                 }
             });
-            plotter.getLog().trace("End Running : " + currentY.getName(serieTitle) + " => Time=" + chronometer);
+            plotter.getLog().log(NMsg.ofC("End Running : " + currentY.getName(serieTitle) + " => Time=" + chronometer).asInfo());
         } finally {
             terminate();
         }

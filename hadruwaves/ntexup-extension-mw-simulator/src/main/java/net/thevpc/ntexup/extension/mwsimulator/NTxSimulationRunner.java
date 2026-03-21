@@ -20,24 +20,21 @@ public class NTxSimulationRunner {
     }
 
 
-    public <T> NTxSimulationRunningProcess add(NCallable<T> def, NTxStrSimulationQuery query) {
-        NCachedValue<NTxSimulationRunningProcess> cv = cachedResults.computeIfAbsent(query.hash, t -> NCachedValue.of(() ->
+    public <T extends NTxSimulationResults> NTxSimulationRunningProcess add(NCallable<T> def, NTxSimulationPlan query) {
+        NCachedValue<NTxSimulationRunningProcess> cv = cachedResults.computeIfAbsent(query.hash(), t -> NCachedValue.of(() ->
                 {
                     synchronized (NTxSimulationRunner.this) {
                         String taskId = UUID.randomUUID().toString();
                         Future<T> f = executorService.submit(def);
-                        return new MyNTxSimulationRunningProcess<T>(taskId, NStringUtils.firstNonBlank(
-                                query.compute==null?null:query.compute.name(),
-                                query.computeName,
-                                "Result"
-                        ), f);
+                        String n = NStringUtils.firstNonBlank(query.name(),"Result");
+                        return new MyNTxSimulationRunningProcess<T>(taskId, n, f);
                     }
                 }
         )).setExpiry(NDuration.ofHours(1));
         return cv.get();
     }
 
-    private static class MyNTxSimulationRunningProcess<T> implements NTxSimulationRunningProcess {
+    private static class MyNTxSimulationRunningProcess<T extends NTxSimulationResults> implements NTxSimulationRunningProcess {
         private final String taskId;
         private final String name;
         private final Future<T> f;
@@ -109,7 +106,7 @@ public class NTxSimulationRunner {
         }
 
         @Override
-        public Object getResult() {
+        public T getResult() {
             try {
                 return f.get();
             } catch (InterruptedException e) {

@@ -21,7 +21,7 @@ import java.util.*;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 15 mai 2007 21:41:08
  */
-public final class RWGPattern extends AbstractGpPattern implements TriangularGpPattern {
+public final class RWGPattern extends AbstractGpPattern implements TriangularGpPattern, Cloneable {
     boolean x;
     boolean y;
     private int gridx = 100;
@@ -52,6 +52,21 @@ public final class RWGPattern extends AbstractGpPattern implements TriangularGpP
 
     public RWGPattern() {
         this(true, true, 100, 100);
+    }
+
+
+    @Override
+    public RWGPattern copy() {
+        return clone();
+    }
+
+    @Override
+    protected RWGPattern clone() {
+        try {
+            return (RWGPattern) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

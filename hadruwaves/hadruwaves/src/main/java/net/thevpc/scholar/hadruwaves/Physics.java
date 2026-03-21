@@ -769,18 +769,4 @@ public final class Physics {
         return HadruwavesService.getVersion();
     }
 
-//    public static void main(String[] args) {
-//        CstPlotDoubleRow[] cstPlotDoubleRows = loadCSTLinearPlot(new File("/run/media/vpc/KHADHRAOUII/s11 results/s11Boundaries.txt"));
-//        CstPlotDoubleRow[] cstPlotDoubleUnboxedRows = loadCSTLinearPlot(new File("/run/media/vpc/KHADHRAOUII/s11 results/s11Unboxed.txt"));
-//        ValuesPlotModel plotModel = (ValuesPlotModel) Plot.loadPlotModel(new File("/run/media/vpc/KHADHRAOUII/s11 results/s11BoxVariationSave.jfig"));
-//        PlotLines pl=new PlotLines();
-//        pl.addValues(cstPlotDoubleRows[1].getTitle(), ArrayUtils.mul(cstPlotDoubleRows[0].getValues(),1*Maths.GHZ),cstPlotDoubleRows[1].getValues());
-//        pl.addValues(cstPlotDoubleUnboxedRows[1].getTitle(), ArrayUtils.mul(cstPlotDoubleUnboxedRows[0].getValues(),1*Maths.GHZ),cstPlotDoubleUnboxedRows[1].getValues());
-//        pl.addValues(plotModel.getYtitle(0),plotModel.getX(0),plotModel.getZ(0));
-//        pl.addValues(plotModel.getYtitle(2),plotModel.getX(0),plotModel.getZ(2));
-//        Plot.asCurve().plot(pl.interpolate(InterpolationStrategy.SMOOTH));
-//
-//        System.out.println(cstPlotDoubleRows);
-//    }
-
 }

@@ -126,7 +126,7 @@ public class CstPlanarSource implements PlanarSource, Cloneable {
         h.add("xvalue", NElementHelper.elem(xvalue));
         h.add("yvalue", NElementHelper.elem(yvalue));
         h.add("polarization", NElementHelper.elem(polarization));
-        h.add("z0", NElementHelper.elem(characteristicImpedance));
+        h.add("impedance", NElementHelper.elem(characteristicImpedance));
         h.add("geometries", NElementHelper.elem(geometryList));
         return h.build();
     }

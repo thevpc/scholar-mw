@@ -142,12 +142,7 @@ public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
                     }
 
                 }
-            } else {
-                System.out.println("la liste des triangles est vide");
             }
-        } else {
-            System.out.println("Le maillage est termine");
-
         }
         info.selectedTriangle = t;
     }
@@ -261,7 +256,6 @@ public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
                         ArrayList<Point> m = new ArrayList<Point>(tr.getPoints());
                         ArrayList<Point> pt = new ArrayList<Point>();
                         GeomUtils.dispatch(selectedTriangle.getPoints(), tr.getPoints(), n, m, pt);
-                        // System.out.println(pt.size());
                         info.triangles.add(new Triangle(m.get(0), pt.get(0), barycenter));
                         info.triangles.add(new Triangle(m.get(0), pt.get(1), barycenter));
                         res.add(n.get(0));
@@ -269,8 +263,6 @@ public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
                 }
                 info.triangles.add(new Triangle(res.get(0), res.get(1), barycenter));
             }
-        } else {
-            System.out.println("la liste des triangles detruits est vide");
         }
         for (int i = 0; i < info.listeDetruite.size(); i++) {
             info.listeDetruite.remove(i);

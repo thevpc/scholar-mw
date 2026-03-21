@@ -14,7 +14,7 @@ import net.thevpc.scholar.hadruwaves.mom.MomStructure;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 15 mai 2007 21:41:33
  */
-public final class RooftopPattern extends RectMeshAttachGpPattern {
+public final class RooftopPattern extends RectMeshAttachGpPattern implements Cloneable{
 
     public RooftopPattern(MeshZoneTypeFilter filter) {
         super(filter);

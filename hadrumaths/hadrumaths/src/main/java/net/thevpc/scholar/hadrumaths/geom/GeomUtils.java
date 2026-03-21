@@ -309,18 +309,13 @@ public final class GeomUtils {
                 case PathIterator.SEG_MOVETO: {
                     Point p = Point.create((coords[0]), (coords[1]));
                     visited.add(p);
-                    System.out.println(p);
-
                     curves.add(new Curve(type, (coords[0]), (coords[1])));
                     break;
                 }
                 case PathIterator.SEG_LINETO: {
                     Point p = Point.create((coords[0]), (coords[1]));
-                    System.out.println(p);
                     if (visited.get(visited.size() - 1).equals(p)) {
-                        System.out.println("remove last");
                     } else if (visited.size() > 1 && visited.get(visited.size() - 2).equals(p)) {
-                        System.out.println("remove before last");
                         visited.remove(visited.size() - 1);
                         curves.remove(curves.size() - 1);
                     } else if (!visited.get(visited.size() - 1).equals(p) && !(visited.size() > 1 && visited.get(visited.size() - 2).equals(p))) {
@@ -477,56 +472,5 @@ public final class GeomUtils {
         }
         return Domain.ofBounds(minx, maxx, miny, maxy);
     }
-
-//    private void _debug_autoFusion(Polygon polygon, ArrayList<Area> all) {
-//        Domain domain = polygon.getDomain();
-//        double maxRelativeSizeXAbsolute = maxRelativeSizeX * domain.xwidth;
-//        double maxRelativeSizeYAbsolute = maxRelativeSizeY * domain.ywidth;
-//        boolean changes = true;
-//        while (changes) {
-//            changes = false;
-//            Area[] all2 = all.toArray(new Area[0]);
-//            for (int i = 0; i < all2.length; i++) {
-//                Area area = all2[i];
-////                System.out.println(area.getBounds());
-//                Area fusion = null;
-//                Area expand = null;
-//                if (GeomUtils.isRectangular(area)) {
-//                    for (int j = i + 1; j < all2.length; j++) {
-//                        Area other = all2[j];
-////                        System.out.println(other.getBounds());
-//                        if (GeomUtils.isRectangular(other)) {
-//                            Area a2 = (Area) area.clone();
-//                            a2.add(other);
-////                            System.out.println("compare " + area.getBounds() + " / " + other.getBounds() + " : " + a2.getBounds() + "(singular=" + a2.isSingular() + ";rect=" + GeomUtils.isRectangular(a2) + ")");
-//                            if (GeomUtils.isRectangular(a2)) {
-//                                Rectangle2D d = a2.getBounds2D();
-//                                double dw = d.getWidth();
-//                                double dh = d.getHeight();
-//                                if (dw <= maxRelativeSizeXAbsolute && dh <= maxRelativeSizeYAbsolute) {
-//                                    fusion = other;
-//                                    expand = a2;
-////                                    System.out.println(">> accepted");
-//                                    break;
-//                                }
-////                                System.out.println(">> rejected, too big");
-//                            } else {
-////                                System.out.println(">> rejected, bad shape");
-//                                AreaComponent dc = new AreaComponent(a2);
-//                                JOptionPane.showMessageDialog(null, dc, a2.getBounds() + "(singular=" + a2.isSingular() + ";rect=" + GeomUtils.isRectangular(a2) + ")", JOptionPane.PLAIN_MESSAGE);
-//                            }
-//                        }
-//                    }
-//                }
-//                if (fusion != null) {
-//                    all.add(expand);
-//                    all.remove(area);
-//                    all.remove(fusion);
-//                    changes = true;
-//                    break;
-//                }
-//            }
-//        }
-//    }
 
 }

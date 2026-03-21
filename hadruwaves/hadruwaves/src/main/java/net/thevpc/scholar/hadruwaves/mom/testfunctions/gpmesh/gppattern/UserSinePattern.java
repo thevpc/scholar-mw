@@ -4,6 +4,7 @@ import net.thevpc.nuts.elem.NElement;
 
 
 import net.thevpc.nuts.elem.NObjectElementBuilder;
+import net.thevpc.nuts.util.NIllegalArgumentException;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.FunctionFactory;
 import net.thevpc.scholar.hadrumaths.Maths;
@@ -18,7 +19,7 @@ import static java.lang.Math.sqrt;
 /**
  *
  */
-public final class UserSinePattern extends AbstractGpPatternPQ {
+public final class UserSinePattern extends AbstractGpPatternPQ  implements Cloneable{
 
     private CellBoundaries xboundaries = CellBoundaries.UDxUUy;
     private CellBoundaries yboundaries = CellBoundaries.UDxUUy;
@@ -38,6 +39,41 @@ public final class UserSinePattern extends AbstractGpPatternPQ {
 //
 //    }
     public static DoubleToVector createFunction(CellBoundaries xboundaries, CellBoundaries yboundaries, int index, int p, int q, Domain d, Domain globalDomain) {
+        if(xboundaries==null && yboundaries==null){
+            return Maths.DV(Maths.ZERO);
+        }
+        if(xboundaries==null){
+            CosXCosY fy = createFunction(yboundaries, p, q, d);
+            double ay = Maths.scalarProduct(fy, fy);
+            fy = (CosXCosY) fy.mul(1 / sqrt(ay), null);
+            DoubleToVector f = Maths.vector(
+                            Maths.ZERO,
+                            fy
+                    )
+                    .setTitle("SineY_" + yboundaries + "(" + p + "," + q + "))")
+                    .setProperty("Type", "SineY_" + yboundaries)
+                    .setProperty("p", p)
+                    .setProperty("q", q).toDV();
+//        f.setProperties(properties);
+            return f;
+        }
+        if(yboundaries==null){
+            CosXCosY fx = createFunction(xboundaries, p, q, d);
+
+
+            double ax = Maths.scalarProduct(fx, fx);
+            fx = (CosXCosY) fx.mul(1 / sqrt(ax), null);
+            DoubleToVector f = Maths.vector(
+                            fx,
+                            Maths.ZERO
+                    )
+                    .setTitle("SineX_" + xboundaries + "_"  + "(" + p + "," + q + "))")
+                    .setProperty("Type", "SineX_" + xboundaries)
+                    .setProperty("p", p)
+                    .setProperty("q", q).toDV();
+//        f.setProperties(properties);
+            return f;
+        }
         CosXCosY fx = createFunction(xboundaries, p, q, d);
         CosXCosY fy = createFunction(yboundaries, p, q, d);
 
@@ -88,7 +124,7 @@ public final class UserSinePattern extends AbstractGpPatternPQ {
             case DDxUUy: {
                 return FunctionFactory.sinXcosY0(
                         1,
-                        p * PI / d.xwidth(),
+                        (p+1) * PI / d.xwidth(),
                         0,
                         q * PI / d.ywidth(),
                         0,
@@ -111,7 +147,7 @@ public final class UserSinePattern extends AbstractGpPatternPQ {
                         1,// / Math.sqrt(d.width * d.height),
                         (2.0 * p + 1) / 2 * PI / d.xwidth(),
                         0,
-                        q * PI / d.ywidth(),
+                        (q+1) * PI / d.ywidth(),
                         0,
                         d
                 );
@@ -121,7 +157,7 @@ public final class UserSinePattern extends AbstractGpPatternPQ {
                         1,// / Math.sqrt(d.width * d.height),
                         (2.0 * p + 1) / 2 * PI / d.xwidth(),
                         0,
-                        q * PI / d.ywidth(),
+                        (q+1) * PI / d.ywidth(),
                         0,
                         d
                 );
@@ -129,9 +165,9 @@ public final class UserSinePattern extends AbstractGpPatternPQ {
             case DDxDDy: {
                 return FunctionFactory.sinXsinY0(
                         1,
-                        p * PI / d.xwidth(),
+                        (p+1) * PI / d.xwidth(),
                         0,
-                        q * PI / d.ywidth(),
+                        (q+1) * PI / d.ywidth(),
                         0,
                         d
                 );
@@ -141,7 +177,7 @@ public final class UserSinePattern extends AbstractGpPatternPQ {
                         1,
                         p * PI / d.xwidth(),
                         0,
-                        q * PI / d.ywidth(),
+                        (q+1) * PI / d.ywidth(),
                         0,
                         d
                 );
@@ -170,7 +206,7 @@ public final class UserSinePattern extends AbstractGpPatternPQ {
             case DDxUDy: {
                 return FunctionFactory.sinXcosY0(
                         1,
-                        p * PI / d.xwidth(),
+                        (p+1) * PI / d.xwidth(),
                         0,
                         (2.0 * q + 1) / 2 * PI / d.ywidth(),
                         0,
@@ -211,7 +247,7 @@ public final class UserSinePattern extends AbstractGpPatternPQ {
             case DDxDUy: {
                 return FunctionFactory.sinXsinY0(
                         1,
-                        p * PI / d.xwidth(),
+                        (p+1) * PI / d.xwidth(),
                         0,
                         (2.0 * q + 1) / 2 * PI / d.ywidth(),
                         0,
@@ -228,6 +264,7 @@ public final class UserSinePattern extends AbstractGpPatternPQ {
                         d
                 );
             }
+
         }
         return null;
     }
@@ -235,8 +272,8 @@ public final class UserSinePattern extends AbstractGpPatternPQ {
     @Override
     public NElement toElement() {
         NObjectElementBuilder h = super.toElement().toObject().get().builder();
-        h.add("xboundaries", NElementHelper.elem(xboundaries));
-        h.add("yboundaries", NElementHelper.elem(yboundaries));
+        h.add("x", NElementHelper.elem(xboundaries));
+        h.add("y", NElementHelper.elem(yboundaries));
         return h.build();
     }
 

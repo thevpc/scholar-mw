@@ -8,13 +8,13 @@ import net.thevpc.common.time.DatePart;
 import net.thevpc.common.time.TimeDuration;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NObjectElementBuilder;
+import net.thevpc.nuts.text.NMsg;
 
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 class PersistenceLockedCache<T> implements Callable<T> {
-    private static final Logger log = Logger.getLogger(PersistenceLockedCache.class.getName());
     private final PersistenceCache persistenceCache;
     private final ObjectCache objCache;
     private final String cacheItemName;
@@ -43,10 +43,10 @@ class PersistenceLockedCache<T> implements Callable<T> {
                 oldValue = (T) objCache.load(cacheItemName, null);
                 if (oldValue != null) {
                     c.stop();
-                    log.log(Level.WARNING, "[PersistenceCache] " + cacheItemName + " loaded from disk in " + c + " (" + objCache.getObjectCacheFile(cacheItemName).getFile() + ")");
+                    persistenceCache.log().log(NMsg.ofC("[PersistenceCache] " + cacheItemName + " loaded from disk in " + c + " (" + objCache.getObjectCacheFile(cacheItemName).getFile() + ")").asWarning());
                 }
             } catch (Exception e) {
-                log.log(Level.SEVERE, "[PersistenceCache] " + cacheItemName + " throws an error when reloaded from disk. Cache ignored (" + e + ")" + " (" + objCache.getObjectCacheFile(cacheItemName).getFile() + ")");
+                persistenceCache.log().log(NMsg.ofC("[PersistenceCache] " + cacheItemName + " throws an error when reloaded from disk. Cache ignored (" + e + ")" + " (" + objCache.getObjectCacheFile(cacheItemName).getFile() + ")").asFineFail(e));
                 //
             }
             if (!c.isStopped()) {
@@ -54,8 +54,8 @@ class PersistenceLockedCache<T> implements Callable<T> {
             }
             if (oldValue != null) {
                 if (timeThresholdMilli > 0 && c.getTime() > timeThresholdMilli * 1000000) {
-                    log.log(Level.SEVERE, "[PersistenceCache] " + cacheItemName + " loading took too long (" + c + " > "
-                            + TimeDuration.ofMillis(timeThresholdMilli).toString(DatePart.SECOND) + ")" + " (" + objCache.getObjectCacheFile(cacheItemName).getFile() + ")");
+                    persistenceCache.log().log(NMsg.ofC("[PersistenceCache] " + cacheItemName + " loading took too long (" + c + " > "
+                            + TimeDuration.ofMillis(timeThresholdMilli).toString(DatePart.SECOND) + ")" + " (" + objCache.getObjectCacheFile(cacheItemName).getFile() + ")").asFineFail());
                 }
             }
         }
@@ -75,7 +75,7 @@ class PersistenceLockedCache<T> implements Callable<T> {
                     Chronometer storeChrono = Chronometer.start();
                     objCache.store(cacheItemName, oldValue, storeMon);
                     storeChrono.stop();
-                    log.log(Level.SEVERE, "[PersistenceCache] " + cacheItemName + " evaluated in " + computeChrono + " ; stored to disk in " + storeChrono + " (" + objCache.getObjectCacheFile(cacheItemName).getFile() + ")");
+                    persistenceCache.log().log(NMsg.ofC("[PersistenceCache] " + cacheItemName + " evaluated in " + computeChrono + " ; stored to disk in " + storeChrono + " (" + objCache.getObjectCacheFile(cacheItemName).getFile() + ")").asFineFail());
                     NObjectElementBuilder stat = NElement.ofObjectBuilder();
                     stat.add(NElement.ofPair("name", NElement.ofString(cacheItemName)));
                     stat.add(NElement.ofPair("eval",
@@ -107,8 +107,8 @@ class PersistenceLockedCache<T> implements Callable<T> {
                                 )));
                         if (longLoadNDetected) {
                             stat.add(NElement.ofPair("slowLoading", NElement.ofBoolean(true)));
-                            log.log(Level.WARNING, "[PersistenceCache] " + cacheItemName + " reloading took too long (" + loadChrono + " > " +
-                                    TimeDuration.ofMillis(timeThresholdMilli).toString(DatePart.SECOND) + ")");
+                            persistenceCache.log().log(NMsg.ofC("[PersistenceCache] " + cacheItemName + " reloading took too long (" + loadChrono + " > " +
+                                    TimeDuration.ofMillis(timeThresholdMilli).toString(DatePart.SECOND) + ")").asWarning());
                         }
                     }
                     objCache.addStat(stat.build());

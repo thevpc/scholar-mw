@@ -755,7 +755,6 @@ public class MemMatrix<T> extends AbstractMatrix<T> implements Serializable {
             throw new ArithmeticException("Determinant Equals 0, Not Invertible.");
         }
 
-//            System.out.println("determinant is " + det);
         T dd = vs.inv(det);
         if (tms == 1) {
             T[][] tt = newArr(1, 1);
@@ -857,7 +856,6 @@ public class MemMatrix<T> extends AbstractMatrix<T> implements Serializable {
 
     @Override
     public Matrix<T> upperTriangle() {
-//        System.out.println(new java.util.Date() + " upperTriangle IN (" + primitiveElement3DS.length + ")");
         MemMatrix<T> o = newMemMatrix(this.getArrayCopy());
 
         T f1;
@@ -900,8 +898,6 @@ public class MemMatrix<T> extends AbstractMatrix<T> implements Serializable {
 
             }
         }
-
-//        System.out.println(new java.util.Date() + " upperTriangle OUT");
         return o;
     }
 

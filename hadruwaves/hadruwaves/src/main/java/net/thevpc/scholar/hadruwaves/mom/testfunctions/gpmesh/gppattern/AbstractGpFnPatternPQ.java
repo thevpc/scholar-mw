@@ -11,11 +11,13 @@ import net.thevpc.scholar.hadruwaves.ModeType;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 
+import java.util.Arrays;
+
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 16 oct. 2006 12:08:02
  */
-public abstract class AbstractGpFnPatternPQ extends RectMeshAttachGpPattern {
+public abstract class AbstractGpFnPatternPQ extends RectMeshAttachGpPattern implements Cloneable {
     private int max;
     private ModeType[] modes;
 
@@ -25,6 +27,17 @@ public abstract class AbstractGpFnPatternPQ extends RectMeshAttachGpPattern {
         this.modes = modes==null? ModeType.values():modes;
     }
 
+    @Override
+    public RectMeshAttachGpPattern copy() {
+        return clone();
+    }
+
+    @Override
+    protected AbstractGpFnPatternPQ clone() {
+        AbstractGpFnPatternPQ e = (AbstractGpFnPatternPQ) super.clone();
+        e.modes = modes==null? null:Arrays.copyOf(modes, modes.length);
+        return e;
+    }
 
     @Override
     public NElement toElement() {

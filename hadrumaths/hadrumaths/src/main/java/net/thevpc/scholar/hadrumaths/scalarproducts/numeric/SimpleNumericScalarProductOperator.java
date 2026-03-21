@@ -42,19 +42,9 @@ public class SimpleNumericScalarProductOperator extends AbstractScalarProductOpe
         switch (inter.getDimension()) {
             case 1: {
                 return integrator.integrateX(sf, inter.xmin(), inter.xmax());
-//                double v1 = integrator.integrateX(sf, inter.xmin(), inter.xmax());
-//                double v2 = integrator.integrateX(f0.toDD(), inter.xmin(), inter.xmax());
-//                System.out.println(Maths.rerr(v1,v2)+" -- "+v1+" -- "+v2);
-//                return v1;
             }
             case 2: {
                 return integrator.integrateXY(sf, inter.xmin(), inter.xmax(), inter.ymin(), inter.ymax());
-//                double v1 = integrator.integrateXY(sf, inter.xmin(), inter.xmax(), inter.ymin(), inter.ymax());
-//                double v2 = integrator.integrateXY(f0.toDD(), inter.xmin(), inter.xmax(), inter.ymin(), inter.ymax());
-//                if(v1!=v2) {
-//                    System.out.println(Maths.rerr(v1, v2) + " -- " + v1 + " -- " + v2);
-//                }
-//                return v1;
             }
             case 3: {
                 return integrator.integrateXYZ(sf, inter.xmin(), inter.xmax(), inter.ymin(), inter.ymax(), inter.zmin(), inter.zmax());
@@ -72,18 +62,6 @@ public class SimpleNumericScalarProductOperator extends AbstractScalarProductOpe
         return Objects.equals(integrator, that.integrator) &&
                 Objects.equals(simplifier, that.simplifier);
     }
-
-//    public String dump() {
-//        return getDumpStringHelper().toString();
-//    }
-//
-//    public Dumper getDumpStringHelper() {
-//        Dumper sb = new Dumper(getClass().getSimpleName());
-//        sb.add("integrator", integrator);
-//        sb.add("hermitian", isHermitian());
-//        sb.add("hash", Integer.toHexString(hashCode()).toUpperCase());
-//        return sb;
-//    }
 
     @Override
     public int hashCode() {

@@ -4,6 +4,7 @@ import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
 import net.thevpc.scholar.hadrumaths.util.ArrayUtils;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +34,12 @@ public class DefaultComplexValue implements DoubleToComplex, ComplexValue {
 
     @Override
     public NElement toElement() {
-        return NElement.ofNamedObject("DefaultComplexValue");
+        return NElement.ofObjectBuilder("ComplexValue")
+//                .add("real", NElementHelper.elem(real))
+//                .add("imag", NElementHelper.elem(imag))
+                .add("value", NElementHelper.elem(value))
+                .add("domain", NElementHelper.elem(domain))
+                .build();
     }
 
     public static DefaultComplexValue of(Complex value) {

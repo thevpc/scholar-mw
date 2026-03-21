@@ -21,7 +21,7 @@ public class HWMaterialTemplate implements HWProjectElement {
     private final WritableValue<HWProject> project = Props.of("project").valueOf(HWProject.class, null);
     private final WritableString name = Props.of("name").stringOf(null);
     private final WritableString description = Props.of("description").stringOf( null);
-    private final WritablePExpression<Double> permettivity = Props2.of("permettivity").exprDoubleOf(1.0);
+    private final WritablePExpression<Double> permittivity = Props2.of("permittivity").exprDoubleOf(1.0);
     private final WritablePExpression<Double> permeability = Props2.of("permeability").exprDoubleOf(1.0);
     private final WritablePExpression<Double> electricConductivity = Props2.of("electricConductivity").exprDoubleOf(0.0);
 
@@ -55,8 +55,8 @@ public class HWMaterialTemplate implements HWProjectElement {
         return description;
     }
 
-    public WritablePExpression<Double> permettivity() {
-        return permettivity;
+    public WritablePExpression<Double> permittivity() {
+        return permittivity;
     }
 
     public WritablePExpression<Double> permeability() {
@@ -72,7 +72,7 @@ public class HWMaterialTemplate implements HWProjectElement {
             material = Material.VACUUM;
         }
         name.set(material.getName());
-        permettivity.set(String.valueOf(material.getPermettivity()));
+        permittivity.set(String.valueOf(material.getPermittivity()));
         permeability.set(String.valueOf(material.getPermeability()));
         electricConductivity.set(String.valueOf(material.getElectricConductivity()));
     }
@@ -92,7 +92,7 @@ public class HWMaterialTemplate implements HWProjectElement {
         }
         return new Material(
                 n,
-                permettivity.eval(configuration),
+                permittivity.eval(configuration),
                 permeability.eval(configuration),
                 electricConductivity.eval(configuration)
         );
@@ -109,7 +109,7 @@ public class HWMaterialTemplate implements HWProjectElement {
                 NElement.ofObjectBuilder("Material")
                 .add("name",name.get())
                 .add("description",description.get())
-                .add("permettivity",permettivity.get())
+                .add("permittivity", permittivity.get())
                 .add("permeability",permeability.get())
                 .add("Conductivity",electricConductivity.get())
                 .build();

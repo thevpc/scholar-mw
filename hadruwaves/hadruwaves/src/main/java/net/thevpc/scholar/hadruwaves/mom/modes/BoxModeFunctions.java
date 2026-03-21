@@ -5,6 +5,11 @@ import net.thevpc.common.mon.*;
 import net.thevpc.nuts.elem.NArrayElementBuilder;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NObjectElementBuilder;
+import net.thevpc.nuts.elem.NPairElement;
+import net.thevpc.nuts.log.NLogger;
+import net.thevpc.nuts.text.NMsg;
+import net.thevpc.nuts.util.NNameFormat;
+import net.thevpc.nuts.util.NOptional;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.Vector;
 import net.thevpc.scholar.hadrumaths.cache.*;
@@ -91,6 +96,7 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
     private BoxModes modesDesc;
     protected ComplexMatrix lastScalarProductProductMatrix;
     protected Vector<Expr> lastScalarProductProductMatrixInput;
+    protected NLogger logger;
 
     private PropertyChangeListener cacheInvalidator = new PropertyChangeListener() {
         @Override
@@ -98,6 +104,44 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
             BoxModeFunctions.this.invalidateCache();
         }
     };
+
+    public NLogger log() {
+        return logger;
+    }
+
+    public BoxModeFunctions setLog(NLogger logger) {
+        this.logger = logger;
+        return this;
+    }
+
+    public static NOptional<ModeFunctions> parse(NElement element, Function<NElement,NElement> evaluator) {
+        if(element==null || element.isNull()){
+            return NOptional.<ModeFunctions>ofNamedEmpty("modes").withDefault(BoxModeFunctions::new);
+        }
+        if(element.isAnyObject()){
+            long modes =1024;
+            for (NElement a : element.asObject().get().children()) {
+                if (a.isNamedPair()) {
+                    NPairElement p = a.asNamedPair().get();
+                    switch (NNameFormat.LOWER_KEBAB_CASE.format(p.key().asStringValue().orElse(""))) {
+                        case "count": {
+                            NElement pv = p.value();
+                            if(evaluator!=null){
+                                pv=evaluator.apply(pv);
+                            }
+                            modes = pv.asLongValue().orElse(modes);
+                            if (modes <= 0) {
+                                modes = 1024;
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            return NOptional.of(new BoxModeFunctions().setSize((int) modes));
+        }
+        return NOptional.<ModeFunctions>ofError(NMsg.ofC("invalid modes")).withDefault(()->new BoxModeFunctions().setSize(1024));
+    }
 
     public BoxModeFunctions() {
         pcs = new PropertyChangeSupport(this);
@@ -256,7 +300,6 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
     protected ModeInfo[] getIndexesImpl(ProgressMonitor monitor0) {
         monitor0 = createProgressMonitorNotNull(monitor0, "indexes");
         final int max = getSize();
-        //System.out.println("lookup for "+max+" fn modes for "+this);
         Chronometer chrono = Chronometer.start();
         final ArrayList<ModeInfo> next = new ArrayList<ModeInfo>(max);
         final Iterator<ModeIndex> iterator = getModeIterator().iterator(this);
@@ -289,7 +332,6 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
                 }
             }
         });
-        //System.out.println("found " + next.size()+" modes in "+chrono);
         return next.toArray(new ModeInfo[0]);
     }
 
@@ -430,7 +472,6 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
         ys.inv();
         Complex z = ys.toComplex();
         if (z.isNaN()) {
-            System.out.println("Zmod(" + i + ") is NaN.");
         }
         return z;
     }
@@ -728,7 +769,6 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
         if (modeIndexFilters != null) {
             for (ModeIndexFilter modeIndexFilter : modeIndexFilters) {
                 if (!modeIndexFilter.acceptModeIndex(o)) {
-                    System.out.println("modeIndexFilter rejected " + o);
                     return false;
                 }
             }
@@ -751,7 +791,6 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
 
     protected boolean doAcceptModeInfo(ModeInfo index) {
         if (index.fn.isZero()) {
-            //System.out.println(index+" rejected : zero");
             return false;
         }
         Axis axisIndep = getHintInvariantAxis();
@@ -760,7 +799,6 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
             boolean doAddIt = true;
             if (axisIndep != null) {
                 if (!index.fn.isInvariant(axisIndep)) {
-                    System.out.println(index + " rejected : not invariant " + axisIndep);
                     return false;
                 }
             }
@@ -768,7 +806,6 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
                 switch (axisSymm) {
                     case X: {
                         if (!isSymmetric(index.fn, axisSymm)) {
-                            System.out.println(index + " rejected : not symm " + axisSymm);
                             return false;
                         }
                     }
@@ -777,7 +814,6 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
             if (doAddIt && modeInfoFilters != null) {
                 for (ModeInfoFilter fil : modeInfoFilters) {
                     if (!fil.acceptModeInfo(index)) {
-                        System.out.println(index + " rejected : invalid for " + fil);
                         return false;
                     }
 
@@ -881,7 +917,7 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
                 monitor.start("eval modes");
 
                 if (objectCache == null) {
-                    System.out.println("Are you sure you want to load modes with no cache for " + this);
+//                    log().log(NMsg.ofC("Are you sure you want to load modes with no cache for " + this));
                 }
                 rebuildObj();
                 /*
@@ -1490,7 +1526,9 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
                 .add("modeFunction", toElement(false, false))
                 .add("testFunction", NElementHelper.elem(testFunction.simplify()))
                 .build();
-        PersistenceCache persistenceCache = PersistenceCacheBuilder.of().name("SingleTestModeScalarProducts").monitorFactory(getEnv().getMonitorFactory()).build();
+        PersistenceCache persistenceCache = PersistenceCacheBuilder.of()
+                .setLogger(logger)
+                .name("SingleTestModeScalarProducts").monitorFactory(getEnv().getMonitorFactory()).build();
         return persistenceCache.getObjectCache(CacheKey.of(node), true);
     }
 
@@ -1503,7 +1541,9 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
                 .add("modeFunction", toElement(false, false))
                 .add("testFunctions", testFunction2.build())
                 .build();
-        PersistenceCache persistenceCache = PersistenceCacheBuilder.of().name("MultipleTestModeScalarProducts").monitorFactory(getEnv().getMonitorFactory()).build();
+        PersistenceCache persistenceCache = PersistenceCacheBuilder.of()
+                .setLogger(logger)
+                .name("MultipleTestModeScalarProducts").monitorFactory(getEnv().getMonitorFactory()).build();
         return persistenceCache.getObjectCache(CacheKey.of(node), true);
     }
 

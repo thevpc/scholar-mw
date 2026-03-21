@@ -27,29 +27,6 @@ import static net.thevpc.scholar.hadrumaths.Maths.invokeMonitoredAction;
 public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
     public static final ElectricFieldSerialEvaluator INSTANCE = new ElectricFieldSerialEvaluator();
 
-//    public VDiscrete evaluate(MWStructure structure, double[] x, double[] y, double[] z, ProgressMonitor monitor) {
-//        VDiscrete v2=null;
-//        MomStructure str=(MomStructure) structure;
-//        str.testFunctions().arr();
-//        Matrix Testcoeff = str.matrixX().monitor(ProgressMonitors.none()).computeMatrix();
-//        Testcoeff.getColumn(0).toArray();
-//        ModeInfo[] indexes = str.getModes();
-//        ModeInfo[] evan = str.modeFunctions().getVanishingModes();
-//        ModeInfo[] prop = str.modeFunctions().getPropagatingModes();
-//        ScalarProductCache sp = str.getTestModeScalarProducts(ProgressMonitors.none());
-//        for (int i = 0; i < 4; i++) {
-//            Chronometer cr1=chrono();
-//            VDiscrete v1=evaluate__01(structure, x, y, z, ProgressMonitors.none());
-//            cr1.stop();
-//            Chronometer cr2=chrono();
-//            v2=evaluate__02(structure, x, y, z, ProgressMonitors.none());
-//            cr2.stop();
-//            System.out.println(cr1+" vs "+cr2);
-//        }
-//        monitor.setProgress(1,null);
-//        return v2;
-//    }
-
     public VDiscrete evaluate(MWStructure structure, final double[] x, final double[] y, final double[] z, ProgressMonitor monitor) {
         final MomStructure str = (MomStructure) structure;
         return Maths.invokeMonitoredAction(monitor, getClass().getSimpleName(), new MonitoredAction<VDiscrete>() {
@@ -218,8 +195,6 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
                             xvals = mode.fn.getComponent(Axis.X).toDC().evalComplex(x, y);
                             yvals = mode.fn.getComponent(Axis.Y).toDC().evalComplex(x, y);
                             monitor.setProgress(i, indexes.length, monText);
-//            monitor.setProgress((1.0 * i / (indexes.length)));
-//            System.out.println("progress = " + monitor.getProgressValue());
                             for (int zi = 0; zi < z.length; zi++) {
                                 Z = z[zi];
                                 zmnGammaZ = /*Complex.ONE.*/mode.impedance.impedanceValue().mul(exp((Z < 0 ? mode.firstBoxSpaceGamma : mode.secondBoxSpaceGamma).mul(-Z)));
@@ -240,7 +215,6 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
                             mode = finalProp[i];
                             xvals = mode.fn.getComponent(Axis.X).toDC().evalComplex(x, y);
                             yvals = mode.fn.getComponent(Axis.Y).toDC().evalComplex(x, y);
-//            ComputationMonitorUtils.setProgress(monitor,q,n,gfps.length,max);
                             monitor.setProgress((1.0 * (i + finalEvan.length) / (indexes.length)), monText);
                             for (int zi = 0; zi < z.length; zi++) {
                                 Z = z[zi];

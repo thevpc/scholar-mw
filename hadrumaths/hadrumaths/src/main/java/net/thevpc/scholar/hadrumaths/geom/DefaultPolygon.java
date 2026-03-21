@@ -1,8 +1,11 @@
 package net.thevpc.scholar.hadrumaths.geom;
 
+import net.thevpc.nuts.elem.NArrayElementBuilder;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.FormatFactory;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.awt.geom.Path2D;
 import java.util.*;
@@ -51,12 +54,24 @@ public class DefaultPolygon extends AbstractGeometry implements Cloneable, Polyg
             }
         }
         domain = Domain.ofBounds(minx, maxx, miny, maxy);
-        rect=toSurface().isRectangular();
+        rect = toSurface().isRectangular();
     }
 
     @Override
     public NElement toElement() {
-        return NElement.ofNamedObject("Polygon");
+        NObjectElementBuilder b = NElement.ofObjectBuilder("Polygon");
+        b.add("domain", domain.toElement());
+        b.add("color", color);
+        NArrayElementBuilder arr = NElement.ofArrayBuilder();
+        for (int i = 0; i < xpoints.length; i++) {
+            arr.add(NElement.ofUplet(
+                    NElement.ofDouble(xpoints[i]),
+                    NElement.ofDouble(ypoints[i])
+            ));
+        }
+        b.add("points", arr.build());
+        b.addIf("properties", NElementHelper.elem(getProperties()), NElementHelper.blankPredicate());
+        return b.build();
     }
 
 //    public Polygon(Area a) {
@@ -78,7 +93,8 @@ public class DefaultPolygon extends AbstractGeometry implements Cloneable, Polyg
 //                        }
 //                        first = false;
 //                    } else {
-////                        throw new IllegalArgumentException("Not supported");
+
+    /// /                        throw new IllegalArgumentException("Not supported");
 //                    }
 //                    break;
 //                case PathIterator.SEG_LINETO:
@@ -112,7 +128,6 @@ public class DefaultPolygon extends AbstractGeometry implements Cloneable, Polyg
 //        domain = Domain.forBounds(xm.getMin(), xm.getMax(), ym.getMax(), ym.getMax());
 //
 //    }
-
     public DefaultPolygon(double[] x, double[] y) {
         this(x, y, 1);
     }
@@ -150,7 +165,7 @@ public class DefaultPolygon extends AbstractGeometry implements Cloneable, Polyg
             }
         }
         domain = Domain.ofBounds(minx, maxx, miny, maxy);
-        rect=toSurface().isRectangular();
+        rect = toSurface().isRectangular();
     }
 
     public Polygon shift(double x, double y) {

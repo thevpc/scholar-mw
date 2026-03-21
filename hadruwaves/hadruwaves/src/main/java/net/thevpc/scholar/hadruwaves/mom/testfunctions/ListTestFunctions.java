@@ -248,4 +248,7 @@ public class ListTestFunctions extends TestFunctionsBase implements Cloneable {
         }
         return ss.toArray(new Geometry[0]);
     }
+    public boolean isEmpty() {
+        return list.isEmpty();
+    }
 }

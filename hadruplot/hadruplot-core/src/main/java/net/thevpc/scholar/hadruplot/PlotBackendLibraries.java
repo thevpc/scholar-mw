@@ -1,14 +1,15 @@
 package net.thevpc.scholar.hadruplot;
 
+import net.thevpc.nuts.reflect.NReflectUtils;
+
 import java.util.*;
 
 public class PlotBackendLibraries {
     private static List<PlotLibrary> all = new ArrayList<>();
 
     static {
-        ServiceLoader<PlotLibrary> curr=ServiceLoader.load(PlotLibrary.class);
-        for (PlotLibrary plotLibrary : curr) {
-            addLibrary(plotLibrary);
+        for (PlotLibrary lib : NReflectUtils.listServices(PlotLibrary.class,PlotBackendLibraries.class)) {
+            addLibrary(lib);
         }
     }
 
@@ -31,13 +32,14 @@ public class PlotBackendLibraries {
         }
     }
 
-    public static void addLibrary(PlotLibrary a) {
+    public static boolean addLibrary(PlotLibrary a) {
         for (PlotLibrary plotLibrary : all) {
             if (plotLibrary.getName().equals(a.getName())) {
-                throw new IllegalArgumentException("Already registered ");
+                return false;
             }
         }
         all.add(a);
+        return true;
     }
 
     public static boolean isSupported(PlotType plotType) {

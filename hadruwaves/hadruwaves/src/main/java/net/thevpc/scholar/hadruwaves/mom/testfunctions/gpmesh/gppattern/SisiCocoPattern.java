@@ -10,7 +10,7 @@ import net.thevpc.scholar.hadruwaves.mom.MomStructure;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 15 mai 2007 21:42:36
  */
-public final class SisiCocoPattern extends AbstractGpPatternPQ {
+public final class SisiCocoPattern extends AbstractGpPatternPQ  implements Cloneable{
 
     public SisiCocoPattern(int complexity) {
         super(complexity);

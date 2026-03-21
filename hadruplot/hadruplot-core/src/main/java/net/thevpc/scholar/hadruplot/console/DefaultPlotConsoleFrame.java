@@ -406,21 +406,12 @@ public class DefaultPlotConsoleFrame extends JFrame implements PlotConsoleFrame{
         }else{
             h.setVisible(true);
             if(!h.setIcon(false)){
-                System.out.println("Cant deiconify!");
             }
             h.moveToFront();
             h.setSelected(true);
             h.getFrame().pack();
             h.getFrame().requestFocus(true);
         }
-
-//        System.out.println(h.getFrame().getTitle()+" :: "
-//                + (h.getFrame().isIcon() ? "icon;" : "")
-//                + (h.getFrame().isClosed() ? "closed;" : "")
-//                + (h.getFrame().isSelected() ? "selected;" : "")
-//                + (h.getFrame().isMaximum() ? "maximum;" : "")
-//                + (h.getFrame().isVisible() ? "visible;" : "")
-//        );
     }
     public void setGlobalInfo(String title) {
         globalLabel.setText(title);

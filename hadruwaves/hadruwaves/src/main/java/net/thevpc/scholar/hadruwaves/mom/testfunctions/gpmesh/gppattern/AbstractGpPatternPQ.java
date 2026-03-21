@@ -14,7 +14,7 @@ import net.thevpc.scholar.hadruwaves.mom.MomStructure;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 16 oct. 2006 12:08:02
  */
-public abstract class AbstractGpPatternPQ extends RectMeshAttachGpPattern{
+public abstract class AbstractGpPatternPQ extends RectMeshAttachGpPattern implements Cloneable {
     private int max;
 
     protected AbstractGpPatternPQ(int complexity) {

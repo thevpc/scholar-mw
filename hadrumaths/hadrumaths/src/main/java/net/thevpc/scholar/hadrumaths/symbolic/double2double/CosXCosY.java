@@ -22,10 +22,6 @@ public final class CosXCosY extends AbstractDoubleToDouble {
     private final double d;
     private final int eagerHashCode;
 
-    public static void main(String[] args) {
-        System.out.println("net.thevpc.scholar.hadrumaths.symbolic.double2double.Linear".hashCode());
-    }
-
     public CosXCosY(@DoubleValidator(NaN = false) double amp,
                     @DoubleValidator(NaN = false) double a,
                     @DoubleValidator(NaN = false) double b,

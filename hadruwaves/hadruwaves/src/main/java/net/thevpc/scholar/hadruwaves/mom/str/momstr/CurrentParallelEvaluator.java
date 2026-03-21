@@ -71,8 +71,6 @@ public class CurrentParallelEvaluator implements CurrentEvaluator {
                     xvals = mode.fn.getComponent(Axis.X).toDC().evalComplex(x, y);
                     yvals = mode.fn.getComponent(Axis.Y).toDC().evalComplex(x, y);
                     ProgressMonitors.setProgress(monitor, i, indexes_length, getClass().getSimpleName());
-//            monitor.setProgress((1.0 * i / (indexes.length)));
-//            System.out.println("progress = " + monitor.getProgressValue());
                     zmnGammaZ = /*Complex.ONE.*/mode.impedance.impedanceValue();
                     ComplexVector spc = sp.getColumn(indexIndex);
                     for (int yi = 0; yi < y_length; yi++) {
@@ -91,7 +89,6 @@ public class CurrentParallelEvaluator implements CurrentEvaluator {
                     mode = prop[i];
                     xvals = mode.fn.getComponent(Axis.X).toDC().evalComplex(x, y);
                     yvals = mode.fn.getComponent(Axis.Y).toDC().evalComplex(x, y);
-//            ComputationMonitorUtils.setProgress(monitor,q,n,gfps.length,max);
                     monitor.setProgress((1.0 * (i + evan_length) / indexes_length), getClass().getSimpleName());
                     for (int xi = 0; xi < x_length; xi++) {
                         for (int yi = 0; yi < y_length; yi++) {
@@ -108,9 +105,6 @@ public class CurrentParallelEvaluator implements CurrentEvaluator {
                 );
             }
         });
-
-//        emonitor.setProgress(0, "Start {1}", getClass().getSimpleName());
-//        this.invalidateCache();
         }
 
     @Override

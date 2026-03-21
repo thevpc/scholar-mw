@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.util;
 
+import net.thevpc.nuts.io.NErr;
 import net.thevpc.scholar.hadrumaths.Maths;
 
 public class DevUtils {
@@ -12,7 +13,7 @@ public class DevUtils {
 
     public static void log(String r) {
         if (Maths.Config.isDevelopmentMode()) {
-            System.out.println(r);
+            NErr.println(r);
         }
     }
 }

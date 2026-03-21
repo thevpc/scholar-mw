@@ -4,6 +4,7 @@ import net.thevpc.common.mon.ProgressMonitors;
 
 import net.thevpc.nuts.elem.NElement;
 
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.scholar.hadrumaths.ComplexMatrix;
 import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.scholar.hadrumaths.Maths;
@@ -41,7 +42,7 @@ public class ZinSerialEvaluator implements ZinEvaluator {
                 }
             }
         } catch (Exception e) {
-            str.getLog().error("Error Zin : " + e);
+            str.log().log(NMsg.ofC("Error Zin : " + e).asError(e));
             if(aInv==null){
                 str.wdebug("resolveZin : matrix A is singular ", e, A_);
             }else if(ZinPaire==null){
@@ -52,8 +53,6 @@ public class ZinSerialEvaluator implements ZinEvaluator {
         boolean useZParity =str.getProjectType()== ProjectType.WAVE_GUIDE;
         //TODO pourquoi paire ?
         ComplexMatrix cMatrix1 = useZParity ?ZinPaire.div(2):ZinPaire;
-//        System.out.println("["+str.getName()+ "] Zin = " + cMatrix1);
-//        System.out.println(str.getClass().getSimpleName()+":w="+str.getWidth()+":f="+str.getFrequency()+":l="+str.getLambda()+":w/l="+(str.getWidth()/str.getLambda()) +":zin"+ cMatrix1);
         return cMatrix1;
     }
     @Override

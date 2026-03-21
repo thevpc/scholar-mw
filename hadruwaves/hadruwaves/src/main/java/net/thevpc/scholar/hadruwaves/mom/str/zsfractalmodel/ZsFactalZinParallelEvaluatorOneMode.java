@@ -3,6 +3,7 @@ package net.thevpc.scholar.hadruwaves.mom.str.zsfractalmodel;
 
 import net.thevpc.nuts.elem.NElement;
 
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.scholar.hadrumaths.ComplexMatrix;
 import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.scholar.hadrumaths.Maths;
@@ -26,7 +27,7 @@ public class ZsFactalZinParallelEvaluatorOneMode implements ZinEvaluator {
 //            CMatrix ZinPaire = a11.substract(a.multiply(b.inv()).multiply(a.transpose()));
             ZinCond = ZinPaire.div(2);
         } catch (Exception e) {
-            str.getLog().error("Error Zin : " + e);
+            str.log().log(NMsg.ofC("Error Zin : " + e).asError(e));
             str.wdebug("resolveZin", e);
             return Maths.NaNMatrix(1);
         }

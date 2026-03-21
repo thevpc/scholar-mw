@@ -776,7 +776,6 @@ class AnyDoubleToMatrix extends Any implements DoubleToMatrix {
 
     @Override
     public String getComponentTitle(int row, int col) {
-//        System.out.println(this+" : getComponentTitle("+col+", "+row+")");
         return object.toDM().getComponentTitle(row, col);
     }
 

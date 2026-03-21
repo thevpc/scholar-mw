@@ -112,7 +112,7 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
 //            AreaComponent.showDialog(zone.getGeometry().scale(400,400));
 //        }
         for (MeshZone zone : allZones) {
-            DoubleToVector[] allGpFunctions = currentPattern.createFunctions(globalDomain, zone, monitor, currentStructure);
+            DoubleToVector[] allGpFunctions = currentPattern.createFunctions(globalDomain, zone, monitor, currentStructure,log());
             int goodCount = allGpFunctions.length;
             partCounter++;
             switch (getSymmetry()) {
@@ -122,7 +122,6 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
                         if (fct == null) {
 
                         }else if(fct.isZero()) {
-                            System.out.println("Ignored null or zero");
                         }else  {
                             if (invariance == null || fct.isInvariant(invariance)) {
                                 fct= fct.setProperty("Cell", partCounter).toDV();
@@ -205,9 +204,6 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
                     break;
                 }
                 case SUM_Y_SYMMETRY: {
-//                    if(("("+0+","+3+")").equals(zone.getProperty("Attach For"))){
-//                        System.out.println("goodCount = " + goodCount);
-//                    }
                     if (zone.getDomain().ymin() < globalDomain.getCenterY()) {
                         for (int i = 0; i < goodCount; i++) {
                             DoubleToVector c = allGpFunctions[i];
@@ -309,7 +305,7 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
     }
 
     public void setPattern(GpPattern pattern) {
-        this.pattern = pattern == null ? GpPatternFactory.ECHELON : pattern;
+        this.pattern = (pattern == null ? GpPatternFactory.ECHELON : pattern);
         invalidateCache();
     }
 
@@ -321,14 +317,13 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
     @Override
     public NElement toElement() {
         NObjectElementBuilder h = super.toElement().toObject().get().builder();
-        arr();
+//        arr();
         for (CircuitType circuitType : CircuitType.values()) {
             h.add(circuitType.toString(), NElementHelper.elem(polygons[circuitType.ordinal()]));
         }
         h.add("symmetry", NElementHelper.elem(getSymmetry()));
         h.add("pattern", NElementHelper.elem(getPattern()));
         h.add("invariance", NElementHelper.elem(getInvariance()));
-//        System.out.println("meshAlgo = " + meshAlgo.dump());
         h.add("meshAlgo", NElementHelper.elem(meshAlgo));
         return h.build();
     }

@@ -68,7 +68,8 @@ public class DefaultGeometryList extends AbstractGeometry implements GeometryLis
         return NElement.ofObjectBuilder("geometries").addAll(
                 NElement.ofPair("domain", NElementHelper.elem(domain)),
                 NElement.ofPair("polygons", NElementHelper.elem(list)),
-                NElement.ofPair("attributes", NElementHelper.elem(attributes))
+                NElement.ofPair("attributes", NElementHelper.elem(attributes)),
+                NElement.ofPair("properties", NElementHelper.elem(getProperties()))
         ).build();
     }
 

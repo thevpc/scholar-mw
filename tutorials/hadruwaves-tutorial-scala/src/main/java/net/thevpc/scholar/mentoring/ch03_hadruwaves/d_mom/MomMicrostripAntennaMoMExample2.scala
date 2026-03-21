@@ -19,7 +19,7 @@ object MomMicrostripAntennaMoMExample2 {
     var w = 0.31 * MM
     var W = 1 * MM
     var h = 1 * MM //substrate thikness
-    var espr = 2.2; //substrate permettivity
+    var espr = 2.2; //substrate permittivity
     var fr = 4 * GHZ
     var g = elist()
     var k = param("k")

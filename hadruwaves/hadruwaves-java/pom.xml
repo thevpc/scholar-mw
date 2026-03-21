@@ -26,17 +26,17 @@
     <dependencies>
         <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadrumaths</artifactId><version>${scholar-version}</version></dependency>
         <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruwaves</artifactId><version>${scholar-version}</version></dependency>
-        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-delegation-rt</artifactId><version>${manifold-version}</version></dependency>
-        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-props-rt</artifactId><version>${manifold-version}</version></dependency>
-        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-graphql-rt</artifactId><version>${manifold-version}</version></dependency>
-        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-xml-rt</artifactId><version>${manifold-version}</version></dependency>
-        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-yaml-rt</artifactId><version>${manifold-version}</version></dependency>
-        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-csv-rt</artifactId><version>${manifold-version}</version></dependency>
-        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-js-rt</artifactId><version>${manifold-version}</version></dependency>
-        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-collections</artifactId><version>${manifold-version}</version></dependency>
-        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-science</artifactId><version>${manifold-version}</version></dependency>
-        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-templates-rt</artifactId><version>${manifold-version}</version></dependency>
-        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-tuple-rt</artifactId><version>${manifold-version}</version></dependency>
+<!--        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-delegation-rt</artifactId><version>${manifold-version}</version></dependency>-->
+<!--        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-props-rt</artifactId><version>${manifold-version}</version></dependency>-->
+<!--        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-graphql-rt</artifactId><version>${manifold-version}</version></dependency>-->
+<!--        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-xml-rt</artifactId><version>${manifold-version}</version></dependency>-->
+<!--        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-yaml-rt</artifactId><version>${manifold-version}</version></dependency>-->
+<!--        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-csv-rt</artifactId><version>${manifold-version}</version></dependency>-->
+<!--        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-js-rt</artifactId><version>${manifold-version}</version></dependency>-->
+<!--        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-collections</artifactId><version>${manifold-version}</version></dependency>-->
+<!--        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-science</artifactId><version>${manifold-version}</version></dependency>-->
+<!--        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-templates-rt</artifactId><version>${manifold-version}</version></dependency>-->
+<!--        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-tuple-rt</artifactId><version>${manifold-version}</version></dependency>-->
     </dependencies>
     <build>
         <plugins>

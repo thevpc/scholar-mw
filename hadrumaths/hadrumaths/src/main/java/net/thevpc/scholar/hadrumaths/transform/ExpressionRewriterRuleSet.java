@@ -9,6 +9,7 @@ package net.thevpc.scholar.hadrumaths.transform;
 import net.thevpc.common.collections.ClassMap;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NObjectElementBuilder;
+import net.thevpc.nuts.io.NErr;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.FormatFactory;
 import net.thevpc.scholar.hadrumaths.Maths;
@@ -145,12 +146,9 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
             String _debug_msg = "";
 
             if (debugExpressionRewrite) {
-//                    if (ThreadStack.depth() > 200) {
                 _debug = true;
                 _debug_msg = DumpManager.getStackDepthWhites() + getName() + "(" + rule.getClass().getSimpleName() + ")  :  " + curr.getClass().getSimpleName() + "[@" + System.identityHashCode(curr) + "]" + " = " + Maths.dump(curr);
-//                    msg = DumpManager.getStackDepthWhites() + name + " :: " + rule.getClass().getSimpleName() + "  :  " + System.identityHashCode(curr) + "  :  " + curr.getClass().getSimpleName() + " :: " + curr;
-                System.out.println("_" + _debug_msg);
-//                    }
+                doDebug(_debug_msg);
             }
             RewriteResult nextResult = rule.rewrite(curr, this, targetExprType);
             if(debugExpressionRewrite) {
@@ -164,9 +162,6 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
                     }
                 }
             }
-//                if(next!=null && !next.getClass().equals(curr.getClass())){
-//                    System.out.println("???");
-//                }
             if (nextResult != null) {
                 if (nextResult.isUnmodified()) {//next next != null && !next.equals(curr)
 //                    DEBUG_REWRITE_FAIL++;
@@ -187,14 +182,14 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
                             if (s1.equals(s2)) {
                                 if (curr.getClass().getSimpleName().equals(next.getClass().getSimpleName())) {
                                     if (curr.equals(next)) {
-                                        System.out.println("<" + _debug_msg + " : Who come?");
+                                        doDebug("<" + _debug_msg + " : Who come?");
                                         rule.rewrite(curr, this, targetExprType);
                                     } else {
 //                                next.equals(curr)
-                                        System.out.println("<" + _debug_msg + s1 + " transformed to same class with different content");
+                                        doDebug("<" + _debug_msg + s1 + " transformed to same class with different content");
                                     }
                                 } else {
-                                    System.out.println("<" + _debug_msg + s1 + " transformed from " + curr.getClass().getSimpleName() + " to " + (next.getClass().getSimpleName()));
+                                    doDebug("<" + _debug_msg + s1 + " transformed from " + curr.getClass().getSimpleName() + " to " + (next.getClass().getSimpleName()));
                                 }
                             }
                         }
@@ -207,7 +202,7 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
                     modified = true;
                     if (debugExpressionRewrite) {
                         if (_debug) {
-                            System.out.println("<" + _debug_msg + " [RESULT] ==> " + next);
+                            doDebug("<" + _debug_msg + " [RESULT] ==> " + next);
                         }
                     }
                     break;
@@ -220,7 +215,7 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
                 }
                 if (debugExpressionRewrite) {
                     if (_debug) {
-                        System.out.println("<" + _debug_msg + " [RESULT] ==> NO CHANGE!!");
+                        doDebug("<" + _debug_msg + " [RESULT] ==> NO CHANGE!!");
                     }
                 }
             }
@@ -239,6 +234,10 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
             return RewriteResult.bestEffort(curr);
         }
         return RewriteResult.newVal(curr);
+    }
+
+    private void doDebug(String debugMsg) {
+        NErr.println("ExpressionRewriterRuleSet:: rewriteImpl " + debugMsg);
     }
 
     public int getMaxIterations() {

@@ -31,7 +31,6 @@ import java.io.PrintStream;
  */
 public class ZsFactalMatrixAWaveguideParallelEvaluator2 implements MatrixAEvaluator {
     public static void storeString(String content, File file) throws IOException {
-        System.out.println("file = " + file.getCanonicalPath());
         PrintStream os = null;
         try {
             os = new PrintStream(new FileOutputStream(file));
@@ -91,7 +90,6 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator2 implements MatrixAEvalua
                             for (Yoperator opValue : opValues) {
                                 Complex[][] op = opValue == null ? null : opValue.getMatrix().getArray();
                                 if (op != null) {//op==null si k==1
-                                    //System.out.println("op = " + opValue.getMatrix());
                                     ModeInfo[] n_propa = opValue.getFn().getPropagatingModes();
                                     ComplexMatrix spc2 = Maths.scalarProductCache(g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitors.none());
                                     for (int p = 0; p < g.length; p++) {
@@ -234,14 +232,12 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator2 implements MatrixAEvalua
 //                } catch (IOException e) {
 //                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 //                }
-//                System.out.println("op : " + DumpStringUtils.dump(str));
                         ComplexMatrix cMatrix;
                         if (i > 0 && str2.getHintsManager().isHint(MomStructureFractalZop.HINT_SUB_MODEL_EQUIVALENT)) {
                             cMatrix = ops[0].getMatrix();
                         } else {
                             cMatrix = str.self().evalMatrix().inv();
                         }
-//                System.out.println("op"+(i+1)+" = " + cMatrix);
                         ops[i] = new Yoperator(cMatrix, str.modeFunctions());
                         monitor.setProgress((i + 1.0) / transform.length, getClass().getSimpleName());
                     }

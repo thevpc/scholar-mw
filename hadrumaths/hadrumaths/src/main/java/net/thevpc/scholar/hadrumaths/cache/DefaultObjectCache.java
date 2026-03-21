@@ -3,7 +3,7 @@ package net.thevpc.scholar.hadrumaths.cache;
 import net.thevpc.common.mon.*;
 
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElementParser;
+import net.thevpc.nuts.elem.NElementReader;
 import net.thevpc.scholar.hadrumaths.BooleanMarker;
 import net.thevpc.scholar.hadrumaths.BooleanRef;
 import net.thevpc.scholar.hadrumaths.Maths;
@@ -183,7 +183,7 @@ public class DefaultObjectCache implements ObjectCache {
             try {
                 DumpCacheFile sf = getFile("statistics" + CACHE_LOG_SUFFIX);
                 ps = new PrintStream(sf.getFile().getOutputStream(true));
-                ps.println(item.toString(true));
+                ps.println(item.toString());
                 sf.touch();
             } finally {
                 if (ps != null) {
@@ -230,7 +230,7 @@ public class DefaultObjectCache implements ObjectCache {
                 while ((line = in.readLine()) != null) {
                     String trimmed = line.trim();
                     if (trimmed.length() > 0) {
-                        set.add(NElementParser.ofTson().parse(trimmed));
+                        set.add(NElementReader.ofTson().read(trimmed));
                     }
                 }
             }
@@ -261,7 +261,7 @@ public class DefaultObjectCache implements ObjectCache {
             while ((line = in.readLine()) != null) {
                 line = line.trim();
                 if (line.isEmpty()) {
-                    NElement e = NElementParser.ofTson().parse(line);
+                    NElement e = NElementReader.ofTson().read(line);
                     count++;
                     value += e.toObject().get().get("eval").get().toObject().get().get("nanos").get().asLongValue().get();
                 }

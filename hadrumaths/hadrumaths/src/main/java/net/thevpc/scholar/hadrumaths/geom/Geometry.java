@@ -5,6 +5,7 @@
  */
 package net.thevpc.scholar.hadrumaths.geom;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.HSerializable;
@@ -51,7 +52,7 @@ public interface Geometry extends HSerializable {
 
     boolean containsDomain(Domain geometry);
 
-    Map<String, Object> getProperties();
+    Map<String, NElement> getProperties();
 
     boolean containsGeometry(Geometry geometry);
 

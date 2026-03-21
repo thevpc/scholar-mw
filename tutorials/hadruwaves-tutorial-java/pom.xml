@@ -5,23 +5,25 @@
     <version>3.3.0</version>
     <url>https://github.com/thevpc/scholar-mw</url>
     <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
         <scholar-version>3.3.0</scholar-version>
         <manifold-version>2024.1.27</manifold-version>
     </properties>
     <dependencies>
         <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruwaves-java</artifactId><version>${scholar-version}</version></dependency>
         <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruplot-laf</artifactId><version>3.3.0</version></dependency>
-        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-delegation-rt</artifactId><version>${manifold-version}</version></dependency>
-        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-props-rt</artifactId><version>${manifold-version}</version></dependency>
-        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-graphql-rt</artifactId><version>${manifold-version}</version></dependency>
-        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-xml-rt</artifactId><version>${manifold-version}</version></dependency>
-        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-yaml-rt</artifactId><version>${manifold-version}</version></dependency>
-        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-csv-rt</artifactId><version>${manifold-version}</version></dependency>
-        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-js-rt</artifactId><version>${manifold-version}</version></dependency>
-        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-collections</artifactId><version>${manifold-version}</version></dependency>
-        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-science</artifactId><version>${manifold-version}</version></dependency>
-        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-templates-rt</artifactId><version>${manifold-version}</version></dependency>
-        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-tuple-rt</artifactId><version>${manifold-version}</version></dependency>
+<!--        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-delegation-rt</artifactId><version>${manifold-version}</version></dependency>-->
+<!--        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-props-rt</artifactId><version>${manifold-version}</version></dependency>-->
+<!--        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-graphql-rt</artifactId><version>${manifold-version}</version></dependency>-->
+<!--        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-xml-rt</artifactId><version>${manifold-version}</version></dependency>-->
+<!--        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-yaml-rt</artifactId><version>${manifold-version}</version></dependency>-->
+<!--        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-csv-rt</artifactId><version>${manifold-version}</version></dependency>-->
+<!--        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-js-rt</artifactId><version>${manifold-version}</version></dependency>-->
+<!--        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-collections</artifactId><version>${manifold-version}</version></dependency>-->
+<!--        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-science</artifactId><version>${manifold-version}</version></dependency>-->
+<!--        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-templates-rt</artifactId><version>${manifold-version}</version></dependency>-->
+<!--        <dependency><groupId>systems.manifold</groupId><artifactId>manifold-tuple-rt</artifactId><version>${manifold-version}</version></dependency>-->
     </dependencies>
     <repositories>
         <repository><id>thevpc</id><url>https://thevpc.net/maven</url><snapshots>
@@ -83,98 +85,98 @@
                 <artifactId>maven-compiler-plugin</artifactId>
 
                 <!-- version 3.8.0+ is necessary to support Java 10+ -->
-                <version>3.14.1</version>
+                <version>3.15.0</version>
 
                 <configuration>
                     <encoding>UTF-8</encoding>
-                    <compilerArgs>
-                        <!--Add the Manifold plugin-->
-                        <arg>-Xplugin:Manifold</arg>
-                        <!--                        <arg>&#45;&#45;enable-preview</arg>-->
-                    </compilerArgs>
+<!--                    <compilerArgs>-->
+<!--                        &lt;!&ndash;Add the Manifold plugin&ndash;&gt;-->
+<!--                        <arg>-Xplugin:Manifold</arg>-->
+<!--                        &lt;!&ndash;                        <arg>&#45;&#45;enable-preview</arg>&ndash;&gt;-->
+<!--                    </compilerArgs>-->
 
                     <!--            <compilerArgument>-Xlint:all</compilerArgument>-->
                     <showWarnings>true</showWarnings>
 
                     <!-- Add Manifold compile-time dependencies in the processor path -->
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>systems.manifold</groupId>
-                            <artifactId>manifold-delegation</artifactId>
-                            <version>${manifold-version}</version>
-                        </path>
-                        <path>
-                            <groupId>systems.manifold</groupId>
-                            <artifactId>manifold-props</artifactId>
-                            <version>${manifold-version}</version>
-                        </path>
-                        <path>
-                            <groupId>systems.manifold</groupId>
-                            <artifactId>manifold-graphql</artifactId>
-                            <version>${manifold-version}</version>
-                        </path>
-                        <path>
-                            <groupId>systems.manifold</groupId>
-                            <artifactId>manifold-xml</artifactId>
-                            <version>${manifold-version}</version>
-                        </path>
-                        <path>
-                            <groupId>systems.manifold</groupId>
-                            <artifactId>manifold-yaml</artifactId>
-                            <version>${manifold-version}</version>
-                        </path>
-                        <path>
-                            <groupId>systems.manifold</groupId>
-                            <artifactId>manifold-csv</artifactId>
-                            <version>${manifold-version}</version>
-                        </path>
-                        <path>
-                            <groupId>systems.manifold</groupId>
-                            <artifactId>manifold-exceptions</artifactId>
-                            <version>${manifold-version}</version>
-                        </path>
-                        <path>
-                            <groupId>systems.manifold</groupId>
-                            <artifactId>manifold-image</artifactId>
-                            <version>${manifold-version}</version>
-                        </path>
-                        <path>
-                            <groupId>systems.manifold</groupId>
-                            <artifactId>manifold-properties</artifactId>
-                            <version>${manifold-version}</version>
-                        </path>
-                        <path>
-                            <groupId>systems.manifold</groupId>
-                            <artifactId>manifold-js</artifactId>
-                            <version>${manifold-version}</version>
-                        </path>
-                        <path>
-                            <groupId>systems.manifold</groupId>
-                            <artifactId>manifold-preprocessor</artifactId>
-                            <version>${manifold-version}</version>
-                        </path>
-                        <path>
-                            <groupId>systems.manifold</groupId>
-                            <artifactId>manifold-strings</artifactId>
-                            <version>${manifold-version}</version>
-                        </path>
-                        <path>
-                            <groupId>systems.manifold</groupId>
-                            <artifactId>manifold-templates</artifactId>
-                            <version>${manifold-version}</version>
-                        </path>
-                        <path>
-                            <groupId>systems.manifold</groupId>
-                            <artifactId>manifold-tuple</artifactId>
-                            <version>${manifold-version}</version>
-                        </path>
-                        <!--  test with lombok -->
-                        <!--                <path>-->
-                        <!--                    <groupId>org.projectlombok</groupId>-->
-                        <!--                    <artifactId>lombok</artifactId>-->
-                        <!--                    <version>1.18.30</version>-->
-                        <!--                </path>-->
-                    </annotationProcessorPaths>
+<!--                    <annotationProcessorPaths>-->
+<!--                        <path>-->
+<!--                            <groupId>systems.manifold</groupId>-->
+<!--                            <artifactId>manifold-delegation</artifactId>-->
+<!--                            <version>${manifold-version}</version>-->
+<!--                        </path>-->
+<!--                        <path>-->
+<!--                            <groupId>systems.manifold</groupId>-->
+<!--                            <artifactId>manifold-props</artifactId>-->
+<!--                            <version>${manifold-version}</version>-->
+<!--                        </path>-->
+<!--                        <path>-->
+<!--                            <groupId>systems.manifold</groupId>-->
+<!--                            <artifactId>manifold-graphql</artifactId>-->
+<!--                            <version>${manifold-version}</version>-->
+<!--                        </path>-->
+<!--                        <path>-->
+<!--                            <groupId>systems.manifold</groupId>-->
+<!--                            <artifactId>manifold-xml</artifactId>-->
+<!--                            <version>${manifold-version}</version>-->
+<!--                        </path>-->
+<!--                        <path>-->
+<!--                            <groupId>systems.manifold</groupId>-->
+<!--                            <artifactId>manifold-yaml</artifactId>-->
+<!--                            <version>${manifold-version}</version>-->
+<!--                        </path>-->
+<!--                        <path>-->
+<!--                            <groupId>systems.manifold</groupId>-->
+<!--                            <artifactId>manifold-csv</artifactId>-->
+<!--                            <version>${manifold-version}</version>-->
+<!--                        </path>-->
+<!--                        <path>-->
+<!--                            <groupId>systems.manifold</groupId>-->
+<!--                            <artifactId>manifold-exceptions</artifactId>-->
+<!--                            <version>${manifold-version}</version>-->
+<!--                        </path>-->
+<!--                        <path>-->
+<!--                            <groupId>systems.manifold</groupId>-->
+<!--                            <artifactId>manifold-image</artifactId>-->
+<!--                            <version>${manifold-version}</version>-->
+<!--                        </path>-->
+<!--                        <path>-->
+<!--                            <groupId>systems.manifold</groupId>-->
+<!--                            <artifactId>manifold-properties</artifactId>-->
+<!--                            <version>${manifold-version}</version>-->
+<!--                        </path>-->
+<!--                        <path>-->
+<!--                            <groupId>systems.manifold</groupId>-->
+<!--                            <artifactId>manifold-js</artifactId>-->
+<!--                            <version>${manifold-version}</version>-->
+<!--                        </path>-->
+<!--                        <path>-->
+<!--                            <groupId>systems.manifold</groupId>-->
+<!--                            <artifactId>manifold-preprocessor</artifactId>-->
+<!--                            <version>${manifold-version}</version>-->
+<!--                        </path>-->
+<!--                        <path>-->
+<!--                            <groupId>systems.manifold</groupId>-->
+<!--                            <artifactId>manifold-strings</artifactId>-->
+<!--                            <version>${manifold-version}</version>-->
+<!--                        </path>-->
+<!--                        <path>-->
+<!--                            <groupId>systems.manifold</groupId>-->
+<!--                            <artifactId>manifold-templates</artifactId>-->
+<!--                            <version>${manifold-version}</version>-->
+<!--                        </path>-->
+<!--                        <path>-->
+<!--                            <groupId>systems.manifold</groupId>-->
+<!--                            <artifactId>manifold-tuple</artifactId>-->
+<!--                            <version>${manifold-version}</version>-->
+<!--                        </path>-->
+<!--                        &lt;!&ndash;  test with lombok &ndash;&gt;-->
+<!--                        &lt;!&ndash;                <path>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                    <groupId>org.projectlombok</groupId>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                    <artifactId>lombok</artifactId>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                    <version>1.18.30</version>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                </path>&ndash;&gt;-->
+<!--                    </annotationProcessorPaths>-->
 
                 </configuration>
             </plugin>

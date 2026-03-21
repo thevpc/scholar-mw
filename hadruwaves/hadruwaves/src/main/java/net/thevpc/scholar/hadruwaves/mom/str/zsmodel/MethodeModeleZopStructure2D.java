@@ -331,28 +331,19 @@ package net.thevpc.scholar.hadruwaves.mom.str.zsmodel;
 //    }
 //
 ////    public CMatrix resolveNextPointFixe(CMatrix Znext){
-////        //System.out.println(getClass().getName()+".resolveZin() : START");
 ////
-//////        System.out.println("P3MethodeModeleZop.getVanishingModes="+FnBaseFunctions.toStr(fnBaseFunctionsns.getVanishingModes())
-//////                +" ;\n\tP3MethodeModeleZop.getPropagatingModes="+FnBaseFunctions.toStr(fnBaseFunctionsns.getPropagatingModes())
-//////        );
 ////
 ////        CMatrix B = B();
 ////
 ////        CMatrix A = A();
-////        //System.out.println(getClass().getName()+": [B]="+B);
 ////
 ////        CMatrix ZinCond = null;
 ////
 ////        try {
 ////            ZinCond = A.transpose().multiply(B.inverseCond()).multiply(A).inverse();
 ////        } catch (Exception e) {
-////            System.out.println("Error P3MethodeModeleZop.Zin: " + e);
-////            System.out.println("A=" + A);
-////            System.out.println("B=" + B);
 ////            throw new RuntimeException(e);
 ////        }
-//////        System.out.println(getClass().getName() + ".resolveZin() : END  =" + ZinCond);
 ////        return ZinCond;
 ////    }
 ////    public CMatrix resolvePointFixe(CMatrix Znext){

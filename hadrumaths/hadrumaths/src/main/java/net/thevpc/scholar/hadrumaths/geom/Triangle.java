@@ -1,9 +1,14 @@
 package net.thevpc.scholar.hadrumaths.geom;
 
+import net.thevpc.nuts.elem.NArrayElementBuilder;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NObjectElementBuilder;
+import net.thevpc.nuts.elem.NUpletElement;
+import net.thevpc.nuts.util.NUplet;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.GeometryFactory;
 import net.thevpc.scholar.hadrumaths.Maths;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.awt.geom.Area;
 import java.awt.geom.Line2D;
@@ -25,28 +30,30 @@ public class Triangle extends AbstractGeometry implements Serializable, PolygonB
 
     @Override
     public NElement toElement() {
-        return NElement.ofNamedObject("Triangle");
+        NObjectElementBuilder b = NElement.ofObjectBuilder("Triangle");
+        b.add("domain", domain.toElement());
+        NArrayElementBuilder arr = NElement.ofArrayBuilder();
+        arr.add(ue(p1));
+        arr.add(ue(p2));
+        arr.add(ue(p3));
+        b.add("points", arr.build());
+        b.addIf("properties", NElementHelper.elem(getProperties()), NElementHelper.blankPredicate());
+        return b.build();
     }
 
-//    public static void main(String[] args) {
-////        p1 = {Point@2401} "(0.011174111111111109,-8.333333333333332E-4)"
-////        p2 = {Point@2402} "(0.0,0.0075)"
-////        p3 = {Point@2403} "(0.027935277777777774,0.004166666666666667)"
-//        int c = 1;
-//        Triangle t = new Triangle(
-//                Point.create(c * 0.011174111111111109, c * -8.333333333333332E-4),
-//                Point.create(c * 0.0, c * 0.0075),
-//                Point.create(c * 0.027935277777777774, c * 0.004166666666666667)
-//        );
-//        System.out.println(t.getPoints().size()+" :: "+t.getPoints());
-//        System.out.println(t.toPolygon().getPoints().size()+" :: "+t.toPolygon().getPoints());
-//        System.out.println(t.toSurface().getPoints().size()+" :: "+t.toSurface().getPoints());
-//    }
+    private NUpletElement ue(Point p) {
+        return NElement.ofUplet(
+                NElement.ofDouble(p.getX()),
+                NElement.ofDouble(p.getY())
+        );
+    }
+
     public Point p1;
     public Point p2;
     public Point p3;
     private Polygon cachedPolygon;
     private final Domain domain;
+
     public Triangle(List<Point> points) {
         this(
                 points.get(0),
@@ -73,7 +80,7 @@ public class Triangle extends AbstractGeometry implements Serializable, PolygonB
 
     public Triangle(Polygon polygon) {
         List<Point> p = polygon.getPoints();
-        if(p.size()!=3){
+        if (p.size() != 3) {
             throw new IllegalArgumentException("Its not a polygon");
         }
         this.p1 = p.get(0);
@@ -86,19 +93,6 @@ public class Triangle extends AbstractGeometry implements Serializable, PolygonB
         if (domain.isEmpty()) {
             throw new IllegalArgumentException("Invalid Triangle");
         }
-    }
-
-    public static void main(String[] args) {
-        Polygon p = GeometryFactory.createPolygon(
-                Point.create(0, 0),
-                Point.create(2, 2),
-                Point.create(2, 0),
-                Point.create(0, 2)
-        );
-        System.out.println(GeomUtils.toString(p.toSurface().getPath()));
-        System.out.println(GeomUtils.toString(new Area(p.toSurface().getPath()).getPathIterator(null)));
-        System.out.println(p.toSurface().isSingular());
-        AreaComponent.showDialog(p.scale(400, 400));
     }
 
     public int indexOfPoint(Point p) {
@@ -404,7 +398,7 @@ public class Triangle extends AbstractGeometry implements Serializable, PolygonB
 
     public Polygon toPolygon() {
         if (cachedPolygon == null) {
-            cachedPolygon = GeometryFactory.createPolygon(p1,p2,p3);
+            cachedPolygon = GeometryFactory.createPolygon(p1, p2, p3);
         }
         return cachedPolygon;
     }

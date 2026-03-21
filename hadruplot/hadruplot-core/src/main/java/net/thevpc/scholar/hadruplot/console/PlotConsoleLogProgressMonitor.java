@@ -5,11 +5,13 @@ import net.thevpc.common.util.DoubleFormat;
 
 import java.util.Date;
 import net.thevpc.common.msg.Message;
+import net.thevpc.nuts.log.NLogger;
+import net.thevpc.nuts.text.NMsg;
 
 public class PlotConsoleLogProgressMonitor extends AbstractProgressMonitor {
     private double progress;
     private String messageFormat;
-    private ConsoleLogger writer;
+    private NLogger writer;
     private Message message=EMPTY_MESSAGE;
 
 
@@ -19,7 +21,7 @@ public class PlotConsoleLogProgressMonitor extends AbstractProgressMonitor {
      *
      * @param messageFormat
      */
-    public PlotConsoleLogProgressMonitor(String messageFormat, ConsoleLogger writer) {
+    public PlotConsoleLogProgressMonitor(String messageFormat, NLogger writer) {
         super(nextId());
         if (messageFormat == null) {
             messageFormat = "%value%";
@@ -29,7 +31,7 @@ public class PlotConsoleLogProgressMonitor extends AbstractProgressMonitor {
         }
         this.messageFormat = messageFormat;
         if (writer == null) {
-            writer = NullConsoleLogger.INSTANCE;
+            writer = NLogger.NULL;
         }
         this.writer = writer;
     }
@@ -49,9 +51,9 @@ public class PlotConsoleLogProgressMonitor extends AbstractProgressMonitor {
                 )
                 + " " + message;
         if (progress <= 0 || progress >= 1) {
-            writer.trace(formattedMessage);
+            writer.log(NMsg.ofC(formattedMessage).asInfo());
         } else {
-            writer.debug(formattedMessage);
+            writer.log(NMsg.ofC(formattedMessage).asDebug());
         }
     }
 

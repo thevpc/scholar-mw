@@ -94,7 +94,6 @@ public class DynMultiPlot {
             }
             windowManager.addComponent(ytitle, getComponent());
         }
-        //System.out.println(convergenceParameters.getLabel() + "[" + type + "]["+title+"]; err = " + err + "; threshold=" + threshold + "; val=" + value + "; pars=" + parameters);
         ArrayList<Object> values = valuesMap.get(type);
         if (values == null) {
             values = new ArrayList<Object>();

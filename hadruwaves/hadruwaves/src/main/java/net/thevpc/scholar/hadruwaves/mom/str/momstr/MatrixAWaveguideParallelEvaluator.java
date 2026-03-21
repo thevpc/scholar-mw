@@ -41,7 +41,6 @@ public class MatrixAWaveguideParallelEvaluator implements MatrixAEvaluator {
                         Complex yn = n.impedance.admittanceValue();
                         Complex sp1 = spp.get(n.index);
                         Complex sp2 = spq.get(n.index).conj();
-//                        System.out.println(n+" ; yn = " + yn+" ; sp = " + sp1+" ; "+sp2);
                         c.addProduct(yn, sp1, sp2);
                     }
                     b[p][q] = c.toComplex();

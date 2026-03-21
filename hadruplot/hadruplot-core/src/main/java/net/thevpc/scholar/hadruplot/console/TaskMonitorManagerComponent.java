@@ -116,12 +116,10 @@ public class TaskMonitorManagerComponent extends JPanel implements ActionListene
     }
 
     public JInternalFrameHelper getFrame() {
-//        System.out.println("taskMonitor.getFrame");
         return new JInternalFrameHelper(frame);
     }
 
     public void setFrame(JInternalFrame frame) {
-//        System.out.println("taskMonitor.setFrame");
         this.frame = frame;
     }
 
@@ -145,127 +143,4 @@ public class TaskMonitorManagerComponent extends JPanel implements ActionListene
         countField.setText(String.valueOf(parallelTasksCount));
     }
 
-//    @Override
-//    public TaskMonitor createTask(net.thevpc.common.mon.ProgressMonitor task, String windowTitle, String descLabel) {
-//        TaskMonitor m = base.createTask(task, windowTitle, descLabel);
-//        return m;
-//    }
-
-//    @Override
-//    public void addTask(PlotThread task) {
-//        plotConsole.start();
-//        String windowTitle = (task.getWindowTitle());
-//        String descLabel = (task.getSerieTitle().toString());
-//        list.add(new TaskComponent(this, ProgressMonitors.nonnull(task), windowTitle, descLabel));
-//        task.start();
-//    }
-
-//    @Override
-//    public ProgressMonitor createMonitor(String name, String description) {
-//        ProgressMonitor m = new PlotConsoleLogProgressMonitor(null, plotConsole.getLog()).temporize(5000);
-//        createTask(m, name, description);
-//        return m;
-//    }
-
-//    @Override
-//    public net.thevpc.common.mon.ProgressMonitor addTask(String windowTitle, String descLabel, final ConsoleTask task) {
-//        plotConsole.start();//new TLogProgressMonitor(null, printStream)
-//        final ProgressMonitor m = new PlotConsoleLogProgressMonitor(null, plotConsole.getLog()).temporize(5000);
-//        list.add(new TaskComponent(this, m, windowTitle, descLabel));
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                task.run(m);
-//            }
-//        }).start();
-//        return m;
-//    }
-
-//    @Override
-//    public void removeTask(final TaskMonitor component) {
-//        plotConsole.start();
-//        list.remove((Component) component);
-//        if (serializerThread != null) {
-//            if (parallelTasksCount > getTasksCount()) {
-//                serializerThread.softStop();
-//                serializerThread = null;
-//            }
-//        }
-//    }
-
-//    @Override
-//    public TaskMonitor[] getTasks() {
-//        Component[] components = list.getComponents();
-//        ArrayList<TaskComponent> a = new ArrayList<TaskComponent>();
-//        for (Component component1 : components) {
-//            if (component1 instanceof TaskComponent) {
-//                a.add((TaskComponent) component1);
-//            }
-//        }
-//        return a.toArray(new TaskComponent[0]);
-//    }
-
-//    @Override
-//    public void resetMonitors() {
-//        for (TaskMonitor t : getTasks()) {
-//            t.resetMonitor();
-//        }
-//    }
-
-//    @Override
-//    public void killAll() {
-//        for (TaskMonitor t : getTasks()) {
-//            t.kill();
-//        }
-//        try {
-//            if (serializerThread != null) {
-//                serializerThread.softStop();
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-//    @Override
-//    public void unfreeze() {
-//        if (serializerThread != null) {
-//            serializerThread.softStop();
-//            serializerThread = null;
-//        }
-//    }
-
-//    @Override
-//    public void ticMonitor() {
-//        final TaskMonitor[] tasks = getTasks();
-//        for (int i = 0; i < tasks.length; i++) {
-//            final TaskComponent t = (TaskComponent) tasks[i];
-//            final int finalI = i;
-//            SwingUtilities3.invokeLater(new Runnable() {
-//                public void run() {
-//                    t.ticMonitor(finalI, tasks.length - 1);
-//                }
-//            });
-//        }
-//    }
-
-//    @Override
-//    public int getTasksCount() {
-//        return getTasks().length;
-//    }
-
-
-//    @Override
-//    public void waitForTask() {
-//        if (getParallelTasksCount() <= getTasksCount()) {
-////                                    System.out.println("starting synchronous "+windowTitle+"/" +yParam);
-//            if (serializerThread != null) {
-//                System.out.println(">>>>>>>>>>serializerThread!=null");
-//            }
-//            serializerThread = new SerializerThread();
-//            serializerThread.serialize();
-//            serializerThread = null;
-//        } else {
-////                                    System.out.println("starting asynchronous "+windowTitle+"/" +yParam);
-//        }
-//    }
 }

@@ -5,6 +5,7 @@ import net.thevpc.nuts.elem.NElement;
 
 
 import net.thevpc.nuts.elem.NObjectElementBuilder;
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.plot.convergence.ConvergenceConfig;
 import net.thevpc.scholar.hadrumaths.plot.convergence.ConvergenceEvaluator;
@@ -27,10 +28,6 @@ import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.BoxModes
  * @creationtime 12 mai 2005 12:39:21
  */
 public class MomStructureFractalZop extends MomStructure {
-    public static void main(String[] args) {
-        System.out.println(0.1 + 0.2);
-    }
-
     public static final String HINT_USE_OLD_ZS_STYLE = "HINT_USE_OLD_ZS_STYLE";
     public static final String HINT_ZS_CONVERGENCE = "HINT_ZS_CONVERGENCE";
     public static final String HINT_SUB_MODEL_EQUIVALENT = "HINT_SUB_MODEL_EQUIVALENT";
@@ -209,57 +206,6 @@ public class MomStructureFractalZop extends MomStructure {
         return Maths.matrix(b);
     }
 
-//    public CMatrix getBMatrixImpl() {
-//        GpTestFunctions gpTestFunctions = getGpTestFunctions();
-//        CFunctionXY2D[] g = gpTestFunctions.gp();
-//        FnIndexes[] n_propa = getFnBaseFunctions().getPropagatingModes();
-//        Complex[][] a = new Complex[g.length][n_propa.length];
-//        ScalarProductCache sp = getTestModeScalarProducts();
-//        for (int n = 0; n < n_propa.length; n++) {
-//            for (int p = 0; p < g.length; p++) {
-//                a[p][n] = sp.gf(p, n_propa[n].index).negate();
-//            }
-//        }
-//        return new CMatrix(a);
-//    }
-
-//    public CMatrix getZinImpl() {
-//        CMatrix A_ = getAMatrix();
-//
-//        CMatrix B_ = getBMatrix();
-//
-//        CMatrix ZinCond;
-//
-//        try {
-//            ZinCond = B_.transpose().multiply(A_.inverseCond()).multiply(B_).inverse();
-//        } catch (Exception e) {
-//            getLog().error("Error P3MethodeModeleZop.Zin: " + e);
-//            getLog().error("A=" + B_);
-//            getLog().error("B=" + A_);
-//            throw new RuntimeException(e);
-//        }
-////        System.out.println(getClass().getName() + ".resolveZin() : END  =" + ZinCond);
-//        return ZinCond;
-//    }
-
-//    public CMatrix getTestcoeffImpl() {
-//        invalidateCache();
-//
-//        CMatrix A = getBMatrix();
-//        CMatrix B = getAMatrix();
-//        CMatrix Testcoeff;
-//
-//        try {
-//            Testcoeff = B.solve(A);
-//        } catch (Exception e) {
-//            getLog().error("Error : " + e);
-//            getLog().error("A=" + A);
-//            getLog().error("B=" + B);
-//            throw new RuntimeException(e);
-//        }
-//        return Testcoeff;
-
-    //    }
     @Override
     public MomStructure setFractalScale(int k) {
 //        this.k = k == 0 ? 0 : -1;
@@ -270,7 +216,6 @@ public class MomStructureFractalZop extends MomStructure {
     }
 
     public ComplexMatrix resolveNextPointFixe(ComplexMatrix Zinit, int kInit) {
-        getLog().debug(1.2337139917695478E-4 / 4.11237997256516E-5);
         double a = getDomain().getXwidth();
         setFractalScale(1);
         for (int ki = 0; ki < kInit; ki++) {
@@ -289,14 +234,14 @@ public class MomStructureFractalZop extends MomStructure {
 //                ZinCond = B_.transpose().multiply(aInv).multiply(B_).inv();
                 ZinCond = B_.transposeHermitian().mul(aInv).mul(B_).inv();
             } catch (Exception e) {
-                getLog().error("Error P3MethodeModeleZop.resolveNextPointFixe: " + e);
-                getLog().error("A=" + B_);
-                getLog().error("B=" + A_);
+                log().log(NMsg.ofC("Error P3MethodeModeleZop.resolveNextPointFixe: " + e).asError(e));
+                log().log(NMsg.ofC("A=" + B_).asError());
+                log().log(NMsg.ofC("B=" + A_).asError());
                 throw new RuntimeException(e);
             }
-            getLog().debug("k=" + (kInit - ki) + " => a=" + getDomain().getXwidth());
-            getLog().debug("\tz=" + ZinCond);
-            getLog().debug("\terr=" + ZinCond.getErrorMatrix(Zinit, 1E-5));
+            log().log(NMsg.ofC("k=" + (kInit - ki) + " => a=" + getDomain().getXwidth()).asDebug());
+            log().log(NMsg.ofC("\tz=" + ZinCond).asDebug());
+            log().log(NMsg.ofC("\terr=" + ZinCond.getErrorMatrix(Zinit, 1E-5)).asDebug());
             Zinit = ZinCond;
         }
         return Zinit;
@@ -440,7 +385,6 @@ public class MomStructureFractalZop extends MomStructure {
 //                } catch (IOException e) {
 //                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 //                }
-//                System.out.println("op : " + DumpStringUtils.dump(str));
                 ComplexMatrix cMatrix;
                 if (i > 0 && str2.getHintsManager().isHint(MomStructureFractalZop.HINT_SUB_MODEL_EQUIVALENT, true)) {
                     cMatrix = ops[0].getMatrix();
@@ -459,7 +403,6 @@ public class MomStructureFractalZop extends MomStructure {
                         //cMatrix = cMatrix.multiply(2);
                     }
                 }
-//                System.out.println("op"+(i+1)+" = " + cMatrix);
                 ops[i] = new Zoperator(cMatrix, str.modeFunctions());
             }
             return ops;
@@ -506,7 +449,6 @@ public class MomStructureFractalZop extends MomStructure {
 //                } catch (IOException e) {
 //                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 //                }
-//                System.out.println("op : " + DumpStringUtils.dump(str));
                 ComplexMatrix cMatrix;
                 if (i > 0 && str2.getHintsManager().isHint(MomStructureFractalZop.HINT_SUB_MODEL_EQUIVALENT, true)) {
                     cMatrix = ops[0].getMatrix();
@@ -521,7 +463,6 @@ public class MomStructureFractalZop extends MomStructure {
                     }
                     cMatrix = cMatrix.inv();
                 }
-//                System.out.println("op"+(i+1)+" = " + cMatrix);
                 ops[i] = new Yoperator(cMatrix, str.modeFunctions());
             }
             return ops;

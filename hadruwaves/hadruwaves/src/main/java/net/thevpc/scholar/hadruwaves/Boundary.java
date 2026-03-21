@@ -1,5 +1,10 @@
 package net.thevpc.scholar.hadruwaves;
 
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.util.NNameFormat;
+import net.thevpc.nuts.util.NOptional;
+import net.thevpc.nuts.util.NStringUtils;
+
 public enum Boundary {
     ELECTRIC,
     MAGNETIC,
@@ -11,6 +16,40 @@ public enum Boundary {
     //Open
     NOTHING,
     ;
+
+    public static NOptional<Boundary> parse(NElement any) {
+        return parse(any.asStringValue().orElse(""));
+    }
+
+    public static NOptional<Boundary> parse(String any) {
+        switch (NNameFormat.LOWER_KEBAB_CASE.format(NStringUtils.trim(any))) {
+            case "magnetic":
+            case "m": {
+                return NOptional.of(Boundary.MAGNETIC);
+            }
+            case "electric":
+            case "e": {
+                return NOptional.of(Boundary.ELECTRIC);
+            }
+            case "periodic":
+            case "p": {
+                return NOptional.of(Boundary.PERIODIC);
+            }
+            case "nothing":
+            case "n": {
+                return NOptional.of(Boundary.NOTHING);
+            }
+            case "open":
+            case "o": {
+                return NOptional.of(Boundary.OPEN);
+            }
+            case "infinite":
+            case "∞": {
+                return NOptional.of(Boundary.INFINITE);
+            }
+        }
+        return NOptional.<Boundary>ofNamedEmpty("boundary " + any).withDefault(() -> Boundary.NOTHING);
+    }
 
     public static Boundary of(char c) {
         switch (c) {

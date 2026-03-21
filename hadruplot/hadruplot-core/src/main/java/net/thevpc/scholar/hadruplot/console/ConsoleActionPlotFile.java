@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadruplot.console;
 
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.scholar.hadruplot.Plot;
 import net.thevpc.scholar.hadruplot.PlotComponent;
 
@@ -24,7 +25,7 @@ public class ConsoleActionPlotFile implements ConsoleAction {
         try {
             plot = Plot.loadPlot(file);
         } catch (IOException e) {
-            plotter.getLog().error(e);
+            plotter.getLog().log(NMsg.ofC("%s",e).asError(e));
         }
         if (plot == null) {
             return;

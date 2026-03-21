@@ -375,7 +375,6 @@ public class HadruwavesStudioV2Impl implements HadruwavesStudio {
         app.state().onChange(e -> {
             AppState a = e.newValue();
             if (a == AppState.CLOSED) {
-                System.out.println("closed");
                 System.exit(0);
             }
         });

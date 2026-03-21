@@ -88,7 +88,7 @@ public class CacheKey {
     }
 
     public static CacheKey of(NElement element) {
-        return new CacheKey(NElementHelper.elem(element).toString(false));
+        return new CacheKey(NElementHelper.elem(element).toString());
     }
 
     public static CacheKey obj(String name, String a1, Object v1) {
@@ -198,10 +198,10 @@ public class CacheKey {
                 throw new IllegalArgumentException("Empty Key");
             }
             case 1: {
-                return new CacheKey(NElementHelper.elem(elements[0]).toString(false));
+                return new CacheKey(NElementHelper.elem(elements[0]).toString());
             }
         }
-        return new CacheKey(NElementHelper.elem(elements).toString(false));
+        return new CacheKey(NElementHelper.elem(elements).toString());
     }
 
     public static CacheKey load(String string) {

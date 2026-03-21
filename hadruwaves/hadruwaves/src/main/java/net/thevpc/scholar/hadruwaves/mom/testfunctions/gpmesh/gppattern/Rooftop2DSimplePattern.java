@@ -16,11 +16,13 @@ import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.Rooftop2DFunctionXY;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.RooftopType;
 
+import java.util.Arrays;
+
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 15 mai 2007 21:41:33
  */
-public final class Rooftop2DSimplePattern extends RectMeshAttachGpPattern {
+public final class Rooftop2DSimplePattern extends RectMeshAttachGpPattern implements Cloneable{
     private RooftopType type;
 
     public Rooftop2DSimplePattern(MeshZoneTypeFilter filter) {
@@ -32,6 +34,17 @@ public final class Rooftop2DSimplePattern extends RectMeshAttachGpPattern {
         super(MeshZoneType.FILTER_M);
         this.type = type;
     }
+
+    @Override
+    public Rooftop2DSimplePattern copy() {
+        return clone();
+    }
+
+    @Override
+    protected Rooftop2DSimplePattern clone() {
+        return (Rooftop2DSimplePattern) super.clone();
+    }
+
     @Override
     public NElement toElement() {
         NObjectElementBuilder h = super.toElement().toObject().get().builder();

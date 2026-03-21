@@ -5,14 +5,13 @@
 
 package net.thevpc.scholar.hadruwaves.mom.str;
 
+import net.thevpc.nuts.log.NLog;
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.scholar.hadrumaths.plot.model.ExpressionsPlotModel;
 import net.thevpc.common.mon.ProgressMonitors;
 import net.thevpc.scholar.hadrumaths.*;
-import net.thevpc.scholar.hadrumaths.plot.*;
+import net.thevpc.scholar.hadruplot.*;
 import net.thevpc.scholar.hadruplot.console.PlotConsole;
-import net.thevpc.scholar.hadruplot.Plot;
-import net.thevpc.scholar.hadruplot.PlotComponent;
-import net.thevpc.scholar.hadruplot.PlotType;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.GpAdaptiveMesh;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.PolygonPlot;
@@ -21,7 +20,6 @@ import net.thevpc.scholar.hadruwaves.str.MWStructure;
 import javax.swing.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import net.thevpc.scholar.hadruplot.LibraryPlotType;
 
 /**
  * @author vpc
@@ -34,8 +32,27 @@ public class DefaultMomStructureErrorHandler implements MWStructureErrorHandler 
             return;
         }
         MomStructure str = (MomStructure) structure;
-        JTextArea a = new JTextArea(str.dump());
         ComplexMatrix sp = str.getTestModeScalarProducts(ProgressMonitors.none());
+        NLog log = NLog.ofScoped(DefaultMomStructureErrorHandler.class);
+        structure.log().log(NMsg.ofC("----------------------------------------"));
+        log.log(NMsg.ofC(" A MATRIX"));
+        log.log(NMsg.ofC("----------------------------------------"));
+        log.log(NMsg.ofC("%s", str.matrixA().evalMatrix()));
+
+        log.log(NMsg.ofC("----------------------------------------"));
+        log.log(NMsg.ofC(" B MATRIX"));
+        log.log(NMsg.ofC("----------------------------------------"));
+        log.log(NMsg.ofC("%s", str.matrixB().evalMatrix()));
+
+        log.log(NMsg.ofC("----------------------------------------"));
+        log.log(NMsg.ofC(" <f,g> MATRIX"));
+        log.log(NMsg.ofC("----------------------------------------"));
+        log.log(NMsg.ofC("%s", sp));
+
+        if (PlotBackendLibraries.getLibraries().length == 0) {
+            return;
+        }
+        JTextArea a = new JTextArea(str.dump());
         PlotComponent aplot = Plot.nodisplay().asMatrix().title("Matrix A")
                 .plot(str.matrixA().evalMatrix());
         PlotComponent bplot = Plot.nodisplay().asMatrix().title("Matrix B")

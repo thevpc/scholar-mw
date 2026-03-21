@@ -12,7 +12,7 @@ import static net.thevpc.scholar.hadrumaths.Maths.*;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 15 mai 2007 21:42:59
  */
-public final class EMEMPattern extends AbstractGpFnPatternPQ {
+public final class EMEMPattern extends AbstractGpFnPatternPQ implements Cloneable {
 
 
     public EMEMPattern(int complexity, ModeType... modes) {
@@ -95,9 +95,6 @@ public final class EMEMPattern extends AbstractGpFnPatternPQ {
                     domain
             ).setTitle("nx.cos(" + m + "PIx/a)cos(" + n + "PIx/b)").toDD();
 
-            //if(fx.isNull() && fy.isNull()){
-            //    System.out.println("null for "+i);
-            //}
             fn= Maths.vector(fx, fy).setTitle("EMEM" + m + "" + n).toDV();
         }
         return fn;

@@ -98,7 +98,6 @@ public class HSocketServer extends HadrumathsAbstractServer {
                 break;
             }
             HSocketServlet servlet = getServlet(id);
-//            System.out.println("Received CMD "+id+" => "+servlet);
             servlet.service(in, out);
             out.flush();
         }

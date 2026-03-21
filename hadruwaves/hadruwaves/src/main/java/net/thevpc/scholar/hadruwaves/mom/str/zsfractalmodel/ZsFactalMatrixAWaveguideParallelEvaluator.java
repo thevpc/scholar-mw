@@ -53,7 +53,6 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator implements MatrixAEvaluat
             for (Yoperator opValue : opValues) {
                 Complex[][] op = opValue == null ? null : opValue.getMatrix().getArray();
                 if (op != null) {//op==null si k==1
-                    //System.out.println("op = " + opValue.getMatrix());
                     ModeInfo[] n_propa = opValue.getFn().getPropagatingModes();
                     ComplexMatrix spc2 = Maths.scalarProductCache(g, opValue.getFn().arr(), str.getHintsManager().getHintAxisType().toAxisXY(), ProgressMonitors.none());
                     for (int p = 0; p < g.length; p++) {
@@ -139,7 +138,6 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator implements MatrixAEvaluat
 
 
     public static void storeString(String content, File file) throws IOException {
-        System.out.println("file = " + file.getCanonicalPath());
         PrintStream os = null;
         try {
             os = new PrintStream(new FileOutputStream(file));

@@ -94,9 +94,6 @@ public class ValuesPlotModel extends BasePlotModel implements PlotModel1D, PlotM
 
         this.ztitle = ztitle;
         this.x = x;
-//        if(x!=null && x[0]==null){
-//            System.out.println("how x[0]==null?");
-//        }
         this.y = y;
         setZ(z);
 

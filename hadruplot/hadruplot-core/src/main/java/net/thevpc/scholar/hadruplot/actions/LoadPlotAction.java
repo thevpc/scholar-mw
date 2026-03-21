@@ -35,28 +35,10 @@ public class LoadPlotAction extends AbstractPlotAction implements Serializable {
         }
     };
 
-//    public static void main(String[] args) {
-//        System.out.println("LoadPlotAction version 1.1");
-//        LoadPlotAction loadJFigAction = new LoadPlotAction();
-//        ArrayList<File> files = new ArrayList<File>();
-//
-//        for (String arg : args) {
-//            if (arg.trim().length() > 0) {
-//                files.add(new File(Maths.Config.expandPath(arg)));
-//            }
-//        }
-//        if (files.size() > 0) {
-//            loadJFigAction.openFiles(files.toArray(new File[0]));
-//        } else {
-//            loadJFigAction.showOpenFilesDialog(null);
-//        }
-//    }
-
     public LoadPlotAction() {
         super("Load Plot");
     }
 
-//    @Override
     public void actionPerformed(ActionEvent e) {
         showOpenFilesDialog(e == null ? null : (Component) e.getSource());
     }

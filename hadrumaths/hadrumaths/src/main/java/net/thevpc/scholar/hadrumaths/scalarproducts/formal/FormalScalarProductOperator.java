@@ -252,18 +252,6 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
         return rets;
     }
 
-//    public static void main(String[] args) {
-//        Maths.Config.setCacheEnabled(false);
-////        Expr f1=cos(add(mul(complex(0) , X) , mul(complex(0) , Y) ,complex(0.9708732020474193)));
-////        Expr f2=mul(cos(add(mul(complex(0) , X) , mul(complex(0) , Y) ,complex(0.9708732020474193))) , cos(add(mul(complex(0) , X) ,complex(0))) , cos(add(mul(complex(0), Y) ,complex(0.08808395516141376))));
-//        Expr f1=cos(add(mul(complex(0.5561038709368364) , X) , mul(CZERO , Y), CZERO));
-//        Expr f2=mul(cos(add(mul(CZERO , X) , CZERO)) , cos(add(mul(CZERO , Y) , CZERO)));
-//        System.out.println(f1.simplify());
-//        System.out.println(f2.simplify());
-//        DoubleToDouble[] r = new FormalScalarProductOperator(null).optimizeFunctions(f1.toDD(), f2.toDD());
-//        System.out.println("__");
-//    }
-
     public FormalScalarProductHelper getScalarProduct(Class f1Class, Class f2Class, int domainDimension) {
         FormalScalarProductHelper p = getScalarProduct0(f1Class, f2Class, domainDimension);
         if (p != null) {

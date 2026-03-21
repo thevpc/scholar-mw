@@ -1427,10 +1427,8 @@ public class DDiscrete extends AbstractDoubleToDouble {
         if (ii != null) {
             defined.set();
             double v = values[0][ii.y][ii.x];
-//            System.out.println(v + " <== " + x + "  " + y);
             return v;
         }
-//        System.out.println("(0) <== " + x + "  " + y);
         return 0;
     }
 

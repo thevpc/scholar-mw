@@ -9,11 +9,11 @@ public class ExprRewriteLogger implements ExprRewriteListener {
     private PrintStream out;
 
     public ExprRewriteLogger() {
-        this(System.out);
+        this(System.err);
     }
 
     public ExprRewriteLogger(PrintStream out) {
-        this.out = out == null ? System.out : out;
+        this.out = out == null ? System.err : out;
     }
 
     private int getDepth(){
@@ -21,9 +21,9 @@ public class ExprRewriteLogger implements ExprRewriteListener {
     }
     @Override
     public void onUnmodifiedExpr(ExpressionRewriter rewriter, Expr oldValue) {
-        out = System.out;
+        out = System.err;
         printPrefix();
-        out.println(rewriter + " :: [UNMODIFIED] " + oldValue.getClass().getSimpleName() + "->UNMODIFIED" + "  :: " + oldValue);
+        out.println(rewriter + " [ExprRewriteLogger] :: [UNMODIFIED] " + oldValue.getClass().getSimpleName() + "->UNMODIFIED" + "  :: " + oldValue);
     }
 
     protected void printPrefix() {
@@ -35,9 +35,8 @@ public class ExprRewriteLogger implements ExprRewriteListener {
 
     @Override
     public void onModifiedExpr(ExpressionRewriter rewriter, Expr oldValue, Expr newValue, boolean bestEffort) {
-//        System.out.println(rewriter + " :: [MODIFIED] " + (bestEffort ? "(*) " : "") + oldValue.getClass().getSimpleName() + "->" + newValue.getClass().getSimpleName() + "  :: " + oldValue + " ==> " + newValue);
         printPrefix();
-        System.out.println(rewriter + " :: " + (bestEffort ? "[BEST_MODIF] " : "[PART_MODIF] ") + oldValue.getClass().getSimpleName() + "->" + newValue.getClass().getSimpleName() + "  :: " + oldValue + " ==> " + newValue);
+        System.out.println(rewriter + " [ExprRewriteLogger] :: " + (bestEffort ? "[BEST_MODIF] " : "[PART_MODIF] ") + oldValue.getClass().getSimpleName() + "->" + newValue.getClass().getSimpleName() + "  :: " + oldValue + " ==> " + newValue);
     }
 
 }

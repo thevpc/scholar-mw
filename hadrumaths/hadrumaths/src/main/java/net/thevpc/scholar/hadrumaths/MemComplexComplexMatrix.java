@@ -774,7 +774,6 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
             throw new ArithmeticException("Determinant Equals 0, Not Invertible.");
         }
 
-//            System.out.println("determinant is " + det);
         Complex dd = det.inv();
         if (tms == 1) {
             return newMemMatrix(new Complex[][]{{dd}});
@@ -872,7 +871,6 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
 
     @Override
     public ComplexMatrix upperTriangle() {
-//        System.out.println(new java.util.Date() + " upperTriangle IN (" + primitiveElement3DS.length + ")");
         MemComplexComplexMatrix o = newMemMatrix(this.getArrayCopy());
 
         Complex f1;
@@ -915,8 +913,6 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
 
             }
         }
-
-//        System.out.println(new java.util.Date() + " upperTriangle OUT");
         return o;
     }
 

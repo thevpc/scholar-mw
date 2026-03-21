@@ -5,6 +5,7 @@ import net.thevpc.common.mon.ProgressMonitor;
 
 import net.thevpc.nuts.elem.NElement;
 
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.cache.CacheKey;
 import net.thevpc.scholar.hadrumaths.cache.ObjectCache;
@@ -32,7 +33,7 @@ public class FarFieldEvaluatorPEC implements FarFieldEvaluator {
                 final MomStructure structure = (MomStructure) str;
                 final double k0 = Physics.K0(structure.getFrequency());
                 final Complex C1 = (î.mul(-k0).mul(exp(î.mul(-k0 * r)))).div(4.0 * Math.PI * r);
-                final ComplexMatrix SPM = structure.getTestModeScalarProducts();
+                final ComplexMatrix SPM = structure.testModeScalarProducts();
                 final ComplexMatrix Xj = structure.matrixX().evalMatrix();
                 Complex[][] EthetaMatrix = new Complex[thetaArr.length][phiArr.length];
                 Complex[][] EphiMatrix = new Complex[thetaArr.length][phiArr.length];
@@ -42,7 +43,7 @@ public class FarFieldEvaluatorPEC implements FarFieldEvaluator {
                         monitor.setProgress(i, thetaArr.length, j, phiArr.length,monText);
                         final int finalI = i;
                         final int finalJ = j;
-                        System.out.println("TRY EXEC="+monitor.getProgress()+" :: "+monText+" "+CharactersTable.THETA+"="+thetaArr[finalI]+" "+CharactersTable.PHI+"="+phiArr[finalJ]);
+                        str.log().log(NMsg.ofC("TRY EXEC="+monitor.getProgress()+" :: "+monText+" "+CharactersTable.THETA+"="+thetaArr[finalI]+" "+CharactersTable.PHI+"="+phiArr[finalJ]));
                         Complex[] rr= new StrSubCacheSupport<Complex[]>(structure, "far-field-angle",
                                 CacheKey.obj("computeFarFieldThetaPhiElement","theta",thetaArr[i],"phi", phiArr[i],"r",r)
                                 ,monitor) {
@@ -50,7 +51,7 @@ public class FarFieldEvaluatorPEC implements FarFieldEvaluator {
                             @Override
                             public Complex[] eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
                                 monitor.setProgress(finalI, thetaArr.length, finalJ, phiArr.length,monText);
-                                System.out.println("EXEC="+monitor.getProgress()+" :: "+monText+" "+CharactersTable.THETA+"="+thetaArr[finalI]+" "+CharactersTable.PHI+"="+phiArr[finalJ]);
+                                str.log().log(NMsg.ofC("EXEC="+monitor.getProgress()+" :: "+monText+" "+CharactersTable.THETA+"="+thetaArr[finalI]+" "+CharactersTable.PHI+"="+phiArr[finalJ]));
                                 double sin_theta = sin(thetaArr[finalI]);
                                 double cos_theta = cos(thetaArr[finalI]);
                                 double sin_phi = sin(phiArr[finalJ]);

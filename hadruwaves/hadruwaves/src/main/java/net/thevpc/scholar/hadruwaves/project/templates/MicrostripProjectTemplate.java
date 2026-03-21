@@ -40,9 +40,9 @@ public class MicrostripProjectTemplate {
 
         p.parameters().addAt("/Frequency", "fr", "Frequency", UnitType.Frequency, FrequencyUnit.GHz, "3", false);
         p.parameters().addAt("/Frequency", "\u03BB", "Target Wavelength", UnitType.Length, null, "C/fr", false);
-        p.parameters().addAt("/Substrate", "\u03B5_r", "Substrate Relative Permettivity", UnitType.Double, null, "2.2", false);
+        p.parameters().addAt("/Substrate", "\u03B5_r", "Substrate Relative Permittivity", UnitType.Double, null, "2.2", false);
         p.parameters().addAt("/Substrate", "h", "Substrate Thikness", UnitType.Length, LengthUnit.mm, "0.1", false);
-        p.parameters().addAt("/Substrate", "\u03B5_ef", "Substrate Effective Relative Permettivity", UnitType.Double, null, "(\u03B5_r + 1) / 2 + (\u03B5_r - 1) / 2 * (1 / sqrt(1 + 2 * h / a_w))", false);
+        p.parameters().addAt("/Substrate", "\u03B5_ef", "Substrate Effective Relative Permittivity", UnitType.Double, null, "(\u03B5_r + 1) / 2 + (\u03B5_r - 1) / 2 * (1 / sqrt(1 + 2 * h / a_w))", false);
 
         p.parameters().addAt("/Antenna", "a_l", "Patch Antenna length (along x)", UnitType.Length, null, "a_leff - 2 * "+"a_"+CharactersTable.DELTA+"l", false);
         p.parameters().addAt("/Antenna", "a_w", "Patch Antenna width (along y)", UnitType.Length, null, "C / (2 * fr) * sqrt(2 / (\u03B5_r + 1))", false);
@@ -66,7 +66,7 @@ public class MicrostripProjectTemplate {
         p.parameters().addAt("/MoM/TestFunctions", "a_n", "Antenna Max n", UnitType.Integer, null, "4", false);
         HWMaterialTemplate substrate = new HWMaterialTemplate(p);
         substrate.name().set("substrate");
-        substrate.permettivity().set("\u03B5_r");
+        substrate.permittivity().set("\u03B5_r");
         p.materials().add(substrate);
         HWProjectScene scene = new DefaultHWcene(p);
 

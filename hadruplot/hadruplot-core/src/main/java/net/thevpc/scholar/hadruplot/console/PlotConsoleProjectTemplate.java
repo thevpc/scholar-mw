@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadruplot.console;
 
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.scholar.hadruplot.console.params.ParamSet;
 
 import javax.swing.*;
@@ -214,7 +215,7 @@ public abstract class PlotConsoleProjectTemplate {
     }
 
     protected void newStudy(String title) {
-        getPlotConsole().getLog().trace("newStudy " + title);
+        getPlotConsole().getLog().log(NMsg.ofC("newStudy " + title).asInfo());
         resetParams();
         setStudyName(title);
     }

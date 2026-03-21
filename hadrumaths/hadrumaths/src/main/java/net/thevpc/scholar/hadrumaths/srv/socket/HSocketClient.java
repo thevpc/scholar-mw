@@ -49,11 +49,9 @@ public class HSocketClient implements HadrumathsClient {
             if (count < 0) {
                 throw new IllegalArgumentException("Not a valid folder " + path);
             }
-//            System.out.println("found "+count);
             List<String> all = new ArrayList<>();
             for (int i = 0; i < count; i++) {
                 String e = connection.in().readUTF();
-                System.out.println(e);
                 all.add(e);
             }
             return all;

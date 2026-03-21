@@ -6,6 +6,7 @@ import net.thevpc.common.swing.win.WindowInfo;
 import net.thevpc.common.swing.win.WindowInfoListener;
 import net.thevpc.common.swing.*;
 import net.thevpc.common.swing.win.WindowPath;
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.swing.plaf.UIPlafManager;
 
 import javax.swing.*;
@@ -429,8 +430,7 @@ public class DefaultPlotConsoleFrame2 implements PlotConsoleFrame {
                 console.loadFile(selectedFile);
                 addRecentFile(selectedFile);
             } catch (Throwable e1) {
-                console.getLog().error(e1);
-                e1.printStackTrace();
+                console.getLog().log(NMsg.ofC("%s",e1).asError(e1));
                 JOptionPane.showMessageDialog(frameComponent(), "unable to load " + selectedFile + "\n" + e1);
             }
         }

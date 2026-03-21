@@ -1,5 +1,8 @@
 package net.thevpc.scholar.hadruplot;
 
+import net.thevpc.nuts.reflect.NReflectUtils;
+import net.thevpc.scholar.hadruplot.extension.PlotBuilderSupport;
+
 import java.util.*;
 
 public class PlotUIManager {
@@ -7,13 +10,11 @@ public class PlotUIManager {
     private static PlotUI current;
 
     static {
-        ServiceLoader<PlotUI> sl = ServiceLoader.load(PlotUI.class);
-        for (PlotUI ui : sl) {
-            add(ui);
+        for (PlotUI lib : NReflectUtils.listServices(PlotUI.class,PlotUIManager.class)) {
+            add(lib);
         }
-        ServiceLoader<PlotUIFactory> sl2 = ServiceLoader.load(PlotUIFactory.class);
-        for (PlotUIFactory uif : sl2) {
-            List<PlotUI> all = uif.findPlotUI();
+        for (PlotUIFactory lib : NReflectUtils.listServices(PlotUIFactory.class,PlotUIManager.class)) {
+            List<PlotUI> all = lib.findPlotUI();
             if (all != null) {
                 for (PlotUI ui : all) {
                     add(ui);

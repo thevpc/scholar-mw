@@ -159,7 +159,6 @@ public abstract class BoxModes implements Iterable<ModeIndex> {
         }
         );
 
-        //System.out.println("found " + next.size()+" modes in "+chrono);
         return next.toArray(new ModeFct[0]);
     }
 
@@ -236,7 +235,6 @@ public abstract class BoxModes implements Iterable<ModeIndex> {
                 }
             }
         });
-        //System.out.println("found " + next.size()+" modes in "+chrono);
         return next.toArray(new ModeIndex[0]);
     }
 

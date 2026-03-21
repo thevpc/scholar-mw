@@ -59,11 +59,6 @@ public class MatlabFactory extends AbstractFactory {
     private MatlabFactory() {
     }
 
-    //    public static void main(String[] args) {
-//        //String inStr = "alpha*n";
-//        String inStr = "1/8*a*alpha/n/pi*(-i*alpha^k+4*alpha^k*n*pi+i*exp(-4*i*pi*alpha^(-k)*n*alpha^k*sin(1/2*k*pi)^2-4*i*pi*alpha^(-k)*n*alpha^k*cos(1/2*k*pi)^2)*alpha^k)";
-//        System.out.println(matlabToLatex(inStr));
-//    }
     public static void register(Class clz, ToMatlabString t) {
         map.put(clz, t);
     }

@@ -57,8 +57,8 @@ public class ExprPlanarSource implements PlanarSource, Cloneable {
     @Override
     public NElement toElement() {
         NObjectElementBuilder h = NElement.ofObjectBuilder(getClass().getSimpleName());
-        h.add("fct", NElementHelper.elem(fct));
-        h.add("z0", NElementHelper.elem(characteristicImpedance));
+        h.add("expr", NElementHelper.elem(fct));
+        h.add("impedance", NElementHelper.elem(characteristicImpedance));
         return h.build();
     }
 

@@ -180,8 +180,6 @@ public abstract class AbstractExpressionRewriter implements ExpressionRewriter, 
         Expr last = null;
         boolean debugExpressionRewrite = Maths.Config.isDebugExpressionRewrite();
         while (maxIterations > 0) {
-//            String msg = DumpManager.getStackDepthWhites()+name+" :: REWRITE "+maxIterations+" :: "+e;
-//            System.out.println(msg);
             next = rewriteOnce(curr, targetExprType);
             if (next.isRewritten() /*&& !next.equals(curr)*/) {
                 simplified = true;

@@ -2,6 +2,7 @@ package net.thevpc.scholar.hadruwaves.mom;
 
 import net.thevpc.common.mon.MonitoredAction;
 import net.thevpc.common.mon.ProgressMonitor;
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.cache.CacheKey;
@@ -160,7 +161,7 @@ public class DefaultElectricFieldSphericalBuilder extends AbstractElectricFieldS
         final MomStructure structure = getStructure();
         final double k0 = Physics.K0(structure.getFrequency());
         final Complex C1 = (î.mul(-k0).mul(exp(î.mul(-k0 * r)))).div(4.0 * Math.PI * r);
-        final ComplexMatrix SPM = structure.getTestModeScalarProducts();
+        final ComplexMatrix SPM = structure.testModeScalarProducts();
         final ComplexMatrix Xj = structure.matrixX().evalMatrix();
         Complex[][] EthetaMatrix = new Complex[theta.length][phi.length];
         Complex[][] EphiMatrix = new Complex[theta.length][phi.length];
@@ -172,7 +173,7 @@ public class DefaultElectricFieldSphericalBuilder extends AbstractElectricFieldS
                 final int curr_j = j;
                 final double theta_i = theta[curr_i];
                 final double phi_j = phi[curr_j];
-                System.out.println("TRY EXEC=" + monitor.getProgress() + " :: " + monText + " " + CharactersTable.THETA + "=" + theta_i + " " + CharactersTable.PHI + "=" + phi_j);
+                getStructure().log().log(NMsg.ofC("TRY EXEC=" + monitor.getProgress() + " :: " + monText + " " + CharactersTable.THETA + "=" + theta_i + " " + CharactersTable.PHI + "=" + phi_j));
                 Complex[] rr = new StrSubCacheSupport<Complex[]>(structure, "spherical-evalMatrix-single",
                         CacheKey.obj("spherical-evalMatrix-single", "theta", theta[i], "phi", phi[j], "r", r,
                                  "apertureType", getApertureType(), "fieldPart", getElectricFieldPart())
@@ -180,7 +181,7 @@ public class DefaultElectricFieldSphericalBuilder extends AbstractElectricFieldS
 
                     @Override
                     public Complex[] eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {
-                        System.out.println("EXEC=" + monitor.getProgress() + " :: " + monText + " " + CharactersTable.THETA + "=" + theta_i + " " + CharactersTable.PHI + "=" + phi_j);
+                        getStructure().log().log(NMsg.ofC("EXEC=" + monitor.getProgress() + " :: " + monText + " " + CharactersTable.THETA + "=" + theta_i + " " + CharactersTable.PHI + "=" + phi_j));
                         double sin_theta = sin(theta_i);
                         double cos_theta = cos(theta_i);
                         double sin_phi = sin(phi_j);

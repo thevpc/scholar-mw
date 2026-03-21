@@ -92,10 +92,8 @@ public class TCLUDecomposition<T> implements java.io.Serializable {
                 T s = space.zero();
                 for (int k = 0; k < kmax; k++) {
                     s = space.add(s, space.mul(LU.get(i, k), LUcolj[k]));
-//                    System.out.println("\t k=" + k + " s=" + s);
                 }
                 LUcolj[i] = space.minus(LUcolj[i], s);
-//                System.out.println("LUcolj(" + i + ")=" + LUcolj[i] + " for s=" + s);
                 LU.set(i, j, LUcolj[i]);
             }
 
@@ -127,7 +125,6 @@ public class TCLUDecomposition<T> implements java.io.Serializable {
                 }
             }
         }
-//      System.out.println("LU="+new CMatrix(LU));
     }
 
     /*

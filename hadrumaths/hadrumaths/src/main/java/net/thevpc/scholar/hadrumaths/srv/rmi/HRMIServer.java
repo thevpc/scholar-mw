@@ -78,22 +78,6 @@ public class HRMIServer extends HadrumathsAbstractServer {
         }
     }
 
-//    protected void process(Socket socket) throws IOException {
-//        DataInputStream in = new DataInputStream(socket.getInputStream());
-//        DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-//        while (true) {
-//            int id = in.readInt();
-//            if (id == HadrumathsServices.QUIT) {
-//                close();
-//                break;
-//            }
-//            HadrumathsServlet servlet = getServlet(id);
-////            System.out.println("Received CMD "+id+" => "+servlet);
-//            servlet.service(in, out);
-//            out.flush();
-//        }
-//    }
-
     public void close() {
         if (isStarted()) {
             stop();

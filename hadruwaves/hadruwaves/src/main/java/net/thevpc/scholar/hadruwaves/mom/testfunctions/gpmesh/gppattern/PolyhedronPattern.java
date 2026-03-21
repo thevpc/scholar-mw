@@ -18,7 +18,7 @@ import net.thevpc.scholar.hadruwaves.mom.MomStructure;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 15 mai 2007 21:41:08
  */
-public final class PolyhedronPattern extends AbstractGpPattern {
+public final class PolyhedronPattern extends AbstractGpPattern implements Cloneable {
     boolean x;
     boolean y;
     private int gridx = 100;
@@ -37,6 +37,20 @@ public final class PolyhedronPattern extends AbstractGpPattern {
 
     public PolyhedronPattern(boolean x, boolean y,int grid) {
         this(x,y,grid,grid);
+    }
+
+    @Override
+    public Object copy() {
+        return clone();
+    }
+
+    @Override
+    protected PolyhedronPattern clone() {
+        try {
+            return (PolyhedronPattern) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

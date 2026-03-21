@@ -7,6 +7,7 @@
 package net.thevpc.scholar.hadruwaves.mom.str;
 
 import net.thevpc.common.mon.ProgressMonitors;
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadruwaves.ModeInfo;
@@ -22,38 +23,6 @@ public class MomConvergenceManager {
     public MomConvergenceManager(MomStructure momStructure) {
         this.momStructure = momStructure;
     }
-
-//    public int computeTestFunctionsForReelFreqConvergence(double precision, double freq[], ProgressMonitor monitor) {
-//        monitor = ProgressMonitors.nonnull(monitor);
-//        momStructure.build();
-//        double[] old = new double[freq.length];
-//        for (int fi = 0; fi < freq.length; fi++) {
-//            old[fi] = Double.NaN;
-//        }
-//        for (int essai_i = 1; essai_i < 100; essai_i++) {
-//            double worstDiff = Double.NaN;
-//            momStructure.setTestFunctionsCount(essai_i);
-//            for (int fi = 0; fi < freq.length; fi++) {
-//                momStructure.setFrequency(freq[fi]);
-//                Matrix z = momStructure.inputImpedance().monitor(monitor).computeMatrix();
-//                double d = z.norm1();
-//                if (!Double.isNaN(old[fi])) {
-//                    double dd = absdbl((old[fi] - d) / old[fi]);
-//                    if (Double.isNaN(worstDiff) || dd > worstDiff) {
-//                        worstDiff = dd;
-//                    }
-//                }
-//                old[fi] = d;
-//            }
-//            System.out.println("precision : " + worstDiff);
-//            if (worstDiff < precision) {
-//
-//                return essai_i;
-//            }
-//        }
-//        throw new RuntimeException("precision non atteinte");
-//    }
-
 
     /**
      * calculer la convergence du vecteur J
@@ -121,14 +90,14 @@ public class MomConvergenceManager {
                     }
                 }
             } catch (Exception e) {
-                momStructure.getLog().error("Exception @ getConvergenceFn [gp=" + _g.length + ";fn=" + n + "]: " + e);
+                momStructure.log().log(NMsg.ofC("Exception @ getConvergenceFn [gp=" + _g.length + ";fn=" + n + "]: " + e).asError());
             }
             oldJ = newJ;
         }
         if (!converged) {
-            momStructure.getLog().error("No convergence for(gp=" + _g.length + ";fn=" + maxFn + " ; step=" + step + "; error=" + error + "]: ");
+            momStructure.log().log(NMsg.ofC("No convergence for(gp=" + _g.length + ";fn=" + maxFn + " ; step=" + step + "; error=" + error + "]: ").asError());
         } else {
-            momStructure.getLog().debug("Convergence for(gp=" + _g.length + ";fn=" + maxFn + " ; step=" + step + "; error=" + error + "] = " + (n - 1 + n_pro.length));
+            momStructure.log().log(NMsg.ofC("Convergence for(gp=" + _g.length + ";fn=" + maxFn + " ; step=" + step + "; error=" + error + "] = " + (n - 1 + n_pro.length)).asDebug());
         }
         momStructure.modeFunctions().setSize(oldMaxFn);
         return n - 1 + n_pro.length;

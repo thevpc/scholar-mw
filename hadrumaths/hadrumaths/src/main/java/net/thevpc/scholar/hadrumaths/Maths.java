@@ -8,6 +8,8 @@ import net.thevpc.common.mon.ProgressMonitors;
 import net.thevpc.common.util.*;
 import net.thevpc.common.time.*;
 import net.thevpc.nuts.Nuts;
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.reflect.NReflectUtils;
 import net.thevpc.scholar.hadrumaths.cache.PersistenceCacheBuilder;
 import net.thevpc.scholar.hadrumaths.expeval.ExpressionManagerFactory;
 import net.thevpc.scholar.hadrumaths.geom.Geometry;
@@ -30,6 +32,7 @@ import net.thevpc.scholar.hadrumaths.symbolic.polymorph.Any;
 import net.thevpc.scholar.hadrumaths.symbolic.polymorph.cond.IfExpr;
 import net.thevpc.scholar.hadrumaths.symbolic.polymorph.trigo.Conj;
 import net.thevpc.scholar.hadrumaths.util.ArrayUtils;
+import net.thevpc.scholar.hadrumaths.util.ExprElementParser;
 import net.thevpc.scholar.hadrumaths.util.PlatformUtils;
 import net.thevpc.scholar.hadrumaths.util.UnsafeHandler;
 
@@ -41,11 +44,7 @@ import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.Callable;
-import java.util.function.DoublePredicate;
-import java.util.function.Function;
-import java.util.function.IntPredicate;
-import java.util.function.Supplier;
-import java.util.function.ToDoubleFunction;
+import java.util.function.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -54,6 +53,7 @@ public final class Maths {
     static {
         Nuts.require();
     }
+
     //<editor-fold desc="constants functions">
     public static final double PI = Math.PI;
     public static final double TWO_PI = 2 * Math.PI;
@@ -226,7 +226,7 @@ public final class Maths {
     public static final int X_AXIS = 0;
     public static final int Y_AXIS = 1;
     public static final int Z_AXIS = 2;
-    public static final double DEGREES_PER_RADIAN = (double) (180.0 / PI);
+    public static final double DEGREES_PER_RADIAN = 180.0 / PI;
     public static final Function IDENTITY = new IdentityConverter();
     public static final Function<Complex, Double> COMPLEX_TO_DOUBLE = new ComplexDoubleConverter();
     public static final Function<Double, Complex> DOUBLE_TO_COMPLEX = new DoubleComplexConverter();
@@ -294,9 +294,12 @@ public final class Maths {
 //    private static final Jeep defaultExpressionManager = ExpressionManagerFactory.createEvaluator();
 
     static {
-        ServiceLoader<HadrumathsService> loader = ServiceLoader.load(HadrumathsService.class);
+        loadLibraries();
+    }
+
+    private static void loadLibraries() {
         TreeMap<Integer, List<HadrumathsService>> all = new TreeMap<>();
-        for (HadrumathsService hadrumathsService : loader) {
+        for (HadrumathsService hadrumathsService : NReflectUtils.listServices(HadrumathsService.class, Maths.class)) {
             HadrumathsServiceDesc d = hadrumathsService.getClass().getAnnotation(HadrumathsServiceDesc.class);
             if (d == null) {
                 throw new IllegalArgumentException("Missing @HadrumathsServiceDesc for " + hadrumathsService.getClass());
@@ -313,7 +316,6 @@ public final class Maths {
                 hadrumathsService.installService();
             }
         }
-
     }
 
     private Maths() {
@@ -1452,6 +1454,10 @@ public final class Maths {
         return DoubleExpr.of(value);
     }
 
+    public static Expr expr(NElement value) {
+        return ExprElementParser.parse(value).get();
+    }
+
     public static Expr expr(Expr value) {
         if (value == null) {
             throw new NullPointerException();
@@ -1572,7 +1578,7 @@ public final class Maths {
     }
 
     public static Expr derive(Expr f, Axis axis) {
-        f=f.simplify();
+        f = f.simplify();
         return Config.getFunctionDerivatorManager().derive(f, axis).simplify();
     }
 
@@ -3737,11 +3743,7 @@ public final class Maths {
         while (true) {
             Object[] uplet = new Object[indexes.length];
             for (int i = 0; i < uplet.length; i++) {
-//                try {
                 uplet[i] = values[i][indexes[i]];
-//                } catch (ArrayIndexOutOfBoundsException ex) {
-//                    System.out.println("");
-//                }
             }
             action.next(uplet);
 
@@ -3865,7 +3867,7 @@ public final class Maths {
         MemoryInfo memoryInfoAfter = Maths.memoryInfo();
 
         PlatformUtils.gc2();
-        $log.log(Level.INFO, name + " : time= " + c.toString() + "  mem-usage= " + Maths.formatMemory(memoryInfoAfter.diff(memoryInfoBefore).inUseMemory()));
+        $log.log(Level.INFO, name + " : time= " + c + "  mem-usage= " + Maths.formatMemory(memoryInfoAfter.diff(memoryInfoBefore).inUseMemory()));
         return c;
     }
 
@@ -3874,7 +3876,6 @@ public final class Maths {
     }
 
     public static <V> V chrono(String name, Callable<V> r) {
-//        System.out.println("Start "+name);
         PlatformUtils.gc2();
         MemoryInfo memoryInfoBefore = Maths.memoryInfo();
         Chronometer c = Chronometer.start();
@@ -3887,7 +3888,7 @@ public final class Maths {
         c.stop();
         MemoryInfo memoryInfoAfter = Maths.memoryInfo();
         PlatformUtils.gc2();
-        $log.log(Level.INFO, name + " : time= " + c.toString() + "  mem-usage= " + Maths.formatMemory(memoryInfoAfter.diff(memoryInfoBefore).inUseMemory()));
+        $log.log(Level.INFO, name + " : time= " + c + "  mem-usage= " + Maths.formatMemory(memoryInfoAfter.diff(memoryInfoBefore).inUseMemory()));
         return v;
     }
 

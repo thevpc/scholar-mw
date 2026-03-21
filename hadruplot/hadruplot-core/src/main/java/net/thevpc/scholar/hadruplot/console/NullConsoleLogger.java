@@ -1,24 +1,13 @@
 package net.thevpc.scholar.hadruplot.console;
 
-public class NullConsoleLogger implements ConsoleLogger{
-    public static final NullConsoleLogger INSTANCE=new NullConsoleLogger();
-    @Override
-    public void trace(Object msg) {
+import net.thevpc.nuts.log.NLogger;
+import net.thevpc.nuts.text.NMsg;
 
-    }
-
-    @Override
-    public void error(Object msg) {
-
-    }
-
-    @Override
-    public void warning(Object msg) {
-
-    }
-
-    @Override
-    public void debug(Object msg) {
-
-    }
-}
+//public class NullConsoleLogger implements NLogger {
+//    public static final NullConsoleLogger INSTANCE=new NullConsoleLogger();
+//
+//    @Override
+//    public void log(NMsg msg) {
+//
+//    }
+//}

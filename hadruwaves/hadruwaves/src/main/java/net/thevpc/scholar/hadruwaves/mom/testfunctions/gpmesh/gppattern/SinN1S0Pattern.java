@@ -19,7 +19,7 @@ import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 /**
  *
  */
-public final class SinN1S0Pattern extends RectMeshAttachGpPattern {
+public final class SinN1S0Pattern extends RectMeshAttachGpPattern  implements Cloneable{
     private int max;
 
 

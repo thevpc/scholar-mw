@@ -4,6 +4,7 @@ package net.thevpc.scholar.hadrumaths.geom;
 import net.thevpc.nuts.elem.NElement;
 
 import net.thevpc.common.util.MinMax;
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.DomainScaleTool;
 import net.thevpc.scholar.hadrumaths.GeometryFactory;
@@ -26,60 +27,6 @@ public class Surface extends AbstractGeometry implements Cloneable {
     private final Domain uniformDomain = Domain.ofBounds(0, 100000, 0, 100000);
     private final List<Point> points;
     private final Path2D.Double path;
-
-//    public static void main(String[] args) {
-////        Point ap1 = Point.create(0.050283499999999995,-0.0075);
-////        Point ap2 = Point.create(0.0,-0.0075);
-////        Point ap3 = Point.create(0.03352233333333333,-0.0024999999999999996);
-////
-////        Point bp1 = Point.create(0.050283499999999995,-0.0075);
-////        Point bp2 = Point.create(0.050283499999999995,0.0075);
-////        Point bp3 = Point.create(0.03352233333333333,-0.0024999999999999996);
-//
-////        Point ap1 = Point.create(0.050283499999999995,-0.0075);
-////        Point ap2 = Point.create(0.0,-0.0075);
-////        Point ap3 = Point.create(0.03352233333333333,-0.0024999999999999996);
-////
-////        Point bp1 = ap1;
-////        Point bp2 = Point.create(0.050283499999999995,0.0075);
-////        Point bp3 = ap3;
-//
-//        Point ap1 = Point.create(1,1);
-//        Point ap2 = Point.create(3,1);
-//        Point ap3 = Point.create(2,5);
-//
-//        Point bp1 = ap1;
-//        Point bp2 = Point.create(0,5);
-//        Point bp3 = ap3;
-//
-//
-//
-//        Triangle a = new Triangle(ap1, ap2, ap3);
-//        Triangle b = new Triangle(bp1, bp2, bp3);
-//        Geometry r = a.add(b);
-//        AreaComponent.showDialog(r.scale(400,400));
-//    }
-//
-//    public static void main(String[] args) {
-//        Triangle a = new Triangle(Point.create(0, 0), Point.create(0, 0 + 200), Point.create(0 + 200, 0));
-//        Triangle b = new Triangle(Point.create(0, 0), Point.create(0 + 200, 0 + 200), Point.create(0 + 200, 0));
-////        Triangle a = new Triangle(Point.create(100, 100), Point.create(100, 100 + 200), Point.create(100 + 200, 100));
-////        Triangle b = new Triangle(Point.create(100, 100), Point.create(100 + 200, 100 + 200), Point.create(100 + 200, 100));
-//
-//        DomainScaleTool t1 = DomainScaleTool.create(a.getDomain(), Domain.forBounds(0, 300, 0, 300));
-//        System.out.println(t1.rescale(new Point(100, 100)));
-//        System.out.println(t1.rescale(a).toSurface().getPoints());
-//        AreaComponent.showDialog(a, t1.rescale(a));
-//
-////        AreaComponent.showDialog(new Area(a.getPath()),new Area(b.getPath()));
-//        for (Point point : a.intersect(b).toSurface().getPoints()) {
-//            System.out.println(point);
-//        }
-////        AreaComponent.showDialog(a,b);
-//        AreaComponent.showDialog(a,b,a.add(b));
-//        AreaComponent.showDialog(a.add(b));
-//
-//    }
 
     public Surface(Geometry other) {
         this(other.getPath());
@@ -389,11 +336,12 @@ public class Surface extends AbstractGeometry implements Cloneable {
     public NElement toElement() {
         return NElement.ofObjectBuilder("surface").addAll(
                 NElement.ofPair("domain", NElementHelper.elem(domain)),
-                NElement.ofPair("points", NElementHelper.elem(points))
+                NElement.ofPair("precision", NElementHelper.elem(precision)),
+                NElement.ofPair("points", NElementHelper.elem(points)),
+                NElement.ofPair("properties", NElementHelper.elem(getProperties()))
         ).build();
     }
 
-    @Override
     public String toString() {
         return dump();
     }

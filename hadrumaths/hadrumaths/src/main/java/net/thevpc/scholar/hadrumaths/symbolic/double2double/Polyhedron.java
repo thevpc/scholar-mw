@@ -122,7 +122,6 @@ public class Polyhedron extends AbstractDoubleToDouble {
                     if (Double.isNaN(v)) {
                         v = 0;
                     }
-//                    System.out.printf("%s : x=%10.4f,y%10.4f,v%10.4f = \n",polygon,x,y,v);
                     return v;
                 }
                 t2 = new Triangle(triangle.p2, triangle.p3, baricenter);
@@ -133,7 +132,6 @@ public class Polyhedron extends AbstractDoubleToDouble {
                     if (Double.isNaN(v)) {
                         v = 0;
                     }
-//                    System.out.printf("%s : x=%10.4f,y%10.4f,v%10.4f = \n",polygon,x,y,v);
                     return v;
                 }
 
@@ -145,10 +143,8 @@ public class Polyhedron extends AbstractDoubleToDouble {
                     if (Double.isNaN(v)) {
                         v = 0;
                     }
-//                    System.out.printf("%s : x=%10.4f,y%10.4f,v%10.4f = \n",polygon,x,y,v);
                     return v;
                 }
-//                System.out.printf("%s : x=%10.4f,y%10.4f,v%s = \n",polygon,x,y,"0000");
                 return 0;
             }
             throw new IllegalArgumentException("Unable to compute Polyedre here : npoints=" + polygon.getPoints().size());

@@ -12,7 +12,7 @@ import static java.lang.Math.sqrt;
 /**
  *
  */
-public final class SisiSisiPattern extends AbstractGpPatternPQ {
+public final class SisiSisiPattern extends AbstractGpPatternPQ  implements Cloneable{
 
     public SisiSisiPattern(int complexity) {
         super(complexity);

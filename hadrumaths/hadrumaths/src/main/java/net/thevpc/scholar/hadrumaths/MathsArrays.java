@@ -91,13 +91,11 @@ public class MathsArrays {
      * inclusive) accepted in range
      */
     public static int[] rangeCC(double[] orderedValues, double min, double max) {
-        //System.out.printf("[%f..%f] from [%f,%f]=",range[0],range[range.length-1],min,max);
         int len = orderedValues.length;
         int a = Arrays.binarySearch(orderedValues, min);
         if (a < 0) {
             a = -a - 1;
             if (a == len) {
-                //System.out.printf("0%n");
                 return null;
             }
         }
@@ -105,13 +103,11 @@ public class MathsArrays {
         if (b < 0) {
             b = -b - 2;
             if (b < 0) {
-                //System.out.printf("0%n");
                 return null;
             } else if (b == len) {
                 b = len - 1;
             }
         }
-        //System.out.printf("[%f,%f] as [%d,%d]%n",range[a],range[b],a,b);
         return new int[]{a, b};
     }
 
@@ -126,7 +122,6 @@ public class MathsArrays {
      * inclusive) accepted in range
      */
     public static int[] rangeCO(double[] orderedValues, double min, double max) {
-        //System.out.printf("[%f..%f] from [%f,%f]=",range[0],range[range.length-1],min,max);
         if (orderedValues == null) {
             return null;
         }
@@ -135,7 +130,6 @@ public class MathsArrays {
         if (a < 0) {
             a = -a - 1;
             if (a == len) {
-                //System.out.printf("0%n");
                 return null;
             }
         }
@@ -143,7 +137,6 @@ public class MathsArrays {
         if (b < 0) {
             b = -b - 2;
             if (b < 0) {
-                //System.out.printf("0%n");
                 return null;
             } else if (b == len) {
                 b = len - 1;
@@ -156,7 +149,6 @@ public class MathsArrays {
         if (b < a) {
             return null;
         }
-        //System.out.printf("[%f,%f] as [%d,%d]%n",range[a],range[b],a,b);
         return new int[]{a, b};
     }
 

@@ -10,7 +10,7 @@ import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 /**
  *
  */
-public final class SicoCosiPattern extends AbstractGpPatternPQ {
+public final class SicoCosiPattern extends AbstractGpPatternPQ  implements Cloneable{
 
 
     public SicoCosiPattern(int complexity) {

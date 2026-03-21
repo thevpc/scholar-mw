@@ -31,18 +31,6 @@ public class PositiveModeIterator2 implements Iterator<ModeIndex> {
         ii = IntIteratorBuilder.iter().from(0, 0).breadthFirst();
     }
 
-    public static void main(String[] args) {
-        PositiveModeIterator2 p = new PositiveModeIterator2(new ModeType[]{ModeType.TE, ModeType.TM}, null, null);
-        int max=100;
-        while(p.hasNext()){
-            System.out.println(p.next());
-            max--;
-            if(max==0){
-                break;
-            }
-        }
-    }
-
     @Override
     public boolean hasNext() {
         if (list.isEmpty()) {

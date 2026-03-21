@@ -1,9 +1,11 @@
 package net.thevpc.scholar.hadrumaths.cache;
 
 import net.thevpc.common.mon.ProgressMonitorFactory;
+import net.thevpc.nuts.log.NLogger;
 import net.thevpc.scholar.hadrumaths.io.HFile;
 
 public class PersistenceCacheBuilder {
+    private NLogger logger;
     private HFile rootFolder;
     private String repositoryName;
     private PersistenceCache parent;
@@ -11,6 +13,15 @@ public class PersistenceCacheBuilder {
 
     public static PersistenceCacheBuilder of() {
         return new PersistenceCacheBuilder();
+    }
+
+    public NLogger getLogger() {
+        return logger;
+    }
+
+    public PersistenceCacheBuilder setLogger(NLogger logger) {
+        this.logger = logger;
+        return this;
     }
 
     public HFile getRootFolder() {
@@ -52,12 +63,13 @@ public class PersistenceCacheBuilder {
         this.progressMonitorFactory = progressMonitorFactory;
         return this;
     }
+
     public PersistenceCacheBuilder monitorFactory(ProgressMonitorFactory progressMonitorFactory) {
         this.progressMonitorFactory = progressMonitorFactory;
         return this;
     }
 
     public PersistenceCache build() {
-        return new PersistenceCacheImpl(rootFolder, repositoryName, parent,progressMonitorFactory);
+        return new PersistenceCacheImpl(rootFolder, repositoryName, parent, progressMonitorFactory, logger != null ? logger : NLogger.STDERR);
     }
 }

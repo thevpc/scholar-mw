@@ -3,10 +3,9 @@ package net.thevpc.ntexup.extension.hadruwaves;
 import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
 import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
 import net.thevpc.ntexup.api.parser.NTxAllArgumentReader;
-import net.thevpc.ntexup.api.renderer.NTxNodeRendererContext;
+import net.thevpc.ntexup.api.renderer.NTxRendererContext;
 import net.thevpc.ntexup.extension.mwsimulator.*;
-import net.thevpc.nuts.util.*;
-import net.thevpc.scholar.hadruwaves.mom.*;
+import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 
 /**
@@ -16,7 +15,7 @@ public class NTxHadruwavesBuilder implements NTxNodeBuilder {
 
     @Override
     public void build(NTxNodeBuilderContext builderContext) {
-        builderContext.id("hadruwaves")
+        builderContext.id("hadruwaves-mom-solver")
                 .parseParam()
                 .matchesAny().end()
                 .processChildren(this::processChildren)
@@ -28,8 +27,15 @@ public class NTxHadruwavesBuilder implements NTxNodeBuilder {
         //info.node().setUserObject("def", all);
     }
 
-    public void renderMain(NTxNodeRendererContext rendererContext) {
-        MoMStrSimulationQuery q = MoMQueryBuilder.resolveMoMStrSimulationQuery(rendererContext);
-        NTxMwSimulationUtils.doRender(rendererContext,q);
+    public void renderMain(NTxRendererContext rendererContext) {
+        NTxMwSimulationUtils.doRender(rendererContext,
+                (name, args) -> {
+                    MomStructure str = MomParser.createMomStructure(args);
+                    if (str == null) {
+                        return null;
+                    }
+                    return new MoMStrNTxSimulationPlan(name,rendererContext.log(), str);
+                }
+        );
     }
 }

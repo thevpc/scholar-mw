@@ -38,8 +38,8 @@ public class Convergence {
     }
 
     public static <T> ConvergenceResult<T> compute(ConvergenceConfig<T> conf) {
-        ConvergenceEvaluator<T> it = NAssert.requireNonNull(conf.getEval(), "iteration");
-        Equalator<T> eps = NAssert.requireNonNull(conf.getEqualator(), "equalator");
+        ConvergenceEvaluator<T> it = NAssert.requireNamedNonNull(conf.getEval(), "iteration");
+        Equalator<T> eps = NAssert.requireNamedNonNull(conf.getEqualator(), "equalator");
         long start = conf.getStartEpoch();
         long maxIterations0 = conf.getMaxEpochs();
         long remainingIterations = maxIterations0;

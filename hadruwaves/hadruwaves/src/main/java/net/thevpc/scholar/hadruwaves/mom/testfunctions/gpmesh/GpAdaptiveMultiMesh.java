@@ -64,7 +64,7 @@ public class GpAdaptiveMultiMesh extends TestFunctionsBase implements Cloneable 
             gps = TestFunctionsSymmetry.NO_SYMMETRY;
         }
         for (MeshZone zone : allZones) {
-            DoubleToVector[] allGpFunctions = cell.getPattern().createFunctions(globalDomain, zone, monitor, getStructure());
+            DoubleToVector[] allGpFunctions = cell.getPattern().createFunctions(globalDomain, zone, monitor, getStructure(),log());
             int goodCount = allGpFunctions.length;
             partCounter++;
             switch (gps) {
@@ -140,9 +140,6 @@ public class GpAdaptiveMultiMesh extends TestFunctionsBase implements Cloneable 
                     break;
                 }
                 case SUM_Y_SYMMETRY: {
-//                    if(("("+0+","+3+")").equals(zone.getProperty("Attach For"))){
-//                        System.out.println("goodCount = " + goodCount);
-//                    }
                     if (zone.getDomain().ymin() < globalDomain.getCenterY()) {
                         for (int i = 0; i < goodCount; i++) {
                             DoubleToVector c = allGpFunctions[i];

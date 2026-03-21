@@ -1,6 +1,7 @@
 package net.thevpc.scholar.hadrumaths.geom;
 
 import net.thevpc.scholar.hadrumaths.Domain;
+import net.thevpc.scholar.hadrumaths.HSerializable;
 
 import java.util.Collection;
 

@@ -5,6 +5,7 @@ import net.thevpc.common.mon.ProgressMonitors;
 import net.thevpc.nuts.elem.NElement;
 
 import net.thevpc.common.mon.ProgressMonitor;
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadruwaves.str.ZinEvaluator;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
@@ -28,7 +29,7 @@ public class ZinParallelEvaluator implements ZinEvaluator {
             ComplexMatrix ZinPaire=B_.transposeHermitian().mul(aInv).mul(B_);
             ZinCond = ZinPaire.div(2);
         } catch (Exception e) {
-            str.getLog().error("Error Zin : " + e);
+            str.log().log(NMsg.ofC("Error Zin : " + e).asError(e));
             str.wdebug("resolveZin", e);
             return Maths.NaNMatrix(1);
         }

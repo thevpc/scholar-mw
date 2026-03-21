@@ -18,7 +18,7 @@ import java.util.List;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 10 juin 2007 11:38:23
  */
-public abstract class RectMeshAttachGpPattern extends AbstractGpPattern implements RectangularGpPattern {
+public abstract class RectMeshAttachGpPattern extends AbstractGpPattern implements RectangularGpPattern,Cloneable {
 
     private MeshZoneTypeFilter filter;
 
@@ -29,6 +29,20 @@ public abstract class RectMeshAttachGpPattern extends AbstractGpPattern implemen
                                 (attachX && !attachY) ? MeshZoneType.FILTER_MXEW :
                                         /*(!attachX&&attachY)?*/MeshZoneType.FILTER_MYNS
         );
+    }
+
+    @Override
+    public RectMeshAttachGpPattern copy() {
+        return clone();
+    }
+
+    @Override
+    protected RectMeshAttachGpPattern clone() {
+        try {
+            return (RectMeshAttachGpPattern) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

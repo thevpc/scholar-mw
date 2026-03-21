@@ -3,6 +3,10 @@ package net.thevpc.scholar.hadruplot.console;
 import net.thevpc.common.swing.win.WindowInfo;
 import net.thevpc.common.swing.win.WindowInfoListener;
 import net.thevpc.common.swing.win.WindowPath;
+import net.thevpc.nuts.log.NLog;
+import net.thevpc.nuts.log.NLogger;
+import net.thevpc.nuts.reflect.NReflectUtils;
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.scholar.hadruplot.console.extension.PlotConsoleCacheSupport;
 import net.thevpc.scholar.hadruplot.console.extension.PlotConsoleFileSupport;
 import net.thevpc.scholar.hadruplot.console.extension.PlotConsoleTool;
@@ -17,8 +21,6 @@ import net.thevpc.common.swing.SwingUtilities3;
 import net.thevpc.scholar.hadruplot.*;
 import net.thevpc.scholar.hadruplot.console.params.ParamSet;
 import net.thevpc.scholar.hadruplot.console.yaxis.PlotAxis;
-import net.thevpc.scholar.hadruplot.filetypes.PlotFileTypeJpeg;
-import net.thevpc.scholar.hadruplot.filetypes.PlotFileTypePng;
 
 import javax.swing.*;
 import java.io.*;
@@ -32,7 +34,7 @@ public class PlotConsole implements PlotComponentDisplayer, PlotManager, Progres
     public static String PLOT_CONSOLE_FILE_DESC = "Java Plot Console";
     public static SimpleDateFormat FILE_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd-HHmmss");
     public static ExtensionFileChooserFilter CHOOSER_FILTER = new ExtensionFileChooserFilter(PLOT_CONSOLE_FILE_EXTENSION, PLOT_CONSOLE_FILE_DESC);
-    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmss");
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmss");
 
     private final Object autoSaving = new Object();
     boolean disposing;
@@ -40,11 +42,11 @@ public class PlotConsole implements PlotComponentDisplayer, PlotManager, Progres
     private String frameTitle = "NO_NAME";
     private LogAreaComponent logger;
     //    private JInternalFrame logFrame;
-    private ConsoleLogger log = new DefaultConsoleLogger(this);
+    private final NLogger log = NLog.of(PlotConsole.class);
     private PlotConsoleFrame plotConsoleFrame;
     private CloseOption closeOption = CloseOption.EXIT;
     private TaskMonitorManagerComponent taskMonitorComponent;
-    private List<PlotConsoleTool> tools = new ArrayList<>();
+    private final List<PlotConsoleTool> tools = new ArrayList<>();
     private boolean readOnly = false;
     private String autoSavingFilePattern;
     private File currentAutoSavingFile;
@@ -53,10 +55,10 @@ public class PlotConsole implements PlotComponentDisplayer, PlotManager, Progres
     private long progressPeriod = 2000;
     private File currentDirectory = null;
     private ProgressMonitorThread progressMonitorThread;
-    private List<PlotConsoleCacheSupport> plotConsoleCacheSupports = new ArrayList<>();
+    private final List<PlotConsoleCacheSupport> plotConsoleCacheSupports = new ArrayList<>();
     private PlotConsoleWindowManager windowManager = null;
-    private List<PlotConsoleFileSupport> fileSupportList = new ArrayList<>();
-    private List<PlotConsoleMenuItem> menus = new ArrayList<>();
+    private final List<PlotConsoleFileSupport> fileSupportList = new ArrayList<>();
+    private final List<PlotConsoleMenuItem> menus = new ArrayList<>();
     private TaskMonitorManager taskMonitor;
 
     public PlotConsole() {
@@ -81,11 +83,9 @@ public class PlotConsole implements PlotComponentDisplayer, PlotManager, Progres
         this.currentDirectory = folder;
         this.windowManager = new PlotConsoleWindowManager(this);
 
-        ServiceLoader<PlotConsoleCacheSupport> sl = ServiceLoader.load(PlotConsoleCacheSupport.class);
-        for (PlotConsoleCacheSupport sup : sl) {
-            plotConsoleCacheSupports.add(sup);
+        for (PlotConsoleCacheSupport lib : NReflectUtils.listServices(PlotConsoleCacheSupport.class, PlotConsole.class)) {
+            plotConsoleCacheSupports.add(lib);
         }
-        //
         silentSetFrameTitle(title);
         setAutoSavingFilePattern("{classname}-{date}");
     }
@@ -93,7 +93,7 @@ public class PlotConsole implements PlotComponentDisplayer, PlotManager, Progres
     public PlotConsole start() {
         if (startTime == 0) {
             getTaskMonitor();
-            getLog().trace("Start Project " + getFrameTitle());
+            getLog().log(NMsg.ofC("Start Project " + getFrameTitle()).asInfo());
             startTime = System.currentTimeMillis();
             disposing = false;
             readOnly = false;
@@ -238,179 +238,176 @@ public class PlotConsole implements PlotComponentDisplayer, PlotManager, Progres
     public void run(PlotData data) {
         start();
         PlotData plotData = data.clone();
-        try {
-            getLog().trace("Start Execution : ");
-            if (plotData.getStructure() == null && plotData.getStructure2() == null) {
-                getLog().error("MomStructure is Missing. please call setStructure/setStructure2 methods.");
-                return;
-            }
-            ConsoleAwareObject direct = plotData.getStructure() != null ? plotData.getStructure() : null;
-            if (direct == null) {
-                throw new IllegalArgumentException("Missing reference object");
+        getLog().log(NMsg.ofC("Start Execution : ").asInfo());
+        if (plotData.getStructure() == null && plotData.getStructure2() == null) {
+            getLog().log(NMsg.ofC("MomStructure is Missing. please call setStructure/setStructure2 methods.").asError());
+            return;
+        }
+        ConsoleAwareObject direct = plotData.getStructure() != null ? plotData.getStructure() : null;
+        if (direct == null) {
+            throw new IllegalArgumentException("Missing reference object");
 //                MomStructure str = new MomStructure();
 //                str.getPersistenceCache().setRootFolder(getCurrentDirectory());
 //                direct = str;
-            }
-            direct.setLog(getLog());
-            getLog().trace("Reference Data (1) : ");
-            getLog().trace("-----------------");
-            getLog().trace(direct.dump());
-            if (plotData.getStructure2() != null) {
-                plotData.getStructure2().setLog(getLog());
-                getLog().trace("Second Data (2) : ");
-                getLog().trace("-----------------");
-                getLog().trace(plotData.getStructure2().dump());
-            } else {
-                getLog().trace("Second Data (2) : ");
-                getLog().trace("-----------------");
-                getLog().trace("<NOT SPECIFIED>");
-            }
-            int maxIterations = 1;
-            ParamSet[] params0 = plotData.getParams();
-            for (ParamSet param : params0) {
-                maxIterations *= param.getSize();
-                param.reset();
-                param.next();
-                getLog().trace("Setting Global ParamSet : " + param.getTitle());
-                param.setParameter(direct);
-                if (plotData.getStructure2() != null) {
-                    param.setParameter(plotData.getStructure2());
-                }
-                param.reset();
-            }
-            for (int i = 0; i < params0.length / 2; i++) {
-                ParamSet x = params0[i];
-                params0[i] = params0[params0.length - i - 1];
-                params0[params0.length - i - 1] = x;
-            }
-            int level = params0.length - 1;
-            getPlotConsoleFrame().setGlobalInfo(plotData.getWindowTitle() + " [" + maxIterations + "]");
-            boolean firstShow = true;
-            if (params0.length == 0) {
-                ComputeTitle serieTitle = new ComputeTitle(false);
-                for (ParamSet param : params0) {
-                    if (disposing) {
-                        return;
-                    }
-                    serieTitle.add(param);
-                }
-
-                for (ConsoleAxis consoleAxise : plotData.getAxisList()) {
-                    if (disposing) {
-                        return;
-                    }
-                    if (consoleAxise.getX() != null) {
-                        getLog().trace("Setting X : " + consoleAxise.getX().getTitle());
-                    }
-                    for (PlotAxis yParam : consoleAxise.getY()) {
-                        if (disposing) {
-                            return;
-                        }
-                        getLog().trace("Start Running : " + yParam.getName(serieTitle));
-                        getLog().trace("Setting Y : " + yParam);
-                        PlotThread plotThread = new PlotThread(
-                                yParam.clone(),
-                                plotData.clone(),
-                                serieTitle,
-                                (direct == null ? null : direct.clone()),
-                                (plotData.getStructure2() == null ? null : plotData.getStructure2().clone()),
-                                consoleAxise,
-                                this
-                        );
-                        getTaskMonitor().addTask(plotThread, plotThread.getWindowTitle(), plotThread.getSerieTitle().toString());
-                        plotThread.start();
-                        if (disposing) {
-                            return;
-                        }
-                        getTaskMonitor().waitForTask();
-                        ticMonitor();
-                    }
-                }
-                if (firstShow) {
-                    firstShow = false;
-                }
-            } else {
-                while (level < params0.length) {
-                    if (disposing) {
-                        return;
-                    }
-                    if (!params0[level].hasNext()) {
-                        level++;
-                    } else {
-                        params0[level].next();
-                        getLog().trace("Setting ParamSet : " + params0[level].getTitle());
-                        params0[level].setParameter(direct);
-                        if (plotData.getStructure2() != null) {
-                            params0[level].setParameter(plotData.getStructure2());
-                        }
-                        if (level > 0) {
-                            level--;
-                            params0[level].reset();
-                            //                    logln("Reset ParamSet : " + params0[level]);
-                        } else {
-                            ComputeTitle serieTitle = new ComputeTitle(false);
-                            for (ParamSet param : params0) {
-                                if (disposing) {
-                                    return;
-                                }
-                                serieTitle.add(param);
-                            }
-
-                            for (ConsoleAxis consoleAxise : plotData.getAxisList()) {
-                                if (disposing) {
-                                    return;
-                                }
-                                if (consoleAxise.getX() == null) {
-                                    getLog().trace("No X to Set!");
-                                } else {
-                                    getLog().trace("Setting X : " + consoleAxise.getX().getTitle());
-                                }
-                                for (PlotAxis yParam : consoleAxise.getY()) {
-                                    if (disposing) {
-                                        return;
-                                    }
-                                    getLog().trace("Start Running : " + yParam.getName(serieTitle));
-                                    getLog().trace("Setting Y : " + yParam);
-                                    ConsoleAwareObject directClone = (direct == null ? null : direct.clone());
-                                    if (directClone != null) {
-                                        for (PlotConsoleCacheSupport plotConsoleCacheSupport : plotConsoleCacheSupports) {
-                                            plotConsoleCacheSupport.prepareObject(directClone, "Direct", serieTitle.toString());
-                                        }
-                                    }
-                                    ConsoleAwareObject modelClone = (plotData.getStructure2() == null ? null : plotData.getStructure2().clone());
-                                    if (modelClone != null) {
-                                        for (PlotConsoleCacheSupport plotConsoleCacheSupport : plotConsoleCacheSupports) {
-                                            plotConsoleCacheSupport.prepareObject(modelClone, "Model", serieTitle.toString());
-                                        }
-                                    }
-                                    PlotThread plotThread = new PlotThread(
-                                            yParam.clone(),
-                                            plotData.clone(),
-                                            serieTitle,
-                                            directClone,
-                                            modelClone,
-                                            consoleAxise,
-                                            this
-                                    );
-                                    getTaskMonitor().addTask(plotThread, plotThread.getWindowTitle(), plotThread.getSerieTitle().toString());
-                                    plotThread.start();
-                                    if (disposing) {
-                                        return;
-                                    }
-                                    getTaskMonitor().waitForTask();
-                                    ticMonitor();
-                                }
-                            }
-                            if (firstShow) {
-                                firstShow = false;
-                            }
-                        }
-                    }
-                }
-            }
-            ticMonitor();
-        } finally {
         }
+        direct.setLog(getLog());
+        getLog().log(NMsg.ofC("Reference Data (1) : ").asInfo());
+        getLog().log(NMsg.ofC("-----------------").asInfo());
+        getLog().log(NMsg.ofC(direct.dump()).asInfo());
+        if (plotData.getStructure2() != null) {
+            plotData.getStructure2().setLog(getLog());
+            getLog().log(NMsg.ofC("Second Data (2) : ").asInfo());
+            getLog().log(NMsg.ofC("-----------------").asInfo());
+            getLog().log(NMsg.ofC(plotData.getStructure2().dump()).asInfo());
+        } else {
+            getLog().log(NMsg.ofC("Second Data (2) : ").asInfo());
+            getLog().log(NMsg.ofC("-----------------").asInfo());
+            getLog().log(NMsg.ofC("<NOT SPECIFIED>").asInfo());
+        }
+        int maxIterations = 1;
+        ParamSet[] params0 = plotData.getParams();
+        for (ParamSet param : params0) {
+            maxIterations *= param.getSize();
+            param.reset();
+            param.next();
+            getLog().log(NMsg.ofC("Setting Global ParamSet : " + param.getTitle()).asInfo());
+            param.setParameter(direct);
+            if (plotData.getStructure2() != null) {
+                param.setParameter(plotData.getStructure2());
+            }
+            param.reset();
+        }
+        for (int i = 0; i < params0.length / 2; i++) {
+            ParamSet x = params0[i];
+            params0[i] = params0[params0.length - i - 1];
+            params0[params0.length - i - 1] = x;
+        }
+        int level = params0.length - 1;
+        getPlotConsoleFrame().setGlobalInfo(plotData.getWindowTitle() + " [" + maxIterations + "]");
+        boolean firstShow = true;
+        if (params0.length == 0) {
+            ComputeTitle serieTitle = new ComputeTitle(false);
+            for (ParamSet param : params0) {
+                if (disposing) {
+                    return;
+                }
+                serieTitle.add(param);
+            }
+
+            for (ConsoleAxis consoleAxise : plotData.getAxisList()) {
+                if (disposing) {
+                    return;
+                }
+                if (consoleAxise.getX() != null) {
+                    getLog().log(NMsg.ofC("Setting X : " + consoleAxise.getX().getTitle()).asInfo());
+                }
+                for (PlotAxis yParam : consoleAxise.getY()) {
+                    if (disposing) {
+                        return;
+                    }
+                    getLog().log(NMsg.ofC("Start Running : " + yParam.getName(serieTitle)).asInfo());
+                    getLog().log(NMsg.ofC("Setting Y : " + yParam).asInfo());
+                    PlotThread plotThread = new PlotThread(
+                            yParam.clone(),
+                            plotData.clone(),
+                            serieTitle,
+                            (direct == null ? null : direct.clone()),
+                            (plotData.getStructure2() == null ? null : plotData.getStructure2().clone()),
+                            consoleAxise,
+                            this
+                    );
+                    getTaskMonitor().addTask(plotThread, plotThread.getWindowTitle(), plotThread.getSerieTitle().toString());
+                    plotThread.start();
+                    if (disposing) {
+                        return;
+                    }
+                    getTaskMonitor().waitForTask();
+                    ticMonitor();
+                }
+            }
+            if (firstShow) {
+                firstShow = false;
+            }
+        } else {
+            while (level < params0.length) {
+                if (disposing) {
+                    return;
+                }
+                if (!params0[level].hasNext()) {
+                    level++;
+                } else {
+                    params0[level].next();
+                    getLog().log(NMsg.ofC("Setting ParamSet : " + params0[level].getTitle()).asInfo());
+                    params0[level].setParameter(direct);
+                    if (plotData.getStructure2() != null) {
+                        params0[level].setParameter(plotData.getStructure2());
+                    }
+                    if (level > 0) {
+                        level--;
+                        params0[level].reset();
+                        //                    logln("Reset ParamSet : " + params0[level]);
+                    } else {
+                        ComputeTitle serieTitle = new ComputeTitle(false);
+                        for (ParamSet param : params0) {
+                            if (disposing) {
+                                return;
+                            }
+                            serieTitle.add(param);
+                        }
+
+                        for (ConsoleAxis consoleAxise : plotData.getAxisList()) {
+                            if (disposing) {
+                                return;
+                            }
+                            if (consoleAxise.getX() == null) {
+                                getLog().log(NMsg.ofC("No X to Set!").asInfo());
+                            } else {
+                                getLog().log(NMsg.ofC("Setting X : " + consoleAxise.getX().getTitle()).asInfo());
+                            }
+                            for (PlotAxis yParam : consoleAxise.getY()) {
+                                if (disposing) {
+                                    return;
+                                }
+                                getLog().log(NMsg.ofC("Start Running : " + yParam.getName(serieTitle)).asInfo());
+                                getLog().log(NMsg.ofC("Setting Y : " + yParam).asInfo());
+                                ConsoleAwareObject directClone = (direct == null ? null : direct.clone());
+                                if (directClone != null) {
+                                    for (PlotConsoleCacheSupport plotConsoleCacheSupport : plotConsoleCacheSupports) {
+                                        plotConsoleCacheSupport.prepareObject(directClone, "Direct", serieTitle.toString());
+                                    }
+                                }
+                                ConsoleAwareObject modelClone = (plotData.getStructure2() == null ? null : plotData.getStructure2().clone());
+                                if (modelClone != null) {
+                                    for (PlotConsoleCacheSupport plotConsoleCacheSupport : plotConsoleCacheSupports) {
+                                        plotConsoleCacheSupport.prepareObject(modelClone, "Model", serieTitle.toString());
+                                    }
+                                }
+                                PlotThread plotThread = new PlotThread(
+                                        yParam.clone(),
+                                        plotData.clone(),
+                                        serieTitle,
+                                        directClone,
+                                        modelClone,
+                                        consoleAxise,
+                                        this
+                                );
+                                getTaskMonitor().addTask(plotThread, plotThread.getWindowTitle(), plotThread.getSerieTitle().toString());
+                                plotThread.start();
+                                if (disposing) {
+                                    return;
+                                }
+                                getTaskMonitor().waitForTask();
+                                ticMonitor();
+                            }
+                        }
+                        if (firstShow) {
+                            firstShow = false;
+                        }
+                    }
+                }
+            }
+        }
+        ticMonitor();
     }
 
     public synchronized PlotConsoleFrame show() {
@@ -422,8 +419,7 @@ public class PlotConsole implements PlotComponentDisplayer, PlotManager, Progres
 //            plotConsoleFrame = new DefaultPlotConsoleFrame(this, getFrameTitle());
             plotConsoleFrame = new DefaultPlotConsoleFrame2(this, getFrameTitle());
             plotConsoleFrame.setDefaultCloseOperation(closeOption);
-            ServiceLoader<PlotConsoleTool> sl = ServiceLoader.load(PlotConsoleTool.class);
-            for (PlotConsoleTool plotConsoleTool : sl) {
+            for (PlotConsoleTool plotConsoleTool : NReflectUtils.listServices(PlotConsoleTool.class, PlotConsole.class)) {
                 addTool(plotConsoleTool);
             }
         }
@@ -524,7 +520,6 @@ public class PlotConsole implements PlotComponentDisplayer, PlotManager, Progres
 
     public PlotConsole run(final ConsoleAction action) {
         if (disposing) {
-            System.out.println("action after dispose ... " + action);
             throw new ConsoleDisposingException("action after dispose ... " + action);
         }
         if (!readOnly && isAutoSave()) {
@@ -652,7 +647,7 @@ public class PlotConsole implements PlotComponentDisplayer, PlotManager, Progres
         return run(new WindowTitleConsoleAction(windowTitle));
     }
 
-    public ConsoleLogger getLog() {
+    public NLogger getLog() {
         return log;
     }
 
@@ -730,7 +725,6 @@ public class PlotConsole implements PlotComponentDisplayer, PlotManager, Progres
 
     public void silentLogLn(final String msg) {
         getLogArea().append(msg);
-        //System.out.println("[LOG] " + msg);
     }
 
     public long getStartTime() {
@@ -792,7 +786,7 @@ public class PlotConsole implements PlotComponentDisplayer, PlotManager, Progres
         run(new ConsoleActionPlotComponent(plotComponent,
                 plotComponent == null ? null
                         : PlotPath.of(plotComponent.getLayoutConstraints()
-                        )
+                )
         ));
     }
 

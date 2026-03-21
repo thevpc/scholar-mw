@@ -18,10 +18,6 @@ import java.util.Map;
  * @creationtime 8 juin 2007 21:16:30
  */
 public class UserModalSources extends AbstractPropagatingModalSources {
-//    public static void main(String[] args) {
-//        System.out.println(new UserModalSources(ModeIndex.mode(ModeType.TE, 1, 0), ModeIndex.mode(ModeType.TM, 3, 0)).dump());
-//    }
-
     private ModeIndex[] userDefined;
     private Map<ModeIndex, Integer> modeToIndexMap;
 

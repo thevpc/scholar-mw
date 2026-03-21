@@ -7,6 +7,7 @@ import net.thevpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.symbolic.ExprDefaults;
 import net.thevpc.scholar.hadrumaths.symbolic.double2complex.DefaultComplexValue;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.util.*;
 
@@ -79,7 +80,10 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector {
 
     @Override
     public NElement toElement() {
-        return NElement.ofNamedObject("DoubleToVector");
+        return NElement.ofObjectBuilder("DoubleToVector")
+                .add("components", NElementHelper.elem(components))
+                .add("domain", NElementHelper.elem(domain))
+                .build();
     }
 
 
@@ -130,22 +134,22 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector {
     }
 
     public static DefaultDoubleToVector of(DoubleToComplex... fx) {
-        switch (fx.length){
-            case 1:{
+        switch (fx.length) {
+            case 1: {
                 return of(fx[0]);
             }
-            case 2:{
-                return of(fx[0],fx[1]);
+            case 2: {
+                return of(fx[0], fx[1]);
             }
-            case 3:{
-                return of(fx[0],fx[1],fx[2]);
+            case 3: {
+                return of(fx[0], fx[1], fx[2]);
             }
         }
         throw new IllegalArgumentException("Unsupported");
     }
 
     public Expr getComponent(int row, int col) {
-        if(col==0 && row<components.length){
+        if (col == 0 && row < components.length) {
             return components[row];
         }
         return Maths.CZEROX;
@@ -268,14 +272,14 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector {
 
         DefaultDoubleToVector vdCxy = (DefaultDoubleToVector) o;
 
-        if (domain != null ? !domain.equals(vdCxy.domain) : vdCxy.domain != null) return false;
+        if (!Objects.equals(domain, vdCxy.domain)) return false;
         return Arrays.equals(components, vdCxy.components);
     }
 
     @Override
     public boolean isInvariant(Axis axis) {
         for (DoubleToComplex component : components) {
-            if(!component.isInvariant(axis)){
+            if (!component.isInvariant(axis)) {
                 return false;
             }
         }
@@ -320,7 +324,7 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector {
     }
 
     public List<Expr> getChildren() {
-        return (List) Arrays.asList(components);
+        return Arrays.asList(components);
     }
 
     @Override
@@ -409,7 +413,7 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector {
 
     @Override
     public String toLatex() {
-        throw new UnsupportedOperationException("Not Implemented toLatex for "+getClass().getName());
+        throw new UnsupportedOperationException("Not Implemented toLatex for " + getClass().getName());
     }
 
 }

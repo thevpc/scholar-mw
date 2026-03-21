@@ -529,11 +529,6 @@ public final class ArrayUtils {
         return c;
     }
 
-    //    public static void main(String[] args) {
-//        Complex[][] rr = new Complex[3][2];
-//        fill(rr, Complex.ZERO);
-//        System.out.println(Arrays.deepToString(rr));
-//    }
     public static Complex[][] fillMatrix(Complex[][] sourceMatrix, Complex value) {
         int rowsCount = sourceMatrix.length;
         if (rowsCount > 0) {
@@ -586,63 +581,7 @@ public final class ArrayUtils {
         return c;
     }
 
-    //    public static void main(String[] args) {
-//        System.out.println(Maths.chrono(new Runnable() {
-//            @Override
-//            public void run() {
-//                for (int i = 0; i < 1000; i++) {
-//                    Complex[][] arr = new Complex[50][50];
-//                    fillArray2ZeroComplex0(
-//                            arr,new Range(
-//                                    1,30,1,30,2,4,3
-//                            ));
-//
-//                }
-//            }
-//        }));
-//
-//        System.out.println(Maths.chrono(new Runnable() {
-//            @Override
-//            public void run() {
-//                for (int i = 0; i < 1000; i++) {
-//                    Complex[][] arr = new Complex[50][50];
-//                    fillArray2ZeroComplex(
-//                            arr,new Range(
-//                                    1,30,1,30,2,4,3
-//                            ));
-//
-//                }
-//            }
-//        }));
-//
-//    }
-    //    public static void main0(String[] args) {
-//        final int err=1000000000;
-//        final int size=100;
-//
-//
-//        System.out.println(
-//                Maths.chrono(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        for (int i = 0; i < err; i++) {
-//                            fill(new Complex[size],Complex.ZERO);
-//                        }
-//                    }
-//                })
-//        );
-//        System.out.println(
-//                Maths.chrono(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        for (int i = 0; i < err; i++) {
-//                            fill0(new Complex[size],Complex.ZERO);
-//                        }
-//                    }
-//                })
-//        );
-//
-//    }
+
     public static Complex[] fill(Complex[] c, Complex value) {
         return fill(c, 0, c.length, value);
     }
@@ -1129,12 +1068,6 @@ public final class ArrayUtils {
                 if (f <= epsilon) {
                     a.add(j);
                     h.put(j, a);
-//                    for (Iterator<Integer> iterator = a.iterator(); iterator.hasNext();) {
-//                        Integer integer = iterator.next();
-//                        h.put(integer,a);
-//                    }
-                } else {
-//                    System.out.println((i+1)+"!="+(j+1));
                 }
             }
         }

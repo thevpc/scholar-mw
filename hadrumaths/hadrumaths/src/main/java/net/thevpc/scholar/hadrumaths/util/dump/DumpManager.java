@@ -58,16 +58,6 @@ public class DumpManager {
         return defaultHandler;
     }
 
-    //    public static void main(String[] args) {
-//        Hashtable t=new Hashtable();
-//        TreeSet ts=new TreeSet();
-//        ts.add("a");
-//        ts.add("b");
-//        t.put("x",ts);
-//        t.put("y",ts);
-//        System.out.println(dump(t));
-//    }
-
     public void setDefaultHandler(DumpDelegate defaultHandler) {
         this.defaultHandler = defaultHandler;
     }

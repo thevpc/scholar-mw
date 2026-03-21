@@ -37,7 +37,7 @@ public class HWMaterialTemplatePropertiesAware extends DefaultHWPropertiesTree {
         folder.add(new PValueViewProperty("property", outer.getStudio().app(), wp.description()));
 
         folder = root.addFolder("folder", "Values");
-        folder.add(new PValueViewPropertyE("property", wp.permettivity()));
+        folder.add(new PValueViewPropertyE("property", wp.permittivity()));
         folder.add(new PValueViewPropertyE("property", wp.permeability()));
         folder.add(new PValueViewPropertyE("property", wp.electricConductivity()));
     }

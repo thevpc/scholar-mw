@@ -20,7 +20,6 @@ public class PlotChoiceMethod extends PlotChoice {
     }
 
     private static java.lang.reflect.Method resolveMethod(Class clz, String methodName, Object[] parameters) {
-//        System.out.println("Look after " + methodName);
         for (Method method : clz.getMethods()) {
             if (method.getName().equals(methodName) && method.getParameterTypes().length == parameters.length) {
                 return method;

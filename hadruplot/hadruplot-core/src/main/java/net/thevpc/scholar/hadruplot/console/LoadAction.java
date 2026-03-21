@@ -1,6 +1,7 @@
 package net.thevpc.scholar.hadruplot.console;
 
 import net.thevpc.common.swing.file.ExtensionFileChooserFilter;
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.scholar.hadruplot.console.extension.PlotConsoleFileSupport;
 
 import javax.swing.*;
@@ -27,7 +28,7 @@ public class LoadAction extends AbstractFrameAction {
                 console.loadFile(selectedFile);
                 frame.addRecentFile(selectedFile);
             } catch (Throwable e1) {
-                console.getLog().error(e1);
+                console.getLog().log(NMsg.ofC("%s",e1).asError(e1));
                 e1.printStackTrace();
                 JOptionPane.showMessageDialog(frame.frameComponent(), "unable to load " + selectedFile + "\n" + e1);
             }

@@ -145,12 +145,10 @@ public class PlatformUtils {
             iterations++;
             long deltaFreed = (freed1 > lastFreed) ? (freed1 - lastFreed) : (lastFreed - freed1);
             lastFreed = freed1;
-//            System.out.println("\tfreed : "+Maths.formatMemory(freed1) +" : "+Maths.formatMemory(freed));
             if (deltaFreed < 1024) break;
         }
         long after = Maths.inUseMemory();
         long freed = before - after;
-//        System.out.println("freed in "+iterations+" iterations : "+Maths.formatMemory(freed));
         return freed;
     }
 
@@ -185,23 +183,6 @@ public class PlatformUtils {
         return v;
     }
 
-//    public static long gc() {
-//        long before1 = Maths.inUseMemory();
-//        Runtime rt = Runtime.getRuntime();
-//        rt.gc();
-//        long after1 = Maths.inUseMemory();
-//        long freed1 = before1-after1;
-//        System.out.println("freed : "+Maths.formatMemory(freed1));
-//        return freed1;
-//    }
-
-//    public static void main(String[] args) {
-//        for (int i = 0; i < 100; i++) {
-////            boolean[] o=new boolean[100000];
-//            gc2();
-////            System.out.println(Maths.formatMemory(gc2()));
-//        }
-//    }
 
     public static int getArrayDimension(Class c) {
         int dim = 0;

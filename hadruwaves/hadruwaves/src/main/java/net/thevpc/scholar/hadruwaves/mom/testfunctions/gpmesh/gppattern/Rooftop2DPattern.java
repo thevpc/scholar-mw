@@ -2,6 +2,7 @@ package net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 
 import java.util.Map;
 
+import jogamp.graph.font.typecast.ot.table.CmapFormat;
 import net.thevpc.nuts.elem.NElement;
 
 
@@ -28,7 +29,7 @@ import net.thevpc.scholar.hadruwaves.mom.util.MomUtils;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 15 mai 2007 21:41:33
  */
-public final class Rooftop2DPattern extends RectMeshAttachGpPattern {
+public final class Rooftop2DPattern extends RectMeshAttachGpPattern implements Cloneable {
 
     private Axis invariance;
     private boolean alwaysAttachForX = false;

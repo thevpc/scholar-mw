@@ -27,7 +27,6 @@
 //    @Override
 //    public void service(DataInputStream in, DataOutputStream out) throws IOException {
 //        FSConstants.Command call = FSConstants.Command.values()[in.readByte()];
-////        System.out.println("CALL "+call);
 //        switch (call) {
 //            case STAT: {
 //                String path = in.readUTF();
@@ -69,7 +68,6 @@
 //            }
 //            case LIST: {
 //                String path = in.readUTF();
-////                System.out.println("path "+path);
 //                HFile file = getFileSystem().get(path);
 //                if (file == null) {
 //                    error("invalid path : " + path, out);
@@ -80,11 +78,9 @@
 //                        success(out);
 //                        HFile[] files = file.listFiles();
 //                        int v = files == null ? 0 : files.length;
-////                        System.out.println(v+" files");
 //                        out.writeInt(v);
 //                        if (files != null) {
 //                            for (HFile ff : files) {
-////                                System.out.println("\t "+ff.getName());
 //                                out.writeUTF(ff.getPath());
 //                            }
 //                        }

@@ -7,6 +7,7 @@ import net.thevpc.common.mon.ProgressMonitors;
 import net.thevpc.common.time.Chronometer;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NObjectElementBuilder;
+import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.scholar.hadrumaths.Vector;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.cache.CacheKey;
@@ -48,6 +49,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
+
 import net.thevpc.scholar.hadrumaths.geom.GeometryList;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshAlgoType;
 import net.thevpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
@@ -114,9 +116,9 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
     //    protected GpEssaiType gpEssaiType = GpEssaiType.GP_SIN_SYM;
     private CacheKey buildHash;
     private ModeFunctions modeFunctions;
-    private PropertyChangeListener propertyDispatcher_modeFunctions = new DelegateModeFunctionsPropertyChangeListener();
-    private PropertyChangeListener propertyDispatcher_testFunctions = new DelegateTestFunctionsPropertyChangeListener();
-    private CacheResolverDelegate cacheResolver = new CacheResolverDelegate();
+    private final PropertyChangeListener propertyDispatcher_modeFunctions = new DelegateModeFunctionsPropertyChangeListener();
+    private final PropertyChangeListener propertyDispatcher_testFunctions = new DelegateTestFunctionsPropertyChangeListener();
+    private final CacheResolverDelegate cacheResolver = new CacheResolverDelegate();
 
     public MomStructure(MomStructure other) {
         this();
@@ -297,6 +299,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
                 this.modeFunctions.setObjectCacheResolver(cacheResolver);
                 this.modeFunctions.addPropertyChangeListener(propertyDispatcher_modeFunctions);
                 this.modeFunctions.setEnv(this);
+                this.modeFunctions.setLog(x-> log().log(x));
             }
             invalidateCache();
             firePropertyChange("modeFunctions", old, modeFunctions);
@@ -309,12 +312,12 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
     }
 
     public MomStructure setHintsManager(MomStructureHintsManager hintsManager) {
-        return (MomStructure) super.setHintsManager(hintsManager);
+        return super.setHintsManager(hintsManager);
     }
 
     @Override
     public MomStructure setHintsManager(MWStructureHintsManager hintsManager) {
-        return (MomStructure) super.setHintsManager((MomStructureHintsManager) hintsManager);
+        return super.setHintsManager(hintsManager);
     }
 
     public void forceRebuild() {
@@ -337,9 +340,9 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
         }
 
         testFunctions = getGpTestFunctionsTemplateImpl();
-        //System.out.println("4- gpTestFunctions = " + gpTestFunctions);
         if (testFunctions != null) {
             testFunctions.setStructure(this);
+            testFunctions.setLog(x-> log().log(x));
         }
         if (sources != null) {
             sources.setStructure(this);
@@ -404,6 +407,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
                 this.evaluator.setFrom(other.evaluator());
                 this.scalarProductOperator = other.scalarProductOperator;
                 this.testFunctions = other.testFunctions.clone();
+                _bindTestFunctions(this.testFunctions);
                 this.sources = other.sources.clone();
                 this.layers = Arrays.copyOf(other.layers, other.layers.length);
                 this.circuitType = other.circuitType;
@@ -423,7 +427,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
 
     public String dump() {
         build();
-        return toElement().toString(false);
+        return toElement().toString();
     }
 
     @Override
@@ -431,7 +435,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
         return new MomStructure(this);
     }
 
-//    /**
+    //    /**
 //     * updates frequency to reach a xdim over lambda of wol
 //     *
 //     * @param wol
@@ -489,18 +493,18 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
         for (MomProjectExtraLayer projectLayer : structureConfig.getLayers().getExtraLayers()) {
             ll.add(new StrLayer(projectLayer.getWidth(), projectLayer.getImpedance()));
         }
-        setLayers(ll.toArray(new StrLayer[0]));
+        setLayers(ll.toArray(StrLayer.NO_LAYERS));
         setFirstBoxSpace(new BoxSpace(
-                structureConfig.getLayers().getTopLimit(),
-                new Material("first", structureConfig.getLayers().getTopEpsr(), 1, structureConfig.getLayers().getTopConductivity()),
-                structureConfig.getLayers().getTopThickness()
-        )
+                        structureConfig.getLayers().getTopLimit(),
+                        new Material("first", structureConfig.getLayers().getTopEpsr(), 1, structureConfig.getLayers().getTopConductivity()),
+                        structureConfig.getLayers().getTopThickness()
+                )
         );
         setSecondBoxSpace(new BoxSpace(
-                structureConfig.getLayers().getBottomLimit(),
-                new Material("second", structureConfig.getLayers().getBottomEpsr(), 1, structureConfig.getLayers().getBottomConductivity()),
-                structureConfig.getLayers().getBottomThickness()
-        )
+                        structureConfig.getLayers().getBottomLimit(),
+                        new Material("second", structureConfig.getLayers().getBottomEpsr(), 1, structureConfig.getLayers().getBottomConductivity()),
+                        structureConfig.getLayers().getBottomThickness()
+                )
         );
         modeFunctions().setSize(structureConfig.getMaxModes());
         setFrequency(structureConfig.getFrequency());
@@ -527,14 +531,14 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
     }
 
     private String dump0() {
-        return toElement().toString(false);
+        return toElement().toString();
 //        return getDumpStringHelper().toString();
     }
 
     @Override
     public NElement toElement() {
         NObjectElementBuilder sb = NElement.ofObjectBuilder(getClass().getSimpleName());
-        sb.addAll(new NElement[]{NElement.ofPair("version", NElementHelper.elem("3.0"))});
+        sb.addAll(NElement.ofPair("version", NElementHelper.elem("3.0")));
         sb.add("projectType", NElementHelper.elem(projectType));
         sb.add("circuitType", NElementHelper.elem(circuitType));
         sb.add("frequency", NElementHelper.elem(frequency));
@@ -546,22 +550,20 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
 
         sb.add("testFunctions", NElementHelper.elem(testFunctions));
 //        sb.addElement("testFunctions.count", context.defaultObjectToElement(testFunctionsCount));
-        sb.add("modeFunctions", NElementHelper.elem(modeFunctions).toObject().get().builder().removeEntry("environment").build());
+        sb.add("modeFunctions", NElementHelper.elem(modeFunctions).toObject().get().builder().removePair("environment").build());
         sb.add("sources", NElementHelper.elem(sources));
         sb.add("layers", NElementHelper.elem(getLayers()));
 
-        if (serialZs != null) {
-            sb.add("serialZs", NElementHelper.elem(serialZs));
-        }
+        sb.addIf("serialZs", NElementHelper.elem(serialZs), NElementHelper.blankPredicate());
         if (fractalScale != 0) {
-            sb.add("fractalScale", NElementHelper.elem(fractalScale));
+            sb.addIf("fractalScale", NElementHelper.elem(fractalScale), NElementHelper.blankPredicate());
         }
         sb.add("builders", NElementHelper.elem(evaluator()));
 //        sb.add("evaluator", NElementHelper.elem(evaluator()));
         sb.add("scalarProductOperator", NElementHelper.elem(getScalarProductOperator()));
 
-        sb.add("parameters", NElementHelper.elem(getParameters()));
-        sb.add("hints", NElementHelper.elem(getHintsManager()));
+        sb.addIf("parameters", NElementHelper.elem(getParameters()), NElementHelper.blankPredicate());
+        sb.addIf("hints", NElementHelper.elem(getHintsManager()), NElementHelper.blankPredicate());
         return sb.build();
     }
 
@@ -617,7 +619,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
 
     @Override
     public String toString() {
-        return ((fractalScale != 0) ? (" fractalScale=" + fractalScale) : "");
+        return NStringUtils.firstNonBlank(getName(), "MomStructure");
     }
 
     @Override
@@ -771,15 +773,18 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
             old.removePropertyChangeListener(propertyDispatcher_testFunctions);
         }
         this.testFunctions = testFunctions;
-        if (this.testFunctions != null) {
-            this.testFunctions.setStructure(this);
-        }
-        if (this.testFunctions != null) {
-            this.testFunctions.addPropertyChangeListener(propertyDispatcher_testFunctions);
-        }
+        _bindTestFunctions(this.testFunctions);
         firePropertyChange("testFunctions", old, testFunctions);
         invalidateCache();
         return this;
+    }
+
+    private void _bindTestFunctions(TestFunctions testFunctions) {
+        if(testFunctions!=null) {
+            testFunctions.setStructure(this);
+            testFunctions.setLog(x->log().log(x));
+            this.testFunctions.addPropertyChangeListener(propertyDispatcher_testFunctions);
+        }
     }
 
     public MomStructure testFunctions(TestFunctions gpEssaiType) {
@@ -947,7 +952,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
     }
 
     public void checkBuildIsRequired() throws RequiredRebuildException {
-        boolean found = new MatrixXMatrixStrCacheSupport2(this, monitorOf("checkBuildIsRequired",null)).isCached();
+        boolean found = new MatrixXMatrixStrCacheSupport2(this, monitorOf("checkBuildIsRequired", null)).isCached();
         if (!found) {
             throw new RequiredRebuildException();
         }
@@ -958,7 +963,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
         if (CACHE_SRCGP.equals(type)) {
             getTestSourceScalarProducts();//insure it is calculated
         } else if (CACHE_FNGP.equals(type)) {
-            getTestModeScalarProducts();//insure it is calculated
+            testModeScalarProducts();//insure it is calculated
         } else if (CACHE_MATRIX_A.equals(type)) {
             matrixA().evalMatrix();//insure it is calculated
         } else if (CACHE_MATRIX_B.equals(type)) {
@@ -997,7 +1002,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
 
     public Collection<MomCache> getSimilarCaches(String property) {
         ArrayList<MomCache> found = new ArrayList<MomCache>();
-        for (Iterator<ObjectCache> i = getPersistentCache().iterator(); i.hasNext();) {
+        for (Iterator<ObjectCache> i = getPersistentCache().iterator(); i.hasNext(); ) {
             ObjectCache c = i.next();
             MomCache mc = new MomCache(c);
             Map<String, String> indexes = mc.parseCacheValues();
@@ -1022,7 +1027,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
 
     public Collection<MomCache> getAllCaches() {
         ArrayList<MomCache> found = new ArrayList<MomCache>();
-        for (Iterator<ObjectCache> i = getPersistentCache().iterator(); i.hasNext();) {
+        for (Iterator<ObjectCache> i = getPersistentCache().iterator(); i.hasNext(); ) {
             ObjectCache c = i.next();
             found.add(new MomCache(c));
         }
@@ -1211,7 +1216,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
                 }
                 mom.testFunctions().add(m);
             } else {
-                TestFunctions gp = (TestFunctions) testFunctions();
+                TestFunctions gp = testFunctions();
                 MomSolverTestTemplateList m = new MomSolverTestTemplateList();
                 int findex = 1;
                 for (DoubleToVector ex : gp.arr()) {
@@ -1234,10 +1239,10 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
             for (StrLayer layer : getLayers()) {
                 scene.components().add(new HWProjectBrick(
                         layer.getName(), VACUUM_TEMPLATE,
-                                SceneHelper.createBrickTemplate(
-                                        new DomainTemplate(
-                                                Domain.ofBounds(domain.xmin(), domain.xmax(), domain.ymax(), domain.ymax(), h, h + layer.getWidth())
-                                        )))
+                        SceneHelper.createBrickTemplate(
+                                new DomainTemplate(
+                                        Domain.ofBounds(domain.xmin(), domain.xmax(), domain.ymax(), domain.ymax(), h, h + layer.getWidth())
+                                )))
                 );
             }
         }
@@ -1286,7 +1291,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
                     for (Polygon polygon : polygons) {
                         index++;
                         scene.components().add(new HWPlanarPort(
-                                                                                "Planar Source #" + index, SceneHelper.createPolygonTemplate(polygon, 0)));
+                                "Planar Source #" + index, SceneHelper.createPolygonTemplate(polygon, 0)));
                     }
                 }
             } else if (sources instanceof ModalSources) {
@@ -1331,9 +1336,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
 
         for (GeometryList polygon : gp.getPolygons()) {
             for (Geometry geometry : polygon) {
-                for (Polygon pp : geometry.toPolygons()) {
-                    polygons.add(pp);
-                }
+                Collections.addAll(polygons, geometry.toPolygons());
             }
         }
         for (Polygon polygon : polygons) {

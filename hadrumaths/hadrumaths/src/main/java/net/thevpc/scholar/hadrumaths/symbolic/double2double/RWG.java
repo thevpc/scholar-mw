@@ -29,8 +29,6 @@ public final class RWG extends AbstractDoubleToDouble {
     public RWG(double max, Polygon polygon) {
 //        AreaComponent.showDialog("2",polygon.toArea(0.002,0,1E5));
         if (!GeomUtils.is4Edges(polygon)) {
-
-            System.out.println(GeomUtils.toString(polygon.getPath()));
             GeomUtils.is4Edges(polygon);
             AreaComponent.showDialog("Not an RWG polygon", DomainScaleTool.rescale(polygon, 400, 400));
             throw new IllegalArgumentException("Not an RWG polygon");

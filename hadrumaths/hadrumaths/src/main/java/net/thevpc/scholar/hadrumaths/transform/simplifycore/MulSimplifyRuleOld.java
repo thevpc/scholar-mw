@@ -38,19 +38,11 @@ public class MulSimplifyRuleOld extends AbstractExpressionRewriterRule {
     }
 
     public RewriteResult rewrite(Expr e, ExpressionRewriter ruleset, ExprType targetExprType) {
-//        if(e.getSubExpressions().get(0) instanceof DoubleValue && e.getSubExpressions().get(1) instanceof Complex){
-//            System.out.println("Why");
-//        }
         RewriteResult e2 = rewrite0(e, ruleset);
         return e2;
     }
 
     public RewriteResult rewrite0(Expr e, ExpressionRewriter ruleset) {
-//        RewriteResult rewriteResult = rewrite00(e, ruleset);
-//        return rewriteResult;
-//    }
-//    public RewriteResult rewrite00(Expr e, ExpressionRewriter ruleset) {
-
         Mul ee = (Mul) e;
         ExprType nt = ee.getNarrowType();
         Complex complexeVal = Complex.ONE;

@@ -3,10 +3,18 @@ package net.thevpc.scholar.hadruwaves;
 
 import net.thevpc.nuts.elem.NElement;
 
+import net.thevpc.nuts.elem.NNumberElement;
+import net.thevpc.nuts.elem.NUpletElement;
+import net.thevpc.nuts.util.NLiteral;
+import net.thevpc.nuts.util.NNameFormat;
+import net.thevpc.nuts.util.NOptional;
+import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.scholar.hadrumaths.HSerializable;
 import net.thevpc.scholar.hadrumaths.Maths;
 
 import java.io.ObjectStreamException;
+import java.util.List;
+
 import net.thevpc.common.collections.LRUMap;
 
 public final class ModeIndex implements HSerializable {
@@ -16,6 +24,58 @@ public final class ModeIndex implements HSerializable {
     private static boolean cacheEnabled =true;
     private static int cacheSize =10000;
     private static final LRUMap<ModeIndex, ModeIndex> cache = new LRUMap<ModeIndex, ModeIndex>(cacheSize);
+
+    public static NOptional<ModeIndex> parse(NElement s) {
+        if(s==null){
+            return NOptional.ofNamedEmpty("mode");
+        }
+        if(s.isNamedUplet()){
+            NUpletElement u = s.asUplet().get();
+            NOptional<ModeType> mt=ModeType.parse(u.name().get());
+            if(mt.isPresent()){
+                if(u.params().size()==2){
+                    NOptional<Integer> m = u.params().get(0).asIntValue();
+                    NOptional<Integer> n = u.params().get(2).asIntValue();
+                    if(m.isPresent() && n.isPresent()){
+                        return NOptional.of(mode(mt.get(),m.get(),n.get()));
+                    }
+                }
+            }
+        }
+        return NOptional.ofNamedError("mode");
+    }
+
+    public static NOptional<ModeIndex> parse(String s) {
+        if(s==null){
+            return NOptional.ofNamedEmpty("mode");
+        }
+        String lo = s.toLowerCase();
+        ModeType mtype;
+        if(lo.startsWith("tem")) {
+            mtype = ModeType.TEM;
+            lo = lo.substring(3);
+        }else if(lo.startsWith("te")){
+            mtype = ModeType.TE;
+            lo = lo.substring(2);
+        }else if(lo.startsWith("tm")){
+            mtype = ModeType.TM;
+            lo = lo.substring(2);
+        }else{
+            return NOptional.ofNamedError("mode");
+        }
+        if(lo.startsWith("(") && lo.endsWith(")")){
+            lo=lo.substring(1,lo.length()-1);
+        }
+        List<String> z = NStringUtils.split(lo, "_,/:",true,true);
+        if(z.size()==2){
+            NOptional<Integer> m = NLiteral.of(z.get(0)).asInt();
+            NOptional<Integer> n = NLiteral.of(z.get(1)).asInt();
+            if(m.isPresent() && n.isPresent()){
+                return NOptional.of(mode(mtype,m.get(),n.get()));
+            }
+        }
+        return NOptional.ofNamedError("mode");
+    }
 
     private static boolean isCacheEnabled() {
         return cacheEnabled && Maths.Config.isCacheEnabled();
@@ -51,22 +111,6 @@ public final class ModeIndex implements HSerializable {
         }
     }
 
-
-//    public static void main(String[] args) {
-//        long count=0;
-//        Chronometer c= Maths.chrono();
-//        for (int m = 0; m < 10000000; m++) {
-//            for (int n = 0; n < 10000000; n++) {
-//                for (Mode mod : ModeType.values()) {
-//                    mode(mod,m,n);
-//                    count++;
-//                    if(count%10000000==0) {
-//                        System.out.println(count + " : " + (c.getTime() * 10000000L / count));
-//                    }
-//                }
-//            }
-//        }
-//    }
 
     public static ModeIndex mode(ModeType mode, int m, int n) {
         return mode(new ModeIndex(mode, m, n));

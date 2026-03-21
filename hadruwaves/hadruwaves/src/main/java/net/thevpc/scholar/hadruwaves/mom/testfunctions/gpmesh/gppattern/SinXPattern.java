@@ -19,7 +19,7 @@ import static java.lang.Math.sqrt;
 /**
  *
  */
-public final class SinXPattern extends RectMeshAttachGpPattern {
+public final class SinXPattern extends RectMeshAttachGpPattern implements Cloneable{
     private int max;
 
 

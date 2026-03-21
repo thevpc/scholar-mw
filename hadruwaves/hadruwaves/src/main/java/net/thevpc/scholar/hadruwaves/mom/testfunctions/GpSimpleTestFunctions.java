@@ -38,7 +38,7 @@ public class GpSimpleTestFunctions extends TestFunctionsBase implements Cloneabl
                 for (int i1 = 0, cellsLength = cells.length; i1 < cellsLength; i1++) {
                     TestFunctionCell cell = cells[i1];
                     GpPattern pattern = cell.getPattern();
-                    DoubleToVector[] allGp = pattern.createFunctions(getStructure().getDomain(), new MeshZone(cell.getDomain()), monitor, getStructure());
+                    DoubleToVector[] allGp = pattern.createFunctions(getStructure().getDomain(), new MeshZone(cell.getDomain()), monitor, getStructure(),log());
                     int maxGp = allGp.length;
                     for (int i = 0; i < maxGp; i++) {
                         DoubleToVector _gp = allGp[i];

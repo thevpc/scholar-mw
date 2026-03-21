@@ -23,27 +23,6 @@ import java.awt.geom.Area;
  * @creationtime 18 janv. 2006 14:47:42
  */
 public class PolygonComponent extends JComponent {
-    public static void main(String[] args) {
-        GeometryList geometryList = new DefaultGeometryList();
-        Domain globalDomain = Domain.ofBounds(0, 100, 0, 100);
-        geometryList.add(globalDomain.toPolygon());
-        MeshConsDesAlgo meshalgo = new MeshConsDesAlgo(3);
-        EchelonPattern pattern = new EchelonPattern();
-
-
-        PolygonListMeshInfo r = new PolygonListMeshInfo(geometryList, globalDomain, meshalgo, pattern);
-        System.out.println(r.meshZones);
-
-        JPanel p = new JPanel(new BorderLayout());
-        p.add(new PolygonComponent(
-                geometryList, meshalgo, pattern, globalDomain
-        ));
-        p.setSize(new java.awt.Dimension(400, 400));
-        JFrame f = new JFrame();
-        f.add(p);
-        f.setVisible(true);
-    }
-
     private double zoomX = 0;
     private double zoomY = 0;
     private double translateX = 0;

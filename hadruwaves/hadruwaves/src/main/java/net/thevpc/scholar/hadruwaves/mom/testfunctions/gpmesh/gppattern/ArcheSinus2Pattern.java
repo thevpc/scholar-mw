@@ -13,7 +13,7 @@ import net.thevpc.scholar.hadruwaves.mom.MomStructure;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 15 mai 2007 21:42:02
  */
-public final class ArcheSinus2Pattern extends RectMeshAttachGpPattern {
+public final class ArcheSinus2Pattern extends RectMeshAttachGpPattern implements Cloneable {
 
     public ArcheSinus2Pattern(boolean attachX, boolean attachY) {
         super(attachX, attachY);

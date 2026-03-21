@@ -54,6 +54,10 @@
     <dependencies>
         <dependency><groupId>net.thevpc.ntexup</groupId><artifactId>ntexup-extension-mw-simulator</artifactId><version>0.8.9.0</version></dependency>
         <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruwaves-java</artifactId><version>3.3.0</version></dependency>
+        <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruplot-laf</artifactId><version>3.3.0</version></dependency>
+        <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruplot-jfreechart</artifactId><version>3.3.0</version></dependency>
+        <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruplot-simple</artifactId><version>3.3.0</version></dependency>
+        <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruplot-calc3d</artifactId><version>3.3.0</version></dependency>
     </dependencies>
     <build>
         <plugins>

@@ -3,6 +3,7 @@ package net.thevpc.scholar.hadruplot;
 import net.thevpc.common.swing.layout.GridBagLayout2;
 import net.thevpc.common.swing.table.JTableHelper;
 import net.thevpc.common.swing.color.ColorChooserEditor;
+import net.thevpc.nuts.reflect.NReflectUtils;
 import net.thevpc.scholar.hadruplot.extension.defaults.SimplePlotModelProvider;
 import net.thevpc.scholar.hadruplot.extension.PlotModelProvider;
 import net.thevpc.scholar.hadruplot.extension.PlotPanelFactory;
@@ -81,9 +82,8 @@ public final class Plot {
     public static final PlotConfig Config = new PlotConfig();
 
     static {
-        ServiceLoader<HadruplotService> loader = ServiceLoader.load(HadruplotService.class);
         TreeMap<Integer, java.util.List<HadruplotService>> all = new TreeMap<>();
-        for (HadruplotService hadruplotService : loader) {
+        for (HadruplotService hadruplotService : NReflectUtils.listServices(HadruplotService.class, Plot.class)) {
             HadruplotServiceDesc d = hadruplotService.getClass().getAnnotation(HadruplotServiceDesc.class);
             if (d == null) {
                 throw new IllegalArgumentException("Missing @HadruplotServiceDesc for " + hadruplotService.getClass());

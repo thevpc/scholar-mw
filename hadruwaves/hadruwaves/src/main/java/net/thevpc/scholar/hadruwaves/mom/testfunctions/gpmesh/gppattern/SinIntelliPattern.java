@@ -17,7 +17,7 @@ import net.thevpc.scholar.hadruwaves.mom.CircuitType;
 /**
  *
  */
-public final class SinIntelliPattern extends AbstractGpPatternPQ {
+public final class SinIntelliPattern extends AbstractGpPatternPQ  implements Cloneable{
 //    public static enum Walls {
 //        EMEM
 //    }

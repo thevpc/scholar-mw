@@ -1,6 +1,7 @@
 package net.thevpc.scholar.hadruwaves.mom;
 
 import net.thevpc.common.mon.ProgressMonitor;
+import net.thevpc.nuts.log.NLogger;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadruwaves.*;
@@ -159,4 +160,8 @@ public interface ModeFunctions extends Cloneable, HSerializable {
     ModeFunctions setEnv(ModeFunctionsEnv env);
 
     Axis getPolarization();
+
+    NLogger log() ;
+
+    ModeFunctions setLog(NLogger logger) ;
 }

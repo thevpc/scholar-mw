@@ -1,9 +1,12 @@
 package net.thevpc.scholar.hadrumaths.geom;
 
+import net.thevpc.nuts.elem.NArrayElementBuilder;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.GeometryFactory;
 import net.thevpc.scholar.hadrumaths.Maths;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
@@ -23,10 +26,22 @@ public class RegularPolygon extends AbstractGeometry implements PolygonBuilder {
         return center;
     }
 
+
     @Override
     public NElement toElement() {
-        return NElement.ofNamedObject("RegularPolygon");
+        NObjectElementBuilder b = NElement.ofObjectBuilder("RegularPolygon");
+        b.add("center",NElement.ofUplet(
+                NElement.ofDouble(center.getX()),
+                NElement.ofDouble(center.getY())
+        ));
+        b.add("radius",radius);
+        b.add("sides",sides);
+        b.add("arcRatio",arcRatio);
+        b.add("phase",phase);
+        b.addIf("properties", NElementHelper.elem(getProperties()), NElementHelper.blankPredicate());
+        return b.build();
     }
+
 
     public RegularPolygon setCenter(Point center) {
         this.center = center;

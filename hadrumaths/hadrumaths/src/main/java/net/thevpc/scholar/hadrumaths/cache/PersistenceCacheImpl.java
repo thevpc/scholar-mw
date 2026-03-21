@@ -7,6 +7,7 @@ import net.thevpc.common.mon.ProgressMonitors;
 import net.thevpc.common.time.Chronometer;
 import net.thevpc.common.time.DatePart;
 import net.thevpc.common.time.TimeDuration;
+import net.thevpc.nuts.log.NLogger;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.concurrent.AppLockException;
 import net.thevpc.scholar.hadrumaths.io.FailStrategy;
@@ -27,31 +28,8 @@ import java.util.logging.Logger;
  * @creationtime 2 juin 2007 13:28:08
  */
 public class PersistenceCacheImpl implements PersistenceCache {
-    private static final Logger log = Logger.getLogger(PersistenceCacheImpl.class.getName());
 
-    //    public static void main(String[] args) {
-//        final PersistenceCache c = new PersistenceCache();
-//        for (int i = 0; i < 3; i++) {
-//            new Thread() {
-//                @Override
-//                public void run() {
-//                    c.evaluate("toto", new Evaluator() {
-//                        @Override
-//                        public Object evaluate(Object[] args) {
-//                            System.out.println("START ....");
-//                            try {
-//                                Thread.sleep(20000);
-//                            } catch (InterruptedException e) {
-//                                e.printStackTrace();
-//                            }
-//                            System.out.println("END ....");
-//                            return "Hello";
-//                        }
-//                    });
-//                }
-//            }.start();
-//        }
-//    }
+
     private final PersistenceCache parent;
     private final PathFS pathFS = new PathFS();
     private HFile rootFolder;
@@ -59,6 +37,7 @@ public class PersistenceCacheImpl implements PersistenceCache {
     private HFile repositoryFolder;
     private String repositoryName;
     private final String dumpFileName;
+    private NLogger log;
     private CacheMode mode = CacheMode.INHERITED;
     private final HFileFilter cacheFileFilter;
     private boolean logLoadStatsEnabled = false;
@@ -71,32 +50,22 @@ public class PersistenceCacheImpl implements PersistenceCache {
     private boolean ignorePrevious = false;
     private ProgressMonitorFactory monitorFactory = null;
 
-//    public PersistenceCache() {
-//        this((File) null);
-//    }
-//
-//    public PersistenceCache(File cache) {
-//        this("dump", cache, null);
-//    }
-//
-//    public PersistenceCache(String id, String cache) {
-//        this(id, validateFolder(cache), null);
-//    }
-//
-//    public PersistenceCache(String id) {
-//        this(id, (File) null, null);
-//    }
-
-    public PersistenceCacheImpl() {
-        this(null, null, null,null);
+    @Override
+    public NLogger log() {
+        return log;
     }
 
-    public PersistenceCacheImpl(HFile rootFolder, String repositoryName, PersistenceCache parent,ProgressMonitorFactory progressMonitorFactory) {
+    public PersistenceCacheImpl(NLogger log) {
+        this(null, null, null,null,log);
+    }
+
+    public PersistenceCacheImpl(HFile rootFolder, String repositoryName, PersistenceCache parent,ProgressMonitorFactory progressMonitorFactory,NLogger log) {
         this.parent = parent;
         this.rootFolder = rootFolder;
         this.repositoryName = repositoryName;
         this.monitorFactory = progressMonitorFactory;
         this.dumpFileName = "dump" + ObjectCache.CACHE_DEF_SUFFIX;
+        this.log = log;
         cacheFileFilter = pathname -> pathname.isDirectory()
                 ||
                 (pathname.isFile() &&
@@ -105,8 +74,8 @@ public class PersistenceCacheImpl implements PersistenceCache {
                                 || pathname.getName().endsWith(ObjectCache.CACHE_OBJECT_SUFFIX)));
     }
 
-    public PersistenceCacheImpl(String repositoryName) {
-        this(null, repositoryName, null,null);
+    public PersistenceCacheImpl(String repositoryName,NLogger log) {
+        this(null, repositoryName, null,null,log);
     }
 
     @Override
@@ -381,7 +350,6 @@ public class PersistenceCacheImpl implements PersistenceCache {
                     HFile file = new HFile(r, dumpFileName);
                     fos = new PrintStream(file.getOutputStream());
                     fos.print(dumpObj.getDump());
-//                    System.out.println(file + " : stored dump");
                 } catch (Exception e) {
                     e.printStackTrace();
                     return null;
@@ -430,7 +398,6 @@ public class PersistenceCacheImpl implements PersistenceCache {
                 HFile file = new HFile(n, dumpFileName);
                 fos = new PrintStream(file.getOutputStream());
                 fos.print(dumpObj.getDump());
-//                System.out.println(file + " : stored dump");
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -439,7 +406,7 @@ public class PersistenceCacheImpl implements PersistenceCache {
             }
             return n;
         }
-        return null;
+        return r;
     }
 
     @Override
@@ -794,7 +761,8 @@ public class PersistenceCacheImpl implements PersistenceCache {
                 new HFile(getDumpFolder(base, true), name),
                 name + ".dump",
                 this,
-                monitorFactory
+                monitorFactory,
+                log
         );
     }
 

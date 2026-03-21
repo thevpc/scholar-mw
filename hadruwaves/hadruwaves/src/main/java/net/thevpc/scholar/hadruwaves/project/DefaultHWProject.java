@@ -5,11 +5,12 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+
 import net.thevpc.common.props.*;
 import net.thevpc.common.props.impl.DefaultPropertyListeners;
 
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElementFormat;
+import net.thevpc.nuts.elem.NElementWriter;
 import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurations;
@@ -19,6 +20,7 @@ import net.thevpc.scholar.hadruwaves.project.scene.HWMaterialTemplate;
 
 import java.util.UUID;
 import java.util.stream.Collectors;
+
 import net.thevpc.common.strings.StringUtils;
 
 
@@ -35,7 +37,7 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
      */
     private final WritableString filePath = Props.of("filePath").stringOf(null);
 
-    private String uuid;
+    private final String uuid;
     private final WritableValue<HWProjectScene> scene = Props.of("scene").valueOf(HWProjectScene.class, null);
     private final WritableBoolean modified = Props.of("modified").booleanOf(false);
     private final WritableLiMap<String, HWMaterialTemplate> materials = Props.of("materials").lmapOf(String.class, HWMaterialTemplate.class, x -> x.name().get());
@@ -47,7 +49,7 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
     private final HWConfigurations configurations = new HWConfigurations(this);
 
     public DefaultHWProject() {
-        this("hwsp-" + UUID.randomUUID().toString());
+        this("hwsp-" + UUID.randomUUID());
     }
 
     public DefaultHWProject(String uuid) {
@@ -75,7 +77,7 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
                     case REMOVE: {
                         oldValue.name().events()
                                 .removeIf(x -> x instanceof RePutByNamePropertyListener
-                                && ((RePutByNamePropertyListener) x).getMaterial() == newValue);
+                                        && ((RePutByNamePropertyListener) x).getMaterial() == newValue);
                         break;
                     }
                 }
@@ -180,7 +182,7 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
                 .add("name", name().get())
                 .add("description", description().get())
                 .add("materials", NElement.ofArrayBuilder().addAll(materials().values()
-                        .stream().map(x -> x.toElement()).collect(Collectors.toList()))
+                                .stream().map(x -> x.toElement()).collect(Collectors.toList()))
                         .build()
                 )
                 .add("parameters", parameters().toElement())
@@ -248,16 +250,16 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
                 throw new UncheckedIOException(ex);
             }
         }
-        NElementFormat.ofPlainTson(toElement()).print(ff);
+        NElementWriter.ofPlainTson().print(toElement(), ff);
         for (String p : new String[]{
-            "code/scala/src/main/scala",
-            "code/java/src/main/java",
-            "code/hadra",
-            "code/resources",
-            "code/other",
-            "build/cache",
-            "results/default",
-            "results/saved"
+                "code/scala/src/main/scala",
+                "code/java/src/main/java",
+                "code/hadra",
+                "code/resources",
+                "code/other",
+                "build/cache",
+                "results/default",
+                "results/saved"
         }) {
             File d = new File(root, p);
             if (!d.exists()) {

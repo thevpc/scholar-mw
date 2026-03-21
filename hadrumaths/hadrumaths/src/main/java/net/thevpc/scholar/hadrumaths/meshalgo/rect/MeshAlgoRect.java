@@ -44,9 +44,6 @@ public class MeshAlgoRect implements MeshAlgo, Cloneable {
         this.gridPrecision = gridPrecision;
         int maxgx = gridPrecision == null ? 0 : gridPrecision.getXmax();
         int mingx = gridPrecision == null ? 0 : gridPrecision.getXmin();
-//        if(mingx==0 || maxgx==0){
-//            System.out.println("Null:"+System.identityHashCode(this)+":"+getStructure().getClass().getSimpleName()+":precision = " + precision);
-//        }
         if (mingx > maxgx) {
             throw new IllegalArgumentException("gpMaxGridPrecisionX<gpMinGridPrecisionX : (" + mingx + " > " + maxgx + ")");
         }
@@ -221,8 +218,6 @@ public class MeshAlgoRect implements MeshAlgo, Cloneable {
         List<Geometry> areas = new ArrayList<Geometry>();
 
         if (maxAbsoluteSizeX < minAbsoluteSizeX && maxAbsoluteSizeY < minAbsoluteSizeY) {
-            //JOptionPane.showMessageDialog(null,gridPrecision +" : No meshing "+maxAbsoluteSizeX +"<" +minAbsoluteSizeX +" && " +maxAbsoluteSizeY +"<" + minAbsoluteSizeY);
-//            System.out.println("dw,dh,midSizeX,minAbsoluteSizeX,midSizeY,minAbsoluteSizeY = " + dw+","+dh+","+midSizeX + "," + minAbsoluteSizeX + "," + midSizeY + "," + minAbsoluteSizeY);
             return areas;
         }
 
@@ -260,7 +255,6 @@ public class MeshAlgoRect implements MeshAlgo, Cloneable {
                         if (sub.size() > 0) {
                             areas.addAll(sub);
                         }
-                        System.out.println("what to do if not singular ?");
                         //todo : what to do if not singular????
                     }
                 } else {

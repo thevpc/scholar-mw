@@ -12,6 +12,8 @@ import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ServiceLoader;
+import java.util.function.Consumer;
 import java.util.function.ToDoubleFunction;
 
 public class PlotUtils {
@@ -432,4 +434,5 @@ public class PlotUtils {
         }
         return p;
     }
+
 }

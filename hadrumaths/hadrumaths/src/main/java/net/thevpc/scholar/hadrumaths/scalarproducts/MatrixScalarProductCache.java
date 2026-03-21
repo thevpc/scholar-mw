@@ -216,8 +216,6 @@ public class MatrixScalarProductCache extends AbstractScalarProductCache impleme
 
                         }
                     });
-
-//                System.out.println("c1 = " + c1);
                     break;
                 }
                 case X: {

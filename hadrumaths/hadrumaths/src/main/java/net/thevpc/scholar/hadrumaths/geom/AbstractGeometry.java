@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.geom;
 
+import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.DomainScaleTool;
 import net.thevpc.scholar.hadrumaths.Expr;
@@ -14,7 +15,7 @@ import java.util.Objects;
  */
 public abstract class AbstractGeometry implements Geometry {
 
-    private Map<String, Object> properties;
+    private Map<String, NElement> properties;
     @Override
     public Geometry clone() {
         try {
@@ -92,9 +93,9 @@ public abstract class AbstractGeometry implements Geometry {
     }
 
     @Override
-    public Map<String, Object> getProperties() {
+    public Map<String, NElement> getProperties() {
         if (properties == null) {
-            properties = new HashMap<String, Object>();
+            properties = new HashMap<String, NElement>();
         }
         return properties;
     }

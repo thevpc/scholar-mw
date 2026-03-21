@@ -3,6 +3,7 @@ package net.thevpc.scholar.hadruwaves.mom.str;
 
 import net.thevpc.nuts.elem.NElement;
 
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.scholar.hadrumaths.ComplexMatrix;
 import net.thevpc.common.mon.ProgressMonitors;
 import net.thevpc.common.mon.ProgressMonitor;
@@ -25,7 +26,7 @@ public class DefaultMatrixUnknownEvaluator implements MatrixUnknownEvaluator {
         try {
             Testcoeff = A_.solve(B_);
         } catch (Exception e) {
-            str.getLog().error("Error DefaultMatrixUnknownEvaluator : " + e);
+            str.log().log(NMsg.ofC("Error DefaultMatrixUnknownEvaluator : " + e).asError(e));
 //            getLog().error("A=" + A_);
 //            getLog().error("B=" + B_);
             str.wdebug("DefaultMatrixUnknownEvaluator", e);

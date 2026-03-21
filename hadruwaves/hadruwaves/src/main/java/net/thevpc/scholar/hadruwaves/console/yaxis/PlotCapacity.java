@@ -18,7 +18,6 @@ public class PlotCapacity extends PlotAxisSeriesMatrixValue implements Cloneable
     protected Object[][] evalMatrixItems(ConsoleAwareObject structure, ParamSet x) {
         MomStructure s=(MomStructure) structure;
         ComplexMatrix cMatrix = s.capacity().monitor(this).evalMatrix();
-        System.out.println("["+s.getName()+"]["+x+"] capa = " + cMatrix);
         return cMatrix.getArray();
     }
 

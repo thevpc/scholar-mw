@@ -1,15 +1,23 @@
 package net.thevpc.scholar.hadruwaves.mom;
 
 
-import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NUpletElementBuilder;
+import net.thevpc.nuts.elem.*;
+import net.thevpc.nuts.log.NLog;
+import net.thevpc.nuts.text.NMsg;
+import net.thevpc.nuts.util.NNameFormat;
+import net.thevpc.nuts.util.NOptional;
+import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.HSerializable;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.Material;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
+
 import net.thevpc.scholar.hadruwaves.Boundary;
 
 /**
@@ -20,6 +28,177 @@ public final class BoxSpace implements HSerializable {
     private final Boundary limit;
     private final Material material;
     private final double width;
+
+    public static NOptional<BoxSpace> parse(NElement value, Function<NElement, NElement> resolver) {
+        boolean err = false;
+        if (value == null || value.isNull()) {
+            return NOptional.<BoxSpace>ofNamedEmpty("BoxSpace").withDefault(BoxSpace::nothing);
+        }
+        Function<NElement, NElement> resolver2 = e -> {
+            if (resolver != null) {
+                NElement f = resolver.apply(e);
+                if (f != null) return f;
+            }
+            return e;
+        };
+        if (value.isAnyStringOrName()) {
+            switch (NNameFormat.LOWER_KEBAB_CASE.format(value.asStringValue().orElse(""))) {
+                case "matched-load":
+                case "matched": {
+                    return NOptional.of(BoxSpace.matchedLoad());
+                }
+                case "nothing": {
+                    return NOptional.of(BoxSpace.nothing());
+                }
+                case "short":
+                case "short-circuit": {
+                    return NOptional.of(BoxSpace.shortCircuit(Material.PEC, 0.001));
+                }
+                case "open":
+                case "open-circuit": {
+                    return NOptional.of(BoxSpace.openCircuit(Material.VACUUM, 1));
+                }
+            }
+        }
+        if (value.isListContainer()) {
+            Boundary limit = null;
+            Material material = null;
+            double width = 0;
+            List<NElement> children = value.asListContainer().get().children();
+            String name = null;
+            if (value.isNamed()) {
+                name = value.asNamed().get().name().orNull();
+            }
+            List<NPairElement> toDelegateToMaterial = new ArrayList<>();
+            for (NElement child : children) {
+                if (child.isNamedPair()) {
+                    NPairElement p = child.asPair().get();
+                    NElement value2 = resolver2.apply(p.value());
+                    switch (NNameFormat.LOWER_KEBAB_CASE.format(p.key().asStringValue().orElse(""))) {
+                        case "limit":
+                        case "boundary": {
+                            NOptional<Boundary> v = Boundary.parse(value2);
+                            if (!v.isPresent()) {
+                                err = true;
+                            }
+                            limit = v.orDefault();
+                            break;
+                        }
+                        case "material": {
+                            NOptional<Material> u = Material.parse(value2, resolver2);
+                            if (!u.isPresent()) {
+                                err = true;
+                            }
+                            material = u.orDefault();
+                            break;
+                        }
+                        case "ε":
+                        case "εr":
+                        case "permittivity":
+                        case "μ":
+                        case "μr":
+                        case "permeability":
+                        case "σ":
+                        case "conductivity":
+                        case "electricConductivity": {
+                            toDelegateToMaterial.add(p);
+                            break;
+                        }
+                        case "width": {
+                            NOptional<NNumberElement> n = value2.asNumber();
+                            if (n.isPresent()) {
+                                width = n.get().numberValue().doubleValue();
+                                if (width < 0) {
+                                    NLog.ofScoped(BoxSpace.class).log(NMsg.ofC("'width' should be a non negative number. found %s", p).asError());
+                                    err = true;
+                                    width = 0;
+                                }
+                            } else {
+                                err = true;
+                                width = 0;
+                                NLog.ofScoped(BoxSpace.class).log(NMsg.ofC("'width' should be a number. found %s", p).asError());
+                            }
+                            break;
+                        }
+                        default: {
+                            err = true;
+                            NLog.ofScoped(BoxSpace.class).log(NMsg.ofC("invalid property %s", p).asError());
+                        }
+                    }
+                }
+            }
+            if(material == null && !toDelegateToMaterial.isEmpty()) {
+                NObjectElement ee = NElement.ofObjectBuilder().addAll(toDelegateToMaterial.toArray(new NElement[0])).build();
+                NOptional<Material> u = Material.parse(ee, resolver2);
+                if (!u.isPresent()) {
+                    err = true;
+                }
+                material = u.orDefault();
+            }
+            switch (NNameFormat.LOWER_KEBAB_CASE.format(NStringUtils.trim(name))) {
+                case "matched-load":
+                case "matched": {
+                    if (material == null) {
+                        material = Material.VACUUM;
+                    }
+                    BoxSpace n = BoxSpace.matchedLoad(material);
+                    if (err) {
+                        NOptional.ofError(NMsg.ofC("'box space' should be an object. found %s", value).asError()).withDefault(n);
+                    } else {
+                        return NOptional.of(n);
+                    }
+                }
+                case "open-circuit":
+                case "open": {
+                    if (material == null) {
+                        material = Material.VACUUM;
+                    }
+                    BoxSpace n = BoxSpace.openCircuit(material, width);
+                    if (err) {
+                        NOptional.ofError(NMsg.ofC("'box space' should be an object. found %s", value).asError()).withDefault(n);
+                    } else {
+                        return NOptional.of(n);
+                    }
+                }
+                case "short-circuit":
+                case "short": {
+                    if (material == null) {
+                        material = Material.VACUUM;
+                    }
+                    BoxSpace n = BoxSpace.shortCircuit(material, width);
+                    if (err) {
+                        NOptional.ofError(NMsg.ofC("'box space' should be an object. found %s", value).asError()).withDefault(n);
+                    } else {
+                        return NOptional.of(n);
+                    }
+                }
+                case "nothing": {
+                    BoxSpace n = BoxSpace.nothing();
+                    if (err) {
+                        NOptional.ofError(NMsg.ofC("'box space' should be an object. found %s", value).asError()).withDefault(n);
+                    } else {
+                        return NOptional.of(n);
+                    }
+                }
+            }
+            if (limit == null) {
+                limit = Boundary.NOTHING;
+            }
+            if (material == null) {
+                material = Material.VACUUM;
+            }
+            BoxSpace n = new BoxSpace(
+                    limit, material, width
+            );
+            if (err) {
+                return NOptional.<BoxSpace>ofError(NMsg.ofC("'box space' should be an object. found %s", value).asError()).withDefault(n);
+            } else {
+                return NOptional.of(n);
+            }
+        } else {
+            return NOptional.<BoxSpace>ofError(NMsg.ofC("'box space' should be an object. found %s", value).asError()).withDefault(BoxSpace::nothing);
+        }
+    }
 
     public BoxSpace(Boundary limit, Material material, double width) {
         if (limit == null) {
@@ -97,14 +276,14 @@ public final class BoxSpace implements HSerializable {
 
     public Complex getEpsrc(double freq) {
         if (material.getElectricConductivity() == 0) {
-            return Complex.of(material.getPermettivity() * Maths.EPS0);
+            return Complex.of(material.getPermittivity() * Maths.EPS0);
         } else {
-            return Complex.of(material.getPermettivity() * Maths.EPS0, material.getElectricConductivity() / (2 * Math.PI * freq));
+            return Complex.of(material.getPermittivity() * Maths.EPS0, material.getElectricConductivity() / (2 * Math.PI * freq));
         }
     }
 
     public double getEpsr() {
-        return material.getPermettivity();
+        return material.getPermittivity();
     }
 
     public double getElectricConductivity() {

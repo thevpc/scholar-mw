@@ -6,6 +6,7 @@ import net.thevpc.nuts.elem.NElement;
 
 
 import net.thevpc.nuts.elem.NObjectElementBuilder;
+import net.thevpc.nuts.log.NLogger;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.Domain;
@@ -18,7 +19,7 @@ import net.thevpc.scholar.hadruwaves.mom.MomStructure;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 29 mai 2007 23:08:11
  */
-public abstract class AbstractGpPattern implements GpPattern {
+public abstract class AbstractGpPattern implements GpPattern, Cloneable{
     protected AbstractGpPattern() {
     }
 
@@ -32,7 +33,7 @@ public abstract class AbstractGpPattern implements GpPattern {
         return h.build();
     }
 
-    public DoubleToVector[] createFunctions(Domain globalDomain, MeshZone zone, ProgressMonitor monitor, MomStructure str) {
+    public DoubleToVector[] createFunctions(Domain globalDomain, MeshZone zone, ProgressMonitor monitor, MomStructure str, NLogger logger) {
         DoubleToVector[] all = new DoubleToVector[getCount()];
         for (int i = 0; i < all.length; i++) {
             all[i] = createFunction(i, globalDomain, zone, str);

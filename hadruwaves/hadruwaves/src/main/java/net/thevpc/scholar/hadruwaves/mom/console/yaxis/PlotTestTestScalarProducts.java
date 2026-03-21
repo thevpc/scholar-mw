@@ -39,22 +39,12 @@ public class PlotTestTestScalarProducts extends PlotAxisSeries implements Clonea
                 TestFunctions _testFunctions = structure.testFunctions();
                 Complex[][] gfps = new Complex[_testFunctions.count()][_testFunctions.count()];
                 int max = _testFunctions.count();
-//        int progress=0;
                 for (int q = 0; q < gfps.length; q++) {
                     for (int n = 0; n < max; n++) {
-//                progress++;
-//                if(q==n){
-//                    Complex complex = ScalarProductFactory.scalarProduct(
-//                            _testFunctions.gp(n),
-//                            _testFunctions.gp(q));
-//                    System.out.println("p=q="+q+" ==> " + complex);
-//                    System.out.print("");
-//                }
                         gfps[q][n] = Maths.scalarProduct(
                                 _testFunctions.gp(n),
                                 _testFunctions.gp(q)).toComplex();
                         ProgressMonitors.setProgress(monitor, q, n, gfps.length, max, getClass().getSimpleName());
-//                monitor.setProgress(1.0*progress/(gfps.length*max));
                     }
                 }
                 PlotMatrix namedMatrix = new PlotMatrix(gfps);
@@ -67,9 +57,4 @@ public class PlotTestTestScalarProducts extends PlotAxisSeries implements Clonea
         return "<Gp,Gq>";
     }
 
-//
-//    public double[] getY(AbstractStructure2D direct, AbstractStructure2D modele, ParamSet x) {
-//        int l = compute(direct, modele, x, null)[0].length;
-//        return Math2.dsteps(1, l, 1.0);
-//    }
 }

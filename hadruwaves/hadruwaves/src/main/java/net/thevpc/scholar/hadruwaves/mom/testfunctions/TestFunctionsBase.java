@@ -7,6 +7,7 @@ import net.thevpc.nuts.elem.NElement;
 
 
 import net.thevpc.nuts.elem.NObjectElementBuilder;
+import net.thevpc.nuts.log.NLogger;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.cache.ObjectCache;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
@@ -45,9 +46,19 @@ public abstract class TestFunctionsBase implements net.thevpc.scholar.hadruwaves
     private TestFunctionsComparator functionsComparator;
     private PropertyChangeSupport pcs;
     private Boolean complex = null;
+    private NLogger log = NLogger.STDERR;
 
     protected TestFunctionsBase() {
         pcs = new PropertyChangeSupport(this);
+    }
+
+    public NLogger log() {
+        return log;
+    }
+
+    public TestFunctionsBase setLog(NLogger log) {
+        this.log = log;
+        return this;
     }
 
     @Override

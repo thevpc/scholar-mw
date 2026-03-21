@@ -127,7 +127,6 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
                             }
                         }
                     });
-//                System.out.println("c1 = " + c1);
                     break;
                 }
                 case Y: {
@@ -184,8 +183,6 @@ public class MemComplexScalarProductCache extends AbstractScalarProductCache imp
 
                         }
                     });
-
-//                System.out.println("c1 = " + c1);
                     break;
                 }
                 case X: {

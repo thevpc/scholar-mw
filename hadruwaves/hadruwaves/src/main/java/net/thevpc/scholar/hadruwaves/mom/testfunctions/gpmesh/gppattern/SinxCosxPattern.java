@@ -17,7 +17,7 @@ import net.thevpc.scholar.hadruwaves.mom.MomStructure;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 15 mai 2007 21:42:19
  */
-public final class SinxCosxPattern extends RectMeshAttachGpPattern {
+public final class SinxCosxPattern extends RectMeshAttachGpPattern implements Cloneable {
     private int max;
 
     public SinxCosxPattern(int complexity) {

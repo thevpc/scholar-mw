@@ -12,55 +12,6 @@ import java.util.concurrent.*;
  */
 public class SolverExecutorService implements Closeable {
     List<Future> futures = new ArrayList<Future>();
-    //    public static void main(String[] args) {
-//        try {
-//            Maths.solverExecutorService(1)
-//                    .submit(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            System.out.println("task 1");
-//                            try {
-//                                Thread.sleep(3000);
-//                            } catch (InterruptedException e) {
-//                                e.printStackTrace();
-//                            }
-//                            System.out.println("Okkay");
-//                        }
-//                    })
-//                    .submit(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            try {
-//                                System.out.println("task 2");
-//                                Thread.sleep(2000);
-//                            } catch (InterruptedException e) {
-//                                e.printStackTrace();
-//                            }
-//                            throw new RuntimeException("Error some where");
-//                        }
-//                    })
-//                    .submit(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            try {
-//                                System.out.println("task 3");
-//                                Thread.sleep(2000);
-//                            } catch (InterruptedException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    })
-//            .solveAll()
-//            .close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        } catch (ExecutionException e) {
-//            e.printStackTrace();
-//        }
-//        ;
-//    }
     private final CompletionService ecs;
     private final ExecutorService executor;
 

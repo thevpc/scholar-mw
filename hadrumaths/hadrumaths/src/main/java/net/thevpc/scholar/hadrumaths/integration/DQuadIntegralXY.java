@@ -155,7 +155,6 @@ public class DQuadIntegralXY implements DIntegralXY {
 //        if(simp==null){
 //            simp=f;
 //        }else{
-//            System.out.println("simplification");
 //        }
         //g(z)= intx_(z)
         DDzIntegralXY f2 = new DDzIntegralXY(f, this, xmin, xmax, ymin, ymax);

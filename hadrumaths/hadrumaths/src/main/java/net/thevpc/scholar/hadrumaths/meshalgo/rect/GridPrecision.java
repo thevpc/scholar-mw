@@ -3,8 +3,15 @@ package net.thevpc.scholar.hadrumaths.meshalgo.rect;
 
 import net.thevpc.nuts.elem.NElement;
 
+import net.thevpc.nuts.elem.NUpletElement;
+import net.thevpc.nuts.log.NLog;
+import net.thevpc.nuts.text.NMsg;
+import net.thevpc.nuts.util.NNameFormat;
+import net.thevpc.nuts.util.NOptional;
 import net.thevpc.scholar.hadrumaths.HSerializable;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
+
+import java.util.function.Function;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -17,6 +24,94 @@ public final class GridPrecision implements Cloneable, HSerializable {
     private int ymax = 1;
     private int xmin = 1;
     private int ymin = 1;
+
+    public static NOptional<GridPrecision> parse(NElement value, Function<NElement,NElement> evaluator) {
+        Function<NElement,NElement> evaluator2=e->{
+            if(evaluator!=null){
+                return evaluator.apply(e);
+            }
+            return e;
+        };
+
+        if (value.isAnyStringOrName()) {
+            switch (NNameFormat.LOWER_KEBAB_CASE.format(value.asStringValue().orElse(""))) {
+                case "least": {
+                    return NOptional.of(GridPrecision.LEAST_PRECISION);
+                }
+            }
+            return NOptional.of(GridPrecision.LEAST_PRECISION);
+        }
+        if (value.isNamedUplet()) {
+            NUpletElement u = value.asUplet().get();
+            switch (NNameFormat.LOWER_KEBAB_CASE.format(u.name().orElse(""))) {
+                case "x": {
+                    if (u.children().size() == 1) {
+                        NOptional<Integer> v = u.children().get(0).asIntValue();
+                        if (v.isPresent()) {
+                            return NOptional.of(GridPrecision.ofX(v.get()));
+                        }
+                    }
+                    if (u.children().size() == 2) {
+                        NOptional<Integer> v1 = u.children().get(0).asIntValue();
+                        NOptional<Integer> v2 = u.children().get(1).asIntValue();
+                        if (v1.isPresent() && v2.isPresent()) {
+                            return NOptional.of(GridPrecision.ofX(v1.get(), v2.get()));
+                        }
+                    }
+                    NLog.ofScoped(GridPrecision.class).log(NMsg.ofC("invalid GridPrecision.ofX(...) :  %s", value).asError());
+                    return NOptional.<GridPrecision>ofError(NMsg.ofC("invalid GridPrecision.ofX(...) :  %s", value).asError()).withDefault(() -> GridPrecision.LEAST_PRECISION);
+                }
+                case "y": {
+                    if (u.children().size() == 1) {
+                        NOptional<Integer> v = u.children().get(0).asIntValue();
+                        if (v.isPresent()) {
+                            return NOptional.of(GridPrecision.ofY(v.get()));
+                        }
+                    }
+                    if (u.children().size() == 2) {
+                        NOptional<Integer> v1 = u.children().get(0).asIntValue();
+                        NOptional<Integer> v2 = u.children().get(1).asIntValue();
+                        if (v1.isPresent() && v2.isPresent()) {
+                            return NOptional.of(GridPrecision.ofY(v1.get(), v2.get()));
+                        }
+                    }
+                    NLog.ofScoped(GridPrecision.class).log(NMsg.ofC("invalid GridPrecision.ofY(...) :  %s", value).asError());
+                    return NOptional.<GridPrecision>ofError(NMsg.ofC("invalid GridPrecision.ofY(...) :  %s", value).asError()).withDefault(() -> GridPrecision.LEAST_PRECISION);
+                }
+                case "xy": {
+                    if (u.children().size() == 1) {
+                        NOptional<Integer> v = u.children().get(0).asIntValue();
+                        if (v.isPresent()) {
+                            return NOptional.of(GridPrecision.ofXY(v.get()));
+                        }
+                    }
+                    if (u.children().size() == 2) {
+                        NOptional<Integer> v1 = u.children().get(0).asIntValue();
+                        NOptional<Integer> v2 = u.children().get(1).asIntValue();
+                        if (v1.isPresent() && v2.isPresent()) {
+                            return NOptional.of(GridPrecision.ofXY(v1.get(), v2.get()));
+                        }
+                    }
+                    if (u.children().size() == 4) {
+                        NOptional<Integer> v1 = u.children().get(0).asIntValue();
+                        NOptional<Integer> v2 = u.children().get(1).asIntValue();
+                        NOptional<Integer> v3 = u.children().get(2).asIntValue();
+                        NOptional<Integer> v4 = u.children().get(3).asIntValue();
+                        if (
+                                v1.isPresent() && v2.isPresent()
+                                        && v3.isPresent() && v4.isPresent()
+                        ) {
+                            return NOptional.of(GridPrecision.ofXY(v1.get(), v2.get(), v3.get(), v4.get()));
+                        }
+                    }
+                    NLog.ofScoped(GridPrecision.class).log(NMsg.ofC("invalid GridPrecision.ofXY(...) :  %s", value).asError());
+                    return NOptional.<GridPrecision>ofError(NMsg.ofC("invalid GridPrecision.ofXY(...) :  %s", value).asError()).withDefault(() -> GridPrecision.LEAST_PRECISION);
+                }
+            }
+        }
+        NLog.ofScoped(GridPrecision.class).log(NMsg.ofC("invalid GridPrecision(...) :  %s", value).asError());
+        return NOptional.<GridPrecision>ofError(NMsg.ofC("invalid GridPrecision(...) :  %s", value).asError()).withDefault(() -> GridPrecision.LEAST_PRECISION);
+    }
 
     public GridPrecision(int val) {
         this(val, val, -1, -1);

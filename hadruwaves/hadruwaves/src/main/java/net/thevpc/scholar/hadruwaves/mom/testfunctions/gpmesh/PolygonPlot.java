@@ -642,27 +642,6 @@ public class PolygonPlot extends JPanel {
         repaint();
     }
 
-//    public void setValueMinRelativeSizeY(Polygon polygon) {
-//        System.out.println("polygon.getMinRelativeSizeY() = " + polygon.getMinRelativeSizeY());
-//        minRelativeSizeY.setValue(polygon.getMinRelativeSizeY());
-//    }
-//
-//    public void setValueMinRelativeSizeX(Polygon polygon) {
-//        System.out.println("polygon.getMinRelativeSizeX() = " + polygon.getMinRelativeSizeX());
-//        minRelativeSizeX.setValue(polygon.getMinRelativeSizeX());
-//    }
-//
-//
-//    public void setValueMaxRelativeSizeY(Polygon polygon) {
-//        System.out.println("polygon.getMaxRelativeSizeY() = " + polygon.getMaxRelativeSizeY());
-//        maxRelativeSizeY.setValue((polygon.getMaxRelativeSizeY()));
-//    }
-//
-//    public void setValueMaxRelativeSizeX(Polygon polygon) {
-//        System.out.println("polygon.getMaxRelativeSizeX() = " + polygon.getMaxRelativeSizeX());
-//        maxRelativeSizeX.setValue((polygon.getMaxRelativeSizeX()));
-//    }
-
     //conversion
 
     public double getMaxRelativeSizeXValue() {

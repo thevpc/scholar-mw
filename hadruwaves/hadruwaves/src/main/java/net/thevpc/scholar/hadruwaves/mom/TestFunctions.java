@@ -1,6 +1,7 @@
 package net.thevpc.scholar.hadruwaves.mom;
 
 import net.thevpc.common.mon.ProgressMonitor;
+import net.thevpc.nuts.log.NLogger;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.HSerializable;
@@ -9,6 +10,7 @@ import net.thevpc.scholar.hadrumaths.cache.ObjectCache;
 import net.thevpc.scholar.hadrumaths.geom.Geometry;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadruwaves.mom.str.TestFunctionsComparator;
+import net.thevpc.scholar.hadruwaves.mom.testfunctions.TestFunctionsBase;
 
 import java.beans.PropertyChangeListener;
 
@@ -69,5 +71,9 @@ public interface TestFunctions extends HSerializable {
     void removePropertyChangeListener(String property, PropertyChangeListener listener);
 
     Geometry[] getGeometries();
+
+    NLogger log() ;
+
+    TestFunctions setLog(NLogger log);
 
 }

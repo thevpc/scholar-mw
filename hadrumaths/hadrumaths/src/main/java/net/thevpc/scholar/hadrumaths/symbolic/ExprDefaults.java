@@ -1059,7 +1059,6 @@ public class ExprDefaults {
         ExprType a = ExprType.DOUBLE_DOUBLE;
         for (Expr e : expressions) {
             if (e == null || e.getType() == null) {
-                //System.out.println("Why");
             }else {
                 a = widest(a, e.getType());
             }

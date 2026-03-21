@@ -138,7 +138,6 @@ public class PlotHyperCubePlotPanel extends BasePlotComponent implements PlotPan
             public void stateChanged(ChangeEvent e) {
                 JSlider source = (JSlider) e.getSource();
                 if (!source.getValueIsAdjusting()) {
-//                    System.out.println(slider.getValue());
                     revalidatePlot();
                 }
             }

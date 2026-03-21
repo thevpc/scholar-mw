@@ -108,7 +108,6 @@ public class Configuration
 
     public static Configuration getConfiguration() {
         if (globalConfig == null) {
-            //System.out.println("No Configuration loaded, use defaults");
             globalConfig = new Configuration();
             globalConfig.getOptions().setAutoSave(false);
         }
@@ -116,14 +115,11 @@ public class Configuration
     }
 
     public static void setConfiguration(Configuration c) {
-        //System.out.println("Setting  Configuration...");
         Configuration old = globalConfig;
         globalConfig = c;
         Locale l = globalConfig.getLocale("java.util.Locale");
         if (l != null) {
             Locale.setDefault(l);
-//            Log.trace("Locale set to " + l);
-            System.out.println("Locale set to " + l);
         }
 
         configChangeSupport.firePropertyChange(CONFIGURATION_CHANGED, old, globalConfig);
@@ -132,22 +128,16 @@ public class Configuration
     public static Configuration getUserConfiguration() {
         if (userConfig == null) {
             return getConfiguration();
-//            //System.out.println("No Configuration loaded, use defaults");
-//            userConfig = new Configuration();
-//            userConfig.getOptions().setAutoSave(true);
         }
         return userConfig;
     }
 
     public static void setUserConfiguration(Configuration c) {
-        //System.out.println("Setting  Configuration...");
         Configuration old = userConfig;
         userConfig = c;
         Locale l = userConfig.getLocale("java.util.Locale");
         if (l != null) {
             Locale.setDefault(l);
-//            Log.trace("Locale set to " + l);
-            System.out.println("Locale set to " + l);
         }
 
         configChangeSupport.firePropertyChange(USER_CONFIGURATION_CHANGED, old, userConfig);
@@ -485,7 +475,6 @@ public class Configuration
             }
         }
         load(options.getFile());
-        System.out.println("Configuration loaded");
     }
 
     public void store()

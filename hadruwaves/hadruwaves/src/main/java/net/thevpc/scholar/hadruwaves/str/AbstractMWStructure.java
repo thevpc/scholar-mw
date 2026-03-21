@@ -3,14 +3,14 @@ package net.thevpc.scholar.hadruwaves.str;
 import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.common.mon.ProgressMonitorFactory;
 import net.thevpc.common.mon.ProgressMonitors;
+import net.thevpc.nuts.log.NLog;
+import net.thevpc.nuts.log.NLogger;
 import net.thevpc.scholar.hadrumaths.ComplexMatrix;
 import net.thevpc.scholar.hadrumaths.cache.CacheAware;
 import net.thevpc.scholar.hadrumaths.cache.ObjectCache;
 import net.thevpc.scholar.hadrumaths.cache.PersistenceCache;
 import net.thevpc.scholar.hadrumaths.cache.PersistenceCacheBuilder;
 import net.thevpc.scholar.hadruplot.console.ConsoleAwareObject;
-import net.thevpc.scholar.hadruplot.console.ConsoleLogger;
-import net.thevpc.scholar.hadruplot.console.NullConsoleLogger;
 import net.thevpc.scholar.hadruplot.console.params.ParamTarget;
 import net.thevpc.scholar.hadruwaves.mom.MWStructureMemoryCache;
 import net.thevpc.scholar.hadruwaves.mom.str.DefaultMomStructureErrorHandler;
@@ -23,32 +23,33 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class AbstractMWStructure<T extends AbstractMWStructure> implements MWStructure, ConsoleAwareObject, CacheAware {
-    private PersistenceCache persistentCache;
+    private final PersistenceCache persistentCache;
     private ProgressMonitorFactory monitorFactory;
     private MWStructureErrorHandler errorHandler = new DefaultMomStructureErrorHandler();
-    private PropertyChangeSupport pcs;
-    private MWStructureMemoryCache memoryCache;
-    private Map<String, Object> parameters = new HashMap<String, Object>();
+    private final PropertyChangeSupport pcs;
+    private final MWStructureMemoryCache memoryCache;
+    private final Map<String, Object> parameters = new HashMap<String, Object>();
     /**
      * user objects are not included in the dump and could be used as extra info
      * on structure extra info should not influence structure characteristics
      * calculation
      */
-    private HashMap<String, Object> userObjects = new HashMap<String, Object>();
+    private final HashMap<String, Object> userObjects = new HashMap<String, Object>();
     /**
      * domaine de la structure
      */
-    //    private transient HashMap<String, Object> hints = new HashMap<String, Object>();
-    private ConsoleLogger log = NullConsoleLogger.INSTANCE;
+    private NLogger log = NLog.of(AbstractMWStructure.class);
     private String name;
     private boolean rebuild = true;
     private MWStructureHintsManager hintsManager;
 
-    private ProgressMonitorFactory monitorFactoryDelegate = new DelegateProgressMonitorFactory();
+    private final ProgressMonitorFactory monitorFactoryDelegate = new DelegateProgressMonitorFactory();
     private DelegateHintsPropertyChangeListener delegateHintChangeListener;
 
     public AbstractMWStructure() {
-        persistentCache = PersistenceCacheBuilder.of().name("MomStructure").setMonitorFactory(monitorFactoryDelegate).build();
+        persistentCache = PersistenceCacheBuilder.of()
+                .setLogger(x -> log().log(x))
+                .name("MomStructure").setMonitorFactory(monitorFactoryDelegate).build();
         memoryCache = new MWStructureMemoryCache(this);
         pcs = new PropertyChangeSupport(this);
     }
@@ -58,15 +59,15 @@ public abstract class AbstractMWStructure<T extends AbstractMWStructure> impleme
     }
 
     @Override
-    public ConsoleLogger getLog() {
+    public NLogger log() {
         return log;
     }
 
-    public T setLog(ConsoleLogger log) {
-        ConsoleLogger old = this.log;
+    public T setLog(NLogger log) {
+        NLogger old = this.log;
         this.log = log;
         firePropertyChange("log", old, log);
-        return (T)this;
+        return (T) this;
     }
 
     public ParamTarget getTarget() {
@@ -76,7 +77,7 @@ public abstract class AbstractMWStructure<T extends AbstractMWStructure> impleme
 
     public T setTarget(ParamTarget target) {
         setUserObject("Target", target);
-        return (T)this;
+        return (T) this;
     }
 
     protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
@@ -87,12 +88,12 @@ public abstract class AbstractMWStructure<T extends AbstractMWStructure> impleme
     public T invalidateCache() {
         rebuild = true;
         memoryCache.reset();
-        return (T)this;
+        return (T) this;
     }
 
     public T setParameter(String name) {
         setParameter(name, Boolean.TRUE);
-        return (T)this;
+        return (T) this;
     }
 
     public T setParameterNotNull(String name, Object value) {
@@ -101,21 +102,21 @@ public abstract class AbstractMWStructure<T extends AbstractMWStructure> impleme
         } else {
             setParameter(name, value);
         }
-        return (T)this;
+        return (T) this;
     }
 
     public T setParameter(String name, Object value) {
         Object old = parameters.put(name, value);
         firePropertyChange("parameter." + name, old, value);
         invalidateCache();
-        return (T)this;
+        return (T) this;
     }
 
     public T removeParameter(String name) {
         Object old = parameters.remove(name);
         firePropertyChange("parameter." + name, old, null);
         invalidateCache();
-        return (T)this;
+        return (T) this;
     }
 
     public Object getParameter(String name) {
@@ -172,13 +173,13 @@ public abstract class AbstractMWStructure<T extends AbstractMWStructure> impleme
     public T removeUserObject(String name) {
         Object old = userObjects.remove(name);
         firePropertyChange("userObject." + name, old, null);
-        return (T)this;
+        return (T) this;
     }
 
     public T setUserObject(String name, Object value) {
         Object old = userObjects.put(name, value);
         firePropertyChange("userObject." + name, old, value);
-        return (T)this;
+        return (T) this;
     }
 
     @Override
@@ -191,7 +192,7 @@ public abstract class AbstractMWStructure<T extends AbstractMWStructure> impleme
         ProgressMonitorFactory old = this.monitorFactory;
         this.monitorFactory = monitor;
         firePropertyChange("monitorFactory", old, monitorFactory);
-        return (T)this;
+        return (T) this;
     }
 
     @Override
@@ -202,7 +203,7 @@ public abstract class AbstractMWStructure<T extends AbstractMWStructure> impleme
     @Override
     public T monitorFactory(ProgressMonitorFactory monitor) {
         setMonitorFactory(monitor);
-        return (T)this;
+        return (T) this;
     }
 
     /**
@@ -220,7 +221,7 @@ public abstract class AbstractMWStructure<T extends AbstractMWStructure> impleme
         String old = this.name;
         this.name = name;
         firePropertyChange("name", old, name);
-        return (T)this;
+        return (T) this;
     }
 
     @Override
@@ -254,7 +255,7 @@ public abstract class AbstractMWStructure<T extends AbstractMWStructure> impleme
             }
             firePropertyChange("hintsManager", old, hintsManager);
         }
-        return (T)this;
+        return (T) this;
     }
 
     public String getParametersString() {
@@ -327,7 +328,7 @@ public abstract class AbstractMWStructure<T extends AbstractMWStructure> impleme
             for (Map.Entry<String, Object> e : other.getUserObjects().entrySet()) {
                 setUserObject(e.getKey(), e.getValue());
             }
-            setLog(other.getLog());
+            setLog(other.log());
             setName(other.getName());
             setErrorHandler(other.getErrorHandler());
             setMonitorFactory(other.getMonitorFactory());
@@ -343,15 +344,13 @@ public abstract class AbstractMWStructure<T extends AbstractMWStructure> impleme
     public ObjectCache getObjectCache() {
         if (getPersistentCache().isEnabled()) {
             ObjectCache objectCache = getPersistentCache().getObjectCache(getKey(), true);
-            if (objectCache != null) {
-                return objectCache;
-            }
+            return objectCache;
         }
         return null;
     }
 
     protected static class DelegateHintsPropertyChangeListener implements PropertyChangeListener {
-        private AbstractMWStructure str;
+        private final AbstractMWStructure str;
 
         public DelegateHintsPropertyChangeListener(AbstractMWStructure str) {
             this.str = str;
@@ -374,7 +373,7 @@ public abstract class AbstractMWStructure<T extends AbstractMWStructure> impleme
     @Override
     public T clone() {
         try {
-            return (T)super.clone();
+            return (T) super.clone();
         } catch (CloneNotSupportedException e) {
             throw new IllegalArgumentException("Unexpected");
         }

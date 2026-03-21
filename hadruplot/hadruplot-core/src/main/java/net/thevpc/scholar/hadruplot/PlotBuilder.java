@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadruplot;
 
+import net.thevpc.nuts.reflect.NReflectUtils;
 import net.thevpc.scholar.hadruplot.extension.PlotWindowManagerFactory;
 import net.thevpc.scholar.hadruplot.extension.defaults.DefaultPlotBuilderSupport;
 import net.thevpc.scholar.hadruplot.extension.PlotBuilderSupport;
@@ -27,10 +28,7 @@ public class PlotBuilder {
     private static List<PlotBuilderSupport> supports = new ArrayList<>();
 
     static {
-        ServiceLoader<PlotBuilderSupport> s = ServiceLoader.load(PlotBuilderSupport.class);
-        for (PlotBuilderSupport plotBuilderSupport : s) {
-            supports.add(plotBuilderSupport);
-        }
+        supports.addAll(NReflectUtils.listServices(PlotBuilderSupport.class,PlotBuilder.class));
         supports.add(defaultSupport);
     }
 

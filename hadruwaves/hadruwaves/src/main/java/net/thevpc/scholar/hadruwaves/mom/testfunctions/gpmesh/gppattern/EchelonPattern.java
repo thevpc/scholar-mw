@@ -19,7 +19,7 @@ import static net.thevpc.scholar.hadrumaths.Maths.*;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 15 mai 2007 21:41:08
  */
-public final class EchelonPattern extends RectMeshAttachGpPattern {
+public final class EchelonPattern extends RectMeshAttachGpPattern implements Cloneable {
     private int gridx = 100;
     private int gridy = 100;
     private boolean xaxis = true;
@@ -35,6 +35,16 @@ public final class EchelonPattern extends RectMeshAttachGpPattern {
         this.gridx = gridx;
         this.gridy = gridy;
         this.value = value == null ? 1 : value.doubleValue();
+    }
+
+    @Override
+    public EchelonPattern copy() {
+        return clone();
+    }
+
+    @Override
+    protected EchelonPattern clone() {
+        return (EchelonPattern) super.clone();
     }
 
     @Override

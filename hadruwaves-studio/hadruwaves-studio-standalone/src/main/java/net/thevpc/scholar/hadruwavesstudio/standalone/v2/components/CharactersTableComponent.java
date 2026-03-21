@@ -183,7 +183,7 @@ public class CharactersTableComponent extends JPanel {
         other.add(new CharCommand("infinity", "\u221E", "Infinity", "\u221E", null));
         other.add(new CharCommand("pi", CharactersTable.pi, "Pi", CharactersTable.pi, null));
         other.add(new CharCommand("C", "C", "Light Celerity", "C", null));
-        other.add(new CharCommand("eps0", CharactersTable.epsilon+"0", "Vacuum Permettivity", CharactersTable.epsilon+"_0", null));
+        other.add(new CharCommand("eps0", CharactersTable.epsilon+"0", "Vacuum Permittivity", CharactersTable.epsilon+"_0", null));
         other.add(new CharCommand("u0", CharactersTable.mu+"0", "Vacuum Permeability", CharactersTable.mu+"_0", null));
         other.add(new CharCommand("z0", "z0", "Vacuum Impedance", "z_0", null));
         other.add(new CharCommand("z0", "Qe", "Elementary Charge", "Q_e", null));

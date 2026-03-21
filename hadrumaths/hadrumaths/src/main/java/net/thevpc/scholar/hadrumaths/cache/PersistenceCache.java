@@ -2,6 +2,7 @@ package net.thevpc.scholar.hadrumaths.cache;
 
 import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.common.mon.ProgressMonitorFactory;
+import net.thevpc.nuts.log.NLogger;
 import net.thevpc.scholar.hadrumaths.io.HFile;
 
 import java.io.InputStream;
@@ -10,6 +11,7 @@ import java.util.Iterator;
 public interface PersistenceCache extends PersistentCacheConfig, Iterable<ObjectCache> {
     int LOCK_TIMEOUT = 1000 * 3600 * 24 * 7;
 
+    NLogger log();
     HFile getRepositoryFolder();
 
     PersistenceCache setRepositoryFolder(HFile repositoryFolder);

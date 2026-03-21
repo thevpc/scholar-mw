@@ -1,12 +1,12 @@
 package net.thevpc.scholar.hadruwaves.str;
 
 import net.thevpc.common.mon.ProgressMonitorFactory;
+import net.thevpc.nuts.log.NLogger;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.HSerializable;
 import net.thevpc.scholar.hadrumaths.cache.CacheKey;
 import net.thevpc.scholar.hadrumaths.cache.ObjectCache;
 import net.thevpc.scholar.hadrumaths.cache.PersistenceCache;
-import net.thevpc.scholar.hadruplot.console.ConsoleLogger;
 import net.thevpc.scholar.hadruwaves.builders.*;
 import net.thevpc.scholar.hadruwaves.mom.str.MWStructureErrorHandler;
 
@@ -42,7 +42,7 @@ public interface MWStructure extends HSerializable {
 
     SParametersBuilder sparameters();
 
-    ConsoleLogger getLog();
+    NLogger log();
 
     MWStructure setParameter(String name);
 

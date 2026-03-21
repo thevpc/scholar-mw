@@ -5,7 +5,7 @@ import net.thevpc.common.props.impl.DefaultPropertyListeners;
 import net.thevpc.common.props.impl.PropertyBase;
 
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElementFormat;
+import net.thevpc.nuts.elem.NElementWriter;
 
 import java.io.File;
 import java.io.IOException;
@@ -135,7 +135,7 @@ public class DefaultHWSolution extends PropertyBase implements HWSolution {
         if (f == null || f.length() == 0) {
             throw new UncheckedIOException(new IOException("Missing File"));
         }
-        NElementFormat.ofPlainTson(toElement()).print(new File(f));
+        NElementWriter.ofPlainTson().print(toElement(),new File(f));
     }
 
     @Override

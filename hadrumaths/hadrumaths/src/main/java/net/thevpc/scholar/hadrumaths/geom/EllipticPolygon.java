@@ -1,9 +1,13 @@
 package net.thevpc.scholar.hadrumaths.geom;
 
+import net.thevpc.nuts.elem.NArrayElementBuilder;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NObjectElementBuilder;
+import net.thevpc.nuts.elem.NUpletElement;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.GeometryFactory;
 import net.thevpc.scholar.hadrumaths.Maths;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.awt.geom.Path2D;
 import java.io.Serializable;
@@ -21,9 +25,27 @@ public class EllipticPolygon extends AbstractGeometry implements PolygonBuilder,
     private double arcRatio = 1;
     private double phase;
 
+
     @Override
     public NElement toElement() {
-        return NElement.ofNamedObject("EllipticPolygon");
+        NObjectElementBuilder b = NElement.ofObjectBuilder("EllipticPolygon");
+        b.add("sides", sides);
+        b.add("arcRatio", arcRatio);
+        b.add("phase", phase);
+        b.add("center", ue(center));
+        b.add("radius", NElement.ofUplet(
+                NElement.ofDouble(xradius),
+                NElement.ofDouble(yradius)
+        ));
+        b.addIf("properties", NElementHelper.elem(getProperties()), NElementHelper.blankPredicate());
+        return b.build();
+    }
+
+    private NUpletElement ue(Point p) {
+        return NElement.ofUplet(
+                NElement.ofDouble(p.getX()),
+                NElement.ofDouble(p.getY())
+        );
     }
 
     public Point getCenter() {

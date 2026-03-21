@@ -539,7 +539,6 @@ public class MomProject implements Serializable, Cloneable {
     public void recompile() {
         this.evaluator.update(this);
         hintDiscardFnByScalarProduct = (hintDiscardFnByScalarProductExpression == null || hintDiscardFnByScalarProductExpression.length() == 0) ? 0 : ((float) evaluateDouble(hintDiscardFnByScalarProductExpression));
-        //System.out.println("recompile structure " + name + " (" + System.identityHashCode(this) + ")");
 
         if (rootAreaGroup != null) {
             rootAreaGroup.recompile();

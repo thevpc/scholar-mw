@@ -19,7 +19,7 @@ import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 /**
  *
  */
-public final class SinYMaxMinPatternAproxim extends RectMeshAttachGpPattern {
+public final class SinYMaxMinPatternAproxim extends RectMeshAttachGpPattern implements Cloneable{
 
     private int max;
 

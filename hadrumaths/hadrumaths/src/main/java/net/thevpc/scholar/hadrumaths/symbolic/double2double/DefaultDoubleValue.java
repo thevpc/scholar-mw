@@ -4,6 +4,7 @@ import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
 import net.thevpc.scholar.hadrumaths.symbolic.double2complex.DefaultComplexValue;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.util.Collections;
 import java.util.List;
@@ -79,9 +80,13 @@ public final class DefaultDoubleValue implements DoubleToDoubleDefaults.DoubleTo
         return new DefaultDoubleValue(cst, domain);
     }
 
+
     @Override
     public NElement toElement() {
-        return NElement.ofNamedObject("DoubleValue");
+        return NElement.ofObjectBuilder("DoubleValue")
+                .add("value", NElementHelper.elem(value))
+                .add("domain", NElementHelper.elem(domain))
+                .build();
     }
 
 

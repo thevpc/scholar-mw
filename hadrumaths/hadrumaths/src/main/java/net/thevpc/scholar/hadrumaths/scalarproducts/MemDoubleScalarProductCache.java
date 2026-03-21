@@ -130,8 +130,6 @@ public class MemDoubleScalarProductCache extends AbstractScalarProductCache impl
 
                         }
                     });
-
-//                System.out.println("c1 = " + c1);
                     break;
                 }
                 default: {

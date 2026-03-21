@@ -27,7 +27,6 @@ public class CutOffModalSourcesSingleMode extends AbstractPropagatingModalSource
                 all[index] = modeIndex;
                 index++;
             }else{
-                //System.out.println(getClass().getSimpleName() +" : skipped mode "+modeIndex);
             }
             if (index == all.length) {
                 break;
