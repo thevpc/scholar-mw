@@ -738,10 +738,6 @@ public abstract class Domain implements DoubleValue, DoubleToDouble, DoubleToDou
         if (other == null || other == this || other.equals(this)) {
             return this;
         }
-//        if(isNaN() || other.isNaN()){
-//            System.out.println("Okkay");
-//        }
-
         Domain d1 = null;
         Domain d2 = null;
         if (this.dimension() < other.dimension()) {
