@@ -980,7 +980,6 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
         boolean zero = false;
 
         public ExprMulRepeatableOp() {
-//            System.out.println(">>>>>>>>>>>>>>>>>>>>>       ExprMulRepeatableOp");
         }
 
         @Override
