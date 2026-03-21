@@ -152,31 +152,16 @@ public class ConvergenceEvaluator {
                     if (convInfo.max > 0) {
                         convInfo.max--;
                     }
-//            if(subEvaluator==null) {
-//                System.out.println(">>" + monitor0.getProgressValue() + " : " + this);
-//            }
                     monitor99.start("New Convergence Iteration {0}", convInfo.index);
                     ProgressMonitor[] mon2 = monitor99.split(
                             subEvaluator != null?.1:0,
                             .50);
                     Object currValue = paramSet.getValue(convInfo.index);
-//            pars.put("value", currValue);
-//            pars.put("startIndex", startIndex);
-//            pars.put("endIndex", endIndex);
-//            pars.put("index", index);
-//            pars.put("err", err);
-//            pars.put("epsilon", epsilon);
-//            pars.put("old", old);
-//            pars.put("result", sResult);
-//            pars.put("stability", securityMax-security);
                     paramSet.getParam().configure(source, currValue);
                     if (subEvaluator != null) {
                         convInfo.subResult = subEvaluator.evaluate(source, convInfo.subEvaluatorStartIndex, evaluator, mon2[0]);
                         convInfo.subEvaluatorStartIndex = convInfo.subResult.getVarIndex();
                     }
-//            if(mon2[1].getProgressValue()!=0){
-//                mon2[1].getProgressValue();
-//            }
                     Object n = evaluator.evaluate(source, mon2[1]);
                     if (mon2[1].isTerminated()) {
                         mon2[1].terminate("Iteration Eval terminated");
@@ -208,17 +193,9 @@ public class ConvergenceEvaluator {
                     }
                     convInfo.old = n;
                     convInfo.index++;
-//            if(subEvaluator==null) {
-//                System.out.println("\t>>" + monitor0.getProgressValue() + " : " + this);
-//            }
-
                 }
             }
         });
-
-//        if(subEvaluator==null) {
-//            System.out.println("\t###>>" + monitor0.getProgressValue() + " : " + this);
-//        }
         monitor0.terminate("Convergence " + convInfo.bestResult);
         return convInfo.bestResult;
     }
