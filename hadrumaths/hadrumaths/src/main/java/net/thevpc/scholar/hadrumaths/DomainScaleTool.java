@@ -12,21 +12,6 @@ import java.util.List;
  */
 public abstract class DomainScaleTool {
 
-    public static void main(String[] args) {
-
-        Domain a = Domain.ofPoints(1, 1, 2, 2);
-        Domain b = Domain.ofPoints(3, 1, 5, 2);
-        Domain c = a.expand(b);
-        Domain u = Domain.ofPoints(100, 100, 200, 200);
-        System.out.println("a        =" + a);
-        System.out.println("b        =" + b);
-        System.out.println("a+b      =" + c);
-        System.out.println("u        =" + u);
-        DomainScaleTool t = DomainScaleTool.create(c, u);
-        System.out.println("a scaled =" + t.rescale(a));
-        System.out.println("b scaled =" + t.rescale(b));
-    }
-
     public static DomainScaleTool create(Domain from, Domain to) {
         if (from == null || to == null || from.equals(to)) {
             return createIdentity();
