@@ -23,12 +23,15 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
+
 import net.thevpc.scholar.hadrumaths.plot.FunctionsXYTableModel;
 import net.thevpc.scholar.hadrumaths.plot.PlotDomainFromDomain;
 import net.thevpc.scholar.hadruplot.console.PlotConfigManager;
 
 //import net.thevpc.scholar.math.functions.dfxy.DFunctionVector2D;
+
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 31 juil. 2005 10:41:53
@@ -121,12 +124,12 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
     PropertyChangeListener modelUpdatesListener = new PropertyChangeListener() {
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
-            updatePlotAsynch(true);
+            updatePlotAsync(true);
         }
     };
     private final LinkedHashSet<String> selectedRows = new LinkedHashSet<>();
 
-//    private ActionListener updatePlotActionListener = new ActionListener() {
+    //    private ActionListener updatePlotActionListener = new ActionListener() {
 //        public void actionPerformed(ActionEvent e) {
 //            updatePlot(false);
 //        }
@@ -404,7 +407,8 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 ////                (functionCheckBoxes.length < 6) ? 1
 //                        //: (functionCheckBoxes.length < 12) ? 2
 //                        //: (functionCheckBoxes.length < 40) ? 3
-////                        : 4
+
+    /// /                        : 4
 //        ));
 //        final JPanel plotArea = new JPanel();
 //        plotArea.add(Plot.plotCurves(title, new String[0], new double[0], new double[0][]));
@@ -524,10 +528,9 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
                         + "[X               <  ][xPrecisionSlider      +=][xPrecisionLabel     ->]\n"
                         + "[yValueTitleLabel<  ][yValueSlider          +=][yValueLabel         ->]\n"
                         + "[Y               <  ][yPrecisionSlider      +=][yPrecisionLabel     ->]\n"
-                        + ""
         );
-        layout.setInsets("xValueTitleLabel|yValueTitleLabel|X|Y",new Insets(5,10,0,10));
-        layout.setInsets("xValueLabel|xPrecisionLabel|yValueLabel|yPrecisionLabel",new Insets(5,5,0,10));
+        layout.setInsets("xValueTitleLabel|yValueTitleLabel|X|Y", new Insets(5, 10, 0, 10));
+        layout.setInsets("xValueLabel|xPrecisionLabel|yValueLabel|yPrecisionLabel", new Insets(5, 5, 0, 10));
         JPanel south = new JPanel(layout);
         south.add(xValueTitleLabel, "xValueTitleLabel");
         south.add(xValueSlider, "xValueSlider");
@@ -551,50 +554,50 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         updateNow.addActionListener(
                 new SerializableActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                updatePlot(true);
-            }
-        }
+                    public void actionPerformed(ActionEvent e) {
+                        updatePlot(true);
+                    }
+                }
         );
         selectAllFunctions.addActionListener(
                 new SerializableActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                selectAll(true);
-            }
-        }
+                    public void actionPerformed(ActionEvent e) {
+                        selectAll(true);
+                    }
+                }
         );
         selectAllByCellFunctions.addActionListener(
                 new SerializableActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                selectByCell(true);
-            }
-        }
+                    public void actionPerformed(ActionEvent e) {
+                        selectByCell(true);
+                    }
+                }
         );
         selectNoneByCellFunctions.addActionListener(
                 new SerializableActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                selectByCell(false);
-            }
-        }
+                    public void actionPerformed(ActionEvent e) {
+                        selectByCell(false);
+                    }
+                }
         );
         selectNoneFunctions.addActionListener(
                 new SerializableActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                selectAll(false);
-            }
-        }
+                    public void actionPerformed(ActionEvent e) {
+                        selectAll(false);
+                    }
+                }
         );
         showContent.addActionListener(
                 new SerializableActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                showContent();
-            }
-        }
+                    public void actionPerformed(ActionEvent e) {
+                        showContent();
+                    }
+                }
         );
         java.util.List<PlotType> allValue = new ArrayList<>();
         for (PlotType plotType : PlotType.values()) {
@@ -618,24 +621,24 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
             java.util.List<Component> aa = new ArrayList<>();
 
             stacksRadioButton = new JRadioButton[]{
-                PlotSwingUtils.createRadioButton("Stack", true, "stackType", "stack", group, new ItemListener() {
-                    @Override
-                    public void itemStateChanged(ItemEvent e) {
-                        if (e.getStateChange() == ItemEvent.SELECTED) {
-                            explodedMode = false;
-                            updatePlotAsynch(true);
+                    PlotSwingUtils.createRadioButton("Stack", true, "stackType", "stack", group, new ItemListener() {
+                        @Override
+                        public void itemStateChanged(ItemEvent e) {
+                            if (e.getStateChange() == ItemEvent.SELECTED) {
+                                explodedMode = false;
+                                updatePlotAsync(true);
+                            }
                         }
-                    }
-                }),
-                PlotSwingUtils.createRadioButton("Explode", false, "stackType", "explode", group, new ItemListener() {
-                    @Override
-                    public void itemStateChanged(ItemEvent e) {
-                        if (e.getStateChange() == ItemEvent.SELECTED) {
-                            explodedMode = true;
-                            updatePlotAsynch(true);
+                    }),
+                    PlotSwingUtils.createRadioButton("Explode", false, "stackType", "explode", group, new ItemListener() {
+                        @Override
+                        public void itemStateChanged(ItemEvent e) {
+                            if (e.getStateChange() == ItemEvent.SELECTED) {
+                                explodedMode = true;
+                                updatePlotAsync(true);
+                            }
                         }
-                    }
-                }),};
+                    }),};
             aa.addAll(Arrays.asList(stacksRadioButton));
             Box h = Box.createHorizontalBox();
             h.add(new JLabel("Max Elements : "));
@@ -645,14 +648,14 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
                 public void stateChanged(ChangeEvent e) {
                     Integer maxSelected = (Integer) maxSelectionSpinner.getValue();
                     functionsTableModel.setMaxSelected(maxSelected);
-                    updatePlotAsynch(true);
+                    updatePlotAsync(true);
                 }
             });
             exclusive.addChangeListener(new ChangeListener() {
                 @Override
                 public void stateChanged(ChangeEvent ee) {
                     functionsTableModel.setExclusive(exclusive.isSelected());
-                    updatePlotAsynch(true);
+                    updatePlotAsync(true);
                 }
             });
             h.add(maxSelectionSpinner);
@@ -664,7 +667,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         functionsTableModel.setMaxSelected(maxSelected);
 
         JPanel xy = PlotSwingUtils.createVerticalComponents("Components", new Component[]{
-            fxRadioButton, fyRadioButton, fxAxisRadioButton, fyAxisRadioButton
+                fxRadioButton, fyRadioButton, fxAxisRadioButton, fyAxisRadioButton
         });
 
         ButtonGroup cadGroup = new ButtonGroup();
@@ -787,42 +790,223 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         return pd.getDomain();
     }
 
+    private class DomainCollector {
+        public static final double FINITE_FACTOR = 0.0;
+        public static final double INFINITE_FACTOR = 0.3;
+        Double bestMinX;
+        Double bestMinY;
+        Double bestMinZ;
+        Double bestMaxX;
+        Double bestMaxY;
+        Double bestMaxZ;
+
+        Boolean infiniteMinX;
+        Boolean infiniteMinY;
+        Boolean infiniteMinZ;
+        Boolean infiniteMaxX;
+        Boolean infiniteMaxY;
+        Boolean infiniteMaxZ;
+        int dimension;
+
+        Domain createPlotPreferredDomain() {
+            double bestMinX = resolveMin(this.bestMinX, infiniteMinX, resolveWindow(this.bestMinX, this.bestMaxX), false);
+            double bestMaxX = resolveMin(this.bestMaxX, infiniteMaxX, resolveWindow(this.bestMinX, this.bestMaxX), true);
+            if (dimension == 1) {
+                return Domain.ofBounds(bestMinX, bestMaxX);
+            }
+            double bestMinY = resolveMin(this.bestMinY, infiniteMinY, resolveWindow(this.bestMinY, this.bestMaxY), false);
+            double bestMaxY = resolveMin(this.bestMaxY, infiniteMinY, resolveWindow(this.bestMinY, this.bestMaxY), true);
+            if (dimension == 2) {
+                return Domain.ofBounds(bestMinX, bestMaxX, bestMinY, bestMaxY);
+            }
+            double bestMinZ = resolveMin(this.bestMinZ, infiniteMinZ, resolveWindow(this.bestMinZ, this.bestMaxZ), false);
+            double bestMaxZ = resolveMin(this.bestMaxZ, infiniteMinZ, resolveWindow(this.bestMinZ, this.bestMaxZ), true);
+            return Domain.ofBounds(bestMinX, bestMaxX, bestMinY, bestMaxY, bestMinZ, bestMaxZ);
+        }
+
+        private double resolveWindow(Double min, Double max) {
+            if (min == null || max == null) {
+                return 200;
+            }
+            double w = Math.abs(max - min);
+            if (w == 0) {
+                w = 1;
+            }
+            return w;
+        }
+
+        private double resolveMin(Double min, Boolean infinite, double windows, boolean forMax) {
+            if (min == null) {
+                if (infinite != null && infinite) {
+                    return forMax ? 100.0 : -100.0;
+                } else {
+                    return forMax ? 100.0 : -100.0;
+                }
+            } else {
+                if (infinite != null && infinite) {
+                    if (forMax) {
+                        return min + (Math.abs(windows) * INFINITE_FACTOR);
+                    } else {
+                        return min - (Math.abs(windows) * INFINITE_FACTOR);
+                    }
+                } else {
+                    if (forMax) {
+                        return min + (Math.abs(windows) * FINITE_FACTOR);
+                    } else {
+                        return min - (Math.abs(windows) * FINITE_FACTOR);
+                    }
+                }
+            }
+        }
+
+        void visitExpr(Expr d, Predicate<CellPosition> predicate) {
+            ComponentDimension cd = d.getComponentDimension();
+            if (cd.columns == 1 && cd.rows == 1) {
+                visitDomain(d.getDomain());
+            } else {
+                DoubleToMatrix dm = d.toDM();
+                for (int c = 0; c < cd.columns; c++) {
+                    for (int r = 0; r < cd.rows; r++) {
+                        Expr cc = dm.getComponent(r, c);
+                        if (predicate == null || predicate.test(new CellPosition(r, c))) {
+                            visitExpr(cc, null);
+                        }
+                    }
+                }
+            }
+        }
+
+        void visitDomain(Domain d) {
+            switch (d.dimension()) {
+                case 1: {
+                    visitX(d.xmin(), d.xmax());
+                    break;
+                }
+                case 2: {
+                    visitX(d.xmin(), d.xmax());
+                    visitY(d.ymin(), d.ymax());
+                    break;
+                }
+                case 3: {
+                    visitX(d.xmin(), d.xmax());
+                    visitY(d.ymin(), d.ymax());
+                    visitZ(d.zmin(), d.zmax());
+                    break;
+                }
+            }
+        }
+
+        private void visitX(double minx, double maxx) {
+            if (!Double.isNaN(minx)) {
+                if (minx == Double.NEGATIVE_INFINITY) {
+                    if (infiniteMinX == null || !infiniteMinX) {
+                        infiniteMinX = true;
+                    }
+                } else if (minx == Double.POSITIVE_INFINITY) {
+                    //just ignore!
+                } else {
+                    if (bestMinX == null || minx < bestMinX) {
+                        bestMinX = minx;
+                    }
+                }
+            }
+            if (!Double.isNaN(maxx)) {
+                if (maxx == Double.POSITIVE_INFINITY) {
+                    if (infiniteMaxX == null || !infiniteMaxX) {
+                        infiniteMaxX = true;
+                    }
+                } else if (maxx == Double.NEGATIVE_INFINITY) {
+                    //
+                } else {
+                    if (bestMaxX == null || maxx > bestMaxX) {
+                        bestMaxX = maxx;
+                    }
+                }
+            }
+        }
+
+        private void visitY(double miny, double maxy) {
+            if (dimension < 2) {
+                dimension = 2;
+            }
+            if (!Double.isNaN(miny)) {
+                if (miny == Double.NEGATIVE_INFINITY) {
+                    if (infiniteMinY == null || !infiniteMinY) {
+                        infiniteMinY = true;
+                    }
+                } else if (miny == Double.POSITIVE_INFINITY) {
+                    //just ignore!
+                } else {
+                    if (bestMinY == null || miny < bestMinY) {
+                        bestMinY = miny;
+                    }
+                }
+            }
+            if (!Double.isNaN(maxy)) {
+                if (maxy == Double.POSITIVE_INFINITY) {
+                    if (infiniteMaxY == null || !infiniteMaxY) {
+                        infiniteMaxY = true;
+                    }
+                } else if (maxy == Double.NEGATIVE_INFINITY) {
+                    //
+                } else {
+                    if (bestMaxY == null || maxy > bestMaxY) {
+                        bestMaxY = maxy;
+                    }
+                }
+            }
+        }
+
+        private void visitZ(double minz, double maxz) {
+            if (dimension < 3) {
+                dimension = 3;
+            }
+            if (!Double.isNaN(minz)) {
+                if (minz == Double.NEGATIVE_INFINITY) {
+                    if (infiniteMinZ == null || !infiniteMinZ) {
+                        infiniteMinZ = true;
+                    }
+                } else if (minz == Double.POSITIVE_INFINITY) {
+                    //just ignore!
+                } else {
+                    if (bestMinZ == null || minz < bestMinZ) {
+                        bestMinZ = minz;
+                    }
+                }
+            }
+            if (!Double.isNaN(maxz)) {
+                if (maxz == Double.POSITIVE_INFINITY) {
+                    if (infiniteMaxZ == null || !infiniteMaxZ) {
+                        infiniteMaxZ = true;
+                    }
+                } else if (maxz == Double.NEGATIVE_INFINITY) {
+                    //
+                } else {
+                    if (bestMaxZ == null || maxz > bestMaxZ) {
+                        bestMaxY = maxz;
+                    }
+                }
+            }
+        }
+    }
+
     public Domain getDomain() {
         Domain ret = null;
         if (this.model.getDomain() != null) {
             ret = dom(this.model.getDomain());
         } else if (domainXY0 == null) {
-            Domain d = null;
-            Domain m = null;
+            DomainCollector dc = new DomainCollector();
             for (Expr function : this.model.getExpressions()) {
-                DoubleToMatrix ddf = function.toDM();
-                Domain dd = ddf.getDomain();
-                if (dd.isInfinite() && (ddf.isZero() || dd.isNaN())) {
-                    //do nothing
-                } else {
-                    m = m == null ? dd : m.expand(dd);
-                }
-            }
-            for (Expr function : this.model.getExpressions()) {
-                for (CellPosition i : getAxis()) {
-                    DoubleToComplex ddf = getAxisExpression(function, i.getRow(), i.getColumn());
-                    Domain dd = ddf.getDomain();
-                    if (dd.isInfinite() && (ddf.isZero() || dd.isNaN())) {
-                        //do nothing
-                    } else {
-                        d = d == null ? dd : d.expand(dd);
+                dc.visitExpr(function, pp -> {
+                    for (CellPosition a : getAxis()) {
+                        if (a.equals(pp)) {
+                            return true;
+                        }
                     }
-                }
+                    return false;
+                });
             }
-            if (d == null && m == null) {
-                domainXY0 = Domain.FULLX;
-            } else if (m != null && d == null) {
-                domainXY0 = m;
-            } else if (d != null && m == null) {
-                domainXY0 = d;
-            } else {
-                domainXY0 = d.intersect(m);
-            }
+            domainXY0 = dc.createPlotPreferredDomain();
             ret = domainXY0.toDomainXYZ().ensureFiniteBounds(100, 100, 100);
         } else {
             ret = domainXY0.toDomainXYZ().ensureFiniteBounds(100, 100, 100);
@@ -845,11 +1029,11 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
     }
 
     public int getYPrecisionValue() {
-        return yPrecisionSlider.getValue() * 1;
+        return yPrecisionSlider.getValue();
     }
 
     public int getXPrecisionValue() {
-        return xPrecisionSlider.getValue() * 1;
+        return xPrecisionSlider.getValue();
     }
 
     //    private void onEchantillonXChange() {
@@ -1024,10 +1208,10 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 
             public void run() {
                 try {
-                    updatePlotAsynch(alwaysUpdate);
+                    updatePlotAsync(alwaysUpdate);
                     while (again) {
                         again = false;
-                        updatePlotAsynch(alwaysUpdate);
+                        updatePlotAsync(alwaysUpdate);
                     }
                 } finally {
                     isUpdating = false;
@@ -1036,10 +1220,12 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
         }.start();
     }
 
-    public void updatePlotAsynch(boolean alwaysUpdate) {
+    public void updatePlotAsync(boolean alwaysUpdate) {
         try {
-            updatingProgressBar.setIndeterminate(true);
-            updateNow.setEnabled(false);
+            SwingUtilities3.invokeLater(() -> {
+                updatingProgressBar.setIndeterminate(true);
+                updateNow.setEnabled(false);
+            });
             domainXY0 = null;
             switch (getShowType()) {
                 case ALL:
@@ -1093,21 +1279,27 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
                 }
             }
         } finally {
-            updatingProgressBar.setIndeterminate(false);
-            updateNow.setEnabled(true);
+            SwingUtilities3.invokeLater(() -> {
+                updatingProgressBar.setIndeterminate(false);
+                updateNow.setEnabled(true);
+            });
         }
     }
 
     public void setXValueEditable(boolean value) {
-        xValueSliderText.setVisible(value);
-        xValueTitleLabel.setVisible(value);
-        xValueSlider.setVisible(value);
+        SwingUtilities3.invokeLater(() -> {
+            xValueSliderText.setVisible(value);
+            xValueTitleLabel.setVisible(value);
+            xValueSlider.setVisible(value);
+        });
     }
 
     public void setYValueEditable(boolean value) {
-        yValueSliderText.setVisible(value);
-        yValueTitleLabel.setVisible(value);
-        yValueSlider.setVisible(value);
+        SwingUtilities3.invokeLater(() -> {
+            yValueSliderText.setVisible(value);
+            yValueTitleLabel.setVisible(value);
+            yValueSlider.setVisible(value);
+        });
     }
 
     public double[] resolveX() {
@@ -1183,9 +1375,9 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
 
     public void updatePlotCurveFxOrFyAsync(PlotType plotType) {
         if (fxRadioButton.isSelected()) {
-            updatePlotCurveFxAsync(plotType);
+            new Thread(() -> updatePlotCurveFxAsync(plotType)).start();
         } else {
-            updatePlotCurveFyAsync(plotType);
+            new Thread(() -> updatePlotCurveFyAsync(plotType)).start();
         }
     }
 
@@ -1202,9 +1394,9 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
             return ee;
         } else {
             return new Exploded[]{
-                new Exploded(
-                selectedFunctions.length > 1 ? "Stacked" : selectedFunctions.length == 1 ? "Expression 1" : "No Expression",
-                 selectedFunctions, selectedFunctionsIndexes)
+                    new Exploded(
+                            selectedFunctions.length > 1 ? "Stacked" : selectedFunctions.length == 1 ? "Expression 1" : "No Expression",
+                            selectedFunctions, selectedFunctionsIndexes)
             };
         }
     }
@@ -1244,7 +1436,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
                     }
                     yz[i] = expr.evalComplex(x, new double[]{y})[0];
                     complexValue = getComplexAsDouble();
-                    float index = (Math.abs(exp.sels[i])%24)/24f;
+                    float index = (Math.abs(exp.sels[i]) % 24) / 24f;
                     colors.add(ColorPalettes.DEFAULT_PALETTE.getColor(index));
                     title.add(titles[i]);
                 }
@@ -1258,9 +1450,13 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
                     }
                 }
                 PlotComponent chartPanel = pb.samples(Samples.absolute(x)).plot(yz);
-                pp.add(wrapWithTitle(ax, chartPanel));
+                SwingUtilities.invokeLater(() -> {
+                    pp.add(wrapWithTitle(ax, chartPanel));
+                });
             }
-            pp.setBorder(BorderFactory.createTitledBorder(exp.name));
+            SwingUtilities.invokeLater(() -> {
+                pp.setBorder(BorderFactory.createTitledBorder(exp.name));
+            });
             mainPanel_add(pp);
         }
 
@@ -1345,6 +1541,7 @@ public class ExpressionsPlotPanel extends BasePlotComponent implements PlotPanel
     }
 
     public synchronized void updatePlotSurfaceAsynch() {
+        domainXY0 = null;
         CellPosition[] axis = getAxis();
         Exploded[] exploded = explode();
         mainPanel_reconfigure(exploded.length);
