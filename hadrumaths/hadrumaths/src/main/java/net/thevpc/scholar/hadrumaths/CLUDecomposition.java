@@ -87,10 +87,8 @@ public class CLUDecomposition implements java.io.Serializable {
                 MutableComplex s = new MutableComplex();
                 for (int k = 0; k < kmax; k++) {
                     s.add(LUrowi[k].mul(LUcolj[k]));
-//                    System.out.println("\t k=" + k + " s=" + s);
                 }
                 LUcolj[i] = LUcolj[i].minus(s);
-//                System.out.println("LUcolj(" + i + ")=" + LUcolj[i] + " for s=" + s);
                 LUrowi[j] = LUcolj[i];
             }
 
@@ -122,7 +120,6 @@ public class CLUDecomposition implements java.io.Serializable {
                 }
             }
         }
-//      System.out.println("LU="+new CMatrix(LU));
     }
 
     /*
