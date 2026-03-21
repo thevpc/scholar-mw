@@ -44,7 +44,6 @@ public class ConvergenceMultiPlotListener implements ConvergenceListener {
             }
             windowManager.addComponent(title, getComponent());
         }
-        //System.out.println(convergenceConfig.getLabel() + "[" + type + "]["+title+"]; err = " + err + "; threshold=" + threshold + "; val=" + value + "; pars=" + parameters);
         ArrayList<Object> values = valuesMap.get(result.getLabel());
         if (values == null) {
             values = new ArrayList<Object>();
