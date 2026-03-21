@@ -12,7 +12,7 @@ public interface HSerializable extends NToElement, Serializable, Dumpable {
 
     @Override
     default String dump() {
-        return toElement().toString(false);
+        return toElement().toString();
     }
 
 }
