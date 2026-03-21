@@ -301,7 +301,6 @@ public class DBLargeComplexMatrixFactory extends LargeComplexMatrixFactory {
     }
 
     public Complex get(long id, int row, int col) {
-//        System.out.println("get:" + row + " ," + col);
         Complex c = Complex.ZERO;
         try {
             String sql = "select rval,ival from m" + id + " where r=? and c=?";
@@ -323,7 +322,6 @@ public class DBLargeComplexMatrixFactory extends LargeComplexMatrixFactory {
     }
 
     public Complex[] getRow(long id, int row, int fromCol, int toCol) {
-//        System.out.println("get:" + row + " ," + col);
         Complex[] c = new Complex[toCol - fromCol];
         try {
             String sql = "select c,rval,ival from m" + id + " where r=? and c>=? and c<? order by c";
@@ -357,7 +355,6 @@ public class DBLargeComplexMatrixFactory extends LargeComplexMatrixFactory {
     }
 
     public Complex[] getColumn(long id, int column, int fromRow, int toRow) {
-//        System.out.println("get:" + row + " ," + col);
         Complex[] c = new Complex[toRow - fromRow];
         try {
             String sql = "select r,rval,ival from m" + id + " where c=? and r>=? and r<? order by r";
@@ -390,7 +387,6 @@ public class DBLargeComplexMatrixFactory extends LargeComplexMatrixFactory {
     }
 
     public void set(long id, Complex val, int row, int col) {
-//        System.out.println("set:" + row + " ," + col);
         if (isSparse() && getDefaultValue().equals(val)) {
             try {
                 String sql = "delete from m" + id + " where r=? and c=?";
