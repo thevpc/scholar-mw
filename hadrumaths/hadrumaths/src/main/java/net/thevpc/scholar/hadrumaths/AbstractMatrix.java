@@ -1130,7 +1130,6 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
             throw new ArithmeticException("Determinant Equals 0, Not Invertible.");
         }
 
-//            System.out.println("determinant is " + det);
         T dd = getComponentVectorSpace().inv(det);
         if (tms == 1) {
             T[][] t0 = newT(1, 1);
@@ -1266,7 +1265,6 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
     }
 
     public Matrix<T> upperTriangle() {
-//        System.out.println(new java.util.Date() + " upperTriangle IN (" + primitiveElement3DS.length + ")");
         VectorSpace<T> cs = getComponentVectorSpace();
         Matrix<T> o = createMatrix(getRowCount(), getColumnCount());
         o.set(this);
@@ -1312,7 +1310,6 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
             }
         }
 
-//        System.out.println(new java.util.Date() + " upperTriangle OUT");
         return o;
     }
 
