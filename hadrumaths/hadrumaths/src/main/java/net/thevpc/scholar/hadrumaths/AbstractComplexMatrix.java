@@ -1050,7 +1050,6 @@ public abstract class AbstractComplexMatrix extends AbstractMatrix<Complex> impl
             throw new ArithmeticException("Determinant Equals 0, Not Invertible.");
         }
 
-//            System.out.println("determinant is " + det);
         Complex dd = det.inv();
         if (tms == 1) {
             return getFactory().newMatrix(new Complex[][]{{dd}});
@@ -1141,7 +1140,6 @@ public abstract class AbstractComplexMatrix extends AbstractMatrix<Complex> impl
     }
 
     public ComplexMatrix upperTriangle() {
-//        System.out.println(new java.util.Date() + " upperTriangle IN (" + primitiveElement3DS.length + ")");
         ComplexMatrix o = createMatrix(getRowCount(), getColumnCount());
         o.set(this);
 
@@ -1186,7 +1184,6 @@ public abstract class AbstractComplexMatrix extends AbstractMatrix<Complex> impl
             }
         }
 
-//        System.out.println(new java.util.Date() + " upperTriangle OUT");
         return o;
     }
 
