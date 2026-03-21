@@ -126,7 +126,6 @@ public class LUDecomposition implements java.io.Serializable {
                 }
             }
         }
-//       System.out.println("LU="+new Matrix(LU));
     }
 
 /* ------------------------
