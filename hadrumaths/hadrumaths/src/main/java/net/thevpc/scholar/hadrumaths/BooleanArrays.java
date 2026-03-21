@@ -436,25 +436,6 @@ public class BooleanArrays {
         private BitSet2 val;
         private final int size1;
         private final int size2;
-//    public static void main(String[] args) {
-//        boolean[][] a = new boolean[4][5];
-//        BooleanArray2 b = new BooleanArray2(4, 5);
-////        b.index()
-//        for (int i = 0; i < a.length; i++) {
-//            for (int j = 0; j < a[i].length; j++) {
-//                    boolean v = Maths.randomBoolean();
-//                    a[i][j] = v;
-//                    b.set(i,j,v);
-//            }
-//        }
-//        for (int i = 0; i < a.length; i++) {
-//            for (int j = 0; j < a[i].length; j++) {
-//                    if(a[i][j]!=b.get(i,j)){
-//                        System.out.println("why "+i+" "+j+" : "+a[i][j]+"!="+b.get(i,j));
-//                    }
-//            }
-//        }
-//    }
 
         public Arr2(int size1, int size2) {
             this.size1 = size1;
@@ -542,31 +523,6 @@ public class BooleanArrays {
         private final int size2;
         private final int size3;
 
-        //    public static void main(String[] args) {
-//        boolean[][][] a = new boolean[4][5][6];
-//        BooleanArray3 b = new BooleanArray3(4, 5, 6);
-////        b.index()
-//        for (int i = 0; i < a.length; i++) {
-//            for (int j = 0; j < a[i].length; j++) {
-//                for (int k = 0; k < a[i][j].length; k++) {
-//                    boolean v = Maths.randomBoolean();
-//                    a[i][j][k] = v;
-//                    b.set(i,j,k,v);
-////                    System.out.println(i+" "+j+" "+k+" : "+b.get(i,j,k)+":"+v);
-////                    System.out.println(i+" "+j+" "+k+" : "+b.index(i,j,k));
-//                }
-//            }
-//        }
-//        for (int i = 0; i < a.length; i++) {
-//            for (int j = 0; j < a[i].length; j++) {
-//                for (int k = 0; k < a[i][j].length; k++) {
-//                    if(a[i][j][k]!=b.get(i,j,k)){
-//                        System.out.println("why "+i+" "+j+" "+k+" : "+a[i][j][k]+"!="+b.get(i,j,k));
-//                    }
-//                }
-//            }
-//        }
-//    }
         public Arr3(int size1, int size2, int size3) {
             this.size1 = size1;
             this.size2 = size2;
@@ -634,7 +590,6 @@ public class BooleanArrays {
 
                 @Override
                 public BooleanArray2 copy() {
-                    System.out.println("please check me");
                     Arr2 a = new Arr2(size2, size3);
                     a.val = val.get(
                             i * size2 * size3,
