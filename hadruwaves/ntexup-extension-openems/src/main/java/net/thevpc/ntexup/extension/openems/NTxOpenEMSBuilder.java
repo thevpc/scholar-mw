@@ -32,7 +32,7 @@ public class NTxOpenEMSBuilder implements NTxNodeBuilder {
                 new NTxStrSimulationQueryFactory() {
                     @Override
                     public NTxSimulationPlan newInstance(String name, NTxFunctionCallContext args) {
-                        return new OpenEMSStrNTxSimulationPlan(name,rendererContext.log());
+                        return new OpenEMSStrNTxSimulationPlan(name,rendererContext);
                     }
                 });
         ;
