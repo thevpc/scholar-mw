@@ -1,5 +1,6 @@
 package net.thevpc.ntexup.extension.mwsimulator;
 
+import net.thevpc.ntexup.api.renderer.NTxRendererContext;
 import net.thevpc.nuts.log.NLogger;
 import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.util.NAssert;
@@ -11,17 +12,21 @@ import java.util.List;
 public abstract class NTxSimulationPlanImpl implements NTxSimulationPlan {
     public String hash;
     public String name;
-    public NLogger logger;
+    public NTxRendererContext rendererContext;
     public List<NTxSolverRun> items = new ArrayList<>();
     public volatile boolean compiled;
 
-    public NTxSimulationPlanImpl(String name, NLogger logger) {
+    public NTxSimulationPlanImpl(String name, NTxRendererContext rendererContext) {
         this.name = name;
-        this.logger = logger;
+        this.rendererContext = rendererContext;
+    }
+
+    public NTxRendererContext rendererContext() {
+        return rendererContext;
     }
 
     public NLogger log() {
-        return logger;
+        return rendererContext.log();
     }
 
     public NTxSolverRun add(String computeName, String solverName) {
