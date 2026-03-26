@@ -5,17 +5,17 @@ import net.thevpc.nuts.util.NAssert;
 import net.thevpc.nuts.util.NNameFormat;
 
 public abstract class NTxSolverRunImpl implements NTxSolverRun {
-    private final NTxSimulationPlan query;
+    private final NTxSimulationPlan plan;
     private final String outputName;
     private final String solverName;
     private final String solverType;
     private boolean compiled;
 
-    public NTxSolverRunImpl(String outputName, String solverName, String solverType, NTxSimulationPlan query) {
+    public NTxSolverRunImpl(String outputName, String solverName, String solverType, NTxSimulationPlan plan) {
         this.outputName = outputName;
         this.solverName = solverName;
         this.solverType = NNameFormat.LOWER_KEBAB_CASE.format(solverType);
-        this.query = query;
+        this.plan = plan;
     }
 
     protected void compileImpl() {
@@ -64,7 +64,7 @@ public abstract class NTxSolverRunImpl implements NTxSolverRun {
         return NElement.ofNamedUplet(outputName, NElement.ofPair("solver", solverName));
     }
 
-    public NTxSimulationPlan query() {
-        return query;
+    public NTxSimulationPlan plan() {
+        return plan;
     }
 }
