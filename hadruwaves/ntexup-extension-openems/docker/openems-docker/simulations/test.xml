@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openEMS>
+  <FDTD NumberOfTimesteps="2000" endCriteria="1e-5">
+    <Excitation Type="0" f0="2.4e9" fc="1e9" />
+    <BoundaryCond xmin="PEC" xmax="PEC" ymin="PEC" ymax="PEC" zmin="PEC" zmax="PEC" />
+  </FDTD>
+
+  <CSXCAD>
+    <Setup Unit="1e-3" />
+    <RectilinearGrid>
+      <XLines>-40 -20 0 20 40</XLines>
+      <YLines>-100 -50 0 50 100</YLines>
+      <ZLines>-1.7 -1.6 0 5 10</ZLines>
+    </RectilinearGrid>
+    <Properties>
+      <Material Name="substrate">
+        <Property Name="Epsilon" Value="4.4" />
+        <Box Priority="0">
+          <P1>-40 -100 -1.6</P1>
+          <P2 40 100 0 />
+        </Box>
+      </Material>
+    </Properties>
+  </CSXCAD>
+</openEMS>

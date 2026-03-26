@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CSXCAD>
+  <Setup Unit="1e-3" CoordSystem="0">
+    <Grid DeltaUnit="1e-3" Type="0">
+      <Lines Dir="0">0 2 4 6 8 10</Lines>
+      <Lines Dir="1">0 2 4 6 8 10</Lines>
+      <Lines Dir="2">0 2 4 6 8 10</Lines>
+    </Grid>
+  </Setup>
+
+  <Properties>
+    <Material Name="Air" Epsilon="1.0" Mue="1.0" Kappa="0" Sigma="0">
+      <Box Priority="0">
+        <P1>0 0 0</P1>
+        <P2>10 10 10</P2>
+      </Box>
+    </Material>
+  </Properties>
+
+  <FDTD>
+    <BoundaryCond>
+      <Xmin>0</Xmin> <Xmax>0</Xmax>
+      <Ymin>0</Ymin> <Ymax>0</Ymax>
+      <Zmin>0</Zmin> <Zmax>0</Zmax>
+    </BoundaryCond>
+    <Excitation Type="10"> <Frequency>1e9</Frequency>
+      <Bandwidth>1e9</Bandwidth>
+    </Excitation>
+    <Engine NrTS="1000" EndCriteria="1e-5" />
+  </FDTD>
+</CSXCAD>
