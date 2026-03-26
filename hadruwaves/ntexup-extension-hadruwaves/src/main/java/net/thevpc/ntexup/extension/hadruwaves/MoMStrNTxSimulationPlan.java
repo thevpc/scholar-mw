@@ -1,5 +1,6 @@
 package net.thevpc.ntexup.extension.hadruwaves;
 
+import net.thevpc.ntexup.api.renderer.NTxRendererContext;
 import net.thevpc.ntexup.extension.hadruwaves.solvers.*;
 import net.thevpc.ntexup.extension.mwsimulator.*;
 import net.thevpc.nuts.elem.NElement;
@@ -14,8 +15,8 @@ import java.nio.charset.StandardCharsets;
 public class MoMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
     public MomStructure str;
 
-    public MoMStrNTxSimulationPlan(String computeName, NLogger logger,MomStructure str) {
-        super(computeName,logger);
+    public MoMStrNTxSimulationPlan(String computeName, NTxRendererContext rendererContext, MomStructure str) {
+        super(computeName,rendererContext);
         this.str = str;
         Maths.Config.setCacheEnabled(false);
     }
