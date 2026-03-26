@@ -1,6 +1,7 @@
 package net.thevpc.scholar.hadrumaths;
 
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.math.NDoubleComplex;
 import net.thevpc.scholar.hadrumaths.geom.Geometry;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
 import net.thevpc.scholar.hadrumaths.symbolic.double2complex.DefaultComplexValue;
@@ -13,7 +14,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.*;
 
-public abstract class Complex extends Number implements Normalizable, VectorSpaceItem<Complex>, DoubleToComplex, ComplexValue {
+public abstract class Complex extends Number implements Normalizable, VectorSpaceItem<Complex>, DoubleToComplex, ComplexValue, NDoubleComplex {
 
     public static final Complex NaNRI = new ComplexRI(Double.NaN, Double.NaN);
     public static final Complex NaN = new ComplexR(Double.NaN);
@@ -69,6 +70,16 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
             }
         }
         return toString();
+    }
+
+    public static Complex of(NDoubleComplex any) {
+        if (any == null) {
+            return null;
+        }
+        if (any instanceof Complex) {
+            return (Complex) any;
+        }
+        return of(any.real(), any.imag());
     }
 
     public static Complex of(double a, double b) {
@@ -218,8 +229,8 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
             imag.append("0");
         }
         return new double[]{
-            Double.parseDouble(real.toString()),
-            Double.parseDouble(imag.toString())
+                Double.parseDouble(real.toString()),
+                Double.parseDouble(imag.toString())
         };
     }
 
@@ -463,11 +474,12 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
 
     //    public Complex angle() {
 //        //workaround
-////        if(real==0){
-////            return imag>=0?Math.PI/2:-Maths.PI/2;
-////        }else if(imag==0){
-////            return real>=0?0:Math.PI;
-////        }
+
+    /// /        if(real==0){
+    /// /            return imag>=0?Math.PI/2:-Maths.PI/2;
+    /// /        }else if(imag==0){
+    /// /            return real>=0?0:Math.PI;
+    /// /        }
 //        return Complex.valueOf(Math.atan2(getImag(), getReal()));
 //    }
     protected String realToString(double d) {
@@ -622,7 +634,7 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
     @Override
     public double toDouble() {
         if (!isReal()) {
-            throw new ClassCastException("Not Real : " + toString());
+            throw new ClassCastException("Not Real : " + this);
         }
         return getReal();
     }
@@ -922,7 +934,7 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
         return Complex.of(getReal() - c, getImag());
     }
 
-//    public boolean isDDx() {
+    //    public boolean isDDx() {
 //        return isNaN() || imag == 0;
 //    }
     //    public static Complex sin(Complex c){
@@ -947,7 +959,7 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
         return Complex.of(getReal() - c, getImag());
     }
 
-//    @Override
+    //    @Override
 //    public boolean isDV() {
 //        return true;
 //    }
@@ -1308,7 +1320,7 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
         return Expressions.evalComplex(this, x, y, d0, ranges);
     }
 
-//    @Override
+    //    @Override
 //    public boolean isComplexExpr() {
 //        return true;
 //    }
@@ -1480,7 +1492,7 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
         return ExprType.COMPLEX_NBR;
     }
 
-//    @Override
+    //    @Override
 //    public String dump() {
 //        return toString();
 //    }
@@ -1542,5 +1554,36 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
     @Override
     public boolean isUnbounded() {
         return true;
+    }
+
+
+    @Override
+    public NDoubleComplex addDoubleComplex(NDoubleComplex other) {
+        return plus(of(other));
+    }
+
+    @Override
+    public NDoubleComplex negateDoubleComplex() {
+        return neg();
+    }
+
+    @Override
+    public NDoubleComplex subtractDoubleComplex(NDoubleComplex other) {
+        return subtract(of(other));
+    }
+
+    @Override
+    public NDoubleComplex multiplyDoubleComplex(NDoubleComplex c) {
+        return mul(of(c));
+    }
+
+    @Override
+    public NDoubleComplex divideDoubleComplex(NDoubleComplex other) {
+        return divide(of(other));
+    }
+
+    @Override
+    public NDoubleComplex invDoubleComplex() {
+        return inv();
     }
 }
