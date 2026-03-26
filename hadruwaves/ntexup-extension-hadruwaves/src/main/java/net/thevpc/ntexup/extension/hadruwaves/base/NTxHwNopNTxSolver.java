@@ -1,6 +1,5 @@
 package net.thevpc.ntexup.extension.hadruwaves.base;
 
-import net.thevpc.jeep.util.Chronometer;
 import net.thevpc.ntexup.extension.hadruwaves.MoMStrNTxSimulationPlan;
 import net.thevpc.ntexup.extension.mwsimulator.*;
 import net.thevpc.nuts.elem.NElement;
@@ -24,7 +23,7 @@ public abstract class NTxHwNopNTxSolver extends NTxSolverRunImpl {
 
     @Override
     public List<NTxSimulationResult> execute() {
-        MomStructure str = ((MoMStrNTxSimulationPlan) query()).str;
+        MomStructure str = ((MoMStrNTxSimulationPlan) plan()).str;
         NChronometer chronometer = NChronometer.startNow();
         str.log().log(NMsg.ofC("------------------"));
         str.log().log(NMsg.ofC("[%s] %s : ", outputName(), solverName()));
