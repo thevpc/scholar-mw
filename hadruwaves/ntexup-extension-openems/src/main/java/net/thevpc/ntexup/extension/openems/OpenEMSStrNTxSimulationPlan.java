@@ -1,5 +1,6 @@
 package net.thevpc.ntexup.extension.openems;
 
+import net.thevpc.ntexup.api.renderer.NTxRendererContext;
 import net.thevpc.ntexup.extension.mwsimulator.NTxSimulationPlanImpl;
 import net.thevpc.ntexup.extension.mwsimulator.NTxSolverRun;
 import net.thevpc.ntexup.extension.openems.solvers.NTxHwS11NTxSolver;
@@ -11,8 +12,8 @@ import net.thevpc.nuts.util.NNameFormat;
 import java.nio.charset.StandardCharsets;
 
 public class OpenEMSStrNTxSimulationPlan extends NTxSimulationPlanImpl {
-    public OpenEMSStrNTxSimulationPlan(String name, NLogger logger) {
-        super(name,logger);
+    public OpenEMSStrNTxSimulationPlan(String name, NTxRendererContext rendererContext) {
+        super(name, rendererContext);
     }
 
     @Override
@@ -32,7 +33,7 @@ public class OpenEMSStrNTxSimulationPlan extends NTxSimulationPlanImpl {
     @Override
     public String computeHash() {
         NDigest d = NDigest.of();
-        d.addSource("OpenEMS".toString().getBytes(StandardCharsets.UTF_8));
+        d.addSource("OpenEMS".getBytes(StandardCharsets.UTF_8));
         for (NTxSolverRun item : items) {
             d.addSource(item.toElement().toString().getBytes(StandardCharsets.UTF_8));
         }
