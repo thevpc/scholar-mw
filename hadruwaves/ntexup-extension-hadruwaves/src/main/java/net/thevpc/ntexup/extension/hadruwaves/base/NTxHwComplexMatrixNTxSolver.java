@@ -27,7 +27,7 @@ public abstract class NTxHwComplexMatrixNTxSolver extends NTxSolverRunImpl {
 
     @Override
     public List<NTxSimulationResult> execute() {
-        MomStructure str = ((MoMStrNTxSimulationPlan) query()).str;
+        MomStructure str = ((MoMStrNTxSimulationPlan) plan()).str;
         NChronometer chronometer = NChronometer.startNow();
         str.log().log(NMsg.ofC("------------------"));
         str.log().log(NMsg.ofC("[%s] %s: ", outputName(), solverName()));
@@ -40,6 +40,7 @@ public abstract class NTxHwComplexMatrixNTxSolver extends NTxSolverRunImpl {
         }
         Plot.title(NMsg.ofC("[%s] %s", outputName(), solverName()).toString()).plot(matrix);
         str.log().log(NMsg.ofC("[%s] %s Finished in %s : ", outputName(), solverName(),chronometer.stop()));
+
         return Arrays.asList(
                 NTxSimulationResultFactory.createPlot2dCurve(outputName(), null, Arrays.asList(0.0))
         );
