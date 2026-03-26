@@ -44,7 +44,7 @@ public abstract class NTxHwSpaceComplexMatrixNTxSolver extends NTxSolverRunImpl 
     @Override
     protected void compileImpl() {
         if (xSweep == null && ySweep == null) {
-            Domain d = ((MoMStrNTxSimulationPlan) query()).str.domain().getDomain();
+            Domain d = ((MoMStrNTxSimulationPlan) plan()).str.domain().getDomain();
             xSweep = new NTxSweep();
             xSweep.rangeFrom = d.xmin();
             xSweep.rangeTo = d.xmax();
@@ -66,7 +66,7 @@ public abstract class NTxHwSpaceComplexMatrixNTxSolver extends NTxSolverRunImpl 
 
     @Override
     public List<NTxSimulationResult> execute() {
-        MomStructure str = ((MoMStrNTxSimulationPlan) query()).str;
+        MomStructure str = ((MoMStrNTxSimulationPlan) plan()).str;
         NChronometer chronometer = NChronometer.startNow();
         str.log().log(NMsg.ofC("------------------"));
         str.log().log(NMsg.ofC("[%s] %s: ", outputName(), solverName()));
