@@ -6,10 +6,10 @@ import net.thevpc.common.mon.ProgressMonitors;
 import net.thevpc.nuts.elem.NElement;
 
 
-import net.thevpc.common.time.Chronometer;
 import net.thevpc.common.collections.ClassMap;
 import net.thevpc.common.util.IntTuple2;
 import net.thevpc.nuts.elem.NObjectElementBuilder;
+import net.thevpc.nuts.time.NChronometer;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.ExpressionRewriterFactory;
@@ -302,7 +302,7 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
 //            };
 //        }
         Expr m = f1.mul(f2);
-        Chronometer c = chrono();
+        NChronometer c = chrono();
         DoubleToDouble f1opt = expressionRewriter.rewriteOrSame(m, ExprType.DOUBLE_DOUBLE).toDD();
         return toCanonicalScalarProductPairExpansion(f1opt);
 

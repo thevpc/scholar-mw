@@ -79,7 +79,7 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
         if (any instanceof Complex) {
             return (Complex) any;
         }
-        return of(any.real(), any.imag());
+        return of(any.realValue(), any.imagValue());
     }
 
     public static Complex of(double a, double b) {
@@ -1586,4 +1586,25 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
     public NDoubleComplex invDoubleComplex() {
         return inv();
     }
+
+    @Override
+    public Number numberValue() {
+        return this;
+    }
+
+    @Override
+    public double realValue() {
+        return getReal();
+    }
+
+    @Override
+    public double imagValue() {
+        return getImag();
+    }
+
+    @Override
+    public double absDouble() {
+        return absdbl();
+    }
+
 }

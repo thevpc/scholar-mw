@@ -67,10 +67,9 @@
             <scope>provided</scope>
              compile-only dep 
         </dependency>-->
-        <dependency><groupId>net.thevpc.common</groupId><artifactId>thevpc-common-utils</artifactId><version>1.23.2</version></dependency>
-        <dependency><groupId>net.thevpc.common</groupId><artifactId>thevpc-common-collections</artifactId><version>1.23.1</version></dependency>
-        <dependency><groupId>net.thevpc.common</groupId><artifactId>thevpc-common-time</artifactId><version>1.23.1</version></dependency>
-        <dependency><groupId>net.thevpc.common</groupId><artifactId>thevpc-common-monitor</artifactId><version>1.22.7</version></dependency>
+<!--        <dependency><groupId>net.thevpc.common</groupId><artifactId>thevpc-common-utils</artifactId><version>1.23.2</version></dependency>-->
+<!--        <dependency><groupId>net.thevpc.common</groupId><artifactId>thevpc-common-collections</artifactId><version>1.23.1</version></dependency>-->
+<!--        <dependency><groupId>net.thevpc.common</groupId><artifactId>thevpc-common-monitor</artifactId><version>1.22.7</version></dependency>-->
     </dependencies>
     <build>
         <plugins>

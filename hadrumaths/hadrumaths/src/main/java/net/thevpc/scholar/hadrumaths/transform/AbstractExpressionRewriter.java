@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadrumaths.transform;
 
-import net.thevpc.common.time.Chronometer;
 import net.thevpc.common.collections.LRUMap;
-import net.thevpc.common.time.TimeDuration;
+import net.thevpc.nuts.time.NChronometer;
+import net.thevpc.nuts.time.NDuration;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.cache.CacheEnabled;
@@ -212,12 +212,12 @@ public abstract class AbstractExpressionRewriter implements ExpressionRewriter, 
 
     public RewriteResult rewriteOnce(Expr e, ExprType targetExprType) {
         if (MAX_REWRITE_TIME_SECONDS > 0) {
-            Chronometer c = Maths.chrono();
+            NChronometer c = Maths.chrono();
             RewriteResult r = rewriteImpl(e, targetExprType);
             c.stop();
-            TimeDuration duration = c.getDuration();
+            NDuration duration = c.getDuration();
             if (duration.getSeconds() > MAX_REWRITE_TIME_SECONDS) {
-                System.err.println("Expression Rewrite Took too long : " + duration.getSeconds() + "s ; " + e + " ==> " +
+                System.err.println("Expression Rewrite Took too long : " + duration.toSeconds() + "s ; " + e + " ==> " +
                         (r.isUnmodified() ? "?unmodified?" : r.getValue())
                 );
             }

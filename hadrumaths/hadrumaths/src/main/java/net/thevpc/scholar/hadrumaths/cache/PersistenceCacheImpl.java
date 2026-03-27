@@ -4,10 +4,9 @@ import net.thevpc.common.mon.MonitoredRunnable;
 import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.common.mon.ProgressMonitorFactory;
 import net.thevpc.common.mon.ProgressMonitors;
-import net.thevpc.common.time.Chronometer;
-import net.thevpc.common.time.DatePart;
-import net.thevpc.common.time.TimeDuration;
 import net.thevpc.nuts.log.NLogger;
+import net.thevpc.nuts.time.NChronometer;
+import net.thevpc.nuts.time.NDuration;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.concurrent.AppLockException;
 import net.thevpc.scholar.hadrumaths.io.FailStrategy;
@@ -21,7 +20,6 @@ import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.logging.Logger;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -702,7 +700,7 @@ public class PersistenceCacheImpl implements PersistenceCache {
                                     if (momCache != null) {
                                         return null;
                                     }
-                                    Chronometer c = Chronometer.start();
+                                    NChronometer c = NChronometer.startNow();
                                     try {
                                         value = (T) momCache.load(cacheItemName, null);
                                     } catch (Exception e) {
@@ -710,8 +708,8 @@ public class PersistenceCacheImpl implements PersistenceCache {
                                         //
                                     }
                                     c.stop();
-                                    if (timeThresholdMilli > 0 && c.getTime() > timeThresholdMilli * 1000000) {
-                                        System.out.println("[PersistenceCache] " + cacheItemName + " loading took too long (" + c + " > " + TimeDuration.ofMillis(timeThresholdMilli).toString(DatePart.MILLISECOND) + ")");
+                                    if (timeThresholdMilli > 0 && c.getDurationMs() > timeThresholdMilli * 1000000) {
+                                        System.out.println("[PersistenceCache] " + cacheItemName + " loading took too long (" + c + " > " + NDuration.ofMillis(timeThresholdMilli) + ")");
                                     }
                                 }
                                 return value;

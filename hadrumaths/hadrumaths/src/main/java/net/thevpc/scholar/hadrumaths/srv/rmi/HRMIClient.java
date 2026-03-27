@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths.srv.rmi;
 
-import net.thevpc.common.time.Chronometer;
+import net.thevpc.nuts.time.NChronometer;
 import net.thevpc.scholar.hadrumaths.srv.FileStat;
 import net.thevpc.scholar.hadrumaths.srv.HadrumathsClient;
 import net.thevpc.scholar.hadrumaths.srv.HadrumathsServices;
@@ -68,10 +68,10 @@ public class HRMIClient implements HadrumathsClient {
     @Override
     public long ping() {
         long ret = -1;
-        Chronometer c = Chronometer.start();
+        NChronometer c = NChronometer.startNow();
         try {
             remote.ping();
-            ret = c.stop().getTime();
+            ret = c.stop().getDurationMs();
         } catch (IOException e) {
             //
         }

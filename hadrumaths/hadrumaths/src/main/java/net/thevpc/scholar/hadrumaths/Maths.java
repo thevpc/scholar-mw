@@ -6,10 +6,10 @@ import net.thevpc.common.mon.MonitoredAction;
 import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.common.mon.ProgressMonitors;
 import net.thevpc.common.util.*;
-import net.thevpc.common.time.*;
 import net.thevpc.nuts.Nuts;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.reflect.NReflectUtils;
+import net.thevpc.nuts.time.NChronometer;
 import net.thevpc.scholar.hadrumaths.cache.PersistenceCacheBuilder;
 import net.thevpc.scholar.hadrumaths.expeval.ExpressionManagerFactory;
 import net.thevpc.scholar.hadrumaths.geom.Geometry;
@@ -672,10 +672,10 @@ public final class Maths {
             T load = t.load(file);
             return load;
         } else {
-            Chronometer cr = chrono();
+            NChronometer cr = chrono();
             T tt = item.get();
             cr.stop();
-            Chronometer cr2 = chrono();
+            NChronometer cr2 = chrono();
             t.store(tt, file);
             cr2.stop();
             $log.log(Level.INFO, "exec time " + cr + ". stored in " + cr2 + " to file " + file.getAbsolutePath() + " ...");
@@ -683,8 +683,8 @@ public final class Maths {
         }
     }
 
-    public static Chronometer chrono() {
-        return Chronometer.start();
+    public static NChronometer chrono() {
+        return NChronometer.startNow();
     }
 
     public static ComplexVector loadOrEvalVector(String file, Supplier<Vector<Complex>> item) throws UncheckedIOException {
@@ -3854,14 +3854,14 @@ public final class Maths {
         return ProgressMonitors.invokeMonitoredAction(mon, messagePrefix, run);
     }
 
-    public static Chronometer chrono(String name) {
-        return new Chronometer(name);
+    public static NChronometer chrono(String name) {
+        return NChronometer.startNow(name);
     }
 
-    public static Chronometer chrono(String name, Runnable r) {
+    public static NChronometer chrono(String name, Runnable r) {
         PlatformUtils.gc2();
         MemoryInfo memoryInfoBefore = Maths.memoryInfo();
-        Chronometer c = Chronometer.start();
+        NChronometer c = NChronometer.startNow();
         r.run();
         c.stop();
         MemoryInfo memoryInfoAfter = Maths.memoryInfo();
@@ -3878,7 +3878,7 @@ public final class Maths {
     public static <V> V chrono(String name, Callable<V> r) {
         PlatformUtils.gc2();
         MemoryInfo memoryInfoBefore = Maths.memoryInfo();
-        Chronometer c = Chronometer.start();
+        NChronometer c = NChronometer.startNow();
         V v = null;
         try {
             v = r.call();
@@ -3896,8 +3896,8 @@ public final class Maths {
         return new SolverExecutorService(threads);
     }
 
-    public static Chronometer chrono(Runnable r) {
-        Chronometer c = Chronometer.start();
+    public static NChronometer chrono(Runnable r) {
+        NChronometer c = NChronometer.startNow();
         r.run();
         return c.stop();
     }

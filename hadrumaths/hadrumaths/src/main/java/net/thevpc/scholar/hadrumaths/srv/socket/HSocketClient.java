@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths.srv.socket;
 
-import net.thevpc.common.time.Chronometer;
+import net.thevpc.nuts.time.NChronometer;
 import net.thevpc.scholar.hadrumaths.srv.FSConstants;
 import net.thevpc.scholar.hadrumaths.srv.FileStat;
 import net.thevpc.scholar.hadrumaths.srv.HadrumathsClient;
@@ -132,13 +132,13 @@ public class HSocketClient implements HadrumathsClient {
     @Override
     public long ping() {
         long ret = -1;
-        Chronometer c = Chronometer.start();
+        NChronometer c = NChronometer.startNow();
         try {
             connection.reconnectIfNecessary();
             connection.out().writeUTF(fsId);
             connection.out().writeByte(FSConstants.Command.PING.ordinal());
             connection.consumeResponseHeader();
-            ret = c.stop().getTime();
+            ret = c.stop().getDurationMs();
         } catch (IOException e) {
             connection.invalidate();
         }

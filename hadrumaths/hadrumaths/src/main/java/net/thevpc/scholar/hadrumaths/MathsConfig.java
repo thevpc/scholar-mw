@@ -8,7 +8,6 @@ import net.thevpc.common.strings.StringUtils;
 import net.thevpc.nuts.elem.*;
 import net.thevpc.common.util.*;
 import net.thevpc.common.collections.*;
-import net.thevpc.common.time.*;
 import net.thevpc.scholar.hadrumaths.cache.CacheEnabled;
 import net.thevpc.scholar.hadrumaths.cache.CacheMode;
 import net.thevpc.scholar.hadrumaths.derivation.FormalDifferentiation;
@@ -54,7 +53,7 @@ public final class MathsConfig {
     private FrequencyFormat frequencyFormatter = FrequencyFormat.INSTANCE;
     private BytesSizeFormat memorySizeFormatter = BytesSizeFormat.INSTANCE;
     private MetricFormat metricFormatter = new MetricFormat();
-    private final TimeDurationFormat timePeriodFormat = new DefaultTimeDurationFormat();
+//    private final TimeDurationFormat timePeriodFormat = new DefaultTimeDurationFormat();
     private final ExprCubeFactory exprCubeFactory = DefaultExprCubeFactory.INSTANCE;
     private int matrixBlockPrecision = 256;
     private InverseStrategy defaultMatrixInverseStrategy = InverseStrategy.BLOCK_SOLVE;
@@ -97,7 +96,7 @@ public final class MathsConfig {
 
     private MathsConfig() {
         NElementMapperStore ms = getElements().mapperStore();
-        ms.setMapper(DefaultTimeDurationFormat.class, new ClassNameNElementMapper<DefaultTimeDurationFormat>());
+//        ms.setMapper(DefaultTimeDurationFormat.class, new ClassNameNElementMapper<DefaultTimeDurationFormat>());
         ms.setMapper(PercentDoubleFormat.class, new ClassNameNElementMapper<ToStringDoubleFormat>());
         ms.setMapper(ToStringDoubleFormat.class, new ClassNameNElementMapper<PercentDoubleFormat>());
         ms.setMapper(DecimalDoubleFormat.class, new NElementMapper<DecimalDoubleFormat>() {
@@ -630,11 +629,6 @@ public final class MathsConfig {
 
     public ExprCubeFactory getExprCubeFactory() {
         return exprCubeFactory;
-    }
-
-    public net.thevpc.common.time.TimeDurationFormat getTimePeriodFormat() {
-
-        return timePeriodFormat;
     }
 
     public DoubleFormat getPercentFormat() {

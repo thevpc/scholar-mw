@@ -31,8 +31,8 @@ public class ExprElementParser {
             case BIG_COMPLEX: {
                 NDoubleComplex d = value.asDoubleComplexValue().get();
                 return NOptional.of(Complex.of(
-                        d.real(),
-                        d.imag()
+                        d.realValue(),
+                        d.imagValue()
                 ));
             }
             case NAME: {
