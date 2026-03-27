@@ -2,9 +2,9 @@ package net.thevpc.scholar.hadruplot.console.yaxis;
 
 import net.thevpc.common.mon.ProgressMonitors;
 import net.thevpc.common.swing.win.WindowPath;
-import net.thevpc.common.time.Chronometer;
 import net.thevpc.common.mon.MonitoredAction;
 import net.thevpc.common.mon.ProgressMonitor;
+import net.thevpc.nuts.time.NChronometer;
 import net.thevpc.scholar.hadruplot.PlotMatrix;
 import net.thevpc.scholar.hadruplot.console.*;
 import net.thevpc.scholar.hadruplot.PlotType;
@@ -41,7 +41,7 @@ public abstract class PlotAxisSeries extends PlotAxis implements Cloneable {
 
     @Override
     public Iterator<ConsoleAction> createConsoleActionIterator(ConsoleActionParams p) {
-        Chronometer chronometer = Chronometer.start();
+        NChronometer chronometer = NChronometer.startNow();
 //        x1values = getX(direct, modele, x_axis);
 //        x2values = getY(direct, modele, x_axis);
         PlotMatrix[] yvalues = eval(p);

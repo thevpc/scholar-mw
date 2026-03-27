@@ -1,6 +1,6 @@
 package test;
 
-import net.thevpc.common.time.Chronometer;
+import net.thevpc.nuts.time.NChronometer;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.ComplexMatrix;
 import net.thevpc.scholar.hadrumaths.ComplexMatrixFactory;
@@ -48,7 +48,7 @@ public class TestMatrices {
         ComplexMatrixFactory[] factories = getFactories();
         for (int i = 0; i < factories.length; i++) {
             ComplexMatrixFactory f = factories[i];
-            Chronometer chrono = Maths.chrono();
+            NChronometer chrono = Maths.chrono();
 //            System.out.println("=== "+f);
             ComplexMatrix m1 = f.newRandom(SIZE, SIZE, 0, 100);
             ComplexMatrix m2 = f.newRandom(SIZE, SIZE, 0, 100);
@@ -100,7 +100,7 @@ public class TestMatrices {
         ComplexMatrixFactory[] factories = getFactories();
         for (int i = 0; i < factories.length; i++) {
             ComplexMatrixFactory f = factories[i];
-            Chronometer chrono = Maths.chrono();
+            NChronometer chrono = Maths.chrono();
 //            System.out.println("=== "+f);
             ComplexMatrix m1 = f.newRandom(SIZE, SIZE, 0, 100);
             ComplexMatrix m2 = f.newRandom(SIZE, SIZE, 0, 100);
@@ -130,7 +130,7 @@ public class TestMatrices {
         ComplexMatrixFactory[] factories = getFactories();
         for (int i = 0; i < factories.length; i++) {
             ComplexMatrixFactory f = factories[i];
-            Chronometer chrono = Maths.chrono();
+            NChronometer chrono = Maths.chrono();
 //            System.out.println("=== "+f);
             ComplexMatrix m1 = f.newRandom(SIZE, SIZE, 0, 100);
             ComplexMatrix m2 = f.newRandom(SIZE, SIZE, 0, 100);
@@ -160,7 +160,7 @@ public class TestMatrices {
         ComplexMatrixFactory[] factories = getFactories();
         for (int i = 0; i < factories.length; i++) {
             ComplexMatrixFactory f = factories[i];
-            Chronometer chrono = Maths.chrono();
+            NChronometer chrono = Maths.chrono();
 //            System.out.println("=== "+f);
             ComplexMatrix m1 = f.newRandom(SIZE, SIZE, 0, 100);
             ComplexMatrix m2 = generateInvertible(SIZE, f);
@@ -197,7 +197,7 @@ public class TestMatrices {
         ComplexMatrixFactory[] factories = getFactories();
         for (int i = 0; i < factories.length; i++) {
             ComplexMatrixFactory f = factories[i];
-            Chronometer chrono = Maths.chrono();
+            NChronometer chrono = Maths.chrono();
 //            System.out.println("=== "+f);
             ComplexMatrix m1 = generateInvertible(SIZE, f);
             ComplexMatrix m3 = m1.invSolve();

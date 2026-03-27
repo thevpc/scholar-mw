@@ -3,8 +3,8 @@ package net.thevpc.scholar.hadruplot.console;
 import net.thevpc.common.mon.AbstractProgressMonitor;
 import net.thevpc.common.swing.SwingUtilities3;
 import net.thevpc.common.swing.win.WindowPath;
-import net.thevpc.common.time.Chronometer;
 import net.thevpc.nuts.text.NMsg;
+import net.thevpc.nuts.time.NChronometer;
 import net.thevpc.scholar.hadruplot.console.params.ParamSet;
 import net.thevpc.scholar.hadruplot.console.yaxis.PlotAxis;
 import net.thevpc.scholar.hadruplot.console.yaxis.YType;
@@ -24,7 +24,7 @@ public class PlotThread extends AbstractProgressMonitor {
     private ComputeTitle serieTitle;
     private ConsoleAwareObject direct;
     private ConsoleAwareObject modele;
-    private Chronometer chronometer;
+    private NChronometer chronometer;
     private ConsoleAxis axis;
     private PlotConsole plotter;
     private PlotData plotData;
@@ -38,7 +38,7 @@ public class PlotThread extends AbstractProgressMonitor {
 
     public PlotThread(PlotAxis currentY, PlotData plotData, ComputeTitle serieTitle, ConsoleAwareObject direct, ConsoleAwareObject modele, ConsoleAxis axis, PlotConsole plotter) {
         super(nextId());
-        chronometer = Chronometer.start();
+        chronometer = NChronometer.startNow();
         this.currentY = currentY;
         this.serieTitle = serieTitle;
         this.direct = direct;
@@ -49,7 +49,7 @@ public class PlotThread extends AbstractProgressMonitor {
     }
 
 
-    public Chronometer getChronometer() {
+    public NChronometer getChronometer() {
         return chronometer;
     }
 

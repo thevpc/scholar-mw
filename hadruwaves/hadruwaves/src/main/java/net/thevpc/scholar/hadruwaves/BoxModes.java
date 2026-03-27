@@ -2,6 +2,7 @@ package net.thevpc.scholar.hadruwaves;
 
 import net.thevpc.common.mon.ProgressMonitors;
 import net.thevpc.common.mon.VoidMonitoredAction;
+import net.thevpc.nuts.time.NChronometer;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.common.mon.ProgressMonitor;
@@ -9,7 +10,6 @@ import net.thevpc.scholar.hadruwaves.mom.BoxSpace;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import net.thevpc.common.time.Chronometer;
 
 import static net.thevpc.scholar.hadrumaths.Maths.*;
 
@@ -127,7 +127,7 @@ public abstract class BoxModes implements Iterable<ModeIndex> {
     }
 
     public ModeFct[] getModeFcts(final int max, ProgressMonitor monitor) {
-        Chronometer chrono = Chronometer.start();
+        NChronometer chrono = NChronometer.startNow();
         final ArrayList<ModeFct> next = new ArrayList<ModeFct>(max);
         final Iterator<ModeIndex> iterator = iterator();
         final ProgressMonitor mon = ProgressMonitors.incremental(monitor, max);

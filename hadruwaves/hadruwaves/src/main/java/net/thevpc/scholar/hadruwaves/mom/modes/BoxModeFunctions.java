@@ -8,6 +8,7 @@ import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.log.NLogger;
 import net.thevpc.nuts.text.NMsg;
+import net.thevpc.nuts.time.NChronometer;
 import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.scholar.hadrumaths.*;
@@ -35,7 +36,6 @@ import java.util.*;
 import java.util.function.Function;
 import net.thevpc.common.collections.CollectionFilter;
 import net.thevpc.common.collections.CollectionUtils;
-import net.thevpc.common.time.Chronometer;
 
 import static net.thevpc.scholar.hadrumaths.Expressions.*;
 import static net.thevpc.scholar.hadrumaths.Maths.*;
@@ -300,7 +300,7 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
     protected ModeInfo[] getIndexesImpl(ProgressMonitor monitor0) {
         monitor0 = createProgressMonitorNotNull(monitor0, "indexes");
         final int max = getSize();
-        Chronometer chrono = Chronometer.start();
+        NChronometer chrono = NChronometer.startNow();
         final ArrayList<ModeInfo> next = new ArrayList<ModeInfo>(max);
         final Iterator<ModeIndex> iterator = getModeIterator().iterator(this);
         ProgressMonitor monitor = ProgressMonitors.incremental(monitor0, max);

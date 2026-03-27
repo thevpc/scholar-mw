@@ -4,9 +4,9 @@ import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.common.mon.ProgressMonitorFactory;
 import net.thevpc.common.mon.ProgressMonitors;
 
-import net.thevpc.common.time.Chronometer;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NObjectElementBuilder;
+import net.thevpc.nuts.time.NChronometer;
 import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.scholar.hadrumaths.Vector;
 import net.thevpc.scholar.hadrumaths.*;
@@ -959,7 +959,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
     }
 
     public long getExecutionTime(String type) {
-        Chronometer chrono = Chronometer.start();
+        NChronometer chrono = NChronometer.startNow();
         if (CACHE_SRCGP.equals(type)) {
             getTestSourceScalarProducts();//insure it is calculated
         } else if (CACHE_FNGP.equals(type)) {

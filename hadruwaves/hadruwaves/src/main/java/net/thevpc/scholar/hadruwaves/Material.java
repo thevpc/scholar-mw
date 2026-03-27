@@ -142,7 +142,7 @@ public class Material implements NToElement {
                                 }
                             } else if (value2.isNumber()) {
                                 NDoubleComplex cc = value2.asDoubleComplexValue().get();
-                                electricConductivity = Complex.of(cc.real(), cc.imag());
+                                electricConductivity = Complex.of(cc.realValue(), cc.imagValue());
                             } else {
                                 err = true;
                                 NLog.ofScoped(Material.class).log(NMsg.ofC("invalid electricConductivity %s", value2).asError());

@@ -1,10 +1,10 @@
 package net.thevpc.scholar.hadruplot.model.custom;
 
-import net.thevpc.common.time.Chronometer;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+
+import net.thevpc.nuts.time.NChronometer;
 import net.thevpc.scholar.hadruplot.component.BasePlotPanel;
 import net.thevpc.scholar.hadruplot.PlotPanel;
 import net.thevpc.scholar.hadruplot.extension.PlotPanelFactory;
@@ -12,13 +12,13 @@ import net.thevpc.scholar.hadruplot.model.BasePlotModel;
 import net.thevpc.scholar.hadruplot.model.PlotModel;
 
 public class ChronometerModel extends BasePlotModel implements PlotPanelFactory {
-    private Chronometer chronometer;
+    private NChronometer chronometer;
 
-    public ChronometerModel(Chronometer ch) {
+    public ChronometerModel(NChronometer ch) {
         this.chronometer = ch;
     }
 
-    public Chronometer getChronometer() {
+    public NChronometer getChronometer() {
         return chronometer;
     }
 

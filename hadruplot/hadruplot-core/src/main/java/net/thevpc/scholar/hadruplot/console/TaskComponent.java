@@ -5,8 +5,7 @@ import net.thevpc.common.mon.TaskListener;
 import net.thevpc.common.mon.TaskMonitor;
 import net.thevpc.common.mon.TaskMonitorManager;
 import net.thevpc.common.swing.layout.GridBagLayout2;
-import net.thevpc.common.time.DatePart;
-import net.thevpc.common.time.TimeDuration;
+import net.thevpc.nuts.time.NDuration;
 import net.thevpc.scholar.hadruplot.util.PlotUtils;
 
 import javax.swing.*;
@@ -14,7 +13,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
-import java.util.stream.Stream;
 
 /**
  * @author Taha BEN SALAH (taha.bensalah@gmail.com)
@@ -200,9 +198,9 @@ public class TaskComponent extends JPanel implements ActionListener {
 
     public void updateComponentUIImpl() {
         if (monitor != null) {
-            TimeDuration spent = TimeDuration.ofMillis(monitor.getDuration());
-            TimeDuration remaining = null;
-            TimeDuration approx = null;
+            NDuration spent = NDuration.ofMillis(monitor.getDuration());
+            NDuration remaining = null;
+            NDuration approx = null;
             double d = Double.NaN;
             boolean indeterminate = true;
             double d100 = 0;
@@ -219,8 +217,8 @@ public class TaskComponent extends JPanel implements ActionListener {
                         d = 1;
                     }
                     if (d > 0) {
-                        remaining = TimeDuration.ofMillis(pmonitor.getEstimatedRemainingDuration());
-                        approx = TimeDuration.ofMillis(pmonitor.getEstimatedTotalDuration());
+                        remaining = NDuration.ofMillis(pmonitor.getEstimatedRemainingDuration());
+                        approx = NDuration.ofMillis(pmonitor.getEstimatedTotalDuration());
                     }
                     d100 = d * 100;
                     indeterminate = false;
@@ -246,20 +244,20 @@ public class TaskComponent extends JPanel implements ActionListener {
                 windowTitle.setForeground(Color.RED);
                 progressMessageLabel.setForeground(Color.RED);
                 timeDurLabel.setText("Duration :");
-                timeDurValue.setText(approx == null ? "?" : approx.toString(DatePart.SECOND));
+                timeDurValue.setText(approx == null ? "?" : approx.truncatedToSeconds().toString());
                 timeElapLabel.setText("Elapsed :");
-                timeElapValue.setText(spent.toString(DatePart.SECOND));
+                timeElapValue.setText(spent.truncatedToSeconds().toString());
                 timeRemLabel.setText("(Terminated)");
                 timeRemValue.setText("");
             } else {
                 windowTitle.setForeground(Color.BLUE);
                 progressMessageLabel.setForeground(Color.BLACK);
                 timeDurLabel.setText("Duration :");
-                timeDurValue.setText(approx == null ? "?" : approx.toString(DatePart.SECOND));
+                timeDurValue.setText(approx == null ? "?" : approx.truncatedToSeconds().toString());
                 timeElapLabel.setText("Elapsed :");
-                timeElapValue.setText(spent.toString(DatePart.SECOND));
+                timeElapValue.setText(spent.truncatedToSeconds().toString());
                 timeRemLabel.setText("Remaining :");
-                timeRemValue.setText(remaining == null ? "?" : remaining.toString(DatePart.SECOND));
+                timeRemValue.setText(remaining == null ? "?" : remaining.truncatedToSeconds().toString());
             }
             updateProgress(d100, message, indeterminate);
         } else {

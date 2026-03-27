@@ -1,6 +1,5 @@
 package net.thevpc.scholar.mentoring.extra
 
-import net.thevpc.common.time.Chronometer
 import net.thevpc.nuts.elem.NElement
 import net.thevpc.scholar.hadrumaths.MathScala._
 import net.thevpc.scholar.hadruwaves.Physics._
@@ -69,7 +68,7 @@ object d_2018_02_01_FabryPerot_EquivalentCircuit {
   def main(args: Array[String]): Unit = {
     Maths.Config.setScalarProductOperator(
       ScalarProductOperatorFactory.hardFormal()); // !=quad
-    var cr = Chronometer.start
+    var cr = NChronometer.startNow
 
 
     //======================================== Test Functions =====================================

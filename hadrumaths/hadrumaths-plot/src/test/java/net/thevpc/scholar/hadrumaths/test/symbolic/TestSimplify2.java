@@ -1,10 +1,9 @@
 package net.thevpc.scholar.hadrumaths.test.symbolic;
 
-import net.thevpc.common.time.Chronometer;
 import net.thevpc.common.collections.Collections2;
-import net.thevpc.common.time.DatePart;
 import net.thevpc.common.collections.ListValueMap;
-import net.thevpc.common.time.TimeDuration;
+import net.thevpc.nuts.time.NChronometer;
+import net.thevpc.nuts.time.NDuration;
 import net.thevpc.scholar.hadrumaths.transform.ExprRewriteCounter;
 import net.thevpc.scholar.hadrumaths.transform.ExprRewriteLogger;
 import net.thevpc.scholar.hadrumaths.transform.ExpressionRewriter;
@@ -113,14 +112,14 @@ public class TestSimplify2 {
             sp.removeRewriteListener(ExprRewriteLogger.INSTANCE);
             sp.removeRewriteListener(counter);
             System.out.println(counter);
-            Chronometer chrono = chrono();
+            NChronometer chrono = chrono();
             int iterationsCount = 100000;
             for (int i = 0; i < iterationsCount; i++) {
                 sp.rewriteOrSame(e, null);
             }
             chrono.stop();
-            System.out.println(chrono.getDuration().toString(DatePart.NANOSECOND));
-            System.out.println(TimeDuration.ofMillis((chrono.getDuration().toNanoSeconds()/iterationsCount)).toString(DatePart.NANOSECOND));
+            System.out.println(chrono.getDuration());
+            System.out.println(NDuration.ofNanos((chrono.getDuration().toNanos()/iterationsCount)));
             //Count{newValue=24, bestEffort=68, unmodified=152, totalModified=92, total=244}
             // 6s 603ms  16us 498ns
             // 66us  30ns

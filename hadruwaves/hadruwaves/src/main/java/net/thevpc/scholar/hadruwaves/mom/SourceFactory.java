@@ -9,7 +9,6 @@ import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.geom.Geometry;
-import net.thevpc.scholar.hadrumaths.symbolic.polymorph.trigo.Exp;
 import net.thevpc.scholar.hadruwaves.ModeIndex;
 import net.thevpc.scholar.hadruwaves.mom.sources.PlanarSource;
 import net.thevpc.scholar.hadruwaves.mom.sources.PlanarSources;
@@ -23,7 +22,6 @@ import net.thevpc.scholar.hadruwaves.mom.sources.planar.DefaultPlanarSources;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -230,7 +228,7 @@ public class SourceFactory extends AbstractFactory {
                                 {
                                     NDoubleComplex cc = p.value().asDoubleComplexValue().orNull();
                                     if (cc != null) {
-                                        impedance=Complex.of(cc.real(),cc.imag());
+                                        impedance=Complex.of(cc.realValue(),cc.imagValue());
                                     }
                                     break;
                                 }

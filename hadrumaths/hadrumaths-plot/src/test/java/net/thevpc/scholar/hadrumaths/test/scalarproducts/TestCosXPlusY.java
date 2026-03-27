@@ -1,9 +1,8 @@
 package net.thevpc.scholar.hadrumaths.test.scalarproducts;
 
-import net.thevpc.common.time.Chronometer;
-
 import static net.thevpc.scholar.hadrumaths.io.HadrumathsIOUtils.*;
 
+import net.thevpc.nuts.time.NChronometer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +28,7 @@ public class TestCosXPlusY {
         //problems
         // cos(((0.9169317480222497 * X) + (0.8897143110485595 * Y)) + 0.10546599924098332) ** cos((0.9091685583092961 * X) + 0.979857203027707) * cos((0 * Y) + 0.9945462742048392)    :: Domain(x=0.0->47.62612253690951;y=0.0->30.5050548874369)
 
-        Chronometer ch1 = Chronometer.start();
+        NChronometer ch1 = NChronometer.startNow();
         List<Expr> e1list = new ArrayList<Expr>();
         List<Expr> e2list = new ArrayList<Expr>();
         List<Complex> v1list = new ArrayList<Complex>();
@@ -65,7 +64,7 @@ public class TestCosXPlusY {
         Config.setCacheEnabled(false);
         System.out.println("testCosXPlusYVsCosXPlusY");
 
-        Chronometer ch1 = Chronometer.start();
+        NChronometer ch1 = NChronometer.startNow();
         List<Expr> e1list = new ArrayList<Expr>();
         List<Expr> e2list = new ArrayList<Expr>();
         List<Complex> v1list = new ArrayList<Complex>();
@@ -152,7 +151,7 @@ public class TestCosXPlusY {
 //    }
 
     private void compareResults(List<Expr> e1list, List<Expr> e2list, List<Complex> v1list, List<Complex> v2list, List<Domain> vdomains, int maxIterations) {
-        Chronometer ch1 = Chronometer.start();
+        NChronometer ch1 = NChronometer.startNow();
 //        for (int i = 0; i < maxIterations; i++) {
 //            Expr e1 = e1list.get(i);
 //            Expr e2 = e2list.get(i);
@@ -169,7 +168,7 @@ public class TestCosXPlusY {
         }
         ch1.stop();
         System.out.println(ch1);
-        Chronometer ch2 = Chronometer.start();
+        NChronometer ch2 = NChronometer.startNow();
         for (int i = 0; i < maxIterations; i++) {
             Expr e1 = e1list.get(i);
             Expr e2 = e2list.get(i);

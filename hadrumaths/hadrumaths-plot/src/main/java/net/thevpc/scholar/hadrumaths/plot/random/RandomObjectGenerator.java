@@ -1,12 +1,12 @@
 package net.thevpc.scholar.hadrumaths.plot.random;
 
+import net.thevpc.nuts.time.NChronometer;
 import net.thevpc.scholar.hadrumaths.util.internal.IntValidator;
 import net.thevpc.scholar.hadrumaths.util.internal.DoubleValidator;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceExprType;
 import net.thevpc.scholar.hadrumaths.util.internal.IgnoreRandomGeneration;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.common.collections.AcceptDenyClassSet;
-import net.thevpc.common.time.Chronometer;
 import net.thevpc.common.collections.ClassMap;
 import net.thevpc.common.collections.ClassMapList;
 import net.thevpc.scholar.hadrumaths.Maths;
@@ -350,7 +350,7 @@ public class RandomObjectGenerator<B extends RandomObjectGenerator> {
     public Class[] findObjectClasses() {
         java.util.List<java.lang.Class> clss = new ArrayList<>();
         if (objectClasses == null) {
-            Chronometer chrono = Chronometer.start();
+            NChronometer chrono = NChronometer.startNow();
             TreeSet<String> ignored = new TreeSet<>();
             TreeSet<String> error = new TreeSet<>();
             for (Class cls : ExprProjectClasses.getProjectClasses()) {
