@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadruplot.console.params;
 
-import net.thevpc.common.util.ArrayUtils;
+import net.thevpc.nuts.util.NArrays;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -19,11 +19,11 @@ public class DoubleArrayParamSet extends ParamSet<Double> implements Cloneable {
     }
 
     public DoubleArrayParamSet(CParam configurator, double min, double max, int times) {
-        this(configurator, ArrayUtils.dtimes(min, max, times));
+        this(configurator, NArrays.linear(min, max, times));
     }
 
     public DoubleArrayParamSet(CParam configurator, double min, double max, double step) {
-        this(configurator, ArrayUtils.dsteps(min, max, step));
+        this(configurator, NArrays.range(min, max, step));
     }
 
     public DoubleArrayParamSet init(double value) {
@@ -32,12 +32,12 @@ public class DoubleArrayParamSet extends ParamSet<Double> implements Cloneable {
     }
 
     public DoubleArrayParamSet dtimes(double min, double max, int times) {
-        values = ArrayUtils.dtimes(min, max, times);
+        values = NArrays.linear(min, max, times);
         return this;
     }
 
     public DoubleArrayParamSet dsteps(double min, double max, double step) {
-        values = ArrayUtils.dsteps(min, max, step);
+        values = NArrays.range(min, max, step);
         return this;
     }
 

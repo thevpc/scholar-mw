@@ -5,7 +5,7 @@
 
 package net.thevpc.scholar.hadrumaths.interop.derive;
 
-import net.thevpc.common.collections.ClassMap;
+import net.thevpc.nuts.reflect.NClassMap;
 import net.thevpc.scholar.hadrumaths.AbstractFactory;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.ComplexMatrix;
@@ -14,7 +14,7 @@ import net.thevpc.scholar.hadrumaths.ComplexMatrix;
  * @author vpc
  */
 public class DeriveFactory extends AbstractFactory {
-    private static final ClassMap<ToDeriveString> map = new ClassMap<ToDeriveString>(Object.class, ToDeriveString.class, 3);
+    private static final NClassMap<Object,ToDeriveString> map = NClassMap.of(Object.class, ToDeriveString.class, 3);
 
     static {
         register(ComplexMatrix.class, new MatrixToDeriveString());

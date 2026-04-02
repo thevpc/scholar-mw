@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
-import net.thevpc.common.collections.MapUtils;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.util.NMaps;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.Maths;
@@ -98,7 +98,7 @@ public class Rooftop extends RefDoubleToDouble {
                 m0 = (-1);
                 Domain d1 = Domain.ofBounds((m0 / 2.0 * w + domain.xmin()), ((m0 / 2.0 + 1) * w + domain.xmin()), domain.ymin(), domain.ymax());
                 Expr rooftop = rooftopPartX(false, d1).setProperties(
-                        MapUtils.linkedmap(
+                        NMaps.of(
                                 "SequenceType", "Rooftop",
                                 "SequenceIndex", "" + (list.size()),
                                 "SequencePattern", "E"
@@ -110,7 +110,7 @@ public class Rooftop extends RefDoubleToDouble {
             while (m0 < nx) {
                 Domain d0 = Domain.ofBounds(m0 / 2.0 * w + domain.xmin(), ((m0 / 2.0 + 1) * w + domain.xmin()), domain.ymin(), domain.ymax());
                 Expr rooftop = rooftop(true, false, d0).setProperties(
-                        MapUtils.linkedmap(
+                        NMaps.of(
                                 "SequenceType", "Rooftop",
                                 "SequenceIndex", "" + (list.size() + 1),
                                 "SequencePattern", "X"
@@ -123,7 +123,7 @@ public class Rooftop extends RefDoubleToDouble {
                 m0 = nx;
                 Domain d1 = Domain.ofBounds((m0 / 2.0 * w + domain.xmin()), ((m0 / 2.0 + 1) * w + domain.xmin()), domain.ymin(), domain.ymax());
                 Expr rooftop = rooftopPartX(true, d1).setProperties(
-                        MapUtils.linkedmap(
+                        NMaps.of(
                                 "SequenceType", "Rooftop",
                                 "SequenceIndex", "" + (list.size() + 1),
                                 "SequencePattern", "E"
@@ -138,7 +138,7 @@ public class Rooftop extends RefDoubleToDouble {
                 m0 = (-1);
                 Domain d1 = Domain.ofBounds(domain.xmin(), domain.xmax(), (m0 / 2.0 * h + domain.ymin()), ((m0 / 2.0 + 1) * h + domain.ymin()));
                 Expr rooftop = rooftopPartY(false, d1).setProperties(
-                        MapUtils.linkedmap(
+                        NMaps.of(
                                 "SequenceType", "Rooftop",
                                 "SequenceIndex", "" + (list.size() + 1),
                                 "SequencePattern", "N"
@@ -150,7 +150,7 @@ public class Rooftop extends RefDoubleToDouble {
             while (m0 < ny) {
                 Domain d0 = Domain.ofBounds(domain.xmin(), domain.xmax(), (m0 / 2.0 * h + domain.ymin()), ((m0 / 2.0 + 1) * h + domain.ymin()));
                 Expr rooftop = rooftop(false, true, d0).setProperties(
-                        MapUtils.linkedmap(
+                        NMaps.of(
                                 "SequenceType", "Rooftop",
                                 "SequenceIndex", "" + (list.size() + 1),
                                 "SequencePattern", "Y"
@@ -163,7 +163,7 @@ public class Rooftop extends RefDoubleToDouble {
                 m0 = ny;
                 Domain d1 = Domain.ofBounds(domain.xmin(), domain.xmax(), (m0 / 2.0 * h + domain.ymin()), ((m0 / 2.0 + 1) * h + domain.ymin()));
                 Expr rooftop = rooftopPartY(true, d1).setProperties(
-                        MapUtils.linkedmap(
+                        NMaps.of(
                                 "SequenceType", "Rooftop",
                                 "SequenceIndex", "" + (list.size() + 1),
                                 "SequencePattern", "S"

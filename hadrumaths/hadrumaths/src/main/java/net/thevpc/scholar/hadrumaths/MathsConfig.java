@@ -1,13 +1,15 @@
 package net.thevpc.scholar.hadrumaths;
 
 import net.thevpc.common.mon.LogProgressMonitor;
-import net.thevpc.common.strings.StringConverter;
-import net.thevpc.common.strings.StringUtils;
 
 
 import net.thevpc.nuts.elem.*;
-import net.thevpc.common.util.*;
-import net.thevpc.common.collections.*;
+import net.thevpc.nuts.reflect.NReflect;
+import net.thevpc.nuts.reflect.NTypeName;
+import net.thevpc.nuts.reflect.NTypeNamePlatformDomain;
+import net.thevpc.nuts.text.NMsg;
+import net.thevpc.nuts.text.NTextFormat;
+import net.thevpc.nuts.util.NUplet;
 import net.thevpc.scholar.hadrumaths.cache.CacheEnabled;
 import net.thevpc.scholar.hadrumaths.cache.CacheMode;
 import net.thevpc.scholar.hadrumaths.derivation.FormalDifferentiation;
@@ -21,7 +23,6 @@ import net.thevpc.scholar.hadrumaths.symbolic.DefaultExprCubeFactory;
 import net.thevpc.scholar.hadrumaths.symbolic.ExprCubeFactory;
 import net.thevpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.thevpc.scholar.hadrumaths.util.LogUtils;
-import net.thevpc.scholar.hadrumaths.util.ToStringDoubleFormat;
 import net.thevpc.scholar.hadrumaths.util.dump.DumpManager;
 
 import java.beans.PropertyChangeListener;
@@ -50,10 +51,10 @@ public final class MathsConfig {
     private boolean debugExpressionRewrite = false;
     private boolean strictComputationMonitor = false;
     private float maxMemoryThreshold = 0.7f;
-    private FrequencyFormat frequencyFormatter = FrequencyFormat.INSTANCE;
-    private BytesSizeFormat memorySizeFormatter = BytesSizeFormat.INSTANCE;
-    private MetricFormat metricFormatter = new MetricFormat();
-//    private final TimeDurationFormat timePeriodFormat = new DefaultTimeDurationFormat();
+    private String frequencyFormatter = null;
+    private String memorySizeFormatter = null;
+    private String metricFormatter = null;
+    //    private final TimeDurationFormat timePeriodFormat = new DefaultTimeDurationFormat();
     private final ExprCubeFactory exprCubeFactory = DefaultExprCubeFactory.INSTANCE;
     private int matrixBlockPrecision = 256;
     private InverseStrategy defaultMatrixInverseStrategy = InverseStrategy.BLOCK_SOLVE;
@@ -74,11 +75,11 @@ public final class MathsConfig {
     private ScalarProductOperator defaultScalarProductOperator = null;
     private IntegrationOperator defaultIntegrationOperator = null;
     private FunctionDifferentiatorManager functionDifferentiatorManager = new FormalDifferentiation();
-    private final Map<ClassPair, Function> converters = new HashMap<>();
+    private final Map<NUplet<Class>, Function> converters = new HashMap<>();
     private final Map<String, MatrixFactory> matrixFactories = new HashMap<>();
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(MathsConfig.class);
-    private final DoubleFormat defaultDblFormat = new ToStringDoubleFormat();
-    private final DoubleFormat percentFormat = new DecimalDoubleFormat("0.00%");
+    private final NTextFormat<Number> defaultDblFormat = NTextFormat.ofNumber();
+    private final NTextFormat<Number> percentFormat = NTextFormat.ofPercent();
 
     {
         registerConverter(Double.class, Complex.class, Maths.DOUBLE_TO_COMPLEX);
@@ -97,32 +98,32 @@ public final class MathsConfig {
     private MathsConfig() {
         NElementMapperStore ms = getElements().mapperStore();
 //        ms.setMapper(DefaultTimeDurationFormat.class, new ClassNameNElementMapper<DefaultTimeDurationFormat>());
-        ms.setMapper(PercentDoubleFormat.class, new ClassNameNElementMapper<ToStringDoubleFormat>());
-        ms.setMapper(ToStringDoubleFormat.class, new ClassNameNElementMapper<PercentDoubleFormat>());
-        ms.setMapper(DecimalDoubleFormat.class, new NElementMapper<DecimalDoubleFormat>() {
-            @Override
-            public NElement createElement(DecimalDoubleFormat object, Type typeOfSrc, NElementFactoryContext context) {
-                return NElement.ofUplet(object.getClass().getSimpleName(), NElement.ofString(object.toPattern()));
-            }
-        });
-        ms.setMapper(FrequencyFormat.class, new NElementMapper<FrequencyFormat>() {
-            @Override
-            public NElement createElement(FrequencyFormat object, Type typeOfSrc, NElementFactoryContext context) {
-                return NElement.ofUplet(object.getClass().getSimpleName(), NElement.ofString(object.toPattern()));
-            }
-        });
-        ms.setMapper(BytesSizeFormat.class, new NElementMapper<BytesSizeFormat>() {
-            @Override
-            public NElement createElement(BytesSizeFormat object, Type typeOfSrc, NElementFactoryContext context) {
-                return NElement.ofUplet(object.getClass().getSimpleName(), NElement.ofString(object.toPattern()));
-            }
-        });
-        ms.setMapper(MetricFormat.class, new NElementMapper<MetricFormat>() {
-            @Override
-            public NElement createElement(MetricFormat object, Type typeOfSrc, NElementFactoryContext context) {
-                return NElement.ofUplet(object.getClass().getSimpleName(), NElement.ofString(object.toPattern()));
-            }
-        });
+//        ms.setMapper(PercentDoubleFormat.class, new ClassNameNElementMapper<ToStringDoubleFormat>());
+//        ms.setMapper(ToStringDoubleFormat.class, new ClassNameNElementMapper<PercentDoubleFormat>());
+//        ms.setMapper(DecimalDoubleFormat.class, new NElementMapper<DecimalDoubleFormat>() {
+//            @Override
+//            public NElement createElement(DecimalDoubleFormat object, Type typeOfSrc, NElementFactoryContext context) {
+//                return NElement.ofUplet(object.getClass().getSimpleName(), NElement.ofString(object.toPattern()));
+//            }
+//        });
+//        ms.setMapper(FrequencyFormat.class, new NElementMapper<FrequencyFormat>() {
+//            @Override
+//            public NElement createElement(FrequencyFormat object, Type typeOfSrc, NElementFactoryContext context) {
+//                return NElement.ofUplet(object.getClass().getSimpleName(), NElement.ofString(object.toPattern()));
+//            }
+//        });
+//        ms.setMapper(BytesSizeFormat.class, new NElementMapper<BytesSizeFormat>() {
+//            @Override
+//            public NElement createElement(BytesSizeFormat object, Type typeOfSrc, NElementFactoryContext context) {
+//                return NElement.ofUplet(object.getClass().getSimpleName(), NElement.ofString(object.toPattern()));
+//            }
+//        });
+//        ms.setMapper(MetricFormat.class, new NElementMapper<MetricFormat>() {
+//            @Override
+//            public NElement createElement(MetricFormat object, Type typeOfSrc, NElementFactoryContext context) {
+//                return NElement.ofUplet(object.getClass().getSimpleName(), NElement.ofString(object.toPattern()));
+//            }
+//        });
     }
 
     public boolean isCompressCache() {
@@ -185,7 +186,7 @@ public final class MathsConfig {
     }
 
     public <A, B> void registerConverter(Class<A> a, Class<B> b, Function<A, B> c) {
-        ClassPair k = new ClassPair(a, b);
+        NUplet<Class> k = NUplet.of(a, b);
         if (c == null) {
             converters.remove(k);
         } else {
@@ -193,8 +194,8 @@ public final class MathsConfig {
         }
     }
 
-    public <A, B> Function<A, B> getConverter(TypeName<A> a, TypeName<B> b) {
-        return getConverter(a.getTypeClass(), b.getTypeClass());
+    public <A, B> Function<A, B> getConverter(NTypeName<A> a, NTypeName<B> b) {
+        return getConverter(NTypeNamePlatformDomain.of().getTypeClass(a), NTypeNamePlatformDomain.of().getTypeClass(b));
     }
 
     public <A, B> Function<A, B> getConverter(Class<A> a, Class<B> b) {
@@ -209,7 +210,7 @@ public final class MathsConfig {
     }
 
     public <A, B> Function<A, B> getRegisteredConverter(Class<A> a, Class<B> b) {
-        ClassPair k = new ClassPair(a, b);
+        NUplet<Class> k = NUplet.of(a, b);
         return converters.get(k);
     }
 
@@ -222,29 +223,29 @@ public final class MathsConfig {
         return this;
     }
 
-    public FrequencyFormat getFrequencyFormatter() {
-        return frequencyFormatter;
+    public NTextFormat<Number> getFrequencyFormatter() {
+        return NTextFormat.ofFrequency(frequencyFormatter);
     }
 
-    public MathsConfig setFrequencyFormatter(FrequencyFormat frequencyFormatter) {
+    public MathsConfig setFrequencyFormatter(String frequencyFormatter) {
         this.frequencyFormatter = frequencyFormatter;
         return this;
     }
 
-    public BytesSizeFormat getMemorySizeFormatter() {
-        return memorySizeFormatter;
+    public NTextFormat<Number> getMemorySizeFormatter() {
+        return NTextFormat.ofBytes(memorySizeFormatter);
     }
 
-    public MathsConfig setMemorySizeFormatter(BytesSizeFormat memorySizeFormatter) {
+    public MathsConfig setMemorySizeFormatter(String memorySizeFormatter) {
         this.memorySizeFormatter = memorySizeFormatter;
         return this;
     }
 
-    public MetricFormat getMetricFormatter() {
-        return metricFormatter;
+    public NTextFormat<Number> getMetricFormatter() {
+        return NTextFormat.ofDistance(memorySizeFormatter);
     }
 
-    public MathsConfig setMetricFormatter(MetricFormat metricFormatter) {
+    public MathsConfig setMetricFormatter(String metricFormatter) {
         this.metricFormatter = metricFormatter;
         return this;
     }
@@ -267,7 +268,7 @@ public final class MathsConfig {
         return this;
     }
 
-    public <T> MatrixFactory<T> getComplexMatrixFactory(TypeName<T> baseType) {
+    public <T> MatrixFactory<T> getComplexMatrixFactory(NTypeName<T> baseType) {
         MatrixFactory<T> r = null;
         if (baseType == Maths.$EXPR) {
             r = (MatrixFactory<T>) exprMatrixFactory;
@@ -541,32 +542,29 @@ public final class MathsConfig {
     }
 
     public String replaceVars(String format) {
-        return StringUtils.replaceDollarPlaceHolders(format, new StringConverter() {
-            @Override
-            public String convert(String key) {
-                String val = System.getProperty(key);
-                if (val == null) {
-                    switch (key) {
-                        case "cache.root": {
-                            val = getRootCachePath(true);
-                            break;
-                        }
-                        case "cache.folder": {
-                            val = getCacheFolder();
-                            break;
-                        }
-                        case "cache.large-matrix": {
-                            val = getLargeMatrixCachePath(true);
-                            break;
-                        }
-                        default: {
-                            val = "${" + key + "}";
-                        }
+        return NMsg.ofV(format, (Function<String, Object>) key -> {
+            String val = System.getProperty(key);
+            if (val == null) {
+                switch (key) {
+                    case "cache.root": {
+                        val = getRootCachePath(true);
+                        break;
+                    }
+                    case "cache.folder": {
+                        val = getCacheFolder();
+                        break;
+                    }
+                    case "cache.large-matrix": {
+                        val = getLargeMatrixCachePath(true);
+                        break;
+                    }
+                    default: {
+                        val = "${" + key + "}";
                     }
                 }
-                return val;
             }
-        });
+            return val;
+        }).toString();
     }
 
     public int getMatrixBlockPrecision() {
@@ -631,11 +629,11 @@ public final class MathsConfig {
         return exprCubeFactory;
     }
 
-    public DoubleFormat getPercentFormat() {
+    public NTextFormat<Number> getPercentFormat() {
         return percentFormat;
     }
 
-    public DoubleFormat getDoubleFormat() {
+    public NTextFormat<Number> getDoubleFormat() {
         return defaultDblFormat;
     }
 
@@ -651,8 +649,8 @@ public final class MathsConfig {
     }
 
     public NElements getElements() {
-        if(elemsStore==null){
-            elemsStore=NElements.of();
+        if (elemsStore == null) {
+            elemsStore = NElements.of();
         }
         return elemsStore;
     }

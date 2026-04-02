@@ -4,9 +4,9 @@
  */
 package net.thevpc.scholar.hadruplot.libraries.simple;
 
+import net.thevpc.nuts.math.NDoubleRange;
+import net.thevpc.nuts.util.NArrays;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotModel;
-import net.thevpc.common.util.ArrayUtils;
-import net.thevpc.common.util.MinMax;
 import net.thevpc.scholar.hadruplot.libraries.simple.curve.Curve;
 import net.thevpc.scholar.hadruplot.libraries.simple.curve.CurveStat;
 import net.thevpc.scholar.hadruplot.util.PlotUtils;
@@ -40,7 +40,7 @@ public class PlotCanvasCurveSimple extends JPanel implements PlotComponentPanel 
                 xAxis = new double[0][];
                 yAxis = new double[0][];
             } else {
-                double[] xx = ArrayUtils.dtimes(1.0, yAxis[0].length, yAxis[0].length);
+                double[] xx = NArrays.linear(1.0, yAxis[0].length, yAxis[0].length);
                 xAxis = new double[yAxis.length][];
                 for (int i = 0; i < yAxis.length; i++) {
                     xAxis[i] = xx;
@@ -48,8 +48,8 @@ public class PlotCanvasCurveSimple extends JPanel implements PlotComponentPanel 
             }
         }
         ArrayList<Curve> cc = new ArrayList<Curve>();
-        MinMax x_minmax = new MinMax();
-        MinMax y_minmax = new MinMax();
+        NDoubleRange x_minmax = NDoubleRange.of();
+        NDoubleRange y_minmax = NDoubleRange.of();
         //        double[][] zValues=getZ();
         for (int i = 0; i < yAxis.length; i++) {
             if (ytitles != null && ytitles.length > i) {
@@ -62,8 +62,8 @@ public class PlotCanvasCurveSimple extends JPanel implements PlotComponentPanel 
             for (int k = 0; k < yAxis[i].length; k++) {
                 double yf = yAxis[i][k];
                 double xf = (xAxis.length <= i ? xAxis[xAxis.length - 1] : xAxis[i])[k];
-                x_minmax.registerValue(xf);
-                y_minmax.registerValue(yf);
+                x_minmax.add(xf);
+                y_minmax.add(yf);
                 xxf[k] = xf;
                 yyf[k] = yf;
             }

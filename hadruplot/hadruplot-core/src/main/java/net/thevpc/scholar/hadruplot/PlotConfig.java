@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadruplot;
 
-import net.thevpc.common.collections.ClassMap;
+import net.thevpc.nuts.reflect.NClassMap;
 import net.thevpc.scholar.hadruplot.console.PlotManager;
 
 import java.util.function.Function;
@@ -127,7 +127,7 @@ public class PlotConfig {
 
     private int maxLegendCount = 20;
     private String defaultWindowTitle = "Hadrumaths Plot";
-    private ClassMap<Function> objectConverters = new ClassMap<Function>(Object.class, Function.class);
+    private NClassMap<Object,Function> objectConverters = NClassMap.of(Object.class, Function.class);
     private PlotManager manager = null;
 
     public PlotManager getManager() {

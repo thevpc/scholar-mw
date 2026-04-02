@@ -1,12 +1,12 @@
 package net.thevpc.scholar.hadruplot.console;
 
 import net.thevpc.common.mon.AbstractProgressMonitor;
-import net.thevpc.common.util.DoubleFormat;
 
 import java.util.Date;
 import net.thevpc.common.msg.Message;
 import net.thevpc.nuts.log.NLogger;
 import net.thevpc.nuts.text.NMsg;
+import net.thevpc.nuts.text.NTextFormat;
 
 public class PlotConsoleLogProgressMonitor extends AbstractProgressMonitor {
     private double progress;
@@ -42,12 +42,12 @@ public class PlotConsoleLogProgressMonitor extends AbstractProgressMonitor {
 
     public void setMessageImpl(Message message) {
         this.message=message;
-        DoubleFormat sdf = PlotConfigManager.Config.dblformat("%");
+        NTextFormat<Number> sdf = PlotConfigManager.Config.dblformat("%");
         long newd = System.currentTimeMillis();
         String formattedMessage = messageFormat
                 .replace("%date%", new Date(newd).toString())
                 .replace("%value%", Double.isNaN(progress) ? "   ?%" :
-                        sdf==null?String.valueOf(progress):sdf.formatDouble(progress)
+                        sdf==null?String.valueOf(progress):sdf.toString(progress)
                 )
                 + " " + message;
         if (progress <= 0 || progress >= 1) {

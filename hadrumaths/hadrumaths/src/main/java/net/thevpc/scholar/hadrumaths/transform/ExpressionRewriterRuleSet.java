@@ -6,10 +6,10 @@
 package net.thevpc.scholar.hadrumaths.transform;
 
 
-import net.thevpc.common.collections.ClassMap;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.nuts.io.NErr;
+import net.thevpc.nuts.reflect.NClassMap;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.FormatFactory;
 import net.thevpc.scholar.hadrumaths.Maths;
@@ -35,7 +35,7 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
 //    public static int DEBUG_REWRITE_SUCCESS=0;
 //    public static int DEBUG_REWRITE_FAIL=0;
     public List<ExpressionRewriterRule> rules = new ArrayList<ExpressionRewriterRule>();
-    public ClassMap<List<ExpressionRewriterRule>> mapRules = new ClassMap<List<ExpressionRewriterRule>>(Expr.class, (Class) List.class);
+    public NClassMap<Expr,List<ExpressionRewriterRule>> mapRules = NClassMap.of(Expr.class, (Class) List.class);
     public Map<Class, List<ExpressionRewriterRule>> cachedMapRules = new HashMap<Class, List<ExpressionRewriterRule>>();
     public ExpressionRewriterRule fallbackRule = ExprNavRule.INSTANCE;
     public List<ExpressionRuleSource> sources = new ArrayList<>();
@@ -268,7 +268,7 @@ public class ExpressionRewriterRuleSet extends AbstractExpressionRewriter {
         if (list == null) {
             //should be cached!
             list = new ArrayList<ExpressionRewriterRule>();
-            for (List<ExpressionRewriterRule> ruleList : mapRules.getAll(cls)) {
+            for (List<ExpressionRewriterRule> ruleList : mapRules.findMatches(cls)) {
                 list.addAll(ruleList);
             }
             cachedMapRules.put(cls, list);

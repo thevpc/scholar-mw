@@ -12,6 +12,7 @@ import net.thevpc.common.props.impl.DefaultPropertyListeners;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NElementWriter;
 import net.thevpc.nuts.elem.NObjectElementBuilder;
+import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurations;
 import net.thevpc.scholar.hadruwaves.project.parameter.HWParameterValue;
@@ -21,7 +22,6 @@ import net.thevpc.scholar.hadruwaves.project.scene.HWMaterialTemplate;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import net.thevpc.common.strings.StringUtils;
 
 
 import net.thevpc.scholar.hadruwaves.Material;
@@ -302,14 +302,14 @@ public class DefaultHWProject extends AbstractHWSolutionElement implements HWPro
     @Override
     public boolean isPersistent() {
         String s = filePath().get();
-        return !StringUtils.isBlank(s) && new File(s).isFile();
+        return !NBlankable.isBlank(s) && new File(s).isFile();
     }
 
     public HWProjectFileState resolveProjectFileState(String path) {
         if (path == null) {
             return HWProjectFileState.INVALID;
         }
-        if (StringUtils.isBlank(path)) {
+        if (NBlankable.isBlank(path)) {
             return HWProjectFileState.INVALID;
         }
         File f = new File(path);

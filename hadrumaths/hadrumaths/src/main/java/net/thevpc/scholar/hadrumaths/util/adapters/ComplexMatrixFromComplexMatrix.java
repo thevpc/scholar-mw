@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths.util.adapters;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 import net.thevpc.scholar.hadrumaths.*;
 
 import java.util.function.Function;
@@ -43,7 +43,7 @@ public class ComplexMatrixFromComplexMatrix<R> extends AbstractComplexMatrix imp
     }
 
     @Override
-    public <R> Matrix<R> to(TypeName<R> other) {
+    public <R> Matrix<R> to(NTypeName<R> other) {
         if (other.equals(getComponentType())) {
             return (Matrix<R>) this;
         }
@@ -51,7 +51,7 @@ public class ComplexMatrixFromComplexMatrix<R> extends AbstractComplexMatrix imp
     }
 
     @Override
-    public TypeName<Complex> getComponentType() {
+    public NTypeName<Complex> getComponentType() {
         return Maths.$COMPLEX;
     }
 

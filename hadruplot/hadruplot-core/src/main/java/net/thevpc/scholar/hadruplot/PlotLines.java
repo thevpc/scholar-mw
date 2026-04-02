@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadruplot;
 
-import net.thevpc.common.util.ArrayUtils;
-import net.thevpc.common.collections.DoubleArrayList;
-import net.thevpc.common.util.TypeReference;
+import net.thevpc.nuts.reflect.NTypeReference;
+import net.thevpc.nuts.util.NArrays;
+import net.thevpc.nuts.util.NDoubleArrayList;
 import net.thevpc.scholar.hadruplot.console.PlotConfigManager;
 import net.thevpc.scholar.hadruplot.util.PlotUtils;
 
@@ -34,7 +34,7 @@ public class PlotLines {
             yy = new Object[]{anyYvalues};
         }
         if (xx == null) {
-            xx = ArrayUtils.box(ArrayUtils.dsteps(0, yy.length - 1));
+            xx = NArrays.box(NArrays.range(0, yy.length - 1));
         }
         if (xx.length != yy.length) {
             throw new IllegalArgumentException("Length des not match");
@@ -62,7 +62,7 @@ public class PlotLines {
     }
 
     public double[] xsamples() {
-        DoubleArrayList d = new DoubleArrayList(xvalues.size());
+        NDoubleArrayList d = new NDoubleArrayList(xvalues.size());
         for (Double xvalue : xvalues) {
             d.add(xvalue == null ? Double.NaN : xvalue);
         }
@@ -412,7 +412,7 @@ public class PlotLines {
     }
 
     public static class PlotPoint {
-        public static final TypeReference<PlotPoint> $TYPE = new TypeReference<PlotPoint>() {
+        public static final NTypeReference<PlotPoint> $TYPE = new NTypeReference<PlotPoint>() {
         };
         private String title;
         private double x;

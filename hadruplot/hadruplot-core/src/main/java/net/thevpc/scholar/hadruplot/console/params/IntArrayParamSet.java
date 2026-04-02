@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadruplot.console.params;
 
-import net.thevpc.common.util.ArrayUtils;
-import net.thevpc.common.util.IndexSelectionStrategy;
+import net.thevpc.nuts.math.NIndexSelectionStrategy;
+import net.thevpc.nuts.util.NArrays;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -20,11 +20,11 @@ public class IntArrayParamSet extends ParamSet<Integer> implements Cloneable {
     }
 
     public IntArrayParamSet(CParam configurator, int min, int max, int times) {
-        this(configurator, ArrayUtils.itimes(min, max, times));
+        this(configurator, NArrays.linear(min, max, times));
     }
 
     public IntArrayParamSet(CParam configurator, int min, int max, double step) {
-        this(configurator, ArrayUtils.isteps(min, max, (int) step));
+        this(configurator, NArrays.range(min, max, (int) step));
     }
 
     public IntArrayParamSet(CParam configurator, int[] values) {
@@ -44,17 +44,17 @@ public class IntArrayParamSet extends ParamSet<Integer> implements Cloneable {
     }
 
     public IntArrayParamSet itimes(int min, int max, int times) {
-        values = net.thevpc.common.util.ArrayUtils.itimes(min, max, times);
+        values = NArrays.linear(min, max, times);
         return this;
     }
 
-    public IntArrayParamSet itimes(int min, int max, int times, int maxTimes, IndexSelectionStrategy strategy) {
-        values = net.thevpc.common.util.ArrayUtils.itimes(min, max, times, maxTimes, strategy);
+    public IntArrayParamSet itimes(int min, int max, int times, int maxTimes, NIndexSelectionStrategy strategy) {
+        values = NArrays.linear(min, max, times, maxTimes, strategy);
         return this;
     }
 
     public IntArrayParamSet isteps(int min, int max, int step) {
-        values = net.thevpc.common.util.ArrayUtils.isteps(min, max, step);
+        values = NArrays.range(min, max, step);
         return this;
     }
 

@@ -700,7 +700,7 @@ public class PersistenceCacheImpl implements PersistenceCache {
                                     if (momCache != null) {
                                         return null;
                                     }
-                                    NChronometer c = NChronometer.startNow();
+                                    NChronometer c = NChronometer.of();
                                     try {
                                         value = (T) momCache.load(cacheItemName, null);
                                     } catch (Exception e) {

@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadruplot.console.params;
 
-import net.thevpc.common.util.ArrayUtils;
+import net.thevpc.nuts.util.NArrays;
 
 
 public class XParamSet extends DoubleArrayParamSet implements Cloneable {
@@ -29,9 +29,9 @@ public class XParamSet extends DoubleArrayParamSet implements Cloneable {
 
     public XParamSet(int x, int y, int z) {
         this(
-                ArrayUtils.dtimes(0.0, 1.0, x),
-                ArrayUtils.dtimes(0.0, 1.0, y),
-                ArrayUtils.dtimes(0.0, 1.0, z)
+                NArrays.linear(0.0, 1.0, x),
+                NArrays.linear(0.0, 1.0, y),
+                NArrays.linear(0.0, 1.0, z)
         );
     }
 

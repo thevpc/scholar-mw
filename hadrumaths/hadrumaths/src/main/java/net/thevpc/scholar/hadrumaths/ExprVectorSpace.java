@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 import net.thevpc.scholar.hadrumaths.symbolic.ExprNarrowException;
 import net.thevpc.scholar.hadrumaths.symbolic.ExprType;
 import net.thevpc.scholar.hadrumaths.symbolic.conv.Imag;
@@ -80,7 +80,7 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
 //    }
 
     @Override
-    public TypeName<Expr> getItemType() {
+    public NTypeName<Expr> getItemType() {
         return Maths.$EXPR;
     }
 
@@ -476,7 +476,7 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
     }
 
     @Override
-    public <R> boolean is(Expr value, TypeName<R> type) {
+    public <R> boolean is(Expr value, NTypeName<R> type) {
         if (Maths.$EXPR.equals(type)) {
             return true;
         }

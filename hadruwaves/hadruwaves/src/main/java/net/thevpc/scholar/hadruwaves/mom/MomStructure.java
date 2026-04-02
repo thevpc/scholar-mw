@@ -959,7 +959,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
     }
 
     public long getExecutionTime(String type) {
-        NChronometer chrono = NChronometer.startNow();
+        NChronometer chrono = NChronometer.of();
         if (CACHE_SRCGP.equals(type)) {
             getTestSourceScalarProducts();//insure it is calculated
         } else if (CACHE_FNGP.equals(type)) {
@@ -979,7 +979,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
         if (getPersistentCache().isEnabled()) {
             return getCurrentCache(true).getStat(type);
         } else {
-            return chrono.getTime();
+            return chrono.getDurationMs();
         }
     }
 

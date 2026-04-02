@@ -1,13 +1,16 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.PlatformUtils;
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NReflectUtils;
+import net.thevpc.nuts.reflect.NTypeName;
+import net.thevpc.nuts.reflect.NTypeNameDomain;
+import net.thevpc.nuts.reflect.NTypeNamePlatformDomain;
 import net.thevpc.scholar.hadrumaths.symbolic.ExprType;
 import net.thevpc.scholar.hadrumaths.symbolic.double2complex.CDiscrete;
 import net.thevpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
 import net.thevpc.scholar.hadrumaths.symbolic.polymorph.Any;
 import net.thevpc.scholar.hadrumaths.symbolic.polymorph.num.Mul;
 import net.thevpc.scholar.hadrumaths.symbolic.polymorph.num.Plus;
+import net.thevpc.scholar.hadrumaths.util.PlatformUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -16,9 +19,9 @@ import java.util.Queue;
 
 class MathsExpr {
     public static Vector<Expr> edotmul(Vector<Expr>... arr) {
-        TypeName cls = arr[0].getComponentType();
+        NTypeName cls = arr[0].getComponentType();
         for (int i = 0; i < arr.length; i++) {
-            cls = PlatformUtils.lowestCommonAncestor(cls, arr[i].getComponentType());
+            cls = NReflectUtils.lowestCommonAncestor(cls, arr[i].getComponentType(), NTypeNamePlatformDomain.of());
         }
         VectorSpace<Expr> componentVectorSpace = Maths.getVectorSpace(cls);
         return new ReadOnlyVector<Expr>(arr[0].getComponentType(), arr[0].isRow(), new VectorModel<Expr>() {
@@ -59,11 +62,11 @@ class MathsExpr {
         });
     }
 
-    public static <T> T sum(TypeName<T> type, T... arr) {
-        if (Maths.$COMPLEX.isAssignableFrom(type)) {
+    public static <T> T sum(NTypeName<T> type, T... arr) {
+        if (NTypeNamePlatformDomain.of().isAssignableFrom(Maths.$COMPLEX,type)) {
             return (T) sum((Complex[]) arr);
         }
-        if (Maths.$EXPR.isAssignableFrom(type)) {
+        if (NTypeNamePlatformDomain.of().isAssignableFrom(Maths.$EXPR,type)) {
             return (T) sum((Expr[]) arr);
         }
         VectorSpace<T> s = Maths.getVectorSpace(type);
@@ -119,15 +122,15 @@ class MathsExpr {
         return Plus.of(all.toArray(new Expr[0]));
     }
 
-    public static <T> T sum(TypeName<T> type, int size, VectorCell<T> arr) {
+    public static <T> T sum(NTypeName<T> type, int size, VectorCell<T> arr) {
         return sum(type, new VectorModelFromCell<>(size, arr));
     }
 
-    public static <T> T sum(TypeName<T> type, VectorModel<T> arr) {
-        if (Maths.$COMPLEX.isAssignableFrom(type)) {
+    public static <T> T sum(NTypeName<T> type, VectorModel<T> arr) {
+        if (NTypeNamePlatformDomain.of().isAssignableFrom(Maths.$COMPLEX,type)) {
             return (T) Maths.csum((VectorModel<Complex>) arr);
         }
-        if (Maths.$EXPR.isAssignableFrom(type)) {
+        if (NTypeNamePlatformDomain.of().isAssignableFrom(Maths.$EXPR,type)) {
             return (T) esum((VectorModel<Expr>) arr);
         }
         VectorSpace<T> s = Maths.getVectorSpace(type);
@@ -172,11 +175,11 @@ class MathsExpr {
         return Plus.of(all.toArray(new Expr[0]));
     }
 
-    public static <T> T mul(TypeName<T> type, T... arr) {
-        if (Maths.$COMPLEX.isAssignableFrom(type)) {
+    public static <T> T mul(NTypeName<T> type, T... arr) {
+        if (NTypeNamePlatformDomain.of().isAssignableFrom(Maths.$COMPLEX,type)) {
             return (T) mul((Complex[]) arr);
         }
-        if (Maths.$EXPR.isAssignableFrom(type)) {
+        if (NTypeNamePlatformDomain.of().isAssignableFrom(Maths.$EXPR,type)) {
             return (T) mul((Expr[]) arr);
         }
         VectorSpace<T> s = Maths.getVectorSpace(type);
@@ -252,11 +255,11 @@ class MathsExpr {
         return Mul.of(all.toArray(new Expr[0]));
     }
 
-    public static <T> T mul(TypeName<T> type, VectorModel<T> arr) {
-        if (Maths.$COMPLEX.isAssignableFrom(type)) {
+    public static <T> T mul(NTypeName<T> type, VectorModel<T> arr) {
+        if (NTypeNamePlatformDomain.of().isAssignableFrom(Maths.$COMPLEX,type)) {
             return (T) cmul((VectorModel<Complex>) arr);
         }
-        if (Maths.$EXPR.isAssignableFrom(type)) {
+        if (NTypeNamePlatformDomain.of().isAssignableFrom(Maths.$EXPR,type)) {
             return (T) emul((VectorModel<Expr>) arr);
         }
         VectorSpace<T> s = Maths.getVectorSpace(type);

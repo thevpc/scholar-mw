@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths.srv.socket;
 
-import net.thevpc.common.io.IOUtils;
+import net.thevpc.nuts.io.NIOUtils;
 import net.thevpc.scholar.hadrumaths.io.HFile;
 import net.thevpc.scholar.hadrumaths.io.HFileSystem;
 import net.thevpc.scholar.hadrumaths.srv.FSConstants;
@@ -51,7 +51,7 @@ public class FSSocketServlet extends AbstractHSocketServlet {
                         success(out);
                         out.writeLong(file.length());
                         try (InputStream is = file.getInputStream()) {
-                            IOUtils.copy(is, out, 1024 * 1024);
+                            NIOUtils.copy(is, out, 1024 * 1024);
                         }
                     } else {
                         error("Not a folder", out);

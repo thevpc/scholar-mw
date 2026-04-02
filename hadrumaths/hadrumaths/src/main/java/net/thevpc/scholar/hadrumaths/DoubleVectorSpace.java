@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 
 public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 //    @Override
@@ -50,7 +50,7 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
 //    }
 
     @Override
-    public TypeName<Double> getItemType() {
+    public NTypeName<Double> getItemType() {
         return Maths.$DOUBLE;
     }
 
@@ -269,7 +269,7 @@ public class DoubleVectorSpace extends AbstractVectorSpace<Double> {
     }
 
     @Override
-    public <R> boolean is(Double value, TypeName<R> type) {
+    public <R> boolean is(Double value, NTypeName<R> type) {
         if (Maths.$COMPLEX.equals(type) || Maths.$EXPR.equals(type) || Maths.$DOUBLE.equals(type)) {
             return true;
         }

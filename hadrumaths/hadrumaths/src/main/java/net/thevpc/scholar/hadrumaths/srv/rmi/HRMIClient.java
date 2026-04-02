@@ -68,7 +68,7 @@ public class HRMIClient implements HadrumathsClient {
     @Override
     public long ping() {
         long ret = -1;
-        NChronometer c = NChronometer.startNow();
+        NChronometer c = NChronometer.of();
         try {
             remote.ping();
             ret = c.stop().getDurationMs();

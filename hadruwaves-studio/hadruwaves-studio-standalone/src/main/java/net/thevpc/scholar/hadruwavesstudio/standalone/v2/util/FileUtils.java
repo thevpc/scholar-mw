@@ -6,7 +6,6 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.util;
 
 import java.io.File;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  *

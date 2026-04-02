@@ -1,6 +1,8 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
+import net.thevpc.nuts.reflect.NTypeNameDomain;
+import net.thevpc.nuts.reflect.NTypeNamePlatformDomain;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
@@ -43,7 +45,7 @@ public class DefaultMatrix<T> extends AbstractMatrix<T> implements Serializable 
     }
 
     private T[] newArr(int rows) {
-        return (T[]) Array.newInstance(vs.getItemType().getTypeClass(), rows);
+        return (T[]) Array.newInstance(NTypeNamePlatformDomain.of().getTypeClass(vs.getItemType()), rows);
     }
 
     /**
@@ -553,7 +555,7 @@ public class DefaultMatrix<T> extends AbstractMatrix<T> implements Serializable 
     }
 
     private T[][] newArr(int rows, int cols) {
-        return (T[][]) Array.newInstance(vs.getItemType().getTypeClass(), rows, cols);
+        return (T[][]) Array.newInstance(NTypeNamePlatformDomain.of().getTypeClass(vs.getItemType()), rows, cols);
     }
 
     @Override
@@ -1095,7 +1097,7 @@ public class DefaultMatrix<T> extends AbstractMatrix<T> implements Serializable 
     }
 
     @Override
-    public TypeName<T> getComponentType() {
+    public NTypeName<T> getComponentType() {
         return vs.getItemType();
     }
 }

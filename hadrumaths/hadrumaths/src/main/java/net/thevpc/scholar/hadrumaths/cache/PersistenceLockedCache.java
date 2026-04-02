@@ -35,7 +35,7 @@ class PersistenceLockedCache<T> implements Callable<T> {
         boolean cacheEnabled = persistenceCache.isEnabled();
         long timeThresholdMilli = persistenceCache.getTaskTimeThreshold();
         if (cacheEnabled && cacheMode != CacheMode.WRITE_ONLY) {
-            NChronometer c = NChronometer.startNow();
+            NChronometer c = NChronometer.of();
             try {
                 oldValue = (T) objCache.load(cacheItemName, null);
                 if (oldValue != null) {
@@ -63,13 +63,13 @@ class PersistenceLockedCache<T> implements Callable<T> {
             ProgressMonitor storeMon=mons[2];
 
             evaluator.init(initMon);
-            NChronometer computeChrono = NChronometer.startNow();
+            NChronometer computeChrono = NChronometer.of();
             oldValue = (T) evaluator.evaluate(args, runMon);
             computeChrono.stop();
             if (objCache != null && cacheEnabled && cacheMode != CacheMode.READ_ONLY) {
                 long computeTime = computeChrono.getDurationMs();
                 if (computeTime >= persistenceCache.getMinimumTimeForCache()) {
-                    NChronometer storeChrono = NChronometer.startNow();
+                    NChronometer storeChrono = NChronometer.of();
                     objCache.store(cacheItemName, oldValue, storeMon);
                     storeChrono.stop();
                     persistenceCache.log().log(NMsg.ofC("[PersistenceCache] " + cacheItemName + " evaluated in " + computeChrono + " ; stored to disk in " + storeChrono + " (" + objCache.getObjectCacheFile(cacheItemName).getFile() + ")").asFineFail());
@@ -88,7 +88,7 @@ class PersistenceLockedCache<T> implements Callable<T> {
                             ))
                     );
                     if (persistenceCache.isLogLoadStatsEnabled()) {
-                        NChronometer loadChrono = NChronometer.startNow();
+                        NChronometer loadChrono = NChronometer.of();
                         try {
                             oldValue = (T) objCache.load(cacheItemName, null);
                         } catch (Exception e) {
@@ -105,7 +105,7 @@ class PersistenceLockedCache<T> implements Callable<T> {
                         if (longLoadNDetected) {
                             stat.add(NElement.ofPair("slowLoading", NElement.ofBoolean(true)));
                             persistenceCache.log().log(NMsg.ofC("[PersistenceCache] " + cacheItemName + " reloading took too long (" + loadChrono + " > " +
-                                    TimeDuration.ofMillis(timeThresholdMilli).truncatedToSeconds().toString() + ")").asWarning());
+                                    NDuration.ofMillis(timeThresholdMilli).truncatedToSeconds().toString() + ")").asWarning());
                         }
                     }
                     objCache.addStat(stat.build());

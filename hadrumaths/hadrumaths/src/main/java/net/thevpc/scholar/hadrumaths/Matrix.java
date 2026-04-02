@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 
 import java.io.*;
 
@@ -457,15 +457,15 @@ public interface Matrix<T> extends Normalizable, Serializable, Iterable<Vector<T
 
     Matrix<T> dotpow(T n);
 
-    TypeName getComponentType();
+    NTypeName<T> getComponentType();
 
     VectorSpace<T> getComponentVectorSpace();
 
     Matrix<T> copy();
 
-    <R> boolean isConvertibleTo(TypeName<R> type);
+    <R> boolean isConvertibleTo(NTypeName<R> type);
 
-    <R> Matrix<R> to(TypeName<R> other);
+    <R> Matrix<R> to(NTypeName<R> other);
 
     boolean isHermitian();
 

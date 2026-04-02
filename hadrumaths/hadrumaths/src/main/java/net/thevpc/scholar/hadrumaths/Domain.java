@@ -686,6 +686,7 @@ public abstract class Domain implements DoubleValue, DoubleToDouble, DoubleToDou
         }
     }
 
+
     /**
      * expand the domain to help including the given domain
      *
@@ -2532,5 +2533,37 @@ public abstract class Domain implements DoubleValue, DoubleToDouble, DoubleToDou
             }
         }
         return toString();
+    }
+
+    public Domain pad(double padding) {
+        return pad(padding, padding, padding);
+    }
+
+    public Domain pad(double x, double y) {
+        return pad(x, y, 0);
+    }
+
+    public Domain pad(double x, double y, double z) {
+        // Validation: padding must be non-negative or it's a "shrink"
+        // (You can allow negative for eroding the domain if intended)
+        switch (dimension()) {
+            case 1: {
+                return ofBounds(xmin() - x, xmax() + x);
+            }
+            case 2: {
+                return ofBounds(
+                        xmin() - x, xmax() + x,
+                        ymin() - y, ymax() + y
+                );
+            }
+            case 3: {
+                return ofBounds(
+                        xmin() - x, xmax() + x,
+                        ymin() - y, ymax() + y,
+                        zmin() - z, zmax() + z
+                );
+            }
+        }
+        throw new IllegalArgumentException("Unsupported dimension: " + dimension());
     }
 }

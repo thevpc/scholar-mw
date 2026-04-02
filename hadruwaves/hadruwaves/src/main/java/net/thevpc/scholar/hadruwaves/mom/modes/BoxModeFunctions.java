@@ -34,8 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.function.Function;
-import net.thevpc.common.collections.CollectionFilter;
-import net.thevpc.common.collections.CollectionUtils;
+import java.util.stream.Collectors;
 
 import static net.thevpc.scholar.hadrumaths.Expressions.*;
 import static net.thevpc.scholar.hadrumaths.Maths.*;
@@ -43,6 +42,7 @@ import static net.thevpc.scholar.hadruwaves.Physics.K0;
 import static net.thevpc.scholar.hadruwaves.Physics.omega;
 
 //import net.thevpc.scholar.tmwlib.mom.ProjectType;
+
 /**
  * FnBaseFunctions must be initialized fnBaseFunctions.setDomain(getDomain());
  * fnBaseFunctions.setFnMax(modeFunctionsCount());
@@ -58,8 +58,8 @@ import static net.thevpc.scholar.hadruwaves.Physics.omega;
  */
 public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeFunctions {
 
-    private static ModeInfoFilter[] MODE_INFO_FILTER_0 = new ModeInfoFilter[0];
-    private static ModeIndexFilter[] MODE_INDEX_FILTER_0 = new ModeIndexFilter[0];
+    private static final ModeInfoFilter[] MODE_INFO_FILTER_0 = new ModeInfoFilter[0];
+    private static final ModeIndexFilter[] MODE_INDEX_FILTER_0 = new ModeIndexFilter[0];
     public ObjectCacheResolver cacheResolver;
     protected ModeIterator modeIterator = new DefaultModeIterator();
     protected double cachedk0;
@@ -68,17 +68,17 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
     protected ModeInfo[] cachedModesPropagating;
     protected int cachedPropagatingModesCount = -1;
     private ModeInfo[] cachedIndexes;
-    private List<ModeInfo>[] cachedIndexesByModeType = new List[ModeType.values().length];
+    private final List<ModeInfo>[] cachedIndexesByModeType = new List[ModeType.values().length];
     private volatile DoubleToVector[] cachedFn = null;
     private volatile Complex[] cachedZn = null;
     private volatile Complex[] cachedYn = null;
-    private boolean complex = true;
+    private final boolean complex = true;
     private List<ModeInfoFilter> modeInfoFilters;
     private List<ModeIndexFilter> modeIndexFilters;
     private boolean hintInvertTETMForZmode;
     private ModeInfoComparator modeInfoComparator = CutoffModeComparator.INSTANCE;
     private boolean enableDefaultFunctionProperties;
-    private PropertyChangeSupport pcs;
+    private final PropertyChangeSupport pcs;
     private HintAxisType hintAxisType = HintAxisType.XY;
     private Axis hintInvariantAxis = null;
     private AxisXY hintSymmetryAxis = null;
@@ -98,7 +98,7 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
     protected Vector<Expr> lastScalarProductProductMatrixInput;
     protected NLogger logger;
 
-    private PropertyChangeListener cacheInvalidator = new PropertyChangeListener() {
+    private final PropertyChangeListener cacheInvalidator = new PropertyChangeListener() {
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
             BoxModeFunctions.this.invalidateCache();
@@ -114,20 +114,20 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
         return this;
     }
 
-    public static NOptional<ModeFunctions> parse(NElement element, Function<NElement,NElement> evaluator) {
-        if(element==null || element.isNull()){
+    public static NOptional<ModeFunctions> parse(NElement element, Function<NElement, NElement> evaluator) {
+        if (element == null || element.isNull()) {
             return NOptional.<ModeFunctions>ofNamedEmpty("modes").withDefault(BoxModeFunctions::new);
         }
-        if(element.isAnyObject()){
-            long modes =1024;
+        if (element.isAnyObject()) {
+            long modes = 1024;
             for (NElement a : element.asObject().get().children()) {
                 if (a.isNamedPair()) {
                     NPairElement p = a.asNamedPair().get();
                     switch (NNameFormat.LOWER_KEBAB_CASE.format(p.key().asStringValue().orElse(""))) {
                         case "count": {
                             NElement pv = p.value();
-                            if(evaluator!=null){
-                                pv=evaluator.apply(pv);
+                            if (evaluator != null) {
+                                pv = evaluator.apply(pv);
                             }
                             modes = pv.asLongValue().orElse(modes);
                             if (modes <= 0) {
@@ -140,7 +140,7 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
             }
             return NOptional.of(new BoxModeFunctions().setSize((int) modes));
         }
-        return NOptional.<ModeFunctions>ofError(NMsg.ofC("invalid modes")).withDefault(()->new BoxModeFunctions().setSize(1024));
+        return NOptional.<ModeFunctions>ofError(NMsg.ofC("invalid modes")).withDefault(() -> new BoxModeFunctions().setSize(1024));
     }
 
     public BoxModeFunctions() {
@@ -300,11 +300,11 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
     protected ModeInfo[] getIndexesImpl(ProgressMonitor monitor0) {
         monitor0 = createProgressMonitorNotNull(monitor0, "indexes");
         final int max = getSize();
-        NChronometer chrono = NChronometer.startNow();
+        NChronometer chrono = NChronometer.of();
         final ArrayList<ModeInfo> next = new ArrayList<ModeInfo>(max);
         final Iterator<ModeIndex> iterator = getModeIterator().iterator(this);
         ProgressMonitor monitor = ProgressMonitors.incremental(monitor0, max);
-        String str = toString() + ", enumerate modes";
+        String str = this + ", enumerate modes";
         final String message = str + " {0,number,#}/{1,number,#}";
 
         Maths.invokeMonitoredAction(monitor, str, new VoidMonitoredAction() {
@@ -491,7 +491,7 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
         return getModes().length;
     }
 
-//    @Override
+    //    @Override
     public int count(ProgressMonitor monitor) {
         return getModes(monitor).length;
     }
@@ -602,7 +602,7 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
     @Override
     public synchronized DoubleToVector[] arr(ProgressMonitor monitor) {
         if (cachedFn != null) {
-            if(monitor!=null){
+            if (monitor != null) {
                 monitor.terminate("mode functions loaded");
             }
             return cachedFn;
@@ -748,7 +748,7 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
     @Override
     public String toString() {
         String p = getEnv().getBorders().toString();
-        String sfx = (p.indexOf('p') >= 0) ? ("[Polarization" + polarization + "]" + (xphase != 0 ? ("[alphax=" + String.valueOf(xphase) + "]") : "") + (yphase != 0 ? ("[alphax=" + String.valueOf(yphase) + "]") : "")) : "";
+        String sfx = (p.indexOf('p') >= 0) ? ("[Polarization" + polarization + "]" + (xphase != 0 ? ("[alphax=" + xphase + "]") : "") + (yphase != 0 ? ("[alphax=" + yphase + "]") : "")) : "";
         return "BoxModes[" + p + "]" + sfx;
     }
 
@@ -877,24 +877,16 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
         int modeOrdinal = mode.ordinal();
         List<ModeInfo> modeInfos = cachedIndexesByModeType[modeOrdinal];
         if (modeInfos == null) {
-            cachedIndexesByModeType[modeOrdinal] = modeInfos = Collections.unmodifiableList(CollectionUtils.filter(Arrays.asList(getModes(monitor)), new CollectionFilter<ModeInfo>() {
-                @Override
-                public boolean accept(ModeInfo modeInfo, int baseIndex, Collection<ModeInfo> list) {
-                    return modeInfo.mode.mtype == mode;
-                }
-            }));
+            cachedIndexesByModeType[modeOrdinal] = modeInfos = Collections.unmodifiableList(
+                    Arrays.stream(getModes(monitor)).filter(modeInfo -> modeInfo.mode.mtype == mode).collect(Collectors.toList())
+            );
         }
         return modeInfos;
     }
 
     @Override
     public synchronized List<DoubleToVector> getFunctions(final ModeType mode, ProgressMonitor monitor) {
-        return CollectionUtils.convert(getModes(mode, monitor), new Function<ModeInfo, DoubleToVector>() {
-            @Override
-            public DoubleToVector apply(ModeInfo value) {
-                return value.fn;
-            }
-        });
+        return getModes(mode, monitor).stream().map(value -> value.fn).collect(Collectors.toList());
     }
 
     @Override
@@ -944,7 +936,7 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
                         : new ModeIndex[]{_cachedIndexes[0].mode};
                 final HashSet<ModeIndex> propagativeModesSet = new HashSet<ModeIndex>(Arrays.asList(propagativeModes));
                 final ProgressMonitor mon2 = mons[1];//ProgressMonitors.createIncrementalMonitor(mons[1], _cacheSize);
-                final String message = toString() + ", evaluate mode properties";
+                final String message = this + ", evaluate mode properties";
                 final String str = toString();
                 Maths.invokeMonitoredAction(mon2, message, new VoidMonitoredAction() {
                     @Override
@@ -1254,7 +1246,7 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
         return false;
     }
 
-//    @Override
+    //    @Override
 //    public Dumper getDumpStringHelper() {
 //        return getDumpStringHelper(true, true);
 //    }
@@ -1323,7 +1315,7 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
         return h.build();
     }
 
-//    public Dumper getDumpStringHelper(boolean includeFreq, boolean includeSize) {
+    //    public Dumper getDumpStringHelper(boolean includeFreq, boolean includeSize) {
 //        Dumper h = new Dumper(this);
 //
 //        return h;
@@ -1575,12 +1567,12 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
 
             @Override
             public Object evaluate(Object[] args, ProgressMonitor cacheMonitor) {
-                ProgressMonitor[] mons = monitor.split(1,9);
+                ProgressMonitor[] mons = monitor.split(1, 9);
                 ComplexVector found = loadCacheScalarProduct(finalDd, testFunction, objectCache, currentCount, mons[0]);
                 if (found == null) {
-                    ProgressMonitor[] mons2 = mons[1].split(1,9);
+                    ProgressMonitor[] mons2 = mons[1].split(1, 9);
                     found = scalarProduct0(finalDd, testFunction, arr(mons2[0]), mons[1]);
-                }else{
+                } else {
                     mons[1].terminate();
                 }
                 return found;

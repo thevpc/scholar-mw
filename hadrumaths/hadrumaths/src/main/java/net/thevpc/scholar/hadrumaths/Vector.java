@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 import net.thevpc.scholar.hadrumaths.symbolic.Param;
 
 import java.io.File;
@@ -20,7 +20,7 @@ public interface Vector<T> extends Normalizable, Iterable<T>, VectorModel<T>, HS
 
     Vector<T> eval(VectorOp<T> op);
 
-    <R> Vector<R> transform(TypeName<R> toType, VectorTransform<T, R> op);
+    <R> Vector<R> transform(NTypeName<R> toType, VectorTransform<T, R> op);
 
     Vector<T> copy(CopyStrategy strategy);
 
@@ -49,7 +49,7 @@ public interface Vector<T> extends Normalizable, Iterable<T>, VectorModel<T>, HS
     Vector<T> rscalarProduct(T other);
 
 
-    <R> Vector<R> to(TypeName<R> other);
+    <R> Vector<R> to(NTypeName<R> other);
 
 
     Vector<T> vscalarProduct(Vector<T>... other);
@@ -206,7 +206,7 @@ public interface Vector<T> extends Normalizable, Iterable<T>, VectorModel<T>, HS
     /////
 
 
-    TypeName<T> getComponentType();
+    NTypeName<T> getComponentType();
 
     VectorSpace<T> getComponentVectorSpace();
 
@@ -264,7 +264,7 @@ public interface Vector<T> extends Normalizable, Iterable<T>, VectorModel<T>, HS
 
     T scalarProductAll(Vector<T>... other);
 
-    <R> boolean isConvertibleTo(TypeName<R> other);
+    <R> boolean isConvertibleTo(NTypeName<R> other);
 
 
     Vector<T> rem(Vector<T> other);
@@ -305,7 +305,7 @@ public interface Vector<T> extends Normalizable, Iterable<T>, VectorModel<T>, HS
     boolean isZero();
 
 
-    <R> boolean acceptsType(TypeName<R> type);
+    <R> boolean acceptsType(NTypeName<R> type);
 
 
     void forEachIndex(VectorAction<T> action);

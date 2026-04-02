@@ -1,10 +1,11 @@
 package net.thevpc.scholar.hadrumaths.plot.random;
 
+import net.thevpc.nuts.reflect.NClassMultiMap;
+import net.thevpc.nuts.util.NDecision;
+import net.thevpc.nuts.util.NDecisionFilter;
 import net.thevpc.scholar.hadrumaths.geom.Polygon;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceExprType;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
-import net.thevpc.common.collections.AcceptDenyEnumSet;
-import net.thevpc.common.collections.ClassMapList;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.geom.Geometry;
 import net.thevpc.scholar.hadrumaths.geom.Point;
@@ -35,12 +36,12 @@ import java.util.function.Predicate;
 
 public class ExprRandomObjectGenerator extends RandomObjectGenerator<ExprRandomObjectGenerator> {
 
-    private ExprChecker checker;
+    private final ExprChecker checker;
     private boolean acceptInfDomain = true;
     private boolean acceptDomain1 = true;
     private boolean acceptDomain2 = true;
     private boolean acceptDomain3 = true;
-    private AcceptDenyEnumSet<ExprType> exprTypes = AcceptDenyEnumSet.of(ExprType.class);
+    private final NDecisionFilter<ExprType> exprTypes = NDecisionFilter.of(ExprType.class);
 
     public ExprRandomObjectGenerator(ExprChecker checker) {
         super(Expr.class);
@@ -72,7 +73,7 @@ public class ExprRandomObjectGenerator extends RandomObjectGenerator<ExprRandomO
                             break;
                         }
                     }
-                    if (!exprTypes.isAccept(e.getType())) {
+                    if (!exprTypes.accept(e.getType())) {
                         throw new GenerateException(object.getClass(), e.getType() + " is disabled");
                     }
                 }
@@ -135,7 +136,7 @@ public class ExprRandomObjectGenerator extends RandomObjectGenerator<ExprRandomO
 
                     List<Class> _objectClasses = new ArrayList<>();
                     for (Class x : findObjectClasses()) {
-                        if (context.getClsTypes().isAccept(x)) {
+                        if (context.getClsTypes().accept(x)) {
                             _objectClasses.add(x);
                         }
                     }
@@ -183,29 +184,29 @@ public class ExprRandomObjectGenerator extends RandomObjectGenerator<ExprRandomO
                         return m.invoke(null, Maths.X, 1);
                     }
                     if (asType.equals(DoubleToDouble.class)) {
-                        return (DoubleToDouble) m.invoke(null, randomObject(DoubleToDouble.class, null, context.decComplexity()), 1);
+                        return m.invoke(null, randomObject(DoubleToDouble.class, null, context.decComplexity()), 1);
                     }
                     if (asType.equals(DoubleToComplex.class)) {
-                        return (DoubleToComplex) m.invoke(null, randomObject(DoubleToComplex.class, null, context.decComplexity()), 1);
+                        return m.invoke(null, randomObject(DoubleToComplex.class, null, context.decComplexity()), 1);
                     }
                     if (asType.equals(DoubleToVector.class)) {
-                        return (DoubleToVector) m.invoke(null, randomObject(DoubleToVector.class, null, context.decComplexity()), 1);
+                        return m.invoke(null, randomObject(DoubleToVector.class, null, context.decComplexity()), 1);
                     }
                     if (asType.equals(DoubleToMatrix.class)) {
-                        return (DoubleToMatrix) m.invoke(null, randomObject(DoubleToMatrix.class, null, context.decComplexity()), 1);
+                        return m.invoke(null, randomObject(DoubleToMatrix.class, null, context.decComplexity()), 1);
                     }
                     return m.invoke(null, Maths.X, 1);
                 } catch (Exception e) {
-                    throw new NonRepeatableException(cls, "Cannot create " + cls.getSimpleName() + " as (" + asType.getSimpleName() + "):" + e.toString(), e);
+                    throw new NonRepeatableException(cls, "Cannot create " + cls.getSimpleName() + " as (" + asType.getSimpleName() + "):" + e, e);
                 }
             }
         });
 
         for (Class oneArgFunction : new Class[]{Abs.class, Acos.class, Acosh.class, Acotan.class, Arg.class,
-            Asin.class, Asinh.class, Atan.class, Conj.class, Cos.class, Cosh.class, Cotan.class, Cotanh.class,
-            Db.class, Db2.class, Exp.class, Inv.class, Log.class, Log10.class,
-            Sin.class, Sincard.class, Sinh.class, Sqr.class, Sqrt.class, Tan.class, Tanh.class,
-            Neg.class
+                Asin.class, Asinh.class, Atan.class, Conj.class, Cos.class, Cosh.class, Cotan.class, Cotanh.class,
+                Db.class, Db2.class, Exp.class, Inv.class, Log.class, Log10.class,
+                Sin.class, Sincard.class, Sinh.class, Sqr.class, Sqrt.class, Tan.class, Tanh.class,
+                Neg.class
         }) {
             register(oneArgFunction, new Generator() {
                 @Override
@@ -235,7 +236,7 @@ public class ExprRandomObjectGenerator extends RandomObjectGenerator<ExprRandomO
                     } catch (GenerateException e) {
                         throw e;
                     } catch (Exception e) {
-                        throw new NonRepeatableException(cls, "Cannot create " + cls.getSimpleName() + " as (" + asType.getSimpleName() + ")" + e.toString(), e);
+                        throw new NonRepeatableException(cls, "Cannot create " + cls.getSimpleName() + " as (" + asType.getSimpleName() + ")" + e, e);
                     }
                 }
 
@@ -256,7 +257,7 @@ public class ExprRandomObjectGenerator extends RandomObjectGenerator<ExprRandomO
                 } catch (GenerateException e) {
                     throw e;
                 } catch (Exception e) {
-                    throw new NonRepeatableException(cls, "Cannot create " + cls.getSimpleName() + " as (" + asType.getSimpleName() + ")" + e.toString(), e);
+                    throw new NonRepeatableException(cls, "Cannot create " + cls.getSimpleName() + " as (" + asType.getSimpleName() + ")" + e, e);
                 }
             }
         });
@@ -289,7 +290,7 @@ public class ExprRandomObjectGenerator extends RandomObjectGenerator<ExprRandomO
                     } catch (GenerateException e) {
                         throw e;
                     } catch (Exception e) {
-                        throw new NonRepeatableException(cls, "Cannot create " + cls.getSimpleName() + " as (" + asType.getSimpleName() + ") : " + e.toString(), e);
+                        throw new NonRepeatableException(cls, "Cannot create " + cls.getSimpleName() + " as (" + asType.getSimpleName() + ") : " + e, e);
                     }
                 }
 
@@ -490,203 +491,203 @@ public class ExprRandomObjectGenerator extends RandomObjectGenerator<ExprRandomO
         });
 
         register(Geometry.class, new Generator() {
-            @Override
-            public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
-                ClassMapList<InstanceValidator> filter2 = new ClassMapList<>(InstanceValidator.class);
-                filter2.add(Domain.class, new InstanceValidator() {
                     @Override
-                    public void checkValid(Object object, RandomObjectGeneratorContext context) {
-                        Domain o = (Domain) object;
-                        if (o.dimension() != 2) {
-                            throw new GenerateException(object.getClass(), "Required DomainXY for Geometry");
-                        }
-                        if (o.isInfinite()) {
-                            throw new GenerateException(object.getClass(), "Required Finite DomainXY for Geometry");
-                        }
+                    public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
+                        NClassMultiMap<Object, InstanceValidator> filter2 = NClassMultiMap.of(Object.class, InstanceValidator.class);
+                        filter2.add(Domain.class, new InstanceValidator() {
+                            @Override
+                            public void checkValid(Object object, RandomObjectGeneratorContext context) {
+                                Domain o = (Domain) object;
+                                if (o.dimension() != 2) {
+                                    throw new GenerateException(object.getClass(), "Required DomainXY for Geometry");
+                                }
+                                if (o.isInfinite()) {
+                                    throw new GenerateException(object.getClass(), "Required Finite DomainXY for Geometry");
+                                }
+                            }
+                        });
+                        Domain o = randomObject(Domain.class, null, context.setFilter(filter2));
+                        return o.toGeometry();
                     }
-                });
-                Domain o = randomObject(Domain.class, null, context.setFilter(filter2));
-                return o.toGeometry();
-            }
-        }
+                }
         );
         register(CustomCCFunctionXDefinition.class, new Generator() {
-            @Override
-            public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
-                return new CustomCCFunctionXDefinition("CustomCCX", new MyFunctionCCX());
-            }
-        }
+                    @Override
+                    public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
+                        return new CustomCCFunctionXDefinition("CustomCCX", new MyFunctionCCX());
+                    }
+                }
         );
         register(CustomCCFunctionXYDefinition.class, new Generator() {
-            @Override
-            public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
-                return new CustomCCFunctionXYDefinition("CustomCCXY", new MyFunctionCCXY());
-            }
-        }
+                    @Override
+                    public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
+                        return new CustomCCFunctionXYDefinition("CustomCCXY", new MyFunctionCCXY());
+                    }
+                }
         );
         register(CustomDDFunctionXDefinition.class, new Generator() {
-            @Override
-            public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
-                return new CustomDDFunctionXDefinition("CustomDDX", new MyCustomDDFunctionX());
-            }
-        }
+                    @Override
+                    public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
+                        return new CustomDDFunctionXDefinition("CustomDDX", new MyCustomDDFunctionX());
+                    }
+                }
         );
         register(CustomDDFunctionXYDefinition.class, new Generator() {
-            @Override
-            public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
-                return new CustomDDFunctionXYDefinition("CustomDDXY", new MyCustomDDFunctionXY());
-            }
-        }
+                    @Override
+                    public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
+                        return new CustomDDFunctionXYDefinition("CustomDDXY", new MyCustomDDFunctionXY());
+                    }
+                }
         );
         register(CustomDCFunctionXDefinition.class, new Generator() {
-            @Override
-            public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
-                return new CustomDCFunctionXDefinition("CustomDCX", new MyFunctionDCX());
-            }
-        }
+                    @Override
+                    public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
+                        return new CustomDCFunctionXDefinition("CustomDCX", new MyFunctionDCX());
+                    }
+                }
         );
         register(CustomDCFunctionXYDefinition.class, new Generator() {
-            @Override
-            public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
-                return new CustomDCFunctionXYDefinition("CustomDCXY", new MyFunctionDCXY());
-            }
-        }
+                    @Override
+                    public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
+                        return new CustomDCFunctionXYDefinition("CustomDCXY", new MyFunctionDCXY());
+                    }
+                }
         );
         register(Samples.class, new Generator() {
-            @Override
-            public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
-                switch (Maths.randomInt(1, 4)) {
-                    case 1:
-                        return Samples.relative(5);
-                    case 2:
-                        return Samples.relative(5, 5);
-                    case 3:
-                        return Samples.relative(5, 5, 5);
+                    @Override
+                    public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
+                        switch (Maths.randomInt(1, 4)) {
+                            case 1:
+                                return Samples.relative(5);
+                            case 2:
+                                return Samples.relative(5, 5);
+                            case 3:
+                                return Samples.relative(5, 5, 5);
+                        }
+                        throw new IllegalArgumentException("Unsupported " + cls);
+                    }
                 }
-                throw new IllegalArgumentException("Unsupported " + cls);
-            }
-        }
         );
         register(DIntegralXY.class, new Generator() {
-            @Override
-            public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
-                return new DQuadIntegralXY();
-            }
-        }
+                    @Override
+                    public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
+                        return new DQuadIntegralXY();
+                    }
+                }
         );
         register(Polygon.class, new Generator() {
-            @Override
-            public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
-                return GeometryFactory.createPolygon(new Point(0, 0), new Point(1, 0), new Point(1, 1));
-            }
-        }
+                    @Override
+                    public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
+                        return GeometryFactory.createPolygon(new Point(0, 0), new Point(1, 0), new Point(1, 1));
+                    }
+                }
         );
         register(Enum.class, new Generator() {
-            @Override
-            public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
-                return cls.getEnumConstants()[Maths.randomInt(cls.getEnumConstants().length)];
-            }
-        }
+                    @Override
+                    public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
+                        return cls.getEnumConstants()[Maths.randomInt(cls.getEnumConstants().length)];
+                    }
+                }
         );
         register(CustomDDFunctionXDefinition.class, new Generator() {
-            @Override
-            public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
-                return new CustomDDFunctionXDefinition("CustomDDX", new MyCustomDDFunctionX());
-            }
-        }
+                    @Override
+                    public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
+                        return new CustomDDFunctionXDefinition("CustomDDX", new MyCustomDDFunctionX());
+                    }
+                }
         );
         register(CustomDDFunctionXYDefinition.class, new Generator() {
-            @Override
-            public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
-                return new CustomDDFunctionXYDefinition("CustomDDXY", new MyCustomDDFunctionXY());
-            }
-        }
+                    @Override
+                    public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
+                        return new CustomDDFunctionXYDefinition("CustomDDXY", new MyCustomDDFunctionXY());
+                    }
+                }
         );
         register(CustomDCFunctionXYDefinition.class, new Generator() {
-            @Override
-            public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
-                return new CustomDCFunctionXYDefinition("CustomDCXY", new MyFunctionDCXY());
-            }
-        }
+                    @Override
+                    public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
+                        return new CustomDCFunctionXYDefinition("CustomDCXY", new MyFunctionDCXY());
+                    }
+                }
         );
         register(CustomDCFunctionXDefinition.class, new Generator() {
-            @Override
-            public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
-                return new CustomDCFunctionXDefinition("CustomDCX", new MyFunctionDCX());
-            }
-        }
+                    @Override
+                    public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
+                        return new CustomDCFunctionXDefinition("CustomDCX", new MyFunctionDCX());
+                    }
+                }
         );
         register(IfExpr.class, new Generator() {
-            @Override
-            public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
-                Class aClass = resolveClass(asType);
-                ExprRandomObjectGenerator g = context.getGenerator();
-                return IfExpr.of(
-                        g.randomDD(context.decComplexity()),
-                        (Expr) g.randomObjectOnce(aClass, null, context.decComplexity()),
-                        (Expr) g.randomObjectOnce(aClass, null, context.decComplexity())
-                );
-            }
-        }
+                    @Override
+                    public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
+                        Class aClass = resolveClass(asType);
+                        ExprRandomObjectGenerator g = context.getGenerator();
+                        return IfExpr.of(
+                                g.randomDD(context.decComplexity()),
+                                (Expr) g.randomObjectOnce(aClass, null, context.decComplexity()),
+                                (Expr) g.randomObjectOnce(aClass, null, context.decComplexity())
+                        );
+                    }
+                }
         );
         register(NotExpr.class, new Generator() {
-            @Override
-            public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
-                RandomObjectGeneratorContext g2 = context.decComplexity();
-                ExprRandomObjectGenerator eg = context.getGenerator();
-                return NotExpr.of(eg.randomDD(context.decComplexity()));
-            }
-        }
+                    @Override
+                    public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
+                        RandomObjectGeneratorContext g2 = context.decComplexity();
+                        ExprRandomObjectGenerator eg = context.getGenerator();
+                        return NotExpr.of(eg.randomDD(context.decComplexity()));
+                    }
+                }
         );
         register(ParametrizedScalarProduct.class, new Generator() {
-            @Override
-            public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
-                Class t = resolveClass(asType, DoubleToDouble.class, DoubleToComplex.class);
-                if (t.equals(DoubleToDouble.class)) {
-                    switch (Maths.randomInt(0, 2)) {
-                        case 0: {
-                            Expr a = generateSimpleDD(context);
-                            Expr b = generateSimpleDD(context);
-                            return ParametrizedScalarProduct.of(a, b);
+                    @Override
+                    public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
+                        Class t = resolveClass(asType, DoubleToDouble.class, DoubleToComplex.class);
+                        if (t.equals(DoubleToDouble.class)) {
+                            switch (Maths.randomInt(0, 2)) {
+                                case 0: {
+                                    Expr a = generateSimpleDD(context);
+                                    Expr b = generateSimpleDD(context);
+                                    return ParametrizedScalarProduct.of(a, b);
+                                }
+                                case 1: {
+                                    Expr a = generateSimpleDD(context);
+                                    Expr b = generateSimpleDD(context);
+                                    Expr c = generateSimpleDD(context);
+                                    Expr d = generateSimpleDD(context);
+                                    return ParametrizedScalarProduct.of(Maths.vector(a, b), Maths.vector(c, d));
+                                }
+                            }
                         }
-                        case 1: {
-                            Expr a = generateSimpleDD(context);
-                            Expr b = generateSimpleDD(context);
-                            Expr c = generateSimpleDD(context);
-                            Expr d = generateSimpleDD(context);
-                            return ParametrizedScalarProduct.of(Maths.vector(a, b), Maths.vector(c, d));
+                        if (t.equals(DoubleToComplex.class)) {
+                            switch (Maths.randomInt(0, 2)) {
+                                case 0: {
+                                    Expr a = generateSimpleDC(context);
+                                    Expr b = generateSimpleDC(context);
+                                    return ParametrizedScalarProduct.of(a, b);
+                                }
+                                case 1: {
+                                    Expr a = generateSimpleDC(context);
+                                    Expr b = generateSimpleDC(context);
+                                    Expr c = generateSimpleDC(context);
+                                    Expr d = generateSimpleDC(context);
+                                    return ParametrizedScalarProduct.of(Maths.vector(a, b), Maths.vector(c, d));
+                                }
+                            }
                         }
+                        throw new IllegalArgumentException("Unsupported");
+                    }
+
+                    Expr generateSimpleDD(RandomObjectGeneratorContext context) {
+                        return (Expr) context.getGenerator().randomObject(
+                                Maths.randomArrayElement(new Class[]{CosXCosY.class, Linear.class, DefaultDoubleValue.class, DoubleExpr.class}),
+                                null, context);
+                    }
+
+                    Expr generateSimpleDC(RandomObjectGeneratorContext context) {
+                        return DefaultDoubleToComplex.of(generateSimpleDD(context).toDD(), generateSimpleDD(context).toDD());
                     }
                 }
-                if (t.equals(DoubleToComplex.class)) {
-                    switch (Maths.randomInt(0, 2)) {
-                        case 0: {
-                            Expr a = generateSimpleDC(context);
-                            Expr b = generateSimpleDC(context);
-                            return ParametrizedScalarProduct.of(a, b);
-                        }
-                        case 1: {
-                            Expr a = generateSimpleDC(context);
-                            Expr b = generateSimpleDC(context);
-                            Expr c = generateSimpleDC(context);
-                            Expr d = generateSimpleDC(context);
-                            return ParametrizedScalarProduct.of(Maths.vector(a, b), Maths.vector(c, d));
-                        }
-                    }
-                }
-                throw new IllegalArgumentException("Unsupported");
-            }
-
-            Expr generateSimpleDD(RandomObjectGeneratorContext context) {
-                return (Expr) context.getGenerator().randomObject(
-                        Maths.randomArrayElement(new Class[]{CosXCosY.class, Linear.class, DefaultDoubleValue.class, DoubleExpr.class}),
-                        null, context);
-            }
-
-            Expr generateSimpleDC(RandomObjectGeneratorContext context) {
-                return DefaultDoubleToComplex.of(generateSimpleDD(context).toDD(), generateSimpleDD(context).toDD());
-            }
-        }
         );
     }
 
@@ -1067,7 +1068,7 @@ public class ExprRandomObjectGenerator extends RandomObjectGenerator<ExprRandomO
             currentTypes.addAll(Arrays.asList(ann.value()));
         }
         for (ExprType currentType : currentTypes) {
-            if (exprTypes.isAccept(currentType)) {
+            if (exprTypes.accept(currentType)) {
                 return true;
             }
         }
@@ -1124,7 +1125,7 @@ public class ExprRandomObjectGenerator extends RandomObjectGenerator<ExprRandomO
     }
 
     public ExprRandomObjectGenerator denyType(ExprType a) {
-        exprTypes.deny(a);
+        exprTypes.set(a, NDecision.DENY);
         return this;
     }
 
@@ -1190,7 +1191,7 @@ public class ExprRandomObjectGenerator extends RandomObjectGenerator<ExprRandomO
 
     private static class ExprTypeInstanceValidator implements InstanceValidator {
 
-        private EnumSet<ExprType> accepted = EnumSet.noneOf(ExprType.class);
+        private final EnumSet<ExprType> accepted = EnumSet.noneOf(ExprType.class);
 
         public ExprTypeInstanceValidator(ExprType... accepted) {
             this.accepted.addAll(Arrays.asList(accepted));
@@ -1210,7 +1211,7 @@ public class ExprRandomObjectGenerator extends RandomObjectGenerator<ExprRandomO
 
     private static class DomainDimensionInstanceValidator implements InstanceValidator {
 
-        private int dim;
+        private final int dim;
 
         public DomainDimensionInstanceValidator(int dim) {
             this.dim = dim;

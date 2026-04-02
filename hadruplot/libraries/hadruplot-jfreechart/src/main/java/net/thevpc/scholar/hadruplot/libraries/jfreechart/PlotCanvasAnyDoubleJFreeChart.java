@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadruplot.libraries.jfreechart;
 
-import net.thevpc.common.util.MinMax;
+import net.thevpc.nuts.math.NDoubleRange;
 import net.thevpc.scholar.hadruplot.extension.PlotModelProvider;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotModel;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotXDoubleModelFace;
@@ -96,16 +96,16 @@ public abstract class PlotCanvasAnyDoubleJFreeChart extends PlotCanvasAnyJFreeCh
         ValuesPlotModel model = (ValuesPlotModel) plotModelProvider.getModel();
         loadConfig();
         data = new ValuesPlotXDoubleModelFace(model, config);
-        MinMax x_minmax = new MinMax();
-        MinMax y_minmax = new MinMax();
+        NDoubleRange x_minmax = NDoubleRange.of();
+        NDoubleRange y_minmax = NDoubleRange.of();
         for (int i = 0; i < data.size(); i++) {
             double[] y = data.getY(i);
             double[] x = data.getX(i);
             for (int k = 0; k < y.length; k++) {
                 double yf = y[k];
                 double xf = x[k];
-                x_minmax.registerValue(xf);
-                y_minmax.registerValue(yf);
+                x_minmax.add(xf);
+                y_minmax.add(yf);
             }
         }
 

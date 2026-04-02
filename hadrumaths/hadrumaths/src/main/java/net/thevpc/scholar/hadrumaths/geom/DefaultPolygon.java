@@ -117,8 +117,8 @@ public class DefaultPolygon extends AbstractGeometry implements Cloneable, Polyg
 //        npoints = xs.size();
 //        xpoints = new double[npoints];
 //        ypoints = new double[npoints];
-//        MinMax xm = new MinMax();
-//        MinMax ym = new MinMax();
+//        NDoubleMinMax xm = new NDoubleMinMax();
+//        NDoubleMinMax ym = new NDoubleMinMax();
 //        for (int i = 0; i < xs.size(); i++) {
 //            xpoints[i] = xs.get(i);
 //            ypoints[i] = ys.get(i);

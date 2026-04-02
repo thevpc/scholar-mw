@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleParamValues;
 import net.thevpc.scholar.hadrumaths.symbolic.Param;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.DoubleParam;
@@ -694,7 +694,7 @@ public class DefaultExprVector extends AbstractVector<Expr> implements ExprVecto
     }
 
     @Override
-    public TypeName<Expr> getComponentType() {
+    public NTypeName<Expr> getComponentType() {
         return Maths.$EXPR;
     }
 

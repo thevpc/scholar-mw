@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadruplot.console.params;
 
 
-import net.thevpc.common.util.ArrayUtils;
+import net.thevpc.nuts.util.NArrays;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -20,11 +20,11 @@ public class LongArrayParamSet extends ParamSet implements Cloneable {
     }
 
     public LongArrayParamSet(CParam configurator, long min, long max, int times) {
-        this(configurator, ArrayUtils.ltimes(min, max, times));
+        this(configurator, NArrays.linear(min, max, times));
     }
 
     public LongArrayParamSet(CParam configurator, long min, long max, long step) {
-        this(configurator, ArrayUtils.lsteps(min, max, step));
+        this(configurator, NArrays.range(min, max, step));
     }
 
     public LongArrayParamSet init(long value) {
@@ -33,12 +33,12 @@ public class LongArrayParamSet extends ParamSet implements Cloneable {
     }
 
     public LongArrayParamSet ltimes(long min, long max, int times) {
-        values = ArrayUtils.ltimes(min, max, times);
+        values = NArrays.linear(min, max, times);
         return this;
     }
 
     public LongArrayParamSet lsteps(long min, long max, long step) {
-        values = ArrayUtils.lsteps(min, max, step);
+        values = NArrays.range(min, max, step);
         return this;
     }
 

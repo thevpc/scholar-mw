@@ -127,7 +127,7 @@ public abstract class BoxModes implements Iterable<ModeIndex> {
     }
 
     public ModeFct[] getModeFcts(final int max, ProgressMonitor monitor) {
-        NChronometer chrono = NChronometer.startNow();
+        NChronometer chrono = NChronometer.of();
         final ArrayList<ModeFct> next = new ArrayList<ModeFct>(max);
         final Iterator<ModeIndex> iterator = iterator();
         final ProgressMonitor mon = ProgressMonitors.incremental(monitor, max);
@@ -206,7 +206,7 @@ public abstract class BoxModes implements Iterable<ModeIndex> {
     }
 
     public ModeIndex[] getIndexes(final int max, ProgressMonitor monitor) {
-        Chronometer chrono = Chronometer.start();
+        NChronometer chrono = NChronometer.of();
         final ArrayList<ModeIndex> next = new ArrayList<ModeIndex>(max);
         final Iterator<ModeIndex> iterator = iterator();
         final ProgressMonitor mon = ProgressMonitors.incremental(monitor, max);

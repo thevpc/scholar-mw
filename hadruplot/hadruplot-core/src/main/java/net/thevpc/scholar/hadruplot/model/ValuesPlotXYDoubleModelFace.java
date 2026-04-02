@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadruplot.model;
 
-import net.thevpc.common.util.ArrayUtils;
-import net.thevpc.common.collections.DoubleArrayList;
-import net.thevpc.common.util.DoubleFormat;
+import net.thevpc.nuts.text.NTextFormat;
+import net.thevpc.nuts.util.NArrays;
+import net.thevpc.nuts.util.NDoubleArrayList;
 import net.thevpc.scholar.hadruplot.PlotDoubleConverter;
 import net.thevpc.scholar.hadruplot.PlotViewConfig;
 import net.thevpc.scholar.hadruplot.util.PlotModelUtils;
@@ -19,9 +19,9 @@ public class ValuesPlotXYDoubleModelFace {
     private int[] initialIndexes;
     private String[] ytitles;
     private double[][] z;
-    private DoubleFormat xformat;
-    private DoubleFormat yformat;
-    private DoubleFormat zformat;
+    private NTextFormat<Number> xformat;
+    private NTextFormat<Number> yformat;
+    private NTextFormat<Number> zformat;
 
     private String xTitle;
     private String yTitle;
@@ -58,7 +58,7 @@ public class ValuesPlotXYDoubleModelFace {
             for (int i = 0; i < this.x.length; i++) {
                 z[i][0] = PlotDoubleConverter.toDouble(converter, z0[i]);
             }
-            initialIndexes = ArrayUtils.unboxIntegerList(initialIndexesList);
+            initialIndexes = NArrays.unboxInts(initialIndexesList);
             ytitles = new String[0];
         } else {
             double[][] x0 = model.getX();
@@ -83,27 +83,27 @@ public class ValuesPlotXYDoubleModelFace {
             this.y = PlotUtils.toValidOneDimArray(y0, this.z.length);
 
             if (this.x.length == 0) {
-                this.x = this.z.length == 0 ? new double[0] : ArrayUtils.dsteps(0, this.z[0].length - 1, 1.0);
+                this.x = this.z.length == 0 ? new double[0] : NArrays.range(0, this.z[0].length - 1, 1.0);
             }
             if (this.y == null) {
-                this.y = this.z.length == 0 ? new double[0] : ArrayUtils.dsteps(0, this.z.length - 1, 1.0);
+                this.y = this.z.length == 0 ? new double[0] : NArrays.range(0, this.z.length - 1, 1.0);
             }
 
             title = model.getTitle();
-            DoubleArrayList yl = new DoubleArrayList(this.y.length);
+            NDoubleArrayList yl = new NDoubleArrayList(this.y.length);
             List<String> ys = new ArrayList<>(this.y.length);
-            List<DoubleArrayList> zl = new ArrayList<>(this.y.length);
+            List<NDoubleArrayList> zl = new ArrayList<>(this.y.length);
             for (int i = 0; i < this.y.length; i++) {
                 double ymultiplier = plotViewConfig.getYMultiplierAt(i, 1);
                 double v = this.y[i] * ymultiplier;
                 if (model.getYVisible(i)) {
                     initialIndexesList.add(i);
                     yl.add(v);
-                    zl.add(i < this.z.length ? new DoubleArrayList(this.z[i]) : new DoubleArrayList(new double[]{0}));
+                    zl.add(i < this.z.length ? new NDoubleArrayList(this.z[i]) : new NDoubleArrayList(new double[]{0}));
                     ys.add(PlotModelUtils.resolveYTitle(model, i));
                 }
             }
-            initialIndexes = ArrayUtils.unboxIntegerList(initialIndexesList);
+            initialIndexes = NArrays.unboxInts(initialIndexesList);
             this.y = yl.toArray();
             this.z = new double[zl.size()][];
             for (int i = 0; i < this.z.length; i++) {
@@ -122,20 +122,20 @@ public class ValuesPlotXYDoubleModelFace {
         this.z = PlotUtils.toValidTwoDimArray(z0);
 
         if (this.x.length == 0) {
-            this.x = this.z.length == 0 ? new double[0] : ArrayUtils.dsteps(0, this.z[0].length - 1, 1.0);
+            this.x = this.z.length == 0 ? new double[0] : NArrays.range(0, this.z[0].length - 1, 1.0);
         }
         if (this.y == null) {
-            this.y = this.z.length == 0 ? new double[0] : ArrayUtils.dsteps(0, this.z.length - 1, 1.0);
+            this.y = this.z.length == 0 ? new double[0] : NArrays.range(0, this.z.length - 1, 1.0);
         }
 
         this.title = title;
-        DoubleArrayList yl = (DoubleArrayList) new DoubleArrayList(this.y.length);
+        NDoubleArrayList yl = new NDoubleArrayList(this.y.length);
         List<String> ys = new ArrayList<>(this.y.length);
-        List<DoubleArrayList> zl = new ArrayList<>(this.y.length);
+        List<NDoubleArrayList> zl = new ArrayList<>(this.y.length);
         for (int i = 0; i < this.y.length; i++) {
             double v = this.y[i];
             yl.add(v);
-            zl.add(new DoubleArrayList(this.z[i]));
+            zl.add(new NDoubleArrayList(this.z[i]));
             ys.add(PlotModelUtils.resolveYTitle(ytitles, i));
         }
         this.y = yl.toArray();
@@ -178,15 +178,15 @@ public class ValuesPlotXYDoubleModelFace {
         return y.length;
     }
 
-    public DoubleFormat getXformat() {
+    public NTextFormat<Number> getXformat() {
         return xformat;
     }
 
-    public DoubleFormat getYformat() {
+    public NTextFormat<Number> getYformat() {
         return yformat;
     }
 
-    public DoubleFormat getZformat() {
+    public NTextFormat<Number> getZformat() {
         return zformat;
     }
 

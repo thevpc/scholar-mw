@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 
 public abstract class AbstractUnmodifiableMatrix<T> extends AbstractMatrix<T> {
     private static final long serialVersionUID = 1L;
@@ -34,7 +34,7 @@ public abstract class AbstractUnmodifiableMatrix<T> extends AbstractMatrix<T> {
     }
 
     @Override
-    public TypeName getComponentType() {
+    public NTypeName getComponentType() {
         return vs.getItemType();
     }
 

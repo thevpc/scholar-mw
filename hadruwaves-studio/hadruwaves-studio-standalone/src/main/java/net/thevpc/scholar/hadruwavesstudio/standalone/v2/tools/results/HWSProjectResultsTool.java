@@ -7,6 +7,7 @@ import net.thevpc.echo.Button;
 import net.thevpc.echo.api.components.AppComponent;
 import net.thevpc.echo.api.AppContainerChildren;
 import net.thevpc.echo.ContextMenu;
+import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results.components.ResultsTreeCellRendererImpl;
 import java.io.File;
 import java.util.ArrayList;
@@ -60,7 +61,6 @@ import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results.results.H
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results.results.HWSolverResultLocationType;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.util.AppCompUtils;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.util.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.jdesktop.swingx.JXTree;
 
 public class HWSProjectResultsTool extends AbstractToolWindowPanel {
@@ -194,7 +194,7 @@ public class HWSProjectResultsTool extends AbstractToolWindowPanel {
     public String generateCustomName(String path) {
         if (configuration != null) {
             String projectFilePath = configuration.project().get().filePath().get();
-            if (!StringUtils.isEmpty(projectFilePath)) {
+            if (!NStringUtils.isEmpty(projectFilePath)) {
                 return FileUtils.generateFileName(path, new File(projectFilePath, "results/saved").getPath());
             }
         }
@@ -205,7 +205,7 @@ public class HWSProjectResultsTool extends AbstractToolWindowPanel {
         List<HWSolverResult> all = new ArrayList<>();
         if (configuration != null) {
             String projectFilePath = context.project().filePath().get();
-            if (!StringUtils.isEmpty(projectFilePath)) {
+            if (!NStringUtils.isEmpty(projectFilePath)) {
                 // + name + extension()
                 File[] files = new File(projectFilePath, "results/default/" + action.path() + "/").listFiles(x -> action.acceptResultFile(x));
                 if (files != null) {

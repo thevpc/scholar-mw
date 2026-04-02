@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadrumaths
 
-import java.util.logging.{Level, Logger}
+import net.thevpc.nuts.artifact.NId
 
-import net.thevpc.common.mvn.{PomId, PomIdResolver}
+import java.util.logging.{Level, Logger}
 import net.thevpc.scholar.hadruplot.Plot
 
 /**
@@ -11,7 +11,7 @@ import net.thevpc.scholar.hadruplot.Plot
 @HadrumathsServiceDesc(order = 500)
 class HadrumathsScalaService extends HadrumathsService {
   private val log: Logger = Logger.getLogger(classOf[HadrumathsScalaService].getName())
-  def getVersion: String = PomIdResolver.resolvePomId(classOf[HadrumathsScalaService], new PomId("", "", "DEV")).getVersion
+  def getVersion: String = return NId.getForClass(classOf[HadrumathsScalaService]).map(x=>x.getVersion().getValue()).orElse("DEV");
 
   override def installService(): Unit = {
     log.log(Level.INFO, "Initializing Hadrumaths Scala extension component... : (hadrumaths-scala version "+getVersion+")");

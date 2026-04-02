@@ -5,7 +5,7 @@
  */
 package net.thevpc.scholar.hadrumaths.transform.simplifycore;
 
-import net.thevpc.common.collections.ClassMap;
+import net.thevpc.nuts.reflect.NClassMap;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleValue;
 import net.thevpc.scholar.hadrumaths.symbolic.NumberExpr;
@@ -26,7 +26,7 @@ public class PlusSimplifyRule extends AbstractExpressionRewriterRule {
 
     public static final Class<? extends Expr>[] TYPES = new Class[]{Plus.class};
     public static final ExpressionRewriterRule INSTANCE = new PlusSimplifyRule();
-    private final ClassMap<PlusAccumulator> accumulators = new ClassMap<>(Expr.class, PlusAccumulator.class);
+    private final NClassMap<Expr,PlusAccumulator> accumulators = NClassMap.of(Expr.class, PlusAccumulator.class);
 
     public PlusSimplifyRule() {
         regAccumulator(Expr.class, (PlusAccumulator<Expr>) (a, context) -> context.inc(a, Complex.ONE));

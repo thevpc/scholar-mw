@@ -3,6 +3,7 @@ package net.thevpc.scholar.hadruplot.console;
 import net.thevpc.common.swing.win.WindowInfo;
 import net.thevpc.common.swing.win.WindowInfoListener;
 import net.thevpc.common.swing.win.WindowPath;
+import net.thevpc.nuts.io.NIOUtils;
 import net.thevpc.nuts.log.NLog;
 import net.thevpc.nuts.log.NLogger;
 import net.thevpc.nuts.reflect.NReflectUtils;
@@ -11,7 +12,6 @@ import net.thevpc.scholar.hadruplot.console.extension.PlotConsoleCacheSupport;
 import net.thevpc.scholar.hadruplot.console.extension.PlotConsoleFileSupport;
 import net.thevpc.scholar.hadruplot.console.extension.PlotConsoleTool;
 import net.thevpc.scholar.hadruplot.extension.PlotWindowManagerProvider;
-import net.thevpc.common.io.FileUtils;
 import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.common.mon.*;
 import net.thevpc.common.swing.file.ExtensionFileChooserFilter;
@@ -546,7 +546,7 @@ public class PlotConsole implements PlotComponentDisplayer, PlotManager, Progres
         boolean first = true;
         String ext = null;
         for (File file : files) {
-            String e = FileUtils.getFileExtension(file).toLowerCase();
+            String e = NIOUtils.getFileExtension(file).toLowerCase();
             if (first) {
                 first = false;
                 ext = e;
@@ -593,7 +593,7 @@ public class PlotConsole implements PlotComponentDisplayer, PlotManager, Progres
     }
 
     public PlotConsole loadFile(File file) throws IOException {
-        String e = FileUtils.getFileExtension(file).toLowerCase();
+        String e = NIOUtils.getFileExtension(file).toLowerCase();
         if (e.equals(PLOT_CONSOLE_FILE_EXTENSION)) {
             loadConsole(file);
         } else if (Plot.acceptFileByExtension(file)) {

@@ -5,7 +5,7 @@
  */
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.collections.ClassMap;
+import net.thevpc.nuts.reflect.NClassMap;
 import net.thevpc.scholar.hadrumaths.transform.*;
 
 import java.util.HashMap;
@@ -17,7 +17,7 @@ import java.util.NoSuchElementException;
  */
 public class ExpressionTransformFactory extends AbstractFactory {
 
-    private static final ClassMap<Map<Class, ExpressionTransformer>> expressionToExpressionTransformers = new ClassMap<Map<Class, ExpressionTransformer>>(Expr.class, (Class) Map.class);
+    private static final NClassMap<Object,Map<Class, ExpressionTransformer>> expressionToExpressionTransformers = NClassMap.of(Expr.class, (Class) Map.class);
 
     public static void setExpressionTransformer(Class<? extends Expr> expressionClass, Class<? extends ExpressionTransform> transformerClass, ExpressionTransformer expressionTransformer) {
         if (expressionTransformer == null) {
@@ -41,7 +41,7 @@ public class ExpressionTransformFactory extends AbstractFactory {
     }
 
     public static ExpressionTransformer getExpressionTransformer(Class<? extends Expr> expressionClass, Class<? extends ExpressionTransform> transformerClass) {
-        for (Map<Class, ExpressionTransformer> t2 : expressionToExpressionTransformers.getAll(expressionClass)) {
+        for (Map<Class, ExpressionTransformer> t2 : expressionToExpressionTransformers.findMatches(expressionClass)) {
             ExpressionTransformer found = t2.get(transformerClass);
             if (found != null) {
                 return found;

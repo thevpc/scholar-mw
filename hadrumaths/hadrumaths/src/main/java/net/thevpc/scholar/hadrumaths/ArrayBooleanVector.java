@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -288,7 +288,7 @@ public class ArrayBooleanVector extends AbstractVector<Boolean> implements Boole
     }
 
     @Override
-    public TypeName<Boolean> getComponentType() {
+    public NTypeName<Boolean> getComponentType() {
         return Maths.$BOOLEAN;
     }
 

@@ -1,12 +1,11 @@
 package net.thevpc.scholar
 
 import java.io.{File, PrintStream}
-
-import net.thevpc.common.io.IOUtils
 import net.thevpc.scholar.hadrumaths.MathScala._
 import net.thevpc.scholar.hadrumaths._
 import net.thevpc.scholar.hadrumaths.io.HadrumathsIOUtils
 import net.thevpc.scholar.hadrumaths.scalarproducts.MemComplexScalarProductCache
+import net.thevpc.scholar.hadrumaths.util.HIOUtils
 import net.thevpc.scholar.hadruplot.Plot
 import net.thevpc.scholar.hadruwaves.Material
 import net.thevpc.scholar.hadruwaves.mom.BoxSpace._
@@ -131,7 +130,7 @@ object d_2017_07_26_PatchDEA1_ParamVariation_verif {
             val objectpath = "/structure.dump/3h/81/5z"
             val c2 = "/home/vpc/.cache/hadrumaths/3.1.2/" + objectpath + "/test-mode-scalar-products.cacheobj";
             //            val cc1 = ObjectCache.loadObject(new java.io.File("/").get(c1),null)
-            val cc2 = IOUtils.loadObject(HadrumathsIOUtils.createHFile(c2).getName).asInstanceOf[MemComplexScalarProductCache].toMatrix
+            val cc2 = HIOUtils.loadObject(HadrumathsIOUtils.createHFile(c2).getName).asInstanceOf[MemComplexScalarProductCache].toMatrix
             cc2.store(new File("/home/vpc/cmp/sp.v321.m"))
             println("bye")
             //            Plot.asMatrix().plot(cc2)

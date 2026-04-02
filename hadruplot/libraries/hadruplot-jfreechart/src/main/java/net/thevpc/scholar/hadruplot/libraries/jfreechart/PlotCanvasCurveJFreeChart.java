@@ -4,7 +4,7 @@
  */
 package net.thevpc.scholar.hadruplot.libraries.jfreechart;
 
-import net.thevpc.common.util.MinMax;
+import net.thevpc.nuts.math.NDoubleRange;
 import net.thevpc.scholar.hadruplot.extension.PlotModelProvider;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotModel;
 import org.jfree.chart.ChartFactory;
@@ -78,7 +78,7 @@ public class PlotCanvasCurveJFreeChart extends PlotCanvasAnyDoubleJFreeChart {
 
 
     @Override
-    protected void prepareJFreeChart(JFreeChart chart, MinMax x_minmax) {
+    protected void prepareJFreeChart(JFreeChart chart, NDoubleRange x_minmax) {
         final ValuesPlotModel model = (ValuesPlotModel) plotModelProvider.getModel();
         if (chart.getPlot() instanceof XYPlot) {
             XYPlot localXYPlot = chart.getXYPlot();
@@ -91,19 +91,19 @@ public class PlotCanvasCurveJFreeChart extends PlotCanvasAnyDoubleJFreeChart {
 
             XYPlot plot = (XYPlot) chart.getPlot();
             NumberAxis axis = (NumberAxis) plot.getDomainAxis();
-            if (!x_minmax.isNaN() && x_minmax.getLength() > 0) {
-                axis.setRange(x_minmax.getMin(), x_minmax.getMax());
+            if (x_minmax.isSet() && x_minmax.length() > 0) {
+                axis.setRange(x_minmax.min(), x_minmax.max());
             }
             if (model.getXformat() != null) {
                 axis.setNumberFormatOverride(new NumberFormat() {
                     @Override
                     public StringBuffer format(double number, StringBuffer toAppendTo, FieldPosition pos) {
-                        return toAppendTo.append(model.getXformat().formatDouble(number));
+                        return toAppendTo.append(model.getXformat().toString(number));
                     }
 
                     @Override
                     public StringBuffer format(long number, StringBuffer toAppendTo, FieldPosition pos) {
-                        return toAppendTo.append(model.getXformat().formatDouble(number));
+                        return toAppendTo.append(model.getXformat().toString(number));
                     }
 
                     @Override
@@ -117,12 +117,12 @@ public class PlotCanvasCurveJFreeChart extends PlotCanvasAnyDoubleJFreeChart {
                 yaxis.setNumberFormatOverride(new NumberFormat() {
                     @Override
                     public StringBuffer format(double number, StringBuffer toAppendTo, FieldPosition pos) {
-                        return toAppendTo.append(model.getYformat().formatDouble(number));
+                        return toAppendTo.append(model.getYformat().toString(number));
                     }
 
                     @Override
                     public StringBuffer format(long number, StringBuffer toAppendTo, FieldPosition pos) {
-                        return toAppendTo.append(model.getYformat().formatDouble(number));
+                        return toAppendTo.append(model.getYformat().toString(number));
                     }
 
                     @Override

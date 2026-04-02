@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadruplot;
 
 import net.thevpc.common.mon.ProgressMonitors;
-import net.thevpc.common.util.ArrayUtils;
+import net.thevpc.nuts.util.NArrays;
 import net.thevpc.scholar.hadruplot.console.ConsoleAwareObject;
 import net.thevpc.scholar.hadruplot.console.params.ParamSet;
 import net.thevpc.scholar.hadruplot.console.yaxis.YType;
@@ -70,7 +70,7 @@ public abstract class PlotAxisSeriesRow extends PlotAxisSeries {
         for (int i = 0; i < rr.length; i++) {
             t[i] = zz[0].getTitles()[i];
         }
-        ys = ArrayUtils.dtimes(0.0, rr[0].length - 1, 1);
+        ys = NArrays.linear(0.0, rr[0].length - 1, 1);
 
         return new PlotMatrix(rr, xs, ys).setCellTitles(tt).setRowTitles(t).setColumnTitles(xtitles);
     }

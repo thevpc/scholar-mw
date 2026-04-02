@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 
 import java.util.Collection;
 
@@ -8,10 +8,10 @@ public class CopyOnWriteVector<T> extends AbstractVector<T> implements Cloneable
 
     private static final long serialVersionUID = 1L;
     private final VectorModel<T> model;
-    private final TypeName<T> componentType;
+    private final NTypeName<T> componentType;
     private Vector<T> delegate;
 
-    public CopyOnWriteVector(TypeName<T> componentType, boolean row, VectorModel<T> model) {
+    public CopyOnWriteVector(NTypeName<T> componentType, boolean row, VectorModel<T> model) {
         super(row);
         this.componentType = componentType;
         this.model = model;
@@ -99,7 +99,7 @@ public class CopyOnWriteVector<T> extends AbstractVector<T> implements Cloneable
     }
 
     @Override
-    public TypeName<T> getComponentType() {
+    public NTypeName<T> getComponentType() {
         return componentType;
     }
 

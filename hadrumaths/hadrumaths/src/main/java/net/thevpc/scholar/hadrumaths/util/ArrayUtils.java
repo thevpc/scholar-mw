@@ -1,6 +1,8 @@
 package net.thevpc.scholar.hadrumaths.util;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
+import net.thevpc.nuts.reflect.NTypeNameDomain;
+import net.thevpc.nuts.reflect.NTypeNamePlatformDomain;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.Range;
 
@@ -1873,12 +1875,12 @@ public final class ArrayUtils {
         return result;
     }
 
-    public static <T> T[] newArray(TypeName<T> type, int size) {
-        return (T[]) Array.newInstance(type.getTypeClass(), size);
+    public static <T> T[] newArray(NTypeName<T> type, int size) {
+        return (T[]) Array.newInstance(NTypeNamePlatformDomain.of().getTypeClass(type), size);
     }
 
-    public static <T> T[][] newArray(TypeName<T> type, int size, int size2) {
-        return (T[][]) Array.newInstance(type.getTypeClass(), size, size2);
+    public static <T> T[][] newArray(NTypeName<T> type, int size, int size2) {
+        return (T[][]) Array.newInstance(NTypeNamePlatformDomain.of().getTypeClass(type), size, size2);
     }
 
     public static <T> T[] newArray(Class type, int size) {

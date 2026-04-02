@@ -49,7 +49,7 @@ public class Convergence {
         if (listener == null) {
             if (remainingIterations <= 0 && maxTimeMs <= 0) {
                 long k = start;
-                NChronometer ch = NChronometer.startNow();
+                NChronometer ch = NChronometer.of();
                 EqualatorResult lastRes;
                 do {
                     li.add(it.next(k++));
@@ -60,7 +60,7 @@ public class Convergence {
             } else {
                 long k = start;
                 EqualatorResult lastRes;
-                NChronometer ch = NChronometer.startNow();
+                NChronometer ch = NChronometer.of();
                 do {
                     li.add(it.next(k++));
                     remainingIterations--;
@@ -75,7 +75,7 @@ public class Convergence {
             ConvergencePartialResultImpl<T> cc = new ConvergencePartialResultImpl<>();
             cc.iter = start;
             EqualatorResult lastRes;
-            NChronometer ch = NChronometer.startNow();
+            NChronometer ch = NChronometer.of();
             do {
                 cc.value = it.next(cc.iter++);
                 li.add(cc.value);

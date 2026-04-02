@@ -1,6 +1,5 @@
 package net.thevpc.scholar.mentoring.extra
 
-import net.thevpc.common.util.{FrequencyFormat, MetricFormat}
 import net.thevpc.scholar.hadrumaths.MathScala._
 import net.thevpc.scholar.hadrumaths.convergence.ConvergenceSolver
 import net.thevpc.scholar.hadrumaths.{Complex, DoubleSolverX, Maths}
@@ -46,8 +45,8 @@ object Aguili2_20200923_conf extends App {
   //  println(calcData(fs(0)).Capa_TE(h,1000));
   //  println(calcData(fs(0)).)
   plotS_interval_all()
-  Maths.Config.setFrequencyFormatter(new FrequencyFormat("HT I2 D3 F"))
-  Maths.Config.setMetricFormatter(new MetricFormat("M-6 M3 I2 D4 F"))
+//  Maths.Config.setFrequencyFormatter(new FrequencyFormat("HT I2 D3 F"))
+//  Maths.Config.setMetricFormatter(new MetricFormat("M-6 M3 I2 D4 F"))
   println("")
   println("---------------------------------")
   println("")

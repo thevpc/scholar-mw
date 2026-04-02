@@ -5,7 +5,7 @@
  */
 package net.thevpc.scholar.hadruplot;
 
-import net.thevpc.common.util.ArrayUtils;
+import net.thevpc.nuts.util.NArrays;
 
 /**
  * @author vpc
@@ -38,15 +38,15 @@ public abstract class PlotSamples {
     }
 
     public static RelativePlotSamples relative(int x, int y, int z) {
-        return new RelativePlotSamples(false, ArrayUtils.dtimes(0, 1, x), ArrayUtils.dtimes(0, 1, y), ArrayUtils.dtimes(0, 1, z));
+        return new RelativePlotSamples(false, NArrays.linear(0.0, 1, x), NArrays.linear(0.0, 1, y), NArrays.linear(0.0, 1, z));
     }
 
     public static RelativePlotSamples relative(int x, int y) {
-        return new RelativePlotSamples(false, ArrayUtils.dtimes(0, 1, x), ArrayUtils.dtimes(0, 1, y));
+        return new RelativePlotSamples(false, NArrays.linear(0.0, 1, x), NArrays.linear(0.0, 1, y));
     }
 
     public static RelativePlotSamples relative(int x) {
-        return new RelativePlotSamples(false, ArrayUtils.dtimes(0, 1, x));
+        return new RelativePlotSamples(false, NArrays.linear(0.0, 1, x));
     }
 
     public abstract int getDimension();

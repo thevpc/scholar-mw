@@ -1,13 +1,13 @@
 package net.thevpc.scholar.hadruplot.model;
 
-import net.thevpc.common.util.DoubleFormat;
-
 import java.util.*;
 import java.util.function.ToDoubleFunction;
+
+import net.thevpc.nuts.text.NTextFormat;
+import net.thevpc.nuts.util.NDoubleFormat;
 import net.thevpc.scholar.hadruplot.LibraryPlotType;
 import net.thevpc.scholar.hadruplot.PlotDoubleConverter;
 import net.thevpc.scholar.hadruplot.PlotModelType;
-import net.thevpc.scholar.hadruplot.PlotType;
 
 public class ValuesPlotModel extends BasePlotModel implements PlotModel1D, PlotModel2D {
 
@@ -25,9 +25,9 @@ public class ValuesPlotModel extends BasePlotModel implements PlotModel1D, PlotM
     private double[][] x = new double[0][0];
     private double[][] y = new double[0][0];
     private Object[][] z = new Object[0][0];
-    private DoubleFormat xformat = null;
-    private DoubleFormat yformat = null;
-    private DoubleFormat zformat = null;
+    private NTextFormat<Number> xformat = null;
+    private NTextFormat<Number> yformat = null;
+    private NTextFormat<Number> zformat = null;
 
     public ValuesPlotModel(String title, String xtitle, String ytitle, String[] ytitles, double[] x, Object[] y, boolean column, ToDoubleFunction<Object> converter, LibraryPlotType plotType, Map<String, Object> properties) {
         this.d1 = true;
@@ -123,29 +123,29 @@ public class ValuesPlotModel extends BasePlotModel implements PlotModel1D, PlotM
         return a;
     }
 
-    public DoubleFormat getXformat() {
+    public NTextFormat<Number> getXformat() {
         return xformat;
     }
 
-    public ValuesPlotModel setXformat(DoubleFormat xformat) {
+    public ValuesPlotModel setXformat(NTextFormat<Number> xformat) {
         this.xformat = xformat;
         return this;
     }
 
-    public DoubleFormat getYformat() {
+    public NTextFormat<Number> getYformat() {
         return yformat;
     }
 
-    public ValuesPlotModel setYformat(DoubleFormat yformat) {
+    public ValuesPlotModel setYformat(NTextFormat<Number> yformat) {
         this.yformat = yformat;
         return this;
     }
 
-    public DoubleFormat getZformat() {
+    public NTextFormat<Number> getZformat() {
         return zformat;
     }
 
-    public ValuesPlotModel setZformat(DoubleFormat zformat) {
+    public ValuesPlotModel setZformat(NTextFormat<Number> zformat) {
         this.zformat = zformat;
         return this;
     }

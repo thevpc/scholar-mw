@@ -1,16 +1,16 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 
 import java.util.List;
 import java.util.function.Function;
 
 public interface VectorSpace<T> {
-    TypeName<T> getItemType();
+    NTypeName<T> getItemType();
 
-    <R> Function<R, T> getConverterFrom(TypeName<R> t);
+    <R> Function<R, T> getConverterFrom(NTypeName<R> t);
 
-    <R> Function<T, R> getConverterTo(TypeName<R> t);
+    <R> Function<T, R> getConverterTo(NTypeName<R> t);
 
     <R> Function<R, T> getConverterFrom(Class<R> t);
 
@@ -101,7 +101,7 @@ public interface VectorSpace<T> {
 
     boolean isZero(T a);
 
-    <R> boolean is(T value, TypeName<R> type);
+    <R> boolean is(T value, NTypeName<R> type);
 
     boolean isComplex(T a);
 

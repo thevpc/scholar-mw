@@ -1,14 +1,15 @@
 package net.thevpc.scholar.hadrumaths.plot.random;
 
+import net.thevpc.nuts.reflect.NClassMap;
+import net.thevpc.nuts.reflect.NClassMultiMap;
 import net.thevpc.nuts.time.NChronometer;
+import net.thevpc.nuts.reflect.NClassDecisionFilter;
+import net.thevpc.nuts.util.NDecision;
 import net.thevpc.scholar.hadrumaths.util.internal.IntValidator;
 import net.thevpc.scholar.hadrumaths.util.internal.DoubleValidator;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceExprType;
 import net.thevpc.scholar.hadrumaths.util.internal.IgnoreRandomGeneration;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
-import net.thevpc.common.collections.AcceptDenyClassSet;
-import net.thevpc.common.collections.ClassMap;
-import net.thevpc.common.collections.ClassMapList;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.util.RandomList;
 
@@ -20,17 +21,17 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 
 public class RandomObjectGenerator<B extends RandomObjectGenerator> {
-    protected ClassMap<Generator> generators = new ClassMap<Generator>(null, Generator.class);
-    private AcceptDenyClassSet<Object> clsTypes = new AcceptDenyClassSet<Object>(Object.class);
+    protected NClassMap<Object, Generator> generators = NClassMap.of(null, Generator.class);
+    private final NClassDecisionFilter<Object> clsTypes = NClassDecisionFilter.of(Object.class);
     private boolean acceptBoundaryValue = true;
     private boolean acceptNaNValue = true;
     private boolean acceptInfValue = true;
     private int complexity = 4;
-    private ClassMapList<InstanceValidator> instanceFilters = new ClassMapList<>(InstanceValidator.class);
-    private Set<String> unrepeatableErrorMessages = new HashSet<>();
+    private final NClassMultiMap<Object, InstanceValidator> instanceFilters = NClassMultiMap.of(Object.class, InstanceValidator.class);
+    private final Set<String> unrepeatableErrorMessages = new HashSet<>();
     private Class[] objectClasses = null;
     private ErrorList errorList;
-    private Class expectedClass;
+    private final Class expectedClass;
 
     public RandomObjectGenerator(Class expectedClass) {
         this.expectedClass = expectedClass;
@@ -218,12 +219,12 @@ public class RandomObjectGenerator<B extends RandomObjectGenerator> {
     }
 
     public B acceptType(Class a) {
-        clsTypes.accept(a);
+        clsTypes.set(a, NDecision.ACCEPT);
         return getThis();
     }
 
     public B denyType(Class a) {
-        clsTypes.deny(a);
+        clsTypes.set(a, NDecision.DENY);
         return getThis();
     }
 
@@ -235,7 +236,7 @@ public class RandomObjectGenerator<B extends RandomObjectGenerator> {
         for (int i = 0; i < 100; i++) {
             try {
                 T o = randomObjectOnce(cls, asType, context);
-                for (InstanceValidator v : context.getFilter().getAll(cls)) {
+                for (InstanceValidator v : context.getFilter().findMatches(cls)) {
                     v.checkValid(o, context);
                 }
                 return o;
@@ -245,10 +246,10 @@ public class RandomObjectGenerator<B extends RandomObjectGenerator> {
         }
         //last time without error blackout
         T o = randomObjectOnce(cls, asType, context);
-        for (InstanceValidator v : context.getFilter().getAll(cls)) {
+        for (InstanceValidator v : context.getFilter().findMatches(cls)) {
             v.checkValid(o, context);
         }
-        return (T) o;
+        return o;
     }
 
     public RandomObjectGeneratorContext createContext() {
@@ -280,7 +281,7 @@ public class RandomObjectGenerator<B extends RandomObjectGenerator> {
         return complexity;
     }
 
-    public ClassMapList<InstanceValidator> getInstanceFilters() {
+    public NClassMultiMap<Object,InstanceValidator> getInstanceFilters() {
         return instanceFilters;
     }
 
@@ -350,7 +351,7 @@ public class RandomObjectGenerator<B extends RandomObjectGenerator> {
     public Class[] findObjectClasses() {
         java.util.List<java.lang.Class> clss = new ArrayList<>();
         if (objectClasses == null) {
-            NChronometer chrono = NChronometer.startNow();
+            NChronometer chrono = NChronometer.of();
             TreeSet<String> ignored = new TreeSet<>();
             TreeSet<String> error = new TreeSet<>();
             for (Class cls : ExprProjectClasses.getProjectClasses()) {
@@ -358,8 +359,8 @@ public class RandomObjectGenerator<B extends RandomObjectGenerator> {
                 try {
                     simpleName = className(cls);
                     if (getConstructors(cls, expectedClass).length > 0 ||
-                            (expectedClass.isAssignableFrom(cls) && generators.getRegisteredKeys(cls).length > 0)) {
-                        if (!getClsTypes().isAccept(cls)) {
+                            (expectedClass.isAssignableFrom(cls) && !generators.getSearchPath(cls).isEmpty())) {
+                        if (!getClsTypes().accept(cls)) {
                             ignored.add(simpleName);
                         } else {
                             if (expectedClass.isAssignableFrom(cls)) {
@@ -387,14 +388,14 @@ public class RandomObjectGenerator<B extends RandomObjectGenerator> {
 //                    .<Class>filter(c -> clsTypes.isAccept(c))
 //                    .collect(Collectors.toList())
 //                    .toArray(new Class[0]);
-            List<Class> _objectClasses=new ArrayList<>();
+            List<Class> _objectClasses = new ArrayList<>();
             for (Class c : clss) {
-                if(clsTypes.isAccept(c)){
+                if (clsTypes.accept(c)) {
                     _objectClasses.add(c);
                 }
             }
-            objectClasses=_objectClasses.toArray(new Class[0]);
-            
+            objectClasses = _objectClasses.toArray(new Class[0]);
+
             System.err.println("Within " + chrono.stop() + " detected " + objectClasses.length + " types, ignored " + ignored.size() + " types : " + String.join(", ", ignored));
         }
         return objectClasses;
@@ -458,7 +459,7 @@ public class RandomObjectGenerator<B extends RandomObjectGenerator> {
         return all.toArray(new ClsConstructor[0]);
     }
 
-    protected AcceptDenyClassSet<Object> getClsTypes() {
+    protected NClassDecisionFilter<Object> getClsTypes() {
         return clsTypes;
     }
 
@@ -508,7 +509,7 @@ public class RandomObjectGenerator<B extends RandomObjectGenerator> {
 
     private static class SimpleClsConstructor implements ClsConstructor {
         private final Constructor<?> constructor;
-        private Class type;
+        private final Class type;
 
         public SimpleClsConstructor(Class type, Constructor<?> constructor) {
             this.constructor = constructor;
@@ -543,7 +544,7 @@ public class RandomObjectGenerator<B extends RandomObjectGenerator> {
     }
 
     public static class GenerateException extends RuntimeException {
-        private Class cls;
+        private final Class cls;
 
         public GenerateException(Class cls, Throwable cause) {
             super("Unable to generate " + cls + " : " + cause.toString(), cause);
@@ -575,8 +576,8 @@ public class RandomObjectGenerator<B extends RandomObjectGenerator> {
     }
 
     private static class DefaultClsParam implements ClsParam {
-        private Class cls;
-        private Map<Class, InstanceValidator> constraints;
+        private final Class cls;
+        private final Map<Class, InstanceValidator> constraints;
 
         public DefaultClsParam(Class cls, Map<Class, InstanceValidator> constraints) {
             this.cls = cls;
@@ -643,39 +644,39 @@ public class RandomObjectGenerator<B extends RandomObjectGenerator> {
     }
 
     public static class RandomObjectGeneratorContext {
-        private int complexity;
-        private RandomObjectGenerator generator;
-        private ClassMapList<InstanceValidator> filter;
-        private AcceptDenyClassSet<Object> clsTypes;
+        private final int complexity;
+        private final RandomObjectGenerator generator;
+        private final NClassMultiMap<Object, InstanceValidator> filter;
+        private final NClassDecisionFilter<Object> clsTypes;
 
-        public RandomObjectGeneratorContext(int complexity, ClassMapList<InstanceValidator> filter, AcceptDenyClassSet<Object> clsTypes, RandomObjectGenerator generator) {
+        public RandomObjectGeneratorContext(int complexity, NClassMultiMap<Object, InstanceValidator> filter, NClassDecisionFilter<Object> clsTypes, RandomObjectGenerator generator) {
             this.complexity = complexity;
             this.generator = generator;
             this.filter = filter;
             this.clsTypes = clsTypes;
         }
 
-        public ClassMapList<InstanceValidator> getFilter() {
+        public NClassMultiMap<Object, InstanceValidator> getFilter() {
             return filter;
         }
 
-        public RandomObjectGeneratorContext setFilter(ClassMapList<InstanceValidator> filter) {
+        public RandomObjectGeneratorContext setFilter(NClassMultiMap<Object, InstanceValidator> filter) {
             return new RandomObjectGeneratorContext(complexity, filter, clsTypes, generator);
         }
 
         public RandomObjectGeneratorContext addFilter(Class type, InstanceValidator filter) {
-            ClassMapList<InstanceValidator> c = this.filter.copy();
+            NClassMultiMap<Object, InstanceValidator> c = this.filter.copy();
             c.add(type, filter);
             return setFilter(c);
         }
 
         public RandomObjectGeneratorContext removeFilter(Class type, InstanceValidator filter) {
-            ClassMapList<InstanceValidator> c = this.filter.copy();
+            NClassMultiMap<Object, InstanceValidator> c = this.filter.copy();
             c.add(type, filter);
             return setFilter(c);
         }
 
-        public AcceptDenyClassSet<Object> getClsTypes() {
+        public NClassDecisionFilter<Object> getClsTypes() {
             return clsTypes;
         }
 
@@ -688,15 +689,29 @@ public class RandomObjectGenerator<B extends RandomObjectGenerator> {
         }
 
         public RandomObjectGeneratorContext setAccept(Class... any) {
-            return new RandomObjectGeneratorContext(complexity, filter, new AcceptDenyClassSet<Object>(clsTypes.getBaseType()).acceptAll(any), generator);
+            NClassDecisionFilter<Object> z = NClassDecisionFilter.of(clsTypes.keyType());
+            for (Class aClass : any) {
+                z.set(aClass, NDecision.ACCEPT);
+            }
+            return new RandomObjectGeneratorContext(complexity, filter, z, generator);
         }
 
         public RandomObjectGeneratorContext addAccept(Class... any) {
-            return new RandomObjectGeneratorContext(complexity, filter, new AcceptDenyClassSet<Object>(clsTypes).acceptAll(any), generator);
+            NClassDecisionFilter<Object> z = NClassDecisionFilter.of(clsTypes.keyType());
+            z.merge(clsTypes);
+            for (Class aClass : any) {
+                z.set(aClass, NDecision.ACCEPT);
+            }
+            return new RandomObjectGeneratorContext(complexity, filter, z, generator);
         }
 
         public RandomObjectGeneratorContext addDeny(Class... any) {
-            return new RandomObjectGeneratorContext(complexity, filter, new AcceptDenyClassSet<Object>(clsTypes).denyAll(any), generator);
+            NClassDecisionFilter<Object> z = NClassDecisionFilter.of(clsTypes.keyType());
+            z.merge(clsTypes);
+            for (Class aClass : any) {
+                z.set(aClass, NDecision.DENY);
+            }
+            return new RandomObjectGeneratorContext(complexity, filter, z, generator);
         }
 
         public <T extends RandomObjectGenerator> T getGenerator() {
@@ -712,8 +727,8 @@ public class RandomObjectGenerator<B extends RandomObjectGenerator> {
     }
 
     private static class AndInstanceValidator implements InstanceValidator {
-        private InstanceValidator a;
-        private InstanceValidator b;
+        private final InstanceValidator a;
+        private final InstanceValidator b;
 
         public AndInstanceValidator(InstanceValidator a, InstanceValidator b) {
             this.a = a;
@@ -728,8 +743,8 @@ public class RandomObjectGenerator<B extends RandomObjectGenerator> {
     }
 
     private static class OrInstanceValidator implements InstanceValidator {
-        private InstanceValidator a;
-        private InstanceValidator b;
+        private final InstanceValidator a;
+        private final InstanceValidator b;
 
         public OrInstanceValidator(InstanceValidator a, InstanceValidator b) {
             this.a = a;

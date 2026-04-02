@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 import net.thevpc.scholar.hadrumaths.util.ArrayUtils;
 
 /**
@@ -46,7 +46,7 @@ public class TCLUDecomposition<T> implements java.io.Serializable {
     private final int[] piv;
     private final VectorSpace<T> space;
     private final MatrixFactory<T> matrixFactory;
-    private final TypeName<T> componentType;
+    private final NTypeName<T> componentType;
     /*
      * ------------------------ Constructor ------------------------
      */

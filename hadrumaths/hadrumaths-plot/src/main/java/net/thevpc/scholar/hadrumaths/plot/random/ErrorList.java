@@ -1,9 +1,10 @@
 package net.thevpc.scholar.hadrumaths.plot.random;
 
-import net.thevpc.common.io.IOUtils;
 
 import net.thevpc.nuts.elem.*;
+import net.thevpc.nuts.io.NIOUtils;
 import net.thevpc.scholar.hadrumaths.Expr;
+import net.thevpc.scholar.hadrumaths.plot.util.PlotIO;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -141,10 +142,13 @@ public class ErrorList {
                 }
                 obj.add("messages", array.build());
                 NElementWriter.ofPlainTson().print(obj,errorStr);
-                IOUtils.saveObject2(errorObj.getPath(), objWithErrors.obj);
+                PlotIO.saveObject2(errorObj.getPath(), objWithErrors.obj);
             }
         }
     }
+
+
+
 
     static protected File getTestConfigFolder() {
         return new File(System.getProperty("user.home"), ".config" + File.separator + "hadrumaths" + File.separator + "test");
@@ -190,7 +194,7 @@ public class ErrorList {
                             String name = errorObj.getName().substring(0, errorObj.getName().length() - ".error-obj".length());
                             File errorStr = new File(errorObj.getParentFile(), name + ".error-string");
                             try {
-                                Expr expr = (Expr) IOUtils.loadObject2(errorObj.getPath());
+                                Expr expr = (Expr) PlotIO.loadObject2(errorObj.getPath());
                                 String str = errorStr.exists() ? new String(Files.readAllBytes(errorStr.toPath())) : "";
                                 NObjectElement obj = NElementReader.ofTson().read(str).asObject().get();
                                 Class<?> type = Class.forName(obj.get("type").get().asStringValue().get());

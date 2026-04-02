@@ -38,7 +38,7 @@ public class PlotThread extends AbstractProgressMonitor {
 
     public PlotThread(PlotAxis currentY, PlotData plotData, ComputeTitle serieTitle, ConsoleAwareObject direct, ConsoleAwareObject modele, ConsoleAxis axis, PlotConsole plotter) {
         super(nextId());
-        chronometer = NChronometer.startNow();
+        chronometer = NChronometer.of();
         this.currentY = currentY;
         this.serieTitle = serieTitle;
         this.direct = direct;

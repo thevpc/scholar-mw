@@ -88,7 +88,7 @@ object d_15_12_2017_relativeError_SRCTestFunctions3 {
       var err = norm(Eappr - E0) / norm(E0)
       println(count + " : " + PLine + " : " + c.stop() + " :: error=" + err)
       relatErr.addValue("Error", gp.length(), err);
-      timePlot.addValue("Time", gp.length(), c.getTime / 1000000);
+      timePlot.addValue("Time", gp.length(), c.getDurationMs / 1000000);
       Plot.update("Error").asCurve().title("Relative Error VS Test Functions").plot(relatErr)
       Plot.update("gp").asCurve().title("gp").asCurve().plot(gp)
       Plot.update("<E0,gp>").asCurve().title("<E0,gp>").plot(Ev)

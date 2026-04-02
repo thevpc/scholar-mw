@@ -1,6 +1,8 @@
 package net.thevpc.scholar.hadrumaths.plot;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
+import net.thevpc.nuts.reflect.NTypeNameDomain;
+import net.thevpc.nuts.reflect.NTypeNamePlatformDomain;
 import net.thevpc.scholar.hadrumaths.DoubleVector;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.ToDoubleArrayAware;
@@ -25,9 +27,9 @@ public class MathsPlotBuilderSupport implements PlotBuilderSupport {
                 builder.xsamples(new double[0]);
                 return true;
             }
-            TypeName componentType = lxvalue.getComponentType();
-            if (componentType.getTypeClass().equals(Double.TYPE)
-                    || componentType.getTypeClass().equals(Double.class)) {
+            NTypeName componentType = lxvalue.getComponentType();
+            if (NTypeNamePlatformDomain.of().getTypeClass(componentType).equals(Double.TYPE)
+                    || NTypeNamePlatformDomain.of().getTypeClass(componentType).equals(Double.class)) {
                 DoubleVector to = (DoubleVector) lxvalue.to(Maths.$DOUBLE);
                 builder.xsamples(to.toDoubleArray());
             } else {

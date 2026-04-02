@@ -10,10 +10,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Properties;
-import net.thevpc.common.io.IOUtils;
 
 /**
  * @author : vpc
@@ -34,7 +36,7 @@ public abstract class PlotConsoleProjectTemplate {
     private PlotConsole plotConsole;
 
     private String defaultStudyName;
-    private File folder;
+    private final File folder;
 
     public PlotConsoleProjectTemplate() {
         this(null);
@@ -65,7 +67,18 @@ public abstract class PlotConsoleProjectTemplate {
         File file = new File(System.getProperty("user.home") + "/.java/vpc/these/PlotConsoleProjectTemplate/" + list.getTemplate().getClass().getSimpleName() + ".xml");
         Properties props = new Properties();
         try {
-            props = IOUtils.loadXMLProperties(file);
+            Properties p = new Properties();
+            FileInputStream is = null;
+
+            try {
+                is = new FileInputStream(file);
+                p.loadFromXML(is);
+            } finally {
+                if (is != null) {
+                    is.close();
+                }
+            }
+            props = p;
         } catch (Exception e) {
             //
         }
@@ -117,7 +130,15 @@ public abstract class PlotConsoleProjectTemplate {
                 props.put(jCheckBox.getName(), jCheckBox.isSelected() ? "true" : "false");
             }
             try {
-                IOUtils.saveXMLProperties(props, null, file);
+                FileOutputStream os = null;
+                try {
+                    os = new FileOutputStream(file);
+                    props.storeToXML(os, null);
+                } finally {
+                    if (os != null) {
+                        os.close();
+                    }
+                }
             } catch (Exception e) {
                 //
             }

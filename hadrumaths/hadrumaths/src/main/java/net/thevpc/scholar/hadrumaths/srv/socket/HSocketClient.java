@@ -132,7 +132,7 @@ public class HSocketClient implements HadrumathsClient {
     @Override
     public long ping() {
         long ret = -1;
-        NChronometer c = NChronometer.startNow();
+        NChronometer c = NChronometer.of();
         try {
             connection.reconnectIfNecessary();
             connection.out().writeUTF(fsId);

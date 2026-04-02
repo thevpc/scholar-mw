@@ -6,7 +6,8 @@
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results.results;
 
 import java.io.File;
-import org.apache.commons.lang3.StringUtils;
+
+import net.thevpc.nuts.util.NStringUtils;
 
 /**
  *
@@ -187,7 +188,7 @@ public abstract class AbstractHWSolverActionResult implements HWSolverResult {
     private String nativeDefaultPath(HWSolverActionContext context, String name) {
         context.project().requirePersistent();
         String projectFilePath = context.project().filePath().get();
-        if (!StringUtils.isEmpty(name)) {
+        if (!NStringUtils.isEmpty(name)) {
             name = defaultName;
         }
         return new File(projectFilePath, "results/default/" + defaultPath + "/" + defaultName + extension()).getPath();

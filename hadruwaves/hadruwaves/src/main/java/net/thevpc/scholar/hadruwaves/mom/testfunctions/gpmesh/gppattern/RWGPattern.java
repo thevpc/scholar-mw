@@ -270,7 +270,7 @@ public final class RWGPattern extends AbstractGpPattern implements TriangularGpP
         }
 //        if (remaining.size() > 0) {
 //            //evaluate error
-//            MinMax m = new MinMax();
+//            NDoubleMinMax m = new NDoubleMinMax();
 //
 //        }
 //        for (Integer integer : remaining) {

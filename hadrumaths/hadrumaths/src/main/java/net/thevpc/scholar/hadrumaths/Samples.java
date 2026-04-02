@@ -5,7 +5,7 @@
  */
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.ArrayUtils;
+import net.thevpc.nuts.util.NArrays;
 
 /**
  * @author vpc
@@ -38,15 +38,15 @@ public abstract class Samples {
     }
 
     public static RelativeSamples relative(int x, int y, int z) {
-        return new RelativeSamples(false, ArrayUtils.dtimes(0, 1, x), ArrayUtils.dtimes(0, 1, y), ArrayUtils.dtimes(0, 1, z));
+        return new RelativeSamples(false, NArrays.linear(0.0, 1, x), NArrays.linear(0.0, 1, y), NArrays.linear(0.0, 1, z));
     }
 
     public static RelativeSamples relative(int x, int y) {
-        return new RelativeSamples(false, ArrayUtils.dtimes(0, 1, x), ArrayUtils.dtimes(0, 1, y));
+        return new RelativeSamples(false, NArrays.linear(0.0, 1, x), NArrays.linear(0.0, 1, y));
     }
 
     public static RelativeSamples relative(int x) {
-        return new RelativeSamples(false, ArrayUtils.dtimes(0, 1, x));
+        return new RelativeSamples(false, NArrays.linear(0.0, 1, x));
     }
 
     public abstract int getDimension();

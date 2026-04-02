@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadrumaths.util.log;
 
 import net.thevpc.common.mon.AbstractProgressMonitor;
-import net.thevpc.common.util.DoubleFormat;
+import net.thevpc.nuts.text.NTextFormat;
 import net.thevpc.scholar.hadrumaths.Maths;
 
 import java.util.Date;
@@ -37,11 +37,11 @@ public class TLogProgressMonitor extends AbstractProgressMonitor {
 
     public void setMessageImpl(Message message) {
         this.message=message;
-        DoubleFormat sdf = Maths.Config.getPercentFormat();
+        NTextFormat<Number> sdf = Maths.Config.getPercentFormat();
         long newd = System.currentTimeMillis();
         String formattedMessage = messageFormat
                 .replace("%date%", new Date(newd).toString())
-                .replace("%value%", Double.isNaN(getProgress()) ? "   ?%" : sdf.formatDouble(getProgress()))
+                .replace("%value%", Double.isNaN(getProgress()) ? "   ?%" : sdf.toString(getProgress()))
                 + " " + message;
         writer.trace(formattedMessage);
     }

@@ -41,7 +41,7 @@ public abstract class PlotAxisSeries extends PlotAxis implements Cloneable {
 
     @Override
     public Iterator<ConsoleAction> createConsoleActionIterator(ConsoleActionParams p) {
-        NChronometer chronometer = NChronometer.startNow();
+        NChronometer chronometer = NChronometer.of();
 //        x1values = getX(direct, modele, x_axis);
 //        x2values = getY(direct, modele, x_axis);
         PlotMatrix[] yvalues = eval(p);

@@ -2,7 +2,6 @@
 //import net.thevpc.scholar.hadrumaths.*;
 //import net.thevpc.scholar.hadrumaths.symbolic.double2double.DoubleParam;
 //import static net.thevpc.scholar.hadrumaths.Maths.*;
-//import static net.thevpc.scholar.hadrumaths.util.StringUtils.*;
 //
 //public class PatchComparisonMatlab1_article_nostr {
 //

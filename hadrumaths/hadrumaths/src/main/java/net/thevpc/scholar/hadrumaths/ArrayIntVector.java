@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -270,7 +270,7 @@ public class ArrayIntVector extends AbstractVector<Integer> implements IntVector
     }
 
     @Override
-    public TypeName<Integer> getComponentType() {
+    public NTypeName<Integer> getComponentType() {
         return Maths.$INTEGER;
     }
 

@@ -5,8 +5,8 @@
  */
 package net.thevpc.scholar.hadrumaths.transform.simplifycore;
 
-import net.thevpc.common.collections.ClassMap;
-import net.thevpc.common.collections.ClassPairMapList;
+import net.thevpc.nuts.reflect.NClassMap;
+import net.thevpc.nuts.reflect.NClassPairMultiMap;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.ExprType;
 import net.thevpc.scholar.hadrumaths.symbolic.double2complex.DefaultComplexValue;
@@ -30,8 +30,8 @@ public class PlusSimplifyRuleOld extends AbstractExpressionRewriterRule {
     public static final Class<? extends Expr>[] TYPES = new Class[]{Plus.class};
     public static final ExpressionRewriterRule INSTANCE = new PlusSimplifyRuleOld();
     private static final ReverseSimplifier REVERSE = new ReverseSimplifier();
-    private final ClassPairMapList<PlusPairSimplifier> pairSimplifiers = new ClassPairMapList<>(Expr.class, Expr.class, PlusPairSimplifier.class, false);
-    private final ClassMap<PlusSingleSimplifier> singleSimplifiers = new ClassMap<>(Expr.class, PlusSingleSimplifier.class);
+    private final NClassPairMultiMap<Expr,Expr,PlusPairSimplifier> pairSimplifiers = NClassPairMultiMap.of(Expr.class, Expr.class, PlusPairSimplifier.class, false);
+    private final NClassMap<Expr,PlusSingleSimplifier> singleSimplifiers = NClassMap.of(Expr.class, PlusSingleSimplifier.class);
 
     public PlusSimplifyRuleOld() {
         singleSimplifiers.put(DefaultDoubleValue.class, a -> {
@@ -263,7 +263,7 @@ public class PlusSimplifyRuleOld extends AbstractExpressionRewriterRule {
     private Expr simplifyXY(Expr a, Expr b, Domain fullDomain) {
         Class<? extends Expr> cls1 = a.getClass();
         Class<? extends Expr> cls2 = b.getClass();
-        List<PlusPairSimplifier> found = pairSimplifiers.getAll(cls1, cls2);
+        List<PlusPairSimplifier> found = pairSimplifiers.findMatches(cls1, cls2);
 
         for (PlusPairSimplifier s : found) {
             Expr r = s.simplify(a, b, fullDomain, this);
@@ -272,7 +272,7 @@ public class PlusSimplifyRuleOld extends AbstractExpressionRewriterRule {
             }
         }
         if (!cls1.equals(cls2)) {
-            found = pairSimplifiers.getAll(cls2, cls1);
+            found = pairSimplifiers.findMatches(cls2, cls1);
             if (!found.isEmpty()) {
                 for (PlusPairSimplifier s : found) {
                     Expr r = s.simplify(b, a, fullDomain, this);

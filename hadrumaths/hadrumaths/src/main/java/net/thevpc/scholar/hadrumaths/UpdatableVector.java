@@ -1,15 +1,15 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 
 import java.util.Collection;
 
 public class UpdatableVector<T> extends AbstractVector<T> {
     private static final long serialVersionUID = 1L;
     private final VectorUpdatableModel<T> model;
-    private final TypeName<T> componentType;
+    private final NTypeName<T> componentType;
 
-    public UpdatableVector(TypeName<T> componentType, VectorUpdatableModel<T> model, boolean row) {
+    public UpdatableVector(NTypeName<T> componentType, VectorUpdatableModel<T> model, boolean row) {
         super(row);
         this.model = model;
         this.componentType = componentType;
@@ -71,7 +71,7 @@ public class UpdatableVector<T> extends AbstractVector<T> {
     }
 
     @Override
-    public TypeName<T> getComponentType() {
+    public NTypeName<T> getComponentType() {
         return componentType;
     }
 

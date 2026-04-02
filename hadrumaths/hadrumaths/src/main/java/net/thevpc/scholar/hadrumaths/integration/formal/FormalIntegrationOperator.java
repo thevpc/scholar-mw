@@ -3,7 +3,7 @@ package net.thevpc.scholar.hadrumaths.integration.formal;
 
 import net.thevpc.nuts.elem.NElement;
 
-import net.thevpc.common.collections.ClassMapList;
+import net.thevpc.nuts.reflect.NClassPairMultiMap;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.integration.AbstractIntegrationOperator;
 import net.thevpc.scholar.hadrumaths.scalarproducts.formal.FormalScalarProductOperator;
@@ -25,7 +25,7 @@ import static net.thevpc.scholar.hadrumaths.Maths.*;
  */
 public class FormalIntegrationOperator extends AbstractIntegrationOperator {
     private final List<FormalIntegrationOperatorHasher> hashers = new ArrayList<FormalIntegrationOperatorHasher>();
-    private final ClassMapList<FormalIntegrationOperatorHasher> hashersMap = new ClassMapList<FormalIntegrationOperatorHasher>(FormalIntegrationOperatorHasher.class);
+    private final NClassPairMultiMap<Object,Object,FormalIntegrationOperatorHasher> hashersMap = NClassPairMultiMap.of(FormalIntegrationOperatorHasher.class);
 
     private final FormalScalarProductOperator formalOperator;
 

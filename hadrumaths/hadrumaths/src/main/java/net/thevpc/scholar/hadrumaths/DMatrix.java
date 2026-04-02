@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
@@ -387,7 +387,7 @@ public class DMatrix extends AbstractMatrix<Double> implements DoubleMatrix, Clo
     }
 
     @Override
-    public TypeName<Double> getComponentType() {
+    public NTypeName<Double> getComponentType() {
         return Maths.$DOUBLE;
     }
 

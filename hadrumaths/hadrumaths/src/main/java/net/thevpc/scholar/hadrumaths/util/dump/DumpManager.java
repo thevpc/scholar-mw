@@ -1,6 +1,7 @@
 package net.thevpc.scholar.hadrumaths.util.dump;
 
-import net.thevpc.common.collections.ClassMap;
+import net.thevpc.nuts.reflect.NClassMap;
+import net.thevpc.nuts.util.NCollections;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.FormatFactory;
 import net.thevpc.scholar.hadrumaths.format.ObjectFormatParamSet;
@@ -19,7 +20,7 @@ public class DumpManager {
     private DumpDelegate nullHandler = new NullDumpDelegate();
     private DumpDelegate defaultHandler = new ToStringDumpDelegate();
     private final DumpDelegate arrayHandler = new ArrayDumpDelegate();
-    private final ClassMap<DumpDelegate> registered = new ClassMap<DumpDelegate>(Object.class, DumpDelegate.class);
+    private final NClassMap<Object, DumpDelegate> registered = NClassMap.of(Object.class, DumpDelegate.class);
 
     {
         register(Dumpable.class, new DumpableDelegate());

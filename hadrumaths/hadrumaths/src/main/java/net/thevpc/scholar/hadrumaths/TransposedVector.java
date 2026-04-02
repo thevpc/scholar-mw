@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 
 /**
  * @author taha.bensalah@gmail.com on 7/21/16.
@@ -36,7 +36,7 @@ public class TransposedVector<T> extends CopyOnWriteVector<T> {
     }
 
     @Override
-    public TypeName<T> getComponentType() {
+    public NTypeName<T> getComponentType() {
         return other.getComponentType();
     }
 

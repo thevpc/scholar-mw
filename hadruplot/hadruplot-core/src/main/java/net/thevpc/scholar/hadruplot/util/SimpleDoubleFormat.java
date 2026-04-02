@@ -1,12 +1,13 @@
 package net.thevpc.scholar.hadruplot.util;
 
-import net.thevpc.common.util.DoubleFormat;
-import net.thevpc.common.util.PlatformUtils;
+import net.thevpc.nuts.text.NText;
+import net.thevpc.nuts.text.NTextFormat;
+import net.thevpc.nuts.util.NLiteral;
 
 import java.text.DecimalFormat;
 
-public class SimpleDoubleFormat implements DoubleFormat {
-    public static DoubleFormat INSTANCE = new SimpleDoubleFormat();
+public class SimpleDoubleFormat implements NTextFormat<Number> {
+    public static NTextFormat<Number> INSTANCE = new SimpleDoubleFormat();
 
     private DecimalFormat format;
     private DecimalFormat simpleFormat;
@@ -18,10 +19,14 @@ public class SimpleDoubleFormat implements DoubleFormat {
     }
 
     @Override
+    public NText toText(Number object) {
+        return NText.of(formatDouble(object.doubleValue()));
+    }
+
     public String formatDouble(double value) {
         if (Double.isNaN(value)) {
             return ("NaN");
-        } else if(PlatformUtils.isInt(value)){
+        } else if(NLiteral.of(value).asInt().isPresent()){
             return String.valueOf((int)value);
         } else {
             DecimalFormat f = format;

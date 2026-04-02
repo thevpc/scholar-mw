@@ -1,21 +1,18 @@
 package net.thevpc.scholar.hadruwaves;
 
 
+import net.thevpc.common.swing.util.LRUMap;
 import net.thevpc.nuts.elem.NElement;
 
 import net.thevpc.nuts.elem.NNumberElement;
 import net.thevpc.nuts.elem.NUpletElement;
-import net.thevpc.nuts.util.NLiteral;
-import net.thevpc.nuts.util.NNameFormat;
-import net.thevpc.nuts.util.NOptional;
-import net.thevpc.nuts.util.NStringUtils;
+import net.thevpc.nuts.util.*;
 import net.thevpc.scholar.hadrumaths.HSerializable;
 import net.thevpc.scholar.hadrumaths.Maths;
 
 import java.io.ObjectStreamException;
 import java.util.List;
 
-import net.thevpc.common.collections.LRUMap;
 
 public final class ModeIndex implements HSerializable {
     public final ModeType mtype;
@@ -23,7 +20,7 @@ public final class ModeIndex implements HSerializable {
     public final int n;
     private static boolean cacheEnabled =true;
     private static int cacheSize =10000;
-    private static final LRUMap<ModeIndex, ModeIndex> cache = new LRUMap<ModeIndex, ModeIndex>(cacheSize);
+    private static final NLRUMap<ModeIndex, ModeIndex> cache = NLRUMap.of(cacheSize);
 
     public static NOptional<ModeIndex> parse(NElement s) {
         if(s==null){

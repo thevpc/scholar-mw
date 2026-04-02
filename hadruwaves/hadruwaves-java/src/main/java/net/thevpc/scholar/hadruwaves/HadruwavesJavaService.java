@@ -1,8 +1,7 @@
 package net.thevpc.scholar.hadruwaves;
 
 
-import net.thevpc.common.mvn.PomId;
-import net.thevpc.common.mvn.PomIdResolver;
+import net.thevpc.nuts.artifact.NId;
 import net.thevpc.scholar.hadrumaths.HadrumathsService;
 import net.thevpc.scholar.hadrumaths.HadrumathsServiceDesc;
 
@@ -23,6 +22,6 @@ public class HadruwavesJavaService implements HadrumathsService {
   }
 
   private String getVersion() {
-    return PomIdResolver.resolvePomId(HadruwavesJavaService.class, new PomId("", "", "DEV")).getVersion();
+    return NId.getForClass(HadruwavesJavaService.class).map(x->x.getVersion().getValue()).orElse("DEV");
   }
 }

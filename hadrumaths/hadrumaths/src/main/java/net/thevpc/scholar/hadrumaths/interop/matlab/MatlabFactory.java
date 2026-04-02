@@ -1,6 +1,8 @@
 package net.thevpc.scholar.hadrumaths.interop.matlab;
 
-import net.thevpc.common.collections.ClassMap;
+import net.thevpc.nuts.reflect.NClassMap;
+import net.thevpc.nuts.text.NMsg;
+import net.thevpc.nuts.util.NAssert;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.interop.matlab.impl.*;
 import net.thevpc.scholar.hadrumaths.interop.matlab.params.*;
@@ -20,18 +22,13 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//import net.thevpc.scholar.math.functions.dfx.DDxyToDDx;
-
-//import net.thevpc.scholar.math.functions.DomainX;
-//import net.thevpc.scholar.math.functions.dfx.DDxIntegralX;
-
 /**
  * Created by IntelliJ IDEA. User: vpc Date: 23 juil. 2005 Time: 11:34:42 To
  * change this template use File | Settings | File Templates.
  */
 public class MatlabFactory extends AbstractFactory {
 
-    private static final ClassMap<ToMatlabString> map = new ClassMap<ToMatlabString>(Object.class, ToMatlabString.class, 12);
+    private static final NClassMap<Object,ToMatlabString> map = NClassMap.of(Object.class, ToMatlabString.class, 12);
     public static MatlabXFormat X = new MatlabXFormat("x");
     public static MatlabYFormat Y = new MatlabYFormat("y");
     public static MatlabZFormat Z = new MatlabZFormat("z");
@@ -107,7 +104,7 @@ public class MatlabFactory extends AbstractFactory {
 
     @SuppressWarnings("unchecked")
     public static String toMatlabString(Object o, ToMatlabStringParam... format) {
-        ToMatlabString best = map.getRequired(o.getClass());
+        ToMatlabString best= NAssert.requireNamedNonNull(map.get(o.getClass()), NMsg.ofC("FunctionDifferentiator for type "+o.getClass().getName()));
         return best.toMatlabString(o, format);
     }
 

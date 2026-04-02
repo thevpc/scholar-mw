@@ -1,9 +1,8 @@
 package net.thevpc.scholar.hadruplot.model;
 
 
-import net.thevpc.scholar.hadruplot.model.ValuesPlotModel;
-import net.thevpc.common.util.ArrayUtils;
-import net.thevpc.common.collections.DoubleArrayList;
+import net.thevpc.nuts.util.NArrays;
+import net.thevpc.nuts.util.NDoubleArrayList;
 import net.thevpc.scholar.hadruplot.util.PlotModelUtils;
 import net.thevpc.scholar.hadruplot.util.PlotUtils;
 
@@ -32,14 +31,14 @@ public class ValuesPlotXYComplexModelFace {
         y = PlotUtils.toValidOneDimArray(model.getY(), z.length);
 
         if (x.length == 0) {
-            x = z.length == 0 ? new double[0] : ArrayUtils.dsteps(0, z[0].length - 1, 1.0);
+            x = z.length == 0 ? new double[0] : NArrays.range(0, z[0].length - 1, 1.0);
         }
         if (y == null) {
-            y = z.length == 0 ? new double[0] : ArrayUtils.dsteps(0, z.length - 1, 1.0);
+            y = z.length == 0 ? new double[0] : NArrays.range(0, z.length - 1, 1.0);
         }
 
         title = model.getTitle();
-        DoubleArrayList yl = new DoubleArrayList(y.length);
+        NDoubleArrayList yl = new NDoubleArrayList(y.length);
         List<String> ys = new ArrayList<>(y.length);
         List<Object[]> zl = new ArrayList<>(y.length);
         for (int i = 0; i < y.length; i++) {
@@ -52,7 +51,7 @@ public class ValuesPlotXYComplexModelFace {
                 ys.add(PlotModelUtils.resolveYTitle(model, i));
             }
         }
-        initialIndexes = ArrayUtils.unboxIntegerList(initialIndexesList);
+        initialIndexes = NArrays.unboxInts(initialIndexesList);
         y = yl.toArray();
         z = zl.toArray(new Object[0][]);
         ytitles = ys.toArray(new String[0]);

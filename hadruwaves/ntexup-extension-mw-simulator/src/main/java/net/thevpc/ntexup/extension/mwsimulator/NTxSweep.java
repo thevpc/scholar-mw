@@ -6,6 +6,8 @@ import net.thevpc.ntexup.api.eval.NTxValue;
 import net.thevpc.ntexup.api.util.NTxNumberUtils;
 import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.nuts.elem.*;
+import net.thevpc.nuts.math.NNumber;
+import net.thevpc.nuts.util.NArrays;
 import net.thevpc.nuts.util.NNumberUtils;
 import net.thevpc.nuts.util.NOptional;
 
@@ -44,11 +46,11 @@ public class NTxSweep implements NToElement {
     public double[] doubleValues() {
         if (this.rangeFrom != null && this.rangeTo != null) {
             if (this.step != null) {
-                return NNumberUtils.dsteps(this.rangeFrom.doubleValue(), this.rangeTo.doubleValue(), this.step.doubleValue());
+                return NArrays.range(this.rangeFrom.doubleValue(), this.rangeTo.doubleValue(), this.step.doubleValue());
             } else if (this.count != null) {
-                return NNumberUtils.dtimes(this.rangeFrom.doubleValue(), this.rangeTo.doubleValue(), this.count.intValue());
+                return NArrays.linear(this.rangeFrom.doubleValue(), this.rangeTo.doubleValue(), this.count.intValue());
             } else {
-                return NNumberUtils.dtimes(this.rangeFrom.doubleValue(), this.rangeTo.doubleValue(), 2);
+                return NArrays.linear(this.rangeFrom.doubleValue(), this.rangeTo.doubleValue(), 2);
             }
         }
         return null;
@@ -61,17 +63,17 @@ public class NTxSweep implements NToElement {
             }
             if (this.step != null) {
                 if (this.rangeFrom instanceof Double || this.rangeTo instanceof Double) {
-                    return Arrays.stream(NNumberUtils.dsteps(this.rangeFrom.doubleValue(), this.rangeTo.doubleValue(), this.step.doubleValue()))
+                    return Arrays.stream(NArrays.range(this.rangeFrom.doubleValue(), this.rangeTo.doubleValue(), this.step.doubleValue()))
                             .boxed().toArray(Number[]::new);
                 }
-                return Arrays.stream(NNumberUtils.isteps(this.rangeFrom.intValue(), this.rangeTo.intValue(), this.step.intValue()))
+                return Arrays.stream(NArrays.range(this.rangeFrom.intValue(), this.rangeTo.intValue(), this.step.intValue()))
                         .boxed().toArray(Number[]::new);
             } else {
                 if (this.rangeFrom instanceof Double || this.rangeTo instanceof Double) {
-                    return Arrays.stream(NNumberUtils.dtimes(this.rangeFrom.doubleValue(), this.rangeTo.doubleValue(), this.count.intValue()))
+                    return Arrays.stream(NArrays.linear(this.rangeFrom.doubleValue(), this.rangeTo.doubleValue(), this.count.intValue()))
                             .boxed().toArray(Number[]::new);
                 }
-                return Arrays.stream(NNumberUtils.itimes(this.rangeFrom.intValue(), this.rangeTo.intValue(), this.count.intValue()))
+                return Arrays.stream(NArrays.linear(this.rangeFrom.intValue(), this.rangeTo.intValue(), this.count.intValue()))
                         .boxed().toArray(Number[]::new);
             }
         }

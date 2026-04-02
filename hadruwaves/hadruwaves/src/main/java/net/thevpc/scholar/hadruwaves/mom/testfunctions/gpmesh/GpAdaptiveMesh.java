@@ -4,8 +4,8 @@ import net.thevpc.nuts.elem.NElement;
 
 
 import net.thevpc.nuts.elem.NObjectElementBuilder;
+import net.thevpc.nuts.util.NMaps;
 import net.thevpc.scholar.hadrumaths.Domain;
-import net.thevpc.common.collections.MapUtils;
 import net.thevpc.scholar.hadrumaths.geom.*;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.symbolic.double2vector.DefaultDoubleToVector;
@@ -217,7 +217,7 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
                                         if (invariance == null || fct.isInvariant(invariance)) {
 
                                             fct= fct.setProperties(
-                                                    MapUtils.<String,Object>map(
+                                                    NMaps.of(
                                                             "Cell", partCounter,
                                                         "invarianceGp", (fct.isInvariant(Axis.X) ? "X" : "") + (fct.isInvariant(Axis.Y) ? "Y" : "")
                                                     )

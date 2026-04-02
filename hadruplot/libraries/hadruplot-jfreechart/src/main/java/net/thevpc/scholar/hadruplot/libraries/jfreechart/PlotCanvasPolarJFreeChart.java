@@ -4,7 +4,8 @@
  */
 package net.thevpc.scholar.hadruplot.libraries.jfreechart;
 
-import net.thevpc.common.util.MinMax;
+import net.thevpc.nuts.math.NDoubleRange;
+import net.thevpc.nuts.util.NUtils;
 import net.thevpc.scholar.hadruplot.model.PlotModel;
 import net.thevpc.scholar.hadruplot.extension.PlotModelProvider;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotModel;
@@ -38,7 +39,7 @@ public class PlotCanvasPolarJFreeChart extends PlotCanvasAnyDoubleJFreeChart {
     }
 
 
-    protected void prepareJFreeChart(JFreeChart chart, MinMax x_minmax) {
+    protected void prepareJFreeChart(JFreeChart chart, NDoubleRange x_minmax) {
         Plot plot = chart.getPlot();
         plot.setBackgroundPaint(Color.WHITE);
         if (plot instanceof PolarPlot) {
@@ -63,14 +64,14 @@ public class PlotCanvasPolarJFreeChart extends PlotCanvasAnyDoubleJFreeChart {
             _polarClockwise = (Boolean) vpm.getProperties().get("polarClockwise");
         }
         PolarPlot polarPlot = (PolarPlot) chart.getPlot();
-        boolean clockwise = config.clockwise == null ? (_polarClockwise == null ? true : _polarClockwise.booleanValue()) : config.clockwise.get(false);
-        double polarAngleOffset = config.polarAngleOffset == null ? (_polarAngleOffset == null ? 0 : _polarAngleOffset.doubleValue()) : config.polarAngleOffset.get(0);
+        boolean clockwise = config.clockwise == null ? (_polarClockwise == null ? true : _polarClockwise.booleanValue()) : NUtils.firstNonNull(config.clockwise.get(),false);
+        double polarAngleOffset = config.polarAngleOffset == null ? (_polarAngleOffset == null ? 0 : _polarAngleOffset.doubleValue()) : NUtils.firstNonNull(config.polarAngleOffset.get(),0.0);
         polarPlot.setCounterClockwise(!clockwise); // changes the direction of the ticks
         polarPlot.setAxisLocation(PolarAxisLocation.EAST_BELOW); // defines the placement of the axis
         polarPlot.setAngleOffset(polarAngleOffset);
         final DefaultPolarItemRenderer renderer = (DefaultPolarItemRenderer) polarPlot.getRenderer();
         //renderer.setSeriesFilled(2, true);
-        renderer.setShapesVisible(config.shapesVisible.get(false) || config.alternateNode.get(false));
+        renderer.setShapesVisible(NUtils.firstNonNull(config.shapesVisible.get(),false) || NUtils.firstNonNull(config.alternateNode.get(),false));
 
         return chart;
     }

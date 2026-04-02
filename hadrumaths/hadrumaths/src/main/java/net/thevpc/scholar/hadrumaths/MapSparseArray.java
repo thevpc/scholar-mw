@@ -1,23 +1,25 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+
+
+import net.thevpc.nuts.reflect.NTypeName;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class MapSparseArray<T> implements SparseArray<T> {
-    private final TypeName<T> componentType;
+    private final NTypeName<T> componentType;
     private Map<Integer, T> values;
     private int maxIndex = -1;
     private int size = -1;
     private int initialSize = 0;
 
-    public MapSparseArray(TypeName<T> componentType, int size) {
+    public MapSparseArray(NTypeName<T> componentType, int size) {
         this.size = size;
         this.componentType = componentType;
     }
 
-    public MapSparseArray(TypeName<T> componentType, int size, int initialSize) {
+    public MapSparseArray(NTypeName<T> componentType, int size, int initialSize) {
         this.initialSize = initialSize;
         this.size = size;
         this.componentType = componentType;
@@ -31,7 +33,7 @@ public class MapSparseArray<T> implements SparseArray<T> {
     }
 
     @Override
-    public TypeName<T> getComponentType() {
+    public NTypeName<T> getComponentType() {
         return componentType;
     }
 

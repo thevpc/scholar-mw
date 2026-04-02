@@ -1,7 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.mvn.PomId;
-import net.thevpc.common.mvn.PomIdResolver;
+import net.thevpc.nuts.artifact.NId;
 import net.thevpc.scholar.hadrumaths.util.LogUtils;
 
 import java.util.logging.Level;
@@ -12,7 +11,7 @@ public class HadrumathsInitializerService implements HadrumathsService {
     private static final Logger log = Logger.getLogger(HadrumathsInitializerService.class.getName());
 
     public static String getVersion() {
-        return PomIdResolver.resolvePomId(HadrumathsInitializerService.class, new PomId("", "", "DEV")).getVersion();
+        return NId.getForClass(HadrumathsInitializerService.class).map(x->x.getVersion().getValue()).orElse("DEV");
     }
 
     @Override

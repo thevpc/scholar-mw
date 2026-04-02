@@ -5,7 +5,7 @@
  */
 package net.thevpc.scholar.hadrumaths.plot.d3;
 
-import net.thevpc.common.util.MinMax;
+import net.thevpc.nuts.math.NDoubleRange;
 import net.thevpc.scholar.hadrumaths.BoundValue;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.geom.Point;
@@ -117,15 +117,14 @@ public class BoundDomain {
         double _ymax = this.ymax.getValue();
         double _zmin = this.zmin.getValue();
         double _zmax = this.zmax.getValue();
-        MinMax mm=new MinMax();
-        mm.setInfinite(false);
-        mm.registerValue(_xmin);
-        mm.registerValue(_xmax);
-        mm.registerValue(_ymin);
-        mm.registerValue(_ymax);
-        mm.registerValue(_zmin);
-        mm.registerValue(_zmax);
-        Domain inf=Domain.ofBounds(mm.getMin(), mm.getMax()).expandPercent(infiniteExpansion);
+        NDoubleRange mm=NDoubleRange.ofFinite();
+        mm.add(_xmin);
+        mm.add(_xmax);
+        mm.add(_ymin);
+        mm.add(_ymax);
+        mm.add(_zmin);
+        mm.add(_zmax);
+        Domain inf=Domain.ofBounds(mm.min(), mm.max()).expandPercent(infiniteExpansion);
         double negInfinity=inf.xmin();
         double posInfinity=inf.xmax();
         if(negInfinity==Double.NEGATIVE_INFINITY){

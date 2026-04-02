@@ -1,28 +1,28 @@
 package net.thevpc.scholar.hadrumaths.util;
 
-import net.thevpc.common.util.ObjectFactory;
 import net.thevpc.scholar.hadrumaths.Maths;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class RandomList<T> {
     double[] indexes = null;
     double x = 0;
     private final List<RandomItem<T>> all = new ArrayList<>();
 
-    public RandomList<T> addIf(boolean cond, double weigth, ObjectFactory<T> a) {
+    public RandomList<T> addIf(boolean cond, double weigth, Supplier<T> a) {
         if (cond) {
             add(weigth, a);
         }
         return this;
     }
 
-    public RandomList<T> add(double weigth, ObjectFactory<T> a) {
+    public RandomList<T> add(double weigth, Supplier<T> a) {
         return add(new RandomItem(weigth) {
             @Override
             public Object create() {
-                return a.create();
+                return a.get();
             }
         });
     }
@@ -33,14 +33,14 @@ public class RandomList<T> {
         return this;
     }
 
-    public RandomList<T> addIf(boolean cond, ObjectFactory<T> a) {
+    public RandomList<T> addIf(boolean cond, Supplier<T> a) {
         if (cond) {
             add(a);
         }
         return this;
     }
 
-    public RandomList<T> add(ObjectFactory<T> a) {
+    public RandomList<T> add(Supplier<T> a) {
         return add(1, a);
     }
 

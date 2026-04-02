@@ -4,7 +4,7 @@
  */
 package net.thevpc.scholar.hadruplot.libraries.jfreechart;
 
-import net.thevpc.common.util.MinMax;
+import net.thevpc.nuts.math.NDoubleRange;
 import net.thevpc.scholar.hadruplot.extension.PlotModelProvider;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotModel;
 import org.jfree.chart.ChartUtils;
@@ -14,7 +14,6 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.VectorRenderer;
 import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.data.xy.VectorXYDataset;
-//import org.jfree.ui.RectangleInsets;
 
 import java.awt.*;
 
@@ -37,7 +36,7 @@ public class PlotCanvasVectorJFreeChart extends PlotCanvasAnyComplexJFreeChart {
     }
 
 
-    protected void prepareJFreeChart(JFreeChart chart, MinMax x_minmax) {
+    protected void prepareJFreeChart(JFreeChart chart, NDoubleRange x_minmax) {
 //        ValuesPlotModel model = (ValuesPlotModel) plotModelProvider.getModel();
         XYPlot categoryPlot = chart.getXYPlot();
 //        categoryPlot.setRenderer(0,prepareXYRenderer());

@@ -5,8 +5,8 @@
  */
 package net.thevpc.scholar.hadruplot.containers;
 
+import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.scholar.hadruplot.extension.PlotWindowContainerFactory;
-import net.thevpc.common.strings.StringUtils;
 import net.thevpc.common.swing.SwingUtilities3;
 
 import javax.swing.*;
@@ -110,7 +110,7 @@ public abstract class AbstractPlotWindowManager implements PlotWindowManager {
     }
 
     protected String validateTitle(String s) {
-        if (StringUtils.isBlank(s)) {
+        if (NBlankable.isBlank(s)) {
             s = "Figure";
         }
         return s;

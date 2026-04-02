@@ -9,10 +9,10 @@ import net.thevpc.common.swing.file.FileDropListener;
 import net.thevpc.common.swing.file.FileSelectedListener;
 import net.thevpc.common.swing.win.WindowInfo;
 import net.thevpc.common.swing.win.WindowInfoListener;
-import net.thevpc.common.strings.StringUtils;
 import net.thevpc.common.swing.*;
 import net.thevpc.common.swing.win.InternalWindowsHelper;
 import net.thevpc.common.swing.win.WindowPath;
+import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.scholar.hadruplot.actions.AbstractPlotAction;
 
 import javax.swing.*;
@@ -215,10 +215,10 @@ public class DefaultPlotConsoleFrame extends JFrame implements PlotConsoleFrame{
                 if (ee.getKey().equals("/")) {
 
                 } else {
-                    List<String> split = new ArrayList<>(Arrays.asList(StringUtils.split(ee.getKey(), "/")));
+                    List<String> split = NStringUtils.split(ee.getKey(), "/");
                     String nn = split.get(split.size() - 1);
                     split.remove(split.size() - 1);
-                    String pp = StringUtils.join( "/",split);
+                    String pp = NStringUtils.pjoin( "/",split.toArray(new String[0]));
                     PlotConsoleMenu e = new PlotConsoleMenu(nn, nn, pp, 0);
                     e.setInitialIndex(ee.getValue());
                     menusToCreate.add(e);

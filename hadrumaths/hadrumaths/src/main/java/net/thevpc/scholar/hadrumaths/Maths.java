@@ -5,11 +5,17 @@ import net.thevpc.jeep.JeepImported;
 import net.thevpc.common.mon.MonitoredAction;
 import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.common.mon.ProgressMonitors;
-import net.thevpc.common.util.*;
 import net.thevpc.nuts.Nuts;
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.math.NIndexSelectionStrategy;
 import net.thevpc.nuts.reflect.NReflectUtils;
+import net.thevpc.nuts.reflect.NTypeName;
+import net.thevpc.nuts.reflect.NTypeNamePlatformDomain;
+import net.thevpc.nuts.text.NTextFormat;
 import net.thevpc.nuts.time.NChronometer;
+import net.thevpc.nuts.util.NArrays;
+import net.thevpc.nuts.util.NMemoryMeter;
+import net.thevpc.nuts.util.NMemorySnapshot;
 import net.thevpc.scholar.hadrumaths.cache.PersistenceCacheBuilder;
 import net.thevpc.scholar.hadrumaths.expeval.ExpressionManagerFactory;
 import net.thevpc.scholar.hadrumaths.geom.Geometry;
@@ -246,28 +252,28 @@ public final class Maths {
 //        }
 //        throw new IllegalArgumentException("Unknown Axis "+axis);
 //    }
-    public static final TypeName<String> $STRING = new TypeName(String.class.getName());
-    public static final TypeName<Complex> $COMPLEX = new TypeName(Complex.class.getName());
-    public static final TypeName<ComplexMatrix> $MATRIX = new TypeName(ComplexMatrix.class.getName());
-    public static final TypeName<VDiscrete> $VDISCRETE = new TypeName(VDiscrete.class.getName());
-    public static final TypeName<ComplexVector> $VECTOR = new TypeName(ComplexVector.class.getName());
-    public static final TypeName<Matrix<Complex>> $CMATRIX = new TypeName(Matrix.class.getName(), $COMPLEX);
-    public static final TypeName<Vector<Complex>> $CVECTOR = new TypeName(Vector.class.getName(), $COMPLEX);
-    public static final TypeName<Double> $DOUBLE = new TypeName(Double.class.getName());
-    public static final TypeName<Boolean> $BOOLEAN = new TypeName(Boolean.class.getName());
-    public static final TypeName<Point> $POINT = new TypeName(Point.class.getName());
-    public static final TypeName<File> $FILE = new TypeName(File.class.getName());
+    public static final NTypeName<String> $STRING = new NTypeName(String.class.getName());
+    public static final NTypeName<Complex> $COMPLEX = new NTypeName(Complex.class.getName());
+    public static final NTypeName<ComplexMatrix> $MATRIX = new NTypeName(ComplexMatrix.class.getName());
+    public static final NTypeName<VDiscrete> $VDISCRETE = new NTypeName(VDiscrete.class.getName());
+    public static final NTypeName<ComplexVector> $VECTOR = new NTypeName(ComplexVector.class.getName());
+    public static final NTypeName<Matrix<Complex>> $CMATRIX = new NTypeName(Matrix.class.getName(), $COMPLEX);
+    public static final NTypeName<Vector<Complex>> $CVECTOR = new NTypeName(Vector.class.getName(), $COMPLEX);
+    public static final NTypeName<Double> $DOUBLE = new NTypeName(Double.class.getName());
+    public static final NTypeName<Boolean> $BOOLEAN = new NTypeName(Boolean.class.getName());
+    public static final NTypeName<Point> $POINT = new NTypeName(Point.class.getName());
+    public static final NTypeName<File> $FILE = new NTypeName(File.class.getName());
     //</editor-fold>
-    public static final TypeName<Integer> $INTEGER = new TypeName(Integer.class.getName());
-    public static final TypeName<Long> $LONG = new TypeName(Long.class.getName());
-    public static final TypeName<Expr> $EXPR = new TypeName(Expr.class.getName());
-    public static final TypeName<Vector<Complex>> $CLIST = new TypeName(Vector.class.getName(), $COMPLEX);
-    public static final TypeName<Vector<Expr>> $EVECTOR = new TypeName(Vector.class.getName(), $EXPR);
-    public static final TypeName<Vector<Double>> $DVECTOR = new TypeName(Vector.class.getName(), $DOUBLE);
-    public static final TypeName<Vector<Vector<Double>>> $DLIST2 = new TypeName(Vector.class.getName(), $DVECTOR);
-    public static final TypeName<Vector<Integer>> $IVECTOR = new TypeName(Vector.class.getName(), $INTEGER);
-    public static final TypeName<Vector<Boolean>> $BVECTOR = new TypeName(Vector.class.getName(), $BOOLEAN);
-    public static final TypeName<Vector<ComplexMatrix>> $MVECTOR = new TypeName(Vector.class.getName(), $MATRIX);
+    public static final NTypeName<Integer> $INTEGER = new NTypeName(Integer.class.getName());
+    public static final NTypeName<Long> $LONG = new NTypeName(Long.class.getName());
+    public static final NTypeName<Expr> $EXPR = new NTypeName(Expr.class.getName());
+    public static final NTypeName<Vector<Complex>> $CLIST = new NTypeName(Vector.class.getName(), $COMPLEX);
+    public static final NTypeName<Vector<Expr>> $EVECTOR = new NTypeName(Vector.class.getName(), $EXPR);
+    public static final NTypeName<Vector<Double>> $DVECTOR = new NTypeName(Vector.class.getName(), $DOUBLE);
+    public static final NTypeName<Vector<Vector<Double>>> $DLIST2 = new NTypeName(Vector.class.getName(), $DVECTOR);
+    public static final NTypeName<Vector<Integer>> $IVECTOR = new NTypeName(Vector.class.getName(), $INTEGER);
+    public static final NTypeName<Vector<Boolean>> $BVECTOR = new NTypeName(Vector.class.getName(), $BOOLEAN);
+    public static final NTypeName<Vector<ComplexMatrix>> $MVECTOR = new NTypeName(Vector.class.getName(), $MATRIX);
     public static final SimpleDateFormat UNIVERSAL_DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     public static final MathsConfig Config = MathsConfig.INSTANCE;
     public static final StoreManager<ComplexMatrix> MATRIX_STORE_MANAGER = new ComplexMatrixStoreManager();
@@ -634,7 +640,7 @@ public final class Maths {
         return Config.getComplexMatrixFactory().newRandomImag(m, n);
     }
 
-    public static <T> Matrix<T> loadTMatrix(TypeName<T> componentType, File file) throws UncheckedIOException {
+    public static <T> Matrix<T> loadTMatrix(NTypeName<T> componentType, File file) throws UncheckedIOException {
         if (componentType.equals($COMPLEX)) {
             return (Matrix<T>) Config.getComplexMatrixFactory().load(file);
         }
@@ -665,7 +671,7 @@ public final class Maths {
         return loadOrEval($MATRIX, file, item);
     }
 
-    public static <T> T loadOrEval(TypeName<T> ofType, File file, Supplier<T> item) throws UncheckedIOException {
+    public static <T> T loadOrEval(NTypeName<T> ofType, File file, Supplier<T> item) throws UncheckedIOException {
         StoreManager<T> t = TStoreManagerFactory.create(ofType);
         if (file.exists()) {
             $log.log(Level.INFO, "loading " + file.getAbsolutePath() + " ...");
@@ -684,7 +690,7 @@ public final class Maths {
     }
 
     public static NChronometer chrono() {
-        return NChronometer.startNow();
+        return NChronometer.of();
     }
 
     public static ComplexVector loadOrEvalVector(String file, Supplier<Vector<Complex>> item) throws UncheckedIOException {
@@ -700,7 +706,7 @@ public final class Maths {
     }
 
     public static <T> Matrix<T> loadOrEvalTMatrix(File file, Supplier<Matrix<T>> item) throws UncheckedIOException {
-        return loadOrEval((TypeName) $CMATRIX, file, item);
+        return loadOrEval((NTypeName) $CMATRIX, file, item);
     }
 
     public static <T> Vector<T> loadOrEvalTVector(String file, Supplier<Vector<T>> item) throws UncheckedIOException {
@@ -813,23 +819,23 @@ public final class Maths {
         return ts;
     }
 
-    public static <T> Vector<T> vector(TypeName<T> typeName, boolean row, int initialSize) {
-        if (typeName.equals($EXPR)) {
+    public static <T> Vector<T> vector(NTypeName<T> NTypeName, boolean row, int initialSize) {
+        if (NTypeName.equals($EXPR)) {
             return (Vector<T>) evector(row, initialSize);
         }
-        if (typeName.equals($DOUBLE)) {
+        if (NTypeName.equals($DOUBLE)) {
             return (Vector<T>) dvector(row, initialSize);
         }
-        if (typeName.equals($INTEGER)) {
+        if (NTypeName.equals($INTEGER)) {
             return (Vector<T>) ivector(row, initialSize);
         }
-        if (typeName.equals($LONG)) {
+        if (NTypeName.equals($LONG)) {
             return (Vector<T>) lvector(row, initialSize);
         }
-        if (typeName.equals($BOOLEAN)) {
+        if (NTypeName.equals($BOOLEAN)) {
             return (Vector<T>) bvector(row, initialSize);
         }
-        return new ArrayVector<T>(typeName, row, initialSize);
+        return new ArrayVector<T>(NTypeName, row, initialSize);
     }
 
     public static ExprVector evector(boolean row, int size) {
@@ -852,7 +858,7 @@ public final class Maths {
         return new ArrayBooleanVector(row, size);
     }
 
-    public static <T> Vector<T> columnVector(TypeName<T> cls, T... elements) {
+    public static <T> Vector<T> columnVector(NTypeName<T> cls, T... elements) {
         return new ReadOnlyVector<T>(
                 cls, false, new VectorModel<T>() {
             @Override
@@ -868,21 +874,21 @@ public final class Maths {
         ).copy();
     }
 
-    public static <T> Vector<T> columnVector(TypeName<T> cls, int rows, VectorCell<T> cellFactory) {
+    public static <T> Vector<T> columnVector(NTypeName<T> cls, int rows, VectorCell<T> cellFactory) {
         return columnVector(cls, new VectorModelFromCell<>(rows, cellFactory));
     }
 
-    public static <T> Vector<T> columnVector(TypeName<T> cls, VectorModel<T> cellFactory) {
+    public static <T> Vector<T> columnVector(NTypeName<T> cls, VectorModel<T> cellFactory) {
         return new ReadOnlyVector<T>(
                 cls, false, cellFactory
         );
     }
 
-    public static <T> Vector<T> rowTVector(TypeName<T> cls, int rows, VectorCell<T> cellFactory) {
+    public static <T> Vector<T> rowTVector(NTypeName<T> cls, int rows, VectorCell<T> cellFactory) {
         return rowTVector(cls, new VectorModelFromCell<>(rows, cellFactory));
     }
 
-    public static <T> Vector<T> rowTVector(TypeName<T> cls, VectorModel<T> cellFactory) {
+    public static <T> Vector<T> rowTVector(NTypeName<T> cls, VectorModel<T> cellFactory) {
         return new ReadOnlyVector<>(
                 cls, true, cellFactory
         );
@@ -949,28 +955,28 @@ public final class Maths {
      * @param strategy
      * @return
      */
-    public static double[] dtimes(double min, double max, int times, int maxTimes, IndexSelectionStrategy strategy) {
-        return net.thevpc.common.util.ArrayUtils.subArray1(dtimes(min, max, maxTimes), times, strategy);
+    public static double[] dtimes(double min, double max, int times, int maxTimes, NIndexSelectionStrategy strategy) {
+        return NArrays.sample(dtimes(min, max, maxTimes), times, strategy);
     }
 
     public static double[] dtimes(double min, double max, int times) {
-        return net.thevpc.common.util.ArrayUtils.dtimes(min, max, times);
+        return NArrays.linear(min, max, times);
     }
 
     public static float[] ftimes(float min, float max, int times) {
-        return net.thevpc.common.util.ArrayUtils.ftimes(min, max, times);
+        return NArrays.linear(min, max, times);
     }
 
     public static long[] ltimes(long min, long max, int times) {
-        return net.thevpc.common.util.ArrayUtils.ltimes(min, max, times);
+        return NArrays.linear(min, max, times);
     }
 
     public static long[] lsteps(long min, long max, long step) {
-        return net.thevpc.common.util.ArrayUtils.lsteps(min, max, step);
+        return NArrays.range(min, max, step);
     }
 
-    public static int[] itimes(int min, int max, int times, int maxTimes, IndexSelectionStrategy strategy) {
-        return net.thevpc.common.util.ArrayUtils.itimes(min, max, times, maxTimes, strategy);
+    public static int[] itimes(int min, int max, int times, int maxTimes, NIndexSelectionStrategy strategy) {
+        return NArrays.linear(min, max, times, maxTimes, strategy);
     }
 
     public static double[] dsteps(int max) {
@@ -978,7 +984,7 @@ public final class Maths {
     }
 
     public static double[] dsteps(double min, double max, double step) {
-        return net.thevpc.common.util.ArrayUtils.dsteps(min, max, step);
+        return NArrays.range(min, max, step);
     }
 
     public static double[] dstepsFrom(double min, int times, double step) {
@@ -993,20 +999,20 @@ public final class Maths {
     }
 
     public static double dstepsLength(double min, double max, double step) {
-        return net.thevpc.common.util.ArrayUtils.dstepsLength(min, max, step);
+        return NArrays.rangeSize(min, max, step);
     }
 
     public static double dstepsElement(double min, double max, double step, int index) {
-        return net.thevpc.common.util.ArrayUtils.dstepsElement(min, max, step, index);
+        return NArrays.rangeAt(min, max, step, index);
     }
 
     //
     public static float[] fsteps(float min, float max, float step) {
-        return net.thevpc.common.util.ArrayUtils.fsteps(min, max, step);
+        return NArrays.range(min, max, step);
     }
 
     public static int[] isteps(int min, int max, int step, IntPredicate filter) {
-        return net.thevpc.common.util.ArrayUtils.isteps(min, max, step, filter);
+        return NArrays.range(min, max, step, filter);
     }
 
     public static int[] isteps(int max) {
@@ -1014,7 +1020,7 @@ public final class Maths {
     }
 
     public static int[] isteps(int min, int max, int step) {
-        return net.thevpc.common.util.ArrayUtils.isteps(min, max, step);
+        return NArrays.range(min, max, step);
     }
 
     public static int[] isteps(int min, int max) {
@@ -1026,7 +1032,7 @@ public final class Maths {
     }
 
     public static int[] itimes(int min, int max, int times) {
-        return net.thevpc.common.util.ArrayUtils.itimes(min, max, times);
+        return NArrays.linear(min, max, times);
     }
 
     /**
@@ -1759,7 +1765,7 @@ public final class Maths {
     }
 
     public static boolean isInt(double d) {
-        return net.thevpc.common.util.PlatformUtils.isInt(d);
+        return d==((int)d);
     }
 
     /**
@@ -3186,24 +3192,24 @@ public final class Maths {
         return vector($BVECTOR, false, 0);
     }
 
-    public static <T> Vector<T> vector(TypeName<T> typeName, int initialSize) {
-        return vector(typeName, false, initialSize);
+    public static <T> Vector<T> vector(NTypeName<T> NTypeName, int initialSize) {
+        return vector(NTypeName, false, initialSize);
     }
 
-    public static <T> Vector<T> vectorro(TypeName<T> typeName, boolean row, VectorModel<T> model) {
-        if (typeName.equals(Maths.$DOUBLE)) {
+    public static <T> Vector<T> vectorro(NTypeName<T> NTypeName, boolean row, VectorModel<T> model) {
+        if (NTypeName.equals(Maths.$DOUBLE)) {
             return (Vector<T>) new ArrayDoubleVector.ReadOnlyDoubleVector(row, (VectorModel<Double>) model);
         }
-        if (typeName.equals(Maths.$INTEGER)) {
+        if (NTypeName.equals(Maths.$INTEGER)) {
             return (Vector<T>) new ArrayIntVector.ReadOnlyIntVector(row, (VectorModel<Integer>) model);
         }
-        if (typeName.equals(Maths.$LONG)) {
+        if (NTypeName.equals(Maths.$LONG)) {
             return (Vector<T>) new ArrayLongVector.ReadOnlyLongVector(row, (VectorModel<Long>) model);
         }
-        if (typeName.equals(Maths.$BOOLEAN)) {
+        if (NTypeName.equals(Maths.$BOOLEAN)) {
             return (Vector<T>) new ArrayBooleanVector.ReadOnlyBooleanVector(row, (VectorModel<Boolean>) model);
         }
-        return new ReadOnlyVector<T>(typeName, row, model);
+        return new ReadOnlyVector<T>(NTypeName, row, model);
     }
 
     public static <T> Vector<T> list(Vector<T> vector) {
@@ -3214,8 +3220,8 @@ public final class Maths {
         return exprs;
     }
 
-    public static <T> Vector<T> vector(TypeName<T> typeName) {
-        return vector(typeName, false, 0);
+    public static <T> Vector<T> vector(NTypeName<T> NTypeName) {
+        return vector(NTypeName, false, 0);
     }
 
     public static ExprVector evector(ComplexMatrix vector) {
@@ -3338,23 +3344,23 @@ public final class Maths {
         return new ArrayLongVector(false, size);
     }
 
-    public static <T> T sum(TypeName<T> ofType, T... arr) {
+    public static <T> T sum(NTypeName<T> ofType, T... arr) {
         return MathsExpr.sum(ofType, arr);
     }
 
-    public static <T> T sum(TypeName<T> ofType, VectorModel<T> arr) {
+    public static <T> T sum(NTypeName<T> ofType, VectorModel<T> arr) {
         return MathsExpr.sum(ofType, arr);
     }
 
-    public static <T> T sum(TypeName<T> ofType, int size, VectorCell<T> arr) {
+    public static <T> T sum(NTypeName<T> ofType, int size, VectorCell<T> arr) {
         return MathsExpr.sum(ofType, size, arr);
     }
 
-    public static <T> T mul(TypeName<T> ofType, T... arr) {
+    public static <T> T mul(NTypeName<T> ofType, T... arr) {
         return MathsExpr.mul(ofType, arr);
     }
 
-    public static <T> T mul(TypeName<T> ofType, VectorModel<T> arr) {
+    public static <T> T mul(NTypeName<T> ofType, VectorModel<T> arr) {
         return MathsExpr.mul(ofType, arr);
     }
 
@@ -3477,11 +3483,11 @@ public final class Maths {
         });
     }
 
-    public static <T> Matrix<T> tmatrix(TypeName<T> ofType, int rows, int columns, MatrixCell<T> model) {
+    public static <T> Matrix<T> tmatrix(NTypeName<T> ofType, int rows, int columns, MatrixCell<T> model) {
         return tmatrix(ofType, new MatrixCellToModel<>(rows, columns, model));
     }
 
-    public static <T> Matrix<T> tmatrix(TypeName<T> ofType, MatrixModel<T> model) {
+    public static <T> Matrix<T> tmatrix(NTypeName<T> ofType, MatrixModel<T> model) {
         return new ReadOnlyMatrix<T>(ofType, model);
     }
 
@@ -3645,7 +3651,7 @@ public final class Maths {
     }
 
     public static <T> Vector<T> addAll(Vector<T> e, T... expressions) {
-        TypeName<T> st = e.getComponentType();
+        NTypeName<T> st = e.getComponentType();
         Vector<T> n = vector(st);
         VectorSpace<T> s = getVectorSpace(st);
         for (T x : e) {
@@ -3656,7 +3662,7 @@ public final class Maths {
     }
 
     public static <T> Vector<T> mulAll(Vector<T> e, T... expressions) {
-        TypeName<T> st = e.getComponentType();
+        NTypeName<T> st = e.getComponentType();
         Vector<T> n = vector(st);
         VectorSpace<T> s = getVectorSpace(st);
         for (T x : e) {
@@ -3799,16 +3805,16 @@ public final class Maths {
         return memoryInfo().toString();
     }
 
-    public static MemoryInfo memoryInfo() {
-        return new MemoryInfo();
+    public static NMemorySnapshot memoryInfo() {
+        return NMemorySnapshot.now();
     }
 
     public static String formatMetric(double value) {
-        return Config.getMetricFormatter().format(value);
+        return Config.getMetricFormatter().toString(value);
     }
 
-    public static MemoryMeter memoryMeter() {
-        return new MemoryMeter();
+    public static NMemoryMeter memoryMeter() {
+        return NMemoryMeter.of();
     }
 
     public static long inUseMemory() {
@@ -3822,20 +3828,20 @@ public final class Maths {
     }
 
     public static String formatFrequency(double frequency) {
-        return Config.getFrequencyFormatter().format(frequency);
+        return Config.getFrequencyFormatter().toString(frequency);
     }
 
     public static String formatDimension(double dimension) {
-        return Config.getMetricFormatter().format(dimension);
+        return Config.getMetricFormatter().toString(dimension);
     }
 
-    public static String formatPeriodNanos(long period) {
-        return Config.getTimePeriodFormat().formatNanos(period);
-    }
-
-    public static String formatPeriodMillis(long period) {
-        return Config.getTimePeriodFormat().formatMillis(period);
-    }
+//    public static String formatPeriodNanos(long period) {
+//        return Config.getTimePeriodFormat().formatNanos(period);
+//    }
+//
+//    public static String formatPeriodMillis(long period) {
+//        return Config.getTimePeriodFormat().formatMillis(period);
+//    }
 
     public static int sizeOf(Class src) {
         return UnsafeHandler.get().sizeOf(src);
@@ -3855,30 +3861,29 @@ public final class Maths {
     }
 
     public static NChronometer chrono(String name) {
-        return NChronometer.startNow(name);
+        return NChronometer.of(name);
     }
 
     public static NChronometer chrono(String name, Runnable r) {
         PlatformUtils.gc2();
-        MemoryInfo memoryInfoBefore = Maths.memoryInfo();
-        NChronometer c = NChronometer.startNow();
+        NMemoryMeter m = NMemoryMeter.of();
+        NChronometer c = NChronometer.of();
         r.run();
         c.stop();
-        MemoryInfo memoryInfoAfter = Maths.memoryInfo();
-
+        m.stop();
         PlatformUtils.gc2();
-        $log.log(Level.INFO, name + " : time= " + c + "  mem-usage= " + Maths.formatMemory(memoryInfoAfter.diff(memoryInfoBefore).inUseMemory()));
+        $log.log(Level.INFO, name + " : time= " + c + "  mem-usage= " + Maths.formatMemory(m.inUseMemory()));
         return c;
     }
 
     public static String formatMemory(long bytes) {
-        return Config.getMemorySizeFormatter().format(bytes);
+        return Config.getMemorySizeFormatter().toString(bytes);
     }
 
     public static <V> V chrono(String name, Callable<V> r) {
         PlatformUtils.gc2();
-        MemoryInfo memoryInfoBefore = Maths.memoryInfo();
-        NChronometer c = NChronometer.startNow();
+        NMemoryMeter m = NMemoryMeter.of();
+        NChronometer c = NChronometer.of();
         V v = null;
         try {
             v = r.call();
@@ -3886,9 +3891,9 @@ public final class Maths {
             throw new RuntimeException(ex);
         }
         c.stop();
-        MemoryInfo memoryInfoAfter = Maths.memoryInfo();
+        m.stop();
         PlatformUtils.gc2();
-        $log.log(Level.INFO, name + " : time= " + c + "  mem-usage= " + Maths.formatMemory(memoryInfoAfter.diff(memoryInfoBefore).inUseMemory()));
+        $log.log(Level.INFO, name + " : time= " + c + "  mem-usage= " + Maths.formatMemory(m.inUseMemory()));
         return v;
     }
 
@@ -3897,29 +3902,29 @@ public final class Maths {
     }
 
     public static NChronometer chrono(Runnable r) {
-        NChronometer c = NChronometer.startNow();
+        NChronometer c = NChronometer.of();
         r.run();
         return c.stop();
     }
 
-    public static DoubleFormat percentFormat() {
+    public static NTextFormat<Number> percentFormat() {
         return Config.getPercentFormat();
     }
 
-    public static DoubleFormat frequencyFormat() {
+    public static NTextFormat<Number> frequencyFormat() {
         return Config.getFrequencyFormatter();
     }
 
-    public static DoubleFormat metricFormat() {
+    public static NTextFormat<Number> metricFormat() {
         return Config.getMetricFormatter();
     }
 
-    public static DoubleFormat memoryFormat() {
+    public static NTextFormat<Number> memoryFormat() {
         return Config.getMemorySizeFormatter();
     }
 
-    public static DoubleFormat dblformat(String format) {
-        return DoubleFormatterFactory.create(format);
+    public static NTextFormat<Number> dblformat(String format) {
+        return NTextFormat.ofNumber(format);
     }
 
     public static double[] resizePickFirst(double[] array, int newSize) {
@@ -3934,8 +3939,8 @@ public final class Maths {
         return coll.toArray((T[]) Array.newInstance(t, coll.size()));
     }
 
-    public static <T> T[] toArray(TypeName<T> t, Collection<T> coll) {
-        return coll.toArray((T[]) Array.newInstance(t.getTypeClass(), coll.size()));
+    public static <T> T[] toArray(NTypeName<T> t, Collection<T> coll) {
+        return coll.toArray((T[]) Array.newInstance(NTypeNamePlatformDomain.of().getTypeClass(t), coll.size()));
     }
 
     public static double rerr(double a, double b) {
@@ -4012,24 +4017,24 @@ public final class Maths {
         return new EMatrixFromMatrix(t);
     }
 
-    public static <T> VectorSpace<T> getVectorSpace(TypeName<T> cls) {
-        if ($COMPLEX.isAssignableFrom(cls)) {
+    public static <T> VectorSpace<T> getVectorSpace(NTypeName<T> cls) {
+        if (NTypeNamePlatformDomain.of().isAssignableFrom($COMPLEX,cls)) {
             return (VectorSpace<T>) Maths.COMPLEX_VECTOR_SPACE;
         }
-        if ($DOUBLE.isAssignableFrom(cls)) {
+        if (NTypeNamePlatformDomain.of().isAssignableFrom($DOUBLE,cls)) {
             return (VectorSpace<T>) Maths.DOUBLE_VECTOR_SPACE;
         }
-        if ($EXPR.isAssignableFrom(cls)) {
+        if (NTypeNamePlatformDomain.of().isAssignableFrom($EXPR,cls)) {
             return (VectorSpace<T>) Maths.EXPR_VECTOR_SPACE;
         }
-        if (ComplexMatrix.class.isAssignableFrom(cls.getTypeClass())) {
+        if (ComplexMatrix.class.isAssignableFrom(NTypeNamePlatformDomain.of().getTypeClass(cls))) {
             return new MatrixVectorSpace($COMPLEX, COMPLEX_VECTOR_SPACE);
         }
-        if (ExprMatrix.class.isAssignableFrom(cls.getTypeClass())) {
+        if (ExprMatrix.class.isAssignableFrom(NTypeNamePlatformDomain.of().getTypeClass(cls))) {
             return new MatrixVectorSpace($EXPR, EXPR_VECTOR_SPACE);
         }
-        if (Matrix.class.isAssignableFrom(cls.getTypeClass())) {
-            TypeName ii = cls.getParameters()[0];
+        if (Matrix.class.isAssignableFrom(NTypeNamePlatformDomain.of().getTypeClass(cls))) {
+            NTypeName ii = cls.getParameters()[0];
             return new MatrixVectorSpace(ii, getVectorSpace(ii));
         }
         throw new NoSuchElementException("Vector space Not yet supported for " + cls);
@@ -4235,62 +4240,62 @@ public final class Maths {
         return Math.round(a);
     }
 
-    //    private static class StringTypeReference extends TypeName<String> {
+    //    private static class StringTypeReference extends NTypeName<String> {
 //    }
 //
-//    private static class MatrixTypeReference extends TypeName<Matrix> {
+//    private static class MatrixTypeReference extends NTypeName<Matrix> {
 //    }
 //
-//    private static class VectorTypeReference extends TypeName<Vector> {
+//    private static class VectorTypeReference extends NTypeName<Vector> {
 //    }
 //
-//    private static class TMatrixTypeReference extends TypeName<Matrix<Complex>> {
+//    private static class TMatrixTypeReference extends NTypeName<Matrix<Complex>> {
 //    }
 //
-//    private static class TVectorTypeReference extends TypeName<TList<Complex>> {
+//    private static class TVectorTypeReference extends NTypeName<TList<Complex>> {
 //    }
 //
-//    private static class ComplexTypeReference extends TypeName<Complex> {
+//    private static class ComplexTypeReference extends NTypeName<Complex> {
 //    }
 //
-//    private static class DoubleTypeReference extends TypeName<Double> {
+//    private static class DoubleTypeReference extends NTypeName<Double> {
 //    }
 //
-//    private static class BooleanTypeReference extends TypeName<Boolean> {
+//    private static class BooleanTypeReference extends NTypeName<Boolean> {
 //    }
 //
-//    private static class PointTypeReference extends TypeName<Point> {
+//    private static class PointTypeReference extends NTypeName<Point> {
 //
 //    }
 //
-//    private static class FileTypeReference extends TypeName<File> {
+//    private static class FileTypeReference extends NTypeName<File> {
 //    }
 //
-//    private static class IntegerTypeReference extends TypeName<Integer> {
+//    private static class IntegerTypeReference extends NTypeName<Integer> {
 //    }
 //
-//    private static class LongTypeReference extends TypeName<Long> {
+//    private static class LongTypeReference extends NTypeName<Long> {
 //    }
 //
-//    private static class ExprTypeReference extends TypeName<Expr> {
+//    private static class ExprTypeReference extends NTypeName<Expr> {
 //    }
 //
-//    private static class TListTypeReference extends TypeName<TList<Complex>> {
+//    private static class TListTypeReference extends NTypeName<TList<Complex>> {
 //    }
 //
-//    private static class TListExprTypeReference extends TypeName<TList<Expr>> {
+//    private static class TListExprTypeReference extends NTypeName<TList<Expr>> {
 //    }
 //
-//    private static class TListDoubleTypeReference extends TypeName<TList<Double>> {
+//    private static class TListDoubleTypeReference extends NTypeName<TList<Double>> {
 //    }
 //
-//    private static class TListIntegerTypeReference extends TypeName<TList<Integer>> {
+//    private static class TListIntegerTypeReference extends NTypeName<TList<Integer>> {
 //    }
 //
-//    private static class TListBooleanTypeReference extends TypeName<TList<Boolean>> {
+//    private static class TListBooleanTypeReference extends NTypeName<TList<Boolean>> {
 //    }
 //
-//    private static class TListMatrixTypeReference extends TypeName<TList<Matrix>> {
+//    private static class TListMatrixTypeReference extends NTypeName<TList<Matrix>> {
 //    }
     public static double random() {
         return Math.random();

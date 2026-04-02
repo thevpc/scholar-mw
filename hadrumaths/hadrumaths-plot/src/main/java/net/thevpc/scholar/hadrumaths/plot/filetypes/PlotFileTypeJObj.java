@@ -1,9 +1,9 @@
 package net.thevpc.scholar.hadrumaths.plot.filetypes;
 
+import net.thevpc.scholar.hadrumaths.plot.util.PlotIO;
 import net.thevpc.scholar.hadruplot.extension.defaults.SimplePlotModelProvider;
 import net.thevpc.scholar.hadruplot.extension.PlotModelProvider;
 import net.thevpc.scholar.hadruplot.model.PlotModel;
-import net.thevpc.common.io.IOUtils;
 import net.thevpc.scholar.hadrumaths.cache.ObjectCache;
 import net.thevpc.scholar.hadrumaths.io.HadrumathsIOUtils;
 import net.thevpc.scholar.hadruplot.*;
@@ -42,7 +42,7 @@ public final class PlotFileTypeJObj implements PlotFileType {
     public PlotModel loadModel(File file) {
         Object o = null;
         try {
-            o = IOUtils.loadZippedObject(file.getPath());
+            o = PlotIO.loadZippedObject(file.getPath());
         } catch (ClassNotFoundException ee) {
             throw new UncheckedIOException(new IOException(ee));
         } catch (IOException ee) {

@@ -16,6 +16,8 @@ import java.util.NoSuchElementException;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import net.thevpc.nuts.util.NIndexedMap;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.geom.Geometry;
@@ -41,7 +43,6 @@ import net.thevpc.scholar.hadruwaves.mom.project.common.AreaZone;
 import net.thevpc.scholar.hadruwaves.mom.project.common.VarUnit;
 import net.thevpc.scholar.hadruwaves.mom.project.common.VariableExpression;
 import net.thevpc.scholar.hadruwaves.mom.project.gpmesher.GpMesher;
-import net.thevpc.common.collections.IndexedMap;
 import net.thevpc.scholar.hadruwaves.mom.sources.planar.DefaultPlanarSources;
 import net.thevpc.scholar.hadruwaves.mom.sources.PlanarSource;
 import net.thevpc.scholar.hadruwaves.mom.sources.Sources;
@@ -93,7 +94,7 @@ public class MomProject implements Serializable, Cloneable {
     public String westWallExpression = Boundary.ELECTRIC.toString().toLowerCase();
     public String eastWallExpression = Boundary.ELECTRIC.toString().toLowerCase();
     public boolean cacheEnabled = true;
-    private IndexedMap<String, VariableExpression> expressions = new IndexedMap<String, VariableExpression>();
+    private NIndexedMap<String, VariableExpression> expressions = NIndexedMap.of();
     private double dimensionUnit = 1;
     private double frequencyUnit = 1;
     private VarEvaluator evaluator = new VarEvaluator();
@@ -983,7 +984,7 @@ public class MomProject implements Serializable, Cloneable {
             o.configuration = configuration.clone();
             o.layersInfo = layersInfo.clone();
             o.layersInfo.setContext(this);
-            o.expressions = new IndexedMap<String, VariableExpression>();
+            o.expressions = NIndexedMap.of();
             for (Map.Entry<String, VariableExpression> entry : expressions.entrySet()) {
                 o.setExpression(entry.getValue().clone());
             }

@@ -1,16 +1,16 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 
 public class MatrixVectorSpace<T> extends AbstractVectorSpace<Matrix<T>> {
-    private final TypeName<T> tr;
-    private final TypeName<Matrix<T>> matrixType;
+    private final NTypeName<T> tr;
+    private final NTypeName<Matrix<T>> matrixType;
     private final VectorSpace<T> vs;
 
-    public MatrixVectorSpace(TypeName<T> itemType, VectorSpace<T> vs) {
+    public MatrixVectorSpace(NTypeName<T> itemType, VectorSpace<T> vs) {
         this.tr = itemType;
         this.vs = vs;
-        matrixType = new TypeName<>(Matrix.class.getName(), itemType);
+        matrixType = new NTypeName<>(Matrix.class.getName(), itemType);
     }
     //    @Override
 //    public <R> R convertTo(Complex value,Class<R> t) {
@@ -59,7 +59,7 @@ public class MatrixVectorSpace<T> extends AbstractVectorSpace<Matrix<T>> {
 //    }
 
     @Override
-    public TypeName<Matrix<T>> getItemType() {
+    public NTypeName<Matrix<T>> getItemType() {
         return matrixType;
     }
 
@@ -289,7 +289,7 @@ public class MatrixVectorSpace<T> extends AbstractVectorSpace<Matrix<T>> {
     }
 
     @Override
-    public <R> boolean is(Matrix<T> value, TypeName<R> type) {
+    public <R> boolean is(Matrix<T> value, NTypeName<R> type) {
         return type.equals(tr);
     }
 

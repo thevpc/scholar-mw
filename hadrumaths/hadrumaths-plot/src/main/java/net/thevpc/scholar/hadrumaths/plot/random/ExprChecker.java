@@ -862,7 +862,7 @@ public class ExprChecker {
         }
         for (Class cls : classes) {
             if (Expr.class.isAssignableFrom(cls)) {
-                if (generator.getClsTypes().isAccept(cls)) {
+                if (generator.getClsTypes().accept(cls)) {
                     if (generator.getConstructors(cls, generator.getExpectedClass()).length > 0) {
                         coverage.uncoverClass(cls);
                     }

@@ -5,11 +5,11 @@
  */
 package net.thevpc.scholar.hadruplot.containers;
 
-import net.thevpc.common.strings.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
 
+import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.scholar.hadruplot.Plot;
 import net.thevpc.scholar.hadruplot.PlotComponent;
 import net.thevpc.scholar.hadruplot.PlotContainer;
@@ -39,7 +39,7 @@ public class FrameWindowManager extends AbstractComponentPlotWindowManager {
         } else {
             this.rootContainer = rootContainer;
         }
-        if (StringUtils.isBlank(this.rootContainer.getPlotTitle())) {
+        if (NBlankable.isBlank(this.rootContainer.getPlotTitle())) {
             this.rootContainer.setPlotTitle(Plot.Config.getDefaultWindowTitle());
         }
         this.rootContainer.setPlotWindowManager(this);

@@ -3,7 +3,12 @@ package net.thevpc.scholar.hadruplot;
 import net.thevpc.common.swing.layout.GridBagLayout2;
 import net.thevpc.common.swing.table.JTableHelper;
 import net.thevpc.common.swing.color.ColorChooserEditor;
+import net.thevpc.nuts.io.NIOUtils;
 import net.thevpc.nuts.reflect.NReflectUtils;
+import net.thevpc.nuts.text.NTextFormat;
+import net.thevpc.nuts.util.NBlankable;
+import net.thevpc.nuts.util.NLiteral;
+import net.thevpc.nuts.util.NUtils;
 import net.thevpc.scholar.hadruplot.extension.defaults.SimplePlotModelProvider;
 import net.thevpc.scholar.hadruplot.extension.PlotModelProvider;
 import net.thevpc.scholar.hadruplot.extension.PlotPanelFactory;
@@ -20,10 +25,7 @@ import net.thevpc.scholar.hadruplot.filetypes.PlotFileTypePng;
 import net.thevpc.scholar.hadruplot.model.PlotModel;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotModel;
 import net.thevpc.scholar.hadruplot.model.PlotModelList;
-import net.thevpc.common.io.FileUtils;
-import net.thevpc.common.strings.StringUtils;
 import net.thevpc.common.swing.*;
-import net.thevpc.common.util.*;
 import net.thevpc.scholar.hadruplot.actions.AbstractPlotAction;
 import net.thevpc.scholar.hadruplot.actions.CopyImageToClipboardAction;
 import net.thevpc.scholar.hadruplot.actions.LoadPlotAction;
@@ -405,7 +407,7 @@ public final class Plot {
     }
 
     public static boolean acceptFileByExtension(File file) {
-        String e = FileUtils.getFileExtension(file);
+        String e = NIOUtils.getFileExtension(file);
         return acceptExtension(e);
     }
 
@@ -438,11 +440,11 @@ public final class Plot {
     }
 
     public static void savePlot(File file, String preferredExtension, PlotModelProvider plotProvider) throws IOException {
-        if (StringUtils.isBlank(preferredExtension)) {
-            preferredExtension = FileUtils.getFileExtension(file).toLowerCase();
+        if (NBlankable.isBlank(preferredExtension)) {
+            preferredExtension = NIOUtils.getFileExtension(file).toLowerCase();
         } else {
             preferredExtension = preferredExtension.trim().toLowerCase();
-            if (StringUtils.isBlank(preferredExtension)) {
+            if (NBlankable.isBlank(preferredExtension)) {
                 preferredExtension = JFIGOBJ_FILE_EXTENSION;
             }
         }
@@ -608,13 +610,13 @@ public final class Plot {
                 config = new PlotViewConfig();
                 model.setProperty("config", config);
             }
-            final JCheckBox showLegendCheckBox = new JCheckBox("Show Legend", config.showLegend.get(true));
-            final JCheckBox clockwiseCheckBox = new JCheckBox("Clock Wise (polar)", config.clockwise.get(((polarClockwise == null ? true : polarClockwise.booleanValue()))));
-            final JCheckBox threeDCheckBox = new JCheckBox("3D", config.threeD.get(false));
-            final JCheckBox alternateColorCheckBox = new JCheckBox("Alternate Color", config.alternateColor.get(true));
-            final JCheckBox alternateLineCheckBox = new JCheckBox("Alternate Line Type", config.alternateLine.get(false));
-            final JCheckBox alternateNodeCheckBox = new JCheckBox("Alternate Node Type", config.alternateNode.get(false));
-            final JCheckBox nodeLabelCheckBox = new JCheckBox("Show Labels", config.nodeLabel.get(false));
+            final JCheckBox showLegendCheckBox = new JCheckBox("Show Legend", NUtils.firstNonNull(config.showLegend.get(),true));
+            final JCheckBox clockwiseCheckBox = new JCheckBox("Clock Wise (polar)", NUtils.firstNonNull(config.clockwise.get(),((polarClockwise == null ? true : polarClockwise.booleanValue()))));
+            final JCheckBox threeDCheckBox = new JCheckBox("3D", NUtils.firstNonNull(config.threeD.get(),false));
+            final JCheckBox alternateColorCheckBox = new JCheckBox("Alternate Color", NUtils.firstNonNull(config.alternateColor.get(),true));
+            final JCheckBox alternateLineCheckBox = new JCheckBox("Alternate Line Type", NUtils.firstNonNull(config.alternateLine.get(),false));
+            final JCheckBox alternateNodeCheckBox = new JCheckBox("Alternate Node Type", NUtils.firstNonNull(config.alternateNode.get(),false));
+            final JCheckBox nodeLabelCheckBox = new JCheckBox("Show Labels", NUtils.firstNonNull(config.nodeLabel.get(),false));
             final JSpinner defaultLineType = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
             final JSpinner defaultNodeType = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
             final JLabel defaultLineTypeLabel = new JLabel("Default Line Type");
@@ -622,8 +624,8 @@ public final class Plot {
             final JLabel polarOffsetLabel = new JLabel("Polar Offset");
             final JLabel defaultMaxLegendLabel = new JLabel("Max Legend");
             final JLabel lineStepTypeLabel = new JLabel("Interpolation");
-            final JTextField defaultMaxLegendText = new JTextField(String.valueOf(config.maxLegendCount.get(Plot.Config.getMaxLegendCount())));
-            final JTextField polarOffsetText = new JTextField(String.valueOf(config.polarAngleOffset.get((polarAngleOffset == null ? 0 : polarAngleOffset.doubleValue()))));
+            final JTextField defaultMaxLegendText = new JTextField(String.valueOf(NUtils.firstNonNull(config.maxLegendCount.get(),Plot.Config.getMaxLegendCount())));
+            final JTextField polarOffsetText = new JTextField(String.valueOf(NUtils.firstNonNull(config.polarAngleOffset.get(),(polarAngleOffset == null ? 0 : polarAngleOffset.doubleValue()))));
             final JComboBox lineStepTypeCombo = new JComboBox(new Vector(Arrays.asList(PlotConfigLineStepType.values())));
             lineStepTypeCombo.setSelectedItem(config.lineStepType == null ? PlotConfigLineStepType.DEFAULT : config.lineStepType);
             defaultLineType.setEnabled(!alternateLineCheckBox.isSelected());
@@ -640,8 +642,8 @@ public final class Plot {
             alternateNodeCheckBox.addItemListener(itemListener);
             alternateColorCheckBox.addItemListener(itemListener);
 
-            defaultLineType.setValue(config.lineType.get(0));
-            defaultNodeType.setValue(config.nodeType.get(0));
+            defaultLineType.setValue(NUtils.firstNonNull(config.lineType.get(),0));
+            defaultNodeType.setValue(NUtils.firstNonNull(config.nodeType.get(),0));
             general.add(showLegendCheckBox, "showLegend");
             general.add(defaultLineTypeLabel, "defaultLineTypeLabel");
             general.add(defaultNodeTypeLabel, "defaultNodeTypeLabel");
@@ -677,10 +679,10 @@ public final class Plot {
                 }
                 lines[i].setColor(col);
                 lines[i].setVisible(model.getYVisible(i));
-                lines[i].setLineType(lineConfig.lineType.get(0));
-                lines[i].setNodeType(lineConfig.nodeType.get(0));
-                lines[i].setXmultiplier(lineConfig.xmultiplier.get(1));
-                lines[i].setYmultiplier(lineConfig.ymultiplier.get(1));
+                lines[i].setLineType(NUtils.firstNonNull(lineConfig.lineType.get(),0));
+                lines[i].setNodeType(NUtils.firstNonNull(lineConfig.nodeType.get(),0));
+                lines[i].setXmultiplier(NUtils.firstNonNull(lineConfig.xmultiplier.get(),1));
+                lines[i].setYmultiplier(NUtils.firstNonNull(lineConfig.ymultiplier.get(),1));
             }
             jTabbedPane.addTab("General", general);
             ;
@@ -728,10 +730,10 @@ public final class Plot {
                 config.threeD.set(threeDCheckBox.isSelected());
                 config.nodeLabel.set(nodeLabelCheckBox.isSelected());
                 config.clockwise.set(clockwiseCheckBox.isSelected());
-                config.polarAngleOffset.set(Convert.toDouble(polarOffsetText.getText(), DoubleParserConfig.LENIENT));
+                config.polarAngleOffset.set(NLiteral.of(polarOffsetText.getText()).asDouble().orElse(0.0));
                 config.nodeType.set(((Number) defaultNodeType.getValue()).intValue());
                 config.lineType.set(((Number) defaultLineType.getValue()).intValue());
-                config.maxLegendCount.set(Convert.toInt(defaultMaxLegendText.getText(), IntegerParserConfig.LENIENT));
+                config.maxLegendCount.set(NLiteral.of(defaultMaxLegendText.getText()).asInt().orElse(0));
                 config.lineStepType = (PlotConfigLineStepType) lineStepTypeCombo.getSelectedItem();
 
                 for (int i = 0; i < ytitles.length; i++) {
@@ -749,7 +751,7 @@ public final class Plot {
     }
 
     public static PlotModel loadPlotModel(File file) {
-        String e = FileUtils.getFileExtension(file).toLowerCase();
+        String e = NIOUtils.getFileExtension(file).toLowerCase();
         for (PlotFileType plotFileType : PlotConfigManager.getPlotFileTypes()) {
             for (String extension : plotFileType.getExtensions()) {
                 if (extension.equalsIgnoreCase(e)) {
@@ -764,7 +766,7 @@ public final class Plot {
         return builder().samples(samples);
     }
 
-    public static PlotBuilder xformat(DoubleFormat format) {
+    public static PlotBuilder xformat(NTextFormat<Number> format) {
         return builder().xformat(format);
     }
 
@@ -907,7 +909,7 @@ public final class Plot {
     }
 
     public static void saveImageFile(PlotComponent component, String file) {
-        final File f = FileUtils.expandFile(file);
+        final File f = NIOUtils.expandFile(file);
         final String n = f.getName().toLowerCase();
         if (n.endsWith(".png")) {
             BufferedImage img = component.getImage();

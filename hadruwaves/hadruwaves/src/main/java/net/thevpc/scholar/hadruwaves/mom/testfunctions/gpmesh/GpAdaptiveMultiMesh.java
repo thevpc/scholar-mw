@@ -5,8 +5,8 @@ import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.nuts.elem.NElement;
 
 
-import net.thevpc.common.collections.MapUtils;
 import net.thevpc.nuts.elem.NObjectElementBuilder;
+import net.thevpc.nuts.util.NMaps;
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Expressions;
@@ -152,7 +152,7 @@ public class GpAdaptiveMultiMesh extends TestFunctionsBase implements Cloneable 
                                         DoubleToVector fct = DefaultDoubleToVector.add(c, c2);
 
                                         fct = fct.setMergedProperties(
-                                                MapUtils.<String, Object>map(
+                                                NMaps.of(
                                                         "Cell", partCounter,
                                                         "invarianceGp", (fct.isInvariant(Axis.X) ? "X" : "") + (fct.isInvariant(Axis.Y) ? "Y" : "")
                                                 )

@@ -1,10 +1,11 @@
 package net.thevpc.scholar.hadrumaths.plot.filetypes;
 
+import net.thevpc.nuts.text.NTextFormat;
+import net.thevpc.nuts.util.NDoubleFormat;
 import net.thevpc.scholar.hadruplot.extension.defaults.SimplePlotModelProvider;
 import net.thevpc.scholar.hadruplot.extension.PlotModelProvider;
 import net.thevpc.scholar.hadruplot.model.PlotModel;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotModel;
-import net.thevpc.common.util.DoubleFormat;
 import net.thevpc.scholar.hadrumaths.DMatrix;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.io.HadrumathsIOUtils;
@@ -193,11 +194,11 @@ public final class PlotFileTypeJFig implements PlotFileType {
                     } else if (line.startsWith("ytitle =")) {
                         ytitlesList.add(line.substring("ytitle".length() + 2));
                     } else if (line.startsWith("xformat =")) {
-                        m.setXformat((DoubleFormat) HadrumathsIOUtils.deserializeObjectToString(line.substring("xformat".length() + 2)));
+                        m.setXformat((NTextFormat<Number>) HadrumathsIOUtils.deserializeObjectToString(line.substring("xformat".length() + 2)));
                     } else if (line.startsWith("yformat =")) {
-                        m.setYformat((DoubleFormat) HadrumathsIOUtils.deserializeObjectToString(line.substring("yformat".length() + 2)));
+                        m.setYformat((NTextFormat<Number>) HadrumathsIOUtils.deserializeObjectToString(line.substring("yformat".length() + 2)));
                     } else if (line.startsWith("zformat =")) {
-                        m.setZformat((DoubleFormat) HadrumathsIOUtils.deserializeObjectToString(line.substring("zformat".length() + 2)));
+                        m.setZformat((NTextFormat<Number>) HadrumathsIOUtils.deserializeObjectToString(line.substring("zformat".length() + 2)));
                     }
                 }
                 m.setYtitles(ytitlesList.toArray(new String[0]));

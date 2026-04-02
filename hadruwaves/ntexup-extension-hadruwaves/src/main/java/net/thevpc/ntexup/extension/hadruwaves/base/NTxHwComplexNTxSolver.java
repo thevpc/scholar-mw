@@ -1,6 +1,5 @@
 package net.thevpc.ntexup.extension.hadruwaves.base;
 
-import net.thevpc.ntexup.api.eval.NTxObj;
 import net.thevpc.ntexup.api.eval.NTxObjs;
 import net.thevpc.ntexup.extension.hadruwaves.MoMStrNTxSimulationPlan;
 import net.thevpc.ntexup.extension.mwsimulator.*;
@@ -11,7 +10,6 @@ import net.thevpc.nuts.elem.NUpletElementBuilder;
 import net.thevpc.nuts.math.NDoubleComplex;
 import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.time.NChronometer;
-import net.thevpc.nuts.util.NOptional;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadruplot.Plot;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
@@ -54,7 +52,7 @@ public abstract class NTxHwComplexNTxSolver extends NTxSolverRunImpl {
     @Override
     public List<NTxSimulationResult> execute() {
         MomStructure str = ((MoMStrNTxSimulationPlan) plan()).str;
-        NChronometer chronometer = NChronometer.startNow();
+        NChronometer chronometer = NChronometer.of();
         List<Number> complexValues = new ArrayList<>();
         Number[] x = new Number[0];
         if (sweep != null) {
@@ -67,7 +65,7 @@ public abstract class NTxHwComplexNTxSolver extends NTxSolverRunImpl {
                     for (double fr : dv) {
                         str.setFrequency(fr);
                         Complex c = evalComplex(str);
-                        complexValues.add(NDoubleComplex.of(c.getReal(), c.getImag()));
+                        complexValues.add(NDoubleComplex.of(c.getReal(), c.getImag()).numberValue());
                     }
                     x = Arrays.stream(dv).boxed().toArray(Number[]::new);
                     break;
@@ -83,7 +81,7 @@ public abstract class NTxHwComplexNTxSolver extends NTxSolverRunImpl {
             str.log().log(NMsg.ofC("------------------"));
             Complex c = evalComplex(str);
             complexValues.add(
-                    NDoubleComplex.of(c.getReal(), c.getImag())
+                    NDoubleComplex.of(c.getReal(), c.getImag()).numberValue()
             );
             x = new Number[]{0.0};
         }
@@ -99,10 +97,8 @@ public abstract class NTxHwComplexNTxSolver extends NTxSolverRunImpl {
                 ).build();
         plan().rendererContext().compiledDocument().setGlobalObject(outputName(), NTxObjs
                 .map()
-                .set("x", NElement.ofArray(
-                        Arrays.stream(x).map(xx->NElement.ofNumber(xx))
-                ))
-                .set("y", ye)
+                .set("x", NTxObjs.elem(NElement.ofArray(Arrays.stream(x).map(xx->NElement.ofNumber(xx)).toArray(NElement[]::new))))
+                .set("y", NTxObjs.elem(ye))
         );
         Plot.title(solverType() + "-" + outputName()).plot(y);
         str.log().log(NMsg.ofC("[%s] %s Finished in %s : ", outputName(), solverName(), chronometer.stop()));

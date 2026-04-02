@@ -1,7 +1,9 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.collections.ClassMap;
-import net.thevpc.common.collections.LRUMap;
+import net.thevpc.nuts.reflect.NClassMap;
+import net.thevpc.nuts.text.NMsg;
+import net.thevpc.nuts.util.NAssert;
+import net.thevpc.nuts.util.NLRUMap;
 import net.thevpc.scholar.hadrumaths.format.*;
 import net.thevpc.scholar.hadrumaths.format.impl.*;
 import net.thevpc.scholar.hadrumaths.format.params.*;
@@ -34,8 +36,8 @@ public class FormatFactory extends AbstractFactory {
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     public static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     public static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-    private static final ClassMap<ObjectFormat> map = new ClassMap<ObjectFormat>(Object.class, ObjectFormat.class, 30);
-    private static final LRUMap<String, SimpleDateFormat> dateFormats = new LRUMap<String, SimpleDateFormat>(10);
+    private static final NClassMap<Object,ObjectFormat> map = NClassMap.of(Object.class, ObjectFormat.class, 30);
+    private static final NLRUMap<String, SimpleDateFormat> dateFormats = NLRUMap.of(10);
     private static final PropertyChangeListener cacheEnabledListener = new PropertyChangeListener() {
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
@@ -341,7 +343,7 @@ public class FormatFactory extends AbstractFactory {
 //    }
 
     public static String format(Object o, ObjectFormatParamSet format) {
-        ObjectFormat best = map.getRequired(o.getClass());
+        ObjectFormat best = NAssert.requireNamedNonNull(map.get(o.getClass()), NMsg.ofC("ObjectFormat for type "+o.getClass().getName()));
         StringBuilder sb = new StringBuilder();
         DefaultObjectFormatContext u = new DefaultObjectFormatContext(sb, format);
         best.format(o, u);
@@ -506,7 +508,7 @@ public class FormatFactory extends AbstractFactory {
 //    }
 
     public static void format(Object o, ObjectFormatContext context) {
-        ObjectFormat best = map.getRequired(o.getClass());
+        ObjectFormat best = NAssert.requireNamedNonNull(map.get(o.getClass()), NMsg.ofC("ObjectFormat for type "+o.getClass().getName()));
         best.format(o, context);
     }
 

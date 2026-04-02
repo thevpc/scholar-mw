@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadruplot.libraries.calc3d.thevpc.plot;
 
-import net.thevpc.common.util.MinMax;
+import net.thevpc.nuts.math.NDoubleRange;
 import net.thevpc.scholar.hadruplot.model.PlotModel;
 import net.thevpc.scholar.hadruplot.extension.PlotModelProvider;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotModel;
@@ -20,29 +20,29 @@ public class PlotCanvasMeshCalc3d extends PlotCanvasAnyCalc3d {
 
         PlotModel m = plotModelProvider.getModel();
         ValuesPlotXYDoubleModelFace data = new ValuesPlotXYDoubleModelFace((ValuesPlotModel) m, config);
-        MinMax xminMax = new MinMax();
-        MinMax yminMax = new MinMax();
-        MinMax zminMax = new MinMax();
+        NDoubleRange xminMax = NDoubleRange.of();
+        NDoubleRange yminMax = NDoubleRange.of();
+        NDoubleRange zminMax = NDoubleRange.of();
         double[] x = data.getX();
         double[] y = data.getY();
         double[][] z = data.getZ();
         Vector3D[][] r = new Vector3D[z.length][z[0].length];
         for (int i = 0; i < x.length; i++) {
-            xminMax.registerValue(x[i]);
+            xminMax.add(x[i]);
         }
         for (int i = 0; i < y.length; i++) {
-            yminMax.registerValue(y[i]);
+            yminMax.add(y[i]);
         }
         for (int i = 0; i < z.length; i++) {
             for (int j = 0; j < z[i].length; j++) {
                 r[i][j] = new Vector3D(x[j], y[i], z[i][j]);
-                zminMax.registerValue(z[i][j]);
+                zminMax.add(z[i][j]);
             }
         }
         Preferences settings = chartPanel.getSettings().getPreferences();
-        Box3D clipBox = new Box3D(xminMax.getMin(), xminMax.getMax(),
-                yminMax.getMin(), yminMax.getMax(),
-                zminMax.getMin(), zminMax.getMax());
+        Box3D clipBox = new Box3D(xminMax.min(), xminMax.max(),
+                yminMax.min(), yminMax.max(),
+                zminMax.min(), zminMax.max());
         settings.setClipBox(clipBox);
         chartPanel.addElement(new Element3DSurface2(r, clipBox));
         chartPanel.applySettings( settings,true);

@@ -1,6 +1,8 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
+import net.thevpc.nuts.reflect.NTypeNameDomain;
+import net.thevpc.nuts.reflect.NTypeNamePlatformDomain;
 
 import java.util.List;
 import java.util.function.Function;
@@ -9,23 +11,23 @@ public abstract class AbstractVectorSpace<T> implements VectorSpace<T> {
     private final Ops<T> ops = new OpsImpl<>(this);
 
     @Override
-    public <R> Function<R, T> getConverterFrom(TypeName<R> t) {
+    public <R> Function<R, T> getConverterFrom(NTypeName<R> t) {
         return Maths.Config.getConverter(t, getItemType());
     }
 
     @Override
-    public <R> Function<T, R> getConverterTo(TypeName<R> t) {
+    public <R> Function<T, R> getConverterTo(NTypeName<R> t) {
         return Maths.Config.getConverter(getItemType(), t);
     }
 
     @Override
     public <R> Function<R, T> getConverterFrom(Class<R> t) {
-        return Maths.Config.getConverter(t, getItemType().getTypeClass());
+        return Maths.Config.getConverter(t, NTypeNamePlatformDomain.of().getTypeClass(getItemType()));
     }
 
     @Override
     public <R> Function<T, R> getConverterTo(Class<R> t) {
-        return Maths.Config.getConverter(getItemType().getTypeClass(), t);
+        return Maths.Config.getConverter(NTypeNamePlatformDomain.of().getTypeClass(getItemType()), t);
     }
 
 //    @Override

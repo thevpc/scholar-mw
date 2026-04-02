@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadruplot.extension.defaults;
 
+import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.scholar.hadruplot.extension.PlotModelPopupFactory;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotModel;
-import net.thevpc.common.strings.StringUtils;
 import net.thevpc.scholar.hadruplot.*;
 
 import javax.swing.*;
@@ -17,7 +17,7 @@ public class DefaultValuesPlotModelPopupFactory implements PlotModelPopupFactory
         if (context.getFunctionsMenu() != null) {
             ButtonGroup g = new ButtonGroup();
             for (ToDoubleFunction<Object> toDoubleConverter : PlotDoubleConverter.values()) {
-                JCheckBoxMenuItem f = new JCheckBoxMenuItem(new Plot.DoubleTypeAction(context.getModelProvider(), StringUtils.toCapitalized(toDoubleConverter.toString()), toDoubleConverter));
+                JCheckBoxMenuItem f = new JCheckBoxMenuItem(new Plot.DoubleTypeAction(context.getModelProvider(), NNameFormat.UPPER_CAMEL_CASE.format(toDoubleConverter.toString()), toDoubleConverter));
                 ToDoubleFunction<Object> converter = model.getConverter();
                 if (converter == null) {
                     converter = PlotDoubleConverter.ABS;
@@ -48,12 +48,12 @@ public class DefaultValuesPlotModelPopupFactory implements PlotModelPopupFactory
                         group.add(f);
                         context.getViewMenu().add(f);
                     } else {
-                        JMenu m = new JMenu(StringUtils.toCapitalized(plotType.name()));
+                        JMenu m = new JMenu(NNameFormat.UPPER_CAMEL_CASE.format(plotType.name()));
                         context.getViewMenu().add(m);
                         for (PlotLibrary lib : libraries) {
                             LibraryPlotType pt = new LibraryPlotType(plotType, lib.getName());
 
-                            JCheckBoxMenuItem f = new JCheckBoxMenuItem(new Plot.PlotTypeAction(context.getModelProvider(), StringUtils.toCapitalized(lib.getName()), pt));
+                            JCheckBoxMenuItem f = new JCheckBoxMenuItem(new Plot.PlotTypeAction(context.getModelProvider(), NNameFormat.UPPER_CAMEL_CASE.format(lib.getName()), pt));
                             f.setSelected(matches(t, pt));
                             group.add(f);
                             m.add(f);

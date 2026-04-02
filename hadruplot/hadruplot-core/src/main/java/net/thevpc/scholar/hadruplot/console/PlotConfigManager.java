@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadruplot.console;
 
+import net.thevpc.nuts.text.NTextFormat;
 import net.thevpc.scholar.hadruplot.console.extension.PlotConsoleCacheSupport;
 import net.thevpc.scholar.hadruplot.extension.defaults.DefaultPlotNumbers;
 import net.thevpc.scholar.hadruplot.extension.PlotNumbers;
@@ -12,7 +13,6 @@ import net.thevpc.scholar.hadruplot.extension.defaults.PlotHyperCubePlotModelPan
 import net.thevpc.scholar.hadruplot.extension.defaults.DefaultPlotValueFactory;
 import net.thevpc.scholar.hadruplot.model.value.PlotValueTypeFactory;
 import net.thevpc.scholar.hadruplot.extension.PlotValueFactory;
-import net.thevpc.common.util.*;
 import net.thevpc.scholar.hadruplot.*;
 
 import java.util.*;
@@ -69,24 +69,8 @@ public class PlotConfigManager {
         }
 
         @Override
-        public DoubleFormat dblformat(String format) {
-            if (format == null) {
-                format = "";
-            }
-            switch (format.trim()) {
-                case "":
-                    return new DecimalDoubleFormat("0.0");
-                case "f":
-                case "freq":
-                    return FrequencyFormat.INSTANCE;
-                case "b":
-                case "bytes":
-                    return BytesSizeFormat.INSTANCE;
-                case "%":
-                case "percent":
-                    return PercentDoubleFormat.INSTANCE;
-            }
-            return new DecimalDoubleFormat("0.0");
+        public NTextFormat<Number> dblformat(String format) {
+            return NTextFormat.ofNumber(format,null);
         }
     };
 

@@ -1,9 +1,9 @@
 package net.thevpc.scholar.hadruwaves.mom.project.common;
 
+import net.thevpc.nuts.math.NDoubleRange;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadruwaves.mom.project.MomProjectItem;
 import net.thevpc.scholar.hadrumaths.util.config.Configuration;
-import net.thevpc.common.util.MinMax;
 import net.thevpc.scholar.hadruwaves.mom.project.MomProject;
 
 import java.util.ArrayList;
@@ -566,23 +566,23 @@ public class AreaGroup implements AreaZone, Cloneable {
     }
 
     public Domain getDomain() {
-        MinMax xminMax = new MinMax();
-        MinMax yminMax = new MinMax();
+        NDoubleRange xminMax = NDoubleRange.of();
+        NDoubleRange yminMax = NDoubleRange.of();
         for (AreaGroup areaGroup : areaGroupsList) {
             Domain d=areaGroup.getDomain();
-            xminMax.registerValue(d.xmin());
-            xminMax.registerValue(d.xmax());
-            yminMax.registerValue(d.ymin());
-            yminMax.registerValue(d.ymax());
+            xminMax.add(d.xmin());
+            xminMax.add(d.xmax());
+            yminMax.add(d.ymin());
+            yminMax.add(d.ymax());
         }
         for (Area area : areas) {
             Domain d=area.getDomain();
-            xminMax.registerValue(d.xmin());
-            xminMax.registerValue(d.xmax());
-            yminMax.registerValue(d.ymin());
-            yminMax.registerValue(d.ymax());
+            xminMax.add(d.xmin());
+            xminMax.add(d.xmax());
+            yminMax.add(d.ymin());
+            yminMax.add(d.ymax());
         }
-        return Domain.ofBounds(xminMax.getMin(), xminMax.getMax(), yminMax.getMin(), xminMax.getMax());
+        return Domain.ofBounds(xminMax.min(), xminMax.max(), yminMax.min(), xminMax.max());
     }
 
     public void setGpMesher(GpMesher gpMesher) {

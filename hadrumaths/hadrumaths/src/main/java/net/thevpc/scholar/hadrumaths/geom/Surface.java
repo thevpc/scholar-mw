@@ -3,8 +3,7 @@ package net.thevpc.scholar.hadrumaths.geom;
 
 import net.thevpc.nuts.elem.NElement;
 
-import net.thevpc.common.util.MinMax;
-import net.thevpc.nuts.elem.NObjectElementBuilder;
+import net.thevpc.nuts.math.NDoubleRange;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.DomainScaleTool;
 import net.thevpc.scholar.hadrumaths.GeometryFactory;
@@ -67,21 +66,21 @@ public class Surface extends AbstractGeometry implements Cloneable {
             domain = Domain.EMPTYXY;
             this.points = new ArrayList<>();
         } else {
-            MinMax xm = new MinMax();
-            MinMax ym = new MinMax();
+            NDoubleRange xm = NDoubleRange.of();
+            NDoubleRange ym = NDoubleRange.of();
             List<Point> points2 = new ArrayList<Point>();
             for (int i = 0; i < xs.size(); i++) {
                 double xx = xs.get(i);
                 double yy = ys.get(i);
                 Point e = new Point(xx, yy);
                 points2.add(e);
-                xm.registerValue(xx);
-                ym.registerValue(yy);
+                xm.add(xx);
+                ym.add(yy);
             }
             if (points2.size() > 1 && points2.get(0).equals(points2.get(points2.size() - 1))) {
                 points2.remove(points2.size() - 1);
             }
-            domain = Domain.ofBounds(xm.getMin(), xm.getMax(), ym.getMin(), ym.getMax());
+            domain = Domain.ofBounds(xm.min(), xm.max(), ym.min(), ym.max());
 //        UNIFORM_DOMAIN=domain;
             this.points = points2;
         }

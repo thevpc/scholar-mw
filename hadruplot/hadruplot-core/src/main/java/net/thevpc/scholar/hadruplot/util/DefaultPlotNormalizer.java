@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadruplot.util;
 
 
-import net.thevpc.common.util.MinMax;
+import net.thevpc.nuts.math.NDoubleRange;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -13,10 +13,10 @@ public class DefaultPlotNormalizer implements PlotNormalizer {
     }
 
     public double[][] normalize(double[][] baseValues) {
-        MinMax minMax = new MinMax();
-        minMax.registerValues(baseValues);
-        double min = minMax.getMin();
-        double max = minMax.getMax();
+        NDoubleRange minMax = NDoubleRange.of();
+        minMax.add(baseValues);
+        double min = minMax.min();
+        double max = minMax.max();
         return normalize(baseValues, min, max);
     }
 

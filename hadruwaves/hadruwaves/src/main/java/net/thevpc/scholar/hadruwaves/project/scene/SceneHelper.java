@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadruwaves.project.scene;
 
-import net.thevpc.common.util.MinMax;
+import net.thevpc.nuts.math.NDoubleRange;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.geom.Geometry;
@@ -111,38 +111,36 @@ public class SceneHelper {
         if (domain == null) {
             return 1;
         }
-        MinMax m = new MinMax();
-        m.setInfinite(false);
-        m.registerValue(domain.xmin());
-        m.registerValue(domain.xmax());
-        m.registerValue(domain.ymin());
-        m.registerValue(domain.ymax());
-        m.registerValue(domain.zmin());
-        m.registerValue(domain.zmax());
-        if (m.isUnset()) {
-            m.registerValue(-1);
-            m.registerValue(1);
+        NDoubleRange m = NDoubleRange.ofFinite();
+        m.add(domain.xmin());
+        m.add(domain.xmax());
+        m.add(domain.ymin());
+        m.add(domain.ymax());
+        m.add(domain.zmin());
+        m.add(domain.zmax());
+        if (!m.isSet()) {
+            m.add(-1);
+            m.add(1);
         }
-        return m.getMax() - m.getMin();
+        return m.length();
     }
 
     public static Domain ensureBounds(Domain domain) {
         if (domain == null) {
             domain = Maths.domain(-1, 1, -1, 1, -1, 1);
         }
-        MinMax m = new MinMax();
-        m.setInfinite(false);
-        m.registerValue(domain.xmin());
-        m.registerValue(domain.xmax());
-        m.registerValue(domain.ymin());
-        m.registerValue(domain.ymax());
-        m.registerValue(domain.zmin());
-        m.registerValue(domain.zmax());
-        if (m.isUnset()) {
-            m.registerValue(-1);
-            m.registerValue(1);
+        NDoubleRange m = NDoubleRange.ofFinite();
+        m.add(domain.xmin());
+        m.add(domain.xmax());
+        m.add(domain.ymin());
+        m.add(domain.ymax());
+        m.add(domain.zmin());
+        m.add(domain.zmax());
+        if (!m.isSet()) {
+            m.add(-1);
+            m.add(1);
         }
-        domain = domain.ensureFiniteBounds(Maths.domain(m.getMin(), m.getMax(), m.getMin(), m.getMax(), m.getMin(), m.getMax()));
+        domain = domain.ensureFiniteBounds(Maths.domain(m.min(), m.max(), m.min(), m.max(), m.min(), m.max()));
         return domain;
     }
 }

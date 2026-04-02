@@ -3,11 +3,10 @@ package net.thevpc.scholar.hadruwaves.project.configuration;
 import net.thevpc.common.props.Props;
 import net.thevpc.common.props.WritableMap;
 import net.thevpc.common.props.WritableValue;
-import net.thevpc.common.strings.StringConverter;
-import net.thevpc.common.strings.StringUtils;
 
 import net.thevpc.nuts.elem.NElement;
 
+import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.plot.d3.BoundDomain;
 import net.thevpc.scholar.hadrumaths.symbolic.Param;
@@ -24,6 +23,7 @@ import net.thevpc.scholar.hadruwaves.solvers.HWSolverTemplate;
 import net.thevpc.scholar.hadruwaves.util.ProjectFormatter;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class HWConfigurationRun extends AbstractHWConfigurationElement {
 
@@ -283,9 +283,9 @@ public class HWConfigurationRun extends AbstractHWConfigurationElement {
         }
         if (type == UnitType.String) {
             try {
-                String v = StringUtils.replaceDollarPlaceHolders(expr, new StringConverter() {
+                String v = NStringUtils.replaceDollarPlaceHolder(expr, new Function<String, String>() {
                     @Override
-                    public String convert(String param) {
+                    public String apply(String param) {
                         EvalExprResult r = evalParamResult(param);
                         if (r.isError()) {
                             throw new IllegalArgumentException(r.getErrorMessage());
@@ -476,7 +476,7 @@ public class HWConfigurationRun extends AbstractHWConfigurationElement {
 
     public String discriminatorString() {
         List<HWParameterValue> all = new ArrayList<>(project().get().parameters().toMap().values());
-        all.sort(Comparator.comparing(a -> StringUtils.trim(a.name().get())));
+        all.sort(Comparator.comparing(a -> NStringUtils.trim(a.name().get())));
         StringBuilder sb = new StringBuilder();
         for (HWParameterValue v : all) {
             String n = v.name().get();

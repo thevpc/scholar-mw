@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadruplot.model;
 
-import net.thevpc.common.util.ArrayUtils;
+import net.thevpc.nuts.util.NArrays;
 import net.thevpc.scholar.hadruplot.util.PlotModelUtils;
 
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class ValuesPlotXDoubleModelFace {
                         initialIndexesList.add(i);
                         double xmultiplier = plotViewConfig.getXMultiplierAt(i, 1) * defaultXMultiplier;
                         double ymultiplier = plotViewConfig.getYMultiplierAt(i, 1);
-                        xAxisList.add(PlotModelUtils.mul(ArrayUtils.dsteps(1, yAxis[i].length, 1), xmultiplier));
+                        xAxisList.add(PlotModelUtils.mul(NArrays.range(1.0, yAxis[i].length, 1), xmultiplier));
                         yAxisList.add(PlotModelUtils.mul(yAxis[i], ymultiplier));
                         yTitleList.add(PlotModelUtils.resolveYTitle(model, i));
                     }
@@ -70,7 +70,7 @@ public class ValuesPlotXDoubleModelFace {
                                     }
                                 }
                                 if (!ok) {
-                                    xAxisList.add(PlotModelUtils.mul(ArrayUtils.dsteps(1, yAxi.length, 1), xmultiplier));
+                                    xAxisList.add(PlotModelUtils.mul(NArrays.range(1.0, yAxi.length, 1), xmultiplier));
                                 }
                             } else {
                                 xAxisList.add(xAxisList.get(xAxisList.size() - 1));
@@ -84,7 +84,7 @@ public class ValuesPlotXDoubleModelFace {
 
             x = xAxisList.toArray(new double[xAxisList.size()][]);
             y = yAxisList.toArray(new double[yAxisList.size()][]);
-            initialIndexes = ArrayUtils.unboxIntegerList(initialIndexesList);
+            initialIndexes = NArrays.unboxInts(initialIndexesList);
 
             //rename titles with the same name
             HashSet<String> visited = new HashSet<>();
@@ -145,7 +145,7 @@ public class ValuesPlotXDoubleModelFace {
                             initialIndexesList.add(i);
                             double xmultiplier = plotViewConfig.getXMultiplierAt(i, 1) * defaultXMultiplier;
                             double ymultiplier = plotViewConfig.getYMultiplierAt(i, 1);
-                            xAxisList.add(PlotModelUtils.mul(ArrayUtils.dsteps(1, yAxis[i].length, 1), xmultiplier));
+                            xAxisList.add(PlotModelUtils.mul(NArrays.range(1.0, yAxis[i].length, 1), xmultiplier));
                             yAxisList.add(PlotModelUtils.mul(yAxis[i], ymultiplier));
                             yTitleList.add(PlotModelUtils.resolveYTitle(model, i));
                         }
@@ -179,7 +179,7 @@ public class ValuesPlotXDoubleModelFace {
                                         }
                                     }
                                     if (!ok) {
-                                        xAxisList.add(PlotModelUtils.mul(ArrayUtils.dsteps(1, yAxi.length, 1), xmultiplier));
+                                        xAxisList.add(PlotModelUtils.mul(NArrays.range(1.0, yAxi.length, 1), xmultiplier));
                                     }
                                 } else {
                                     xAxisList.add(xAxisList.get(xAxisList.size() - 1));
@@ -193,7 +193,7 @@ public class ValuesPlotXDoubleModelFace {
             }
             x = xAxisList.toArray(new double[xAxisList.size()][]);
             y = yAxisList.toArray(new double[yAxisList.size()][]);
-            initialIndexes = ArrayUtils.unboxIntegerList(initialIndexesList);
+            initialIndexes = NArrays.unboxInts(initialIndexesList);
 
             //rename titles with the same name
             HashSet<String> visited = new HashSet<>();

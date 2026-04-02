@@ -1,6 +1,7 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+
+import net.thevpc.nuts.reflect.NTypeName;
 
 import java.util.Collection;
 
@@ -14,9 +15,9 @@ public class CachedVector<T> extends AbstractVector<T> {
     private final VectorCell<T> it;
     private boolean updated = false;
     private int modelSize;
-    private final TypeName<T> componentType;
+    private final NTypeName<T> componentType;
 
-    public CachedVector(TypeName<T> componentType, boolean row, VectorModel<T> it) {
+    public CachedVector(NTypeName<T> componentType, boolean row, VectorModel<T> it) {
         super(row);
         this.componentType = componentType;
         int size = it.size();
@@ -28,7 +29,7 @@ public class CachedVector<T> extends AbstractVector<T> {
         this.it = it;
     }
 
-    public CachedVector(TypeName<T> componentType, boolean row, int size, VectorCell<T> it) {
+    public CachedVector(NTypeName<T> componentType, boolean row, int size, VectorCell<T> it) {
         super(row);
         this.componentType = componentType;
         this.modelSize = size;
@@ -40,7 +41,7 @@ public class CachedVector<T> extends AbstractVector<T> {
     }
 
     @Override
-    public TypeName<T> getComponentType() {
+    public NTypeName<T> getComponentType() {
         return componentType;
     }
 

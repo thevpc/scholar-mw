@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 
 /**
  * Created by vpc on 3/23/17.
@@ -37,7 +37,7 @@ public class MatrixFromColumnVector<T> extends AbstractMatrix<T> {
     }
 
     @Override
-    public TypeName<T> getComponentType() {
+    public NTypeName<T> getComponentType() {
         return vector.getComponentType();
     }
 

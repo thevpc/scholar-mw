@@ -1,13 +1,13 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 
 public abstract class AbstractExprMatrix extends AbstractMatrix<Expr> implements ExprMatrix {
     public AbstractExprMatrix() {
     }
 
     @Override
-    public TypeName getComponentType() {
+    public NTypeName getComponentType() {
         return Maths.$EXPR;
     }
 

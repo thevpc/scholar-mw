@@ -4,10 +4,10 @@
  */
 package net.thevpc.scholar.hadruplot.libraries.jfreechart;
 
+import net.thevpc.nuts.math.NDoubleRange;
+import net.thevpc.nuts.text.NTextFormat;
 import net.thevpc.scholar.hadruplot.extension.PlotModelProvider;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotModel;
-import net.thevpc.common.util.DoubleFormat;
-import net.thevpc.common.util.MinMax;
 import net.thevpc.scholar.hadruplot.*;
 import net.thevpc.scholar.hadruplot.util.SimpleDoubleFormat;
 import org.jfree.chart.ChartMouseEvent;
@@ -98,7 +98,7 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
             }
         }
 
-        String s = SimpleDoubleFormat.INSTANCE.formatDouble(y);
+        String s = SimpleDoubleFormat.INSTANCE.toString(y);
         if (found != null) {
             if(custom){
                 s=found.getText();
@@ -111,12 +111,12 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
             if (custom) {
                 ValuesPlotModel model = (ValuesPlotModel) plotModelProvider.getModel();
                 String ytitle = model.getYtitle(series);
-                DoubleFormat xformat = model.getXformat();
-                DoubleFormat yformat = model.getYformat();
-                String fx= SimpleDoubleFormat.INSTANCE.formatDouble(x);
-                String fy= SimpleDoubleFormat.INSTANCE.formatDouble(y);
-                String fX=xformat==null?fx:xformat.formatDouble(x);
-                String fY=yformat==null?fy:yformat.formatDouble(y);
+                NTextFormat<Number> xformat = model.getXformat();
+                NTextFormat<Number> yformat = model.getYformat();
+                String fx= SimpleDoubleFormat.INSTANCE.toString(x);
+                String fy= SimpleDoubleFormat.INSTANCE.toString(y);
+                String fX=xformat==null?fx:xformat.toString(x);
+                String fY=yformat==null?fy:yformat.toString(y);
 
                 String xstr = "";
                 if (xformat != null) {
@@ -256,7 +256,7 @@ public abstract class PlotCanvasAnyJFreeChart extends JPanel implements PlotComp
         });
     }
 
-    protected void prepareJFreeChart(JFreeChart chart, MinMax x_minmax) {
+    protected void prepareJFreeChart(JFreeChart chart, NDoubleRange x_minmax) {
 
     }
 

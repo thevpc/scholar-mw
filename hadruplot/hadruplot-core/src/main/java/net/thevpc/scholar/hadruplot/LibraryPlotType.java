@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadruplot;
 
-import net.thevpc.common.strings.StringUtils;
+import net.thevpc.nuts.util.NNameFormat;
 
 public class LibraryPlotType {
     private PlotType type;
@@ -25,7 +25,7 @@ public class LibraryPlotType {
 
     @Override
     public String toString() {
-        return StringUtils.toCapitalized(type.name())
-                + ((library == null) ? "" : (" (" + StringUtils.toCapitalized(library) + ")"));
+        return NNameFormat.UPPER_CAMEL_CASE.format(type.name())
+                + ((library == null) ? "" : (" (" + NNameFormat.UPPER_CAMEL_CASE.format(library) + ")"));
     }
 }

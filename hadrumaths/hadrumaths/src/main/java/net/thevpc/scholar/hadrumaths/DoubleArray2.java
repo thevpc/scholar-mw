@@ -1,6 +1,7 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+
+import net.thevpc.nuts.reflect.NTypeName;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class DoubleArray2 extends ArrayVector<DoubleArray> {
     }
 
     public DoubleArray2(boolean row, int initialSize) {
-        super((TypeName) Maths.$DLIST2, row, initialSize);
+        super((NTypeName) Maths.$DLIST2, row, initialSize);
     }
 
     public DoubleArray2(boolean row, List<List<Double>> values) {

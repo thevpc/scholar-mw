@@ -1,15 +1,15 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 import net.thevpc.scholar.hadrumaths.util.ArrayUtils;
 
 public class PreallocatedSparseArray<T> implements SparseArray<T> {
-    private final TypeName<T> componentType;
+    private final NTypeName<T> componentType;
     private T[] values;
     private int maxIndex = -1;
     private int size = -1;
 
-    public PreallocatedSparseArray(TypeName<T> componentType, int size) {
+    public PreallocatedSparseArray(NTypeName<T> componentType, int size) {
         this.componentType = componentType;
         values = ArrayUtils.newArray(componentType, size);
         this.size = size;
@@ -29,7 +29,7 @@ public class PreallocatedSparseArray<T> implements SparseArray<T> {
     }
 
     @Override
-    public TypeName<T> getComponentType() {
+    public NTypeName<T> getComponentType() {
         return componentType;
     }
 

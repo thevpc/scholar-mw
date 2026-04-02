@@ -5,9 +5,9 @@ import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.common.mon.TaskListener;
 import net.thevpc.common.mon.TaskMonitor;
 import net.thevpc.common.mon.TaskMonitorManager;
-import net.thevpc.common.strings.StringUtils;
 import net.thevpc.echo.swing.icons.SwingAppImage;
 import net.thevpc.nuts.time.NDuration;
+import net.thevpc.nuts.util.NBlankable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -271,8 +271,8 @@ public class HWTaskComponent extends JPanel implements ActionListener {
                         d = 1;
                     }
                     if(d>0){
-                        remaining = TimeDuration.ofMillis(pmonitor.getEstimatedRemainingDuration());
-                        approx = TimeDuration.ofMillis(pmonitor.getEstimatedTotalDuration());
+                        remaining = NDuration.ofMillis(pmonitor.getEstimatedRemainingDuration());
+                        approx = NDuration.ofMillis(pmonitor.getEstimatedTotalDuration());
                     }
                     d100 = d * 100;
                     indeterminate = false;
@@ -282,8 +282,8 @@ public class HWTaskComponent extends JPanel implements ActionListener {
                 d100 = 0;
             }
             String message = monitor.getMessage().toString();
-            if(StringUtils.isBlank(message)){
-                if(!monitor.isStarted() && StringUtils.isBlank(message)){
+            if(NBlankable.isBlank(message)){
+                if(!monitor.isStarted() && NBlankable.isBlank(message)){
                     message="Not yet started...";
                 }else{
                     message="Running...";

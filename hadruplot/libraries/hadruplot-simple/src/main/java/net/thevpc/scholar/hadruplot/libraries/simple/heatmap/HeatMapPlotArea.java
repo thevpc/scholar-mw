@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadruplot.libraries.simple.heatmap;
 
 import net.thevpc.common.swing.SerializableActionListener;
-import net.thevpc.common.util.ArrayUtils;
-import net.thevpc.common.util.MinMax;
+import net.thevpc.nuts.math.NDoubleRange;
+import net.thevpc.nuts.util.NArrays;
 import net.thevpc.scholar.hadruplot.HSBColorPalette;
 import net.thevpc.scholar.hadruplot.ColorPalette;
 import net.thevpc.scholar.hadruplot.Plot;
@@ -86,12 +86,12 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
         double[][] _matrix;
         int max = 100;
         if (horizontal) {
-            x = ArrayUtils.dsteps(max, 0.0, -1.0);
-            y = ArrayUtils.dsteps(0.0, 0, 1.0);
+            x = NArrays.range(max, 0.0, -1.0);
+            y = NArrays.range(0.0, 0, 1.0);
             _matrix = new double[][]{x};
         } else {
-            x = ArrayUtils.dsteps(0.0, 0, 1.0);
-            y = ArrayUtils.dsteps(max, 0.0, -1.0);
+            x = NArrays.range(0.0, 0, 1.0);
+            y = NArrays.range(max, 0.0, -1.0);
             _matrix = new double[y.length][1];
             for (int i = 0; i < y.length; i++) {
                 _matrix[i][0] = y[i];
@@ -349,9 +349,9 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
     }
 
     public void setData(double[][] matrix) {
-        MinMax oldZMinMax = new MinMax();
-        oldZMinMax.registerValue(minValue);
-        oldZMinMax.registerValue(maxValue);
+        NDoubleRange oldZMinMax = NDoubleRange.of();
+        oldZMinMax.add(minValue);
+        oldZMinMax.add(maxValue);
 
         minValue = Double.NaN;
         maxValue = Double.NaN;
@@ -395,9 +395,9 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
             }
         }
         this.matrix = normalizer.normalize(sourceMatrix);
-        MinMax zMinMax = new MinMax();
-        zMinMax.registerValue(minValue);
-        zMinMax.registerValue(maxValue);
+        NDoubleRange zMinMax = NDoubleRange.of();
+        zMinMax.add(minValue);
+        zMinMax.add(maxValue);
         firePropertyChange("zMinMax", oldZMinMax, zMinMax);
     }
 

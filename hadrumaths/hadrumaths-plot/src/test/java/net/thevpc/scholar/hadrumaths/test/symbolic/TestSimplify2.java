@@ -1,9 +1,8 @@
 package net.thevpc.scholar.hadrumaths.test.symbolic;
 
-import net.thevpc.common.collections.Collections2;
-import net.thevpc.common.collections.ListValueMap;
 import net.thevpc.nuts.time.NChronometer;
 import net.thevpc.nuts.time.NDuration;
+import net.thevpc.nuts.util.NListMultiValueMap;
 import net.thevpc.scholar.hadrumaths.transform.ExprRewriteCounter;
 import net.thevpc.scholar.hadrumaths.transform.ExprRewriteLogger;
 import net.thevpc.scholar.hadrumaths.transform.ExpressionRewriter;
@@ -79,15 +78,15 @@ public class TestSimplify2 {
                 ,
                 "2*pow((cos(X)*cos((Y-1.5707963267948966))+cos((X-1.5707963267948966))*cos(Y)),2)"
         };
-        ListValueMap<String, Expr> visited = Collections2.listValueMap();
+        NListMultiValueMap<String, Expr> visited = NListMultiValueMap.of();
         for (String es : all) {
             System.out.println(es);
             Expr e = ScalarProductOperatorFactory.formal().getSimplifier().rewriteOrSame(expr(es), null);
             visited.add(es, e);
         }
         System.out.println(all.length);
-        System.out.println(visited.keySize());
-        for (Map.Entry<String, List<Expr>> e : visited.multiValueEntrySet()) {
+        System.out.println(visited.keyCount());
+        for (Map.Entry<String, List<Expr>> e : visited.entrySet()) {
             if (e.getValue().size() > 1) {
                 System.out.println(e.getKey() + ":");
                 for (Expr expr : e.getValue()) {

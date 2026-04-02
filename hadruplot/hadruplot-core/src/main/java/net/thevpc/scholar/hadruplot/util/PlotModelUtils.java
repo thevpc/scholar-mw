@@ -1,12 +1,13 @@
 package net.thevpc.scholar.hadruplot.util;
 
+import net.thevpc.nuts.util.NArrays;
 import net.thevpc.scholar.hadruplot.model.value.DefaultPlotValueArrayType;
 import net.thevpc.scholar.hadruplot.model.PlotModel;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotModel;
 import net.thevpc.scholar.hadruplot.model.PlotHyperCubePlotModel;
 import net.thevpc.scholar.hadruplot.model.value.PlotValueType;
 import java.util.function.ToDoubleFunction;
-import net.thevpc.common.util.ArrayUtils;
+
 import net.thevpc.scholar.hadruplot.*;
 
 public class PlotModelUtils {
@@ -242,11 +243,11 @@ public class PlotModelUtils {
             if (x.length == 0) {
                 PlotType plotType = _getPlotType(null, builder);
                 if (PlotType.POLAR != plotType) {
-                    x = ArrayUtils.dsteps(1.0, z.length == 0 ? 0 : z[0].length, 1.0);
+                    x = NArrays.range(1.0, z.length == 0 ? 0 : z[0].length, 1.0);
                 }
             }
             if (y.length == 0) {
-                y = ArrayUtils.dsteps(1.0, z.length, 1.0);
+                y = NArrays.range(1.0, z.length, 1.0);
             }
 
             return (_defaultPlotModelXYZ(builder,
@@ -289,7 +290,7 @@ public class PlotModelUtils {
         PlotHyperCubePlotModel mm = new PlotHyperCubePlotModel()
                 //.setLibraries(builder.getLibrary())
                 .setVdiscretes(new DefaultPlotHyperCube(new PlotCube(null, null, null,
-                        ArrayUtils.box(z))));
+                        NArrays.box(z))));
         postConfigure(mm, builder);
         return mm;
     }

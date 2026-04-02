@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -109,7 +109,7 @@ public class ArrayDoubleVector extends AbstractVector<Double> implements DoubleV
     }
 
     @Override
-    public <R> Vector<R> to(TypeName<R> other) {
+    public <R> Vector<R> to(NTypeName<R> other) {
         if (other.equals(Maths.$COMPLEX)) {
             return (Vector<R>) new DoubleToComplexReadOnlyVector(this);
         }
@@ -278,7 +278,7 @@ public class ArrayDoubleVector extends AbstractVector<Double> implements DoubleV
     }
 
     @Override
-    public TypeName<Double> getComponentType() {
+    public NTypeName<Double> getComponentType() {
         return Maths.$DOUBLE;
     }
 
@@ -420,7 +420,7 @@ public class ArrayDoubleVector extends AbstractVector<Double> implements DoubleV
         }
 
         @Override
-        public <R> Vector<R> to(TypeName<R> other) {
+        public <R> Vector<R> to(NTypeName<R> other) {
             if (other.equals(Maths.$DOUBLE)) {
                 return (Vector<R>) list;
             }

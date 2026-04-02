@@ -1,6 +1,7 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 
 import java.util.Collection;
 
@@ -8,16 +9,16 @@ public class ReadOnlyVector<T> extends AbstractVector<T> implements Cloneable {
 
     private static final long serialVersionUID = 1L;
     private final VectorModel<T> model;
-    private final TypeName<T> componentType;
+    private final NTypeName<T> componentType;
 
-    public ReadOnlyVector(TypeName<T> componentType, boolean row, VectorModel<T> model) {
+    public ReadOnlyVector(NTypeName<T> componentType, boolean row, VectorModel<T> model) {
         super(row);
         this.componentType = componentType;
         this.model = model;
     }
 
     @Override
-    public TypeName<T> getComponentType() {
+    public NTypeName<T> getComponentType() {
         return componentType;
     }
 

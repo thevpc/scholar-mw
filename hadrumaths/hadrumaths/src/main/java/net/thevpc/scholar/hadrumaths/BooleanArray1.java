@@ -1,7 +1,8 @@
 package net.thevpc.scholar.hadrumaths;
 
 import net.thevpc.scholar.hadrumaths.symbolic.Range;
-import net.thevpc.common.collections.BitSet2;
+
+import java.util.BitSet;
 
 /**
  * Created by vpc on 4/7/17.
@@ -16,7 +17,7 @@ public interface BooleanArray1 {
 
     void clear(int i);
 
-    BitSet2 toBitSet();
+    BitSet toBitSet();
 
     int size();
 

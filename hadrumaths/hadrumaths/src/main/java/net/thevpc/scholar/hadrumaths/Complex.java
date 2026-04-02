@@ -47,6 +47,11 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
     }
 
     @Override
+    public boolean isImaginary() {
+        return getReal() == 0 && getImag() != 0;
+    }
+
+    @Override
     public String toLatex() {
         if (isReal()) {
             return DoubleExpr.of(getReal()).toLatex();

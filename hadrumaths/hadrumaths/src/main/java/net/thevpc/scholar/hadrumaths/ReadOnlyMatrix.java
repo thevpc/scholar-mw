@@ -1,13 +1,13 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 
 public class ReadOnlyMatrix<T> extends AbstractMatrix<T> {
     private static final long serialVersionUID = 1L;
-    private final TypeName<T> componentType;
+    private final NTypeName<T> componentType;
     private final MatrixModel<T> model;
 
-    public ReadOnlyMatrix(TypeName<T> componentType, MatrixModel<T> model) {
+    public ReadOnlyMatrix(NTypeName<T> componentType, MatrixModel<T> model) {
         this.componentType = componentType;
         this.model = model;
     }
@@ -34,7 +34,7 @@ public class ReadOnlyMatrix<T> extends AbstractMatrix<T> {
     }
 
     @Override
-    public TypeName<T> getComponentType() {
+    public NTypeName<T> getComponentType() {
         return componentType;
     }
 

@@ -4,7 +4,7 @@
  */
 package net.thevpc.scholar.hadruplot.libraries.jfreechart;
 
-import net.thevpc.common.util.MinMax;
+import net.thevpc.nuts.math.NDoubleRange;
 import net.thevpc.scholar.hadruplot.extension.PlotModelProvider;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotModel;
 import org.jfree.chart.ChartFactory;
@@ -35,7 +35,7 @@ public class PlotCanvasPieJFreeChart extends PlotCanvasAnyDoubleJFreeChart {
     }
 
 
-    protected void prepareJFreeChart(JFreeChart chart, MinMax x_minmax) {
+    protected void prepareJFreeChart(JFreeChart chart, NDoubleRange x_minmax) {
         chart.getPlot().setBackgroundPaint(Color.WHITE);
         if (chart.getPlot() instanceof PiePlot) {
             PiePlot plot = (PiePlot) chart.getPlot();

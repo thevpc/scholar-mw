@@ -1,11 +1,11 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 
 public interface SparseArray<T> {
     T get(int i);
 
-    TypeName<T> getComponentType();
+    NTypeName<T> getComponentType();
 
     void set(int i, T value);
 

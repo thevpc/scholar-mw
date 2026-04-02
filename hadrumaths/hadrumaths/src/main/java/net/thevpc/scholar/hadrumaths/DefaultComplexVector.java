@@ -1,6 +1,8 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
+import net.thevpc.nuts.reflect.NTypeNameDomain;
+import net.thevpc.nuts.reflect.NTypeNamePlatformDomain;
 import net.thevpc.scholar.hadrumaths.symbolic.Param;
 import net.thevpc.scholar.hadrumaths.util.ArrayUtils;
 
@@ -140,7 +142,7 @@ public class DefaultComplexVector extends AbstractVector<Complex> implements Com
     }
 
     @Override
-    public TypeName<Complex> getComponentType() {
+    public NTypeName<Complex> getComponentType() {
         return Maths.$COMPLEX;
     }
 
@@ -207,7 +209,7 @@ public class DefaultComplexVector extends AbstractVector<Complex> implements Com
         ));
     }
 
-    public <R> Vector<R> transform(TypeName<R> toType, VectorTransform<Complex, R> op) {
+    public <R> Vector<R> transform(NTypeName<R> toType, VectorTransform<Complex, R> op) {
         return new ReadOnlyVector<R>(
                 toType, isRow(), new VectorModel<R>() {
             @Override
@@ -750,14 +752,14 @@ public class DefaultComplexVector extends AbstractVector<Complex> implements Com
     }
 
     @Override
-    public <R> boolean isConvertibleTo(TypeName<R> other) {
+    public <R> boolean isConvertibleTo(NTypeName<R> other) {
         if (
                 Maths.$COMPLEX.equals(other)
                         || Maths.$EXPR.equals(other)
         ) {
             return true;
         }
-        if (other.isAssignableFrom(getComponentType())) {
+        if (NTypeNamePlatformDomain.of().isAssignableFrom(other,getComponentType())) {
             return true;
         }
         VectorSpace<Complex> vs = Maths.getVectorSpace(getComponentType());

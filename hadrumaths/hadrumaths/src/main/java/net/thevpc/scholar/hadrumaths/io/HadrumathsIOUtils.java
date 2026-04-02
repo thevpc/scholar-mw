@@ -1,10 +1,8 @@
 package net.thevpc.scholar.hadrumaths.io;
 
-import net.thevpc.common.io.FileUtils;
-import net.thevpc.common.io.IOUtils;
 import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.common.mon.ProgressMonitorOutputStream;
-import net.thevpc.common.strings.StringUtils;
+import net.thevpc.nuts.util.NBlankable;
 
 import java.io.*;
 import java.net.URL;
@@ -25,12 +23,45 @@ public final class HadrumathsIOUtils {
 
     public static void saveObject(String physicalName, Object object) {
         try {
-            IOUtils.saveObject(physicalName, object);
+            physicalName = expandPath(physicalName);
+
+            ObjectOutputStream oos = null;
+            try {
+                File f = new File(physicalName);
+                if (f.getParentFile() != null) {
+                    f.getParentFile().mkdirs();
+                }
+                oos = new ObjectOutputStream(new FileOutputStream(physicalName));
+                oos.writeObject(object);
+                oos.close();
+            } finally {
+                if (oos != null) {
+                    oos.close();
+                }
+            }
         } catch (IOException ex) {
             throw new UncheckedIOException(ex);
         }
     }
 
+    /**
+     * path expansion replaces ~ with ${user.home} property value
+     *
+     * @param path to expand
+     * @return expanded path
+     */
+    public static String expandPath(String path) {
+        if (path == null) {
+            return path;
+        }
+        if (path.equals("~")) {
+            return System.getProperty("user.home");
+        }
+        if (path.startsWith("~") && path.length() > 1 && (path.charAt(1) == '/' || path.charAt(1) == '\\')) {
+            return System.getProperty("user.home") + path.substring(1);
+        }
+        return path;
+    }
 
     public static boolean existsOrWaitIfStillWritingInto(File file) {
         return existsOrWaitIfStillWritingInto(file, 180);
@@ -79,7 +110,7 @@ public final class HadrumathsIOUtils {
     }
 
     public static void saveZippedObject(String physicalName, Object object, ProgressMonitor monitor, String messagePrefix) throws UncheckedIOException {
-        physicalName = FileUtils.expandPath(physicalName);
+        physicalName = expandPath(physicalName);
         String physicalNameTemp = physicalName + WRITE_TEMP_EXT;
         try {
             if (monitor == null) {
@@ -205,7 +236,7 @@ public final class HadrumathsIOUtils {
 
 
     public static HFile createHFile(String absolutePath) {
-        return new FolderHFileSystem(new File(FileUtils.expandPath(absolutePath))).get("/");
+        return new FolderHFileSystem(new File(expandPath(absolutePath))).get("/");
     }
 
     public static HFile createHFile(File absolutePath) {
@@ -233,7 +264,7 @@ public final class HadrumathsIOUtils {
                 //
             }
             String version = p.getProperty("version");
-            if (!StringUtils.isBlank(version)) {
+            if (!NBlankable.isBlank(version)) {
                 return version;
             }
         }

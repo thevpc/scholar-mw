@@ -1,12 +1,12 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 
 public class AxisVector<T> {
     private Coordinates coordinates;
     private Vector<T> model;
 
-    public AxisVector(Coordinates coordinates, TypeName<T> type, T c1, T c2, T c3) {
+    public AxisVector(Coordinates coordinates, NTypeName<T> type, T c1, T c2, T c3) {
         this.coordinates = coordinates;
         this.model = new ArrayVector<T>(type, false, 3);
         this.model.append(c1);

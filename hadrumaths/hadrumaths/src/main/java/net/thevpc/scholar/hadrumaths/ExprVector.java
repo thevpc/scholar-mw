@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleParamValues;
 import net.thevpc.scholar.hadrumaths.symbolic.Param;
 import net.thevpc.scholar.hadrumaths.util.InflatedExprTitleResolver;
@@ -29,7 +29,7 @@ public interface ExprVector extends Vector<Expr> {
     ExprVector rscalarProduct(Expr other);
 
     @Override
-    <R> Vector<R> to(TypeName<R> other);
+    <R> Vector<R> to(NTypeName<R> other);
 
     @Override
     ExprVector vscalarProduct(Vector<Expr>... other);

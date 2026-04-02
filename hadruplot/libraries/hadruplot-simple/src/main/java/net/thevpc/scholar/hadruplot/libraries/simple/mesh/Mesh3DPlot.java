@@ -1,11 +1,11 @@
 package net.thevpc.scholar.hadruplot.libraries.simple.mesh;
 
 
+import net.thevpc.nuts.math.NDoubleRange;
+import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.scholar.hadruplot.extension.PlotModelProvider;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotXYDoubleModelFace;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotModel;
-import net.thevpc.common.strings.StringUtils;
-import net.thevpc.common.util.MinMax;
 import net.thevpc.scholar.hadruplot.*;
 import net.thevpc.scholar.hadruplot.actions.AbstractPlotAction;
 import net.thevpc.scholar.hadruplot.util.PlotUtils;
@@ -66,20 +66,20 @@ public class Mesh3DPlot extends JPanel implements PlotComponentPanel {
         double[][] z = model.getZ();
         Mesh3DObject p1 = new Mesh3DObject(null, model.getX().length * model.getY().length, (model.getX().length - 1) * (model.getY().length - 1));
 
-        titleLabel = new JLabel(StringUtils.trim(model.getTitle()), SwingConstants.CENTER);
+        titleLabel = new JLabel(NStringUtils.trim(model.getTitle()), SwingConstants.CENTER);
 
-        MinMax minMax = new MinMax();
-        MinMax absVertZMinMax = new MinMax();
-        MinMax vertXYMinMax = new MinMax();
-        absVertZMinMax.registerAbsValues(z);
-        vertXYMinMax.registerValues(model.getX());
-        vertXYMinMax.registerValues(y);
+        NDoubleRange minMax = NDoubleRange.of();
+        NDoubleRange absVertZMinMax = NDoubleRange.of();
+        NDoubleRange vertXYMinMax = NDoubleRange.of();
+        absVertZMinMax.add(z);
+        vertXYMinMax.add(model.getX());
+        vertXYMinMax.add(y);
         double zFactor = 1;
-        if (!vertXYMinMax.isNaN()) {
-            zFactor *= (vertXYMinMax.getMax() - vertXYMinMax.getMin()) / 2;
+        if (vertXYMinMax.isSet()) {
+            zFactor *= (vertXYMinMax.max() - vertXYMinMax.min()) / 2;
         }
-        if (!absVertZMinMax.isNaN() && absVertZMinMax.getMax() > 0) {
-            zFactor /= absVertZMinMax.getMax();
+        if (absVertZMinMax.isSet() && absVertZMinMax.max() > 0) {
+            zFactor /= absVertZMinMax.max();
         }
 
         for (int i = 0; i < y.length; i++) {
@@ -97,16 +97,16 @@ public class Mesh3DPlot extends JPanel implements PlotComponentPanel {
                 f.addVertex(p1.vert[(i + 0) * x.length + (j + 1)]);
                 f.addVertex(p1.vert[(i + 1) * x.length + (j + 1)]);
                 f.addVertex(p1.vert[(i + 1) * x.length + (j + 0)]);
-                minMax.registerValue(f.getRealCenter().z);
+                minMax.add(f.getRealCenter().z);
 
             }
         }
 
         for (int i = 0; i < p1.face.length; i++) {
             Mesh3DFace face3d = p1.face[i];
-            float r = minMax.getRatio(face3d.getRealCenter().z);
+            double r = minMax.ratio(face3d.getRealCenter().z);
 //            System.out.println(r + " : " + face3d.getRealCenter().z + " : " + minMax.getMin() + " : " + minMax.getMax());
-            face3d.setColor(colorPalette.getColor(r));
+            face3d.setColor(colorPalette.getColor((float)r));
             //face3d.setColor(new Color(Color.HSBtoRGB(H * (r), S, B)));
         }
 

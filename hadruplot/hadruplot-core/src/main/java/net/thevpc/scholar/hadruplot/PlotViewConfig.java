@@ -1,8 +1,9 @@
 package net.thevpc.scholar.hadruplot;
 
-import net.thevpc.common.util.BooleanHolder;
-import net.thevpc.common.util.DoubleHolder;
-import net.thevpc.common.util.IntegerHolder;
+import net.thevpc.nuts.util.NBooleanRef;
+import net.thevpc.nuts.util.NDoubleRef;
+import net.thevpc.nuts.util.NIntRef;
+import net.thevpc.nuts.util.NUtils;
 
 import java.awt.*;
 import java.lang.reflect.Field;
@@ -11,58 +12,58 @@ import java.util.List;
 
 public class PlotViewConfig {
     public PlotConfigLineStepType lineStepType;
-    public BooleanHolder showLegend = new BooleanHolder();
-    public IntegerHolder maxLegendCount = new IntegerHolder();
-    public BooleanHolder showTooltips = new BooleanHolder();
-    public BooleanHolder nodeLabel = new BooleanHolder();
-    public BooleanHolder threeD = new BooleanHolder();
-    public BooleanHolder alternateColor = new BooleanHolder();
-    public BooleanHolder alternateNode = new BooleanHolder();
-    public BooleanHolder alternateLine = new BooleanHolder();
-    public BooleanHolder clockwise = new BooleanHolder();
-    public DoubleHolder polarAngleOffset = new DoubleHolder();
+    public NBooleanRef showLegend = NBooleanRef.of();
+    public NIntRef maxLegendCount = NIntRef.of();
+    public NBooleanRef showTooltips = NBooleanRef.of();
+    public NBooleanRef nodeLabel = NBooleanRef.of();
+    public NBooleanRef threeD = NBooleanRef.of();
+    public NBooleanRef alternateColor = NBooleanRef.of();
+    public NBooleanRef alternateNode = NBooleanRef.of();
+    public NBooleanRef alternateLine = NBooleanRef.of();
+    public NBooleanRef clockwise = NBooleanRef.of();
+    public NDoubleRef polarAngleOffset = NDoubleRef.of();
 
     public Color color;
-    public IntegerHolder lineType = new IntegerHolder();
-    public IntegerHolder nodeType = new IntegerHolder();
-    public BooleanHolder shapesVisible = new BooleanHolder();
-    public BooleanHolder lineVisible = new BooleanHolder();
-    public BooleanHolder shapesFilled = new BooleanHolder();
-    public DoubleHolder xmultiplier = new DoubleHolder();
-    public DoubleHolder ymultiplier = new DoubleHolder();
-    public DoubleHolder defaultXMultiplier = new DoubleHolder();
+    public NIntRef lineType = NIntRef.of();
+    public NIntRef nodeType = NIntRef.of();
+    public NBooleanRef shapesVisible = NBooleanRef.of();
+    public NBooleanRef lineVisible = NBooleanRef.of();
+    public NBooleanRef shapesFilled = NBooleanRef.of();
+    public NDoubleRef xmultiplier = NDoubleRef.of();
+    public NDoubleRef ymultiplier = NDoubleRef.of();
+    public NDoubleRef defaultXMultiplier = NDoubleRef.of();
 
     public List<PlotViewConfig> children = new ArrayList<>();
 
     public PlotViewConfig copy() {
         PlotViewConfig other = new PlotViewConfig();
         for (Field field : getClass().getDeclaredFields()) {
-            if (field.getType().equals(IntegerHolder.class)) {
-                IntegerHolder h = null;
-                IntegerHolder m = null;
+            if (field.getType().equals(NIntRef.class)) {
+                NIntRef h = null;
+                NIntRef m = null;
                 try {
-                    h = (IntegerHolder) field.get(other);
-                    m = (IntegerHolder) field.get(this);
+                    h = (NIntRef) field.get(other);
+                    m = (NIntRef) field.get(this);
                     h.set(m.get());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }else if (field.getType().equals(BooleanHolder.class)) {
-                BooleanHolder h = null;
-                BooleanHolder  m = null;
+            }else if (field.getType().equals(NBooleanRef.class)) {
+                NBooleanRef h = null;
+                NBooleanRef  m = null;
                 try {
-                    h = (BooleanHolder) field.get(other);
-                    m = (BooleanHolder) field.get(this);
+                    h = (NBooleanRef) field.get(other);
+                    m = (NBooleanRef) field.get(this);
                     h.set(m.get());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }else if (field.getType().equals(DoubleHolder.class)) {
-                DoubleHolder h = null;
-                DoubleHolder  m = null;
+            }else if (field.getType().equals(NDoubleRef.class)) {
+                NDoubleRef h = null;
+                NDoubleRef  m = null;
                 try {
-                    h = (DoubleHolder) field.get(other);
-                    m = (DoubleHolder) field.get(this);
+                    h = (NDoubleRef) field.get(other);
+                    m = (NDoubleRef) field.get(this);
                     h.set(m.get());
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -85,15 +86,15 @@ public class PlotViewConfig {
     }
 
     public double getDefaultXMultiplier(double val) {
-        return defaultXMultiplier.get(val);
+        return NUtils.firstNonNull(defaultXMultiplier.get(),val);
     }
 
     public double getXMultiplier(double val) {
-        return xmultiplier.get(val);
+        return NUtils.firstNonNull(xmultiplier.get(),val);
     }
 
     public double getYMultiplier(double val) {
-        return ymultiplier.get(val);
+        return NUtils.firstNonNull(ymultiplier.get(),val);
     }
 
     public double getXMultiplierAt(int index, double val) {
@@ -107,7 +108,7 @@ public class PlotViewConfig {
         if (index < children.size()) {
             children.get(index).getYMultiplier(val);
         }
-        return ymultiplier.get(val);
+        return NUtils.firstNonNull(ymultiplier.get(),val);
     }
 
     public PlotViewConfig getOrCreate(int index) {

@@ -12,10 +12,13 @@ import net.thevpc.ntexup.extension.mwsimulator.NTxMwSimulationUtils;
 import net.thevpc.ntexup.lib.geometry3d.NTxNumberElement3;
 import net.thevpc.ntexup.lib.geometry3d.impl.NTx3DUtils;
 import net.thevpc.nuts.elem.*;
+import net.thevpc.nuts.log.NLog;
 import net.thevpc.nuts.text.NMsg;
+import net.thevpc.nuts.util.NLiteral;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.scholar.hadrumaths.Domain;
+import net.thevpc.scholar.hadrumaths.DomainX;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.geom.DefaultPolygon;
 import net.thevpc.scholar.hadrumaths.geom.Geometry;
@@ -65,7 +68,14 @@ public class MomParser {
         str.setFirstBoxSpace(moMSolverQueryInfo.boundaries.bottom);
         str.setSecondBoxSpace(moMSolverQueryInfo.boundaries.top);
         str.setModeFunctions(moMSolverQueryInfo.modes);
-        str.setDomain(parseSubstrateDomain(args, scene3D));
+        Domain domain = parseSubstrateDomain(args, scene3D);
+        if (domain == null) {
+            domain = Domain.ofBounds(-1, 1, -1, 1);
+        }
+        if (moMSolverQueryInfo.domainPadding != null) {
+            domain = domain.pad(moMSolverQueryInfo.domainPadding.xwidth(), moMSolverQueryInfo.domainPadding.ywidth());
+        }
+        str.setDomain(domain);
         str.setSources(moMSolverQueryInfo.sources);
         boolean t = !isEmptyTestFunctions(moMSolverQueryInfo.testFunctions);
         boolean b = !isEmptyTestFunctions(moMSolverQueryInfo.basisFunctions);
@@ -121,6 +131,10 @@ public class MomParser {
                     }
                     case "boundaries": {
                         query.boundaries = parseMoMSolverQueryBoundaries(pv, args, scene3D);
+                        break;
+                    }
+                    case "domain-padding": {
+                        query.domainPadding = parseDomainPadding(pv, args, scene3D).orNull();
                         break;
                     }
                     case "test-functions":
@@ -337,6 +351,25 @@ public class MomParser {
         return null;
     }
 
+    private static NOptional<Domain> parseDomainPadding(NElement value, NTxFunctionCallContext args, NTxNode scene3D) {
+        if (value == null || value.isNull()) {
+            return NOptional.ofNamedEmpty("domain");
+        }
+        if (value.isUplet()) {
+            NUpletElement g = value.asUplet().get();
+            if (g.params().size() == 2) {
+                NOptional<Double> a = NTxNumberUtils.toMeter(_compiler(args.scopedContext()).apply(g.get(0).get()));
+                NOptional<Double> b = NTxNumberUtils.toMeter(_compiler(args.scopedContext()).apply(g.get(1).get()));
+                if (a.isPresent() && b.isPresent()) {
+                    return NOptional.of(Domain.ofWidth(a.get(), b.get()));
+                }
+            }
+        }
+        NLog.ofScoped(Material.class).log(NMsg.ofC("invalid domain %s", value).asError());
+        return NOptional.ofNamedError(NMsg.ofC("domain %s", value).asError());
+    }
+
+
     private static MoMSolverQueryBoundaries parseMoMSolverQueryBoundaries(NElement value, NTxFunctionCallContext args, NTxNode scene3D) {
         NTxResolutionContext context = args.scopedContext();
         NOptional<NElement> b = context.evalExpression(value);
@@ -455,5 +488,6 @@ public class MomParser {
         TestFunctions testFunctions;
         TestFunctions basisFunctions;
         Sources sources;
+        Domain domainPadding;
     }
 }

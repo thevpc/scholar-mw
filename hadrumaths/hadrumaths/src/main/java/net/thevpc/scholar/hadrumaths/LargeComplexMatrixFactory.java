@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.strings.StringUtils;
+import net.thevpc.nuts.util.NBlankable;
 
 import java.io.Closeable;
 import java.util.logging.Logger;
@@ -27,7 +27,7 @@ public abstract class LargeComplexMatrixFactory extends AbstractComplexMatrixFac
         if (id == null) {
             throw new IllegalArgumentException("Id should not be null");
         }
-        this.id = StringUtils.isBlank(id) ? "large-matrix" : id;
+        this.id = NBlankable.isBlank(id) ? "large-matrix" : id;
         this.sparse = sparse;
         if (defaultValue == null) {
             defaultValue = Complex.ZERO;

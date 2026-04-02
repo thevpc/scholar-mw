@@ -5,14 +5,15 @@
  */
 package net.thevpc.scholar.hadruplot.containers;
 
+import net.thevpc.nuts.util.NBlankable;
+import net.thevpc.nuts.util.NLiteral;
+import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.scholar.hadruplot.extension.PlotWindowContainerFactory;
 import net.thevpc.scholar.hadruplot.model.PlotModel;
 
 import java.awt.image.BufferedImage;
 
-import net.thevpc.common.strings.StringUtils;
 import net.thevpc.common.swing.SwingUtilities3;
-import net.thevpc.common.util.PlatformUtils;
 import net.thevpc.scholar.hadruplot.*;
 
 import javax.swing.*;
@@ -69,12 +70,12 @@ public abstract class AbstractPlotContainer implements PlotContainer {
         for (int i = 0; i < count; i++) {
             PlotComponent c = getPlotComponent(i);
             if (c != null) {
-                if (StringUtils.trim(c.getPlotTitle()).equals(StringUtils.trim(pcn.getTitle()))) {
+                if (NStringUtils.trim(c.getPlotTitle()).equals(NStringUtils.trim(pcn.getTitle()))) {
                     return i;
                 }
             }
         }
-        if (pcn.getTitle().startsWith("#") && PlatformUtils.isInteger(pcn.getTitle().substring(1))) {
+        if (pcn.getTitle().startsWith("#") && NLiteral.of(pcn.getTitle().substring(1)).asInt().isPresent()) {
             int x = Integer.parseInt(pcn.getTitle().substring(1));
             if (x >= 0 && x < count) {
                 PlotComponent c = getPlotComponent(x);
@@ -102,7 +103,7 @@ public abstract class AbstractPlotContainer implements PlotContainer {
     }
 
     protected String validateTitle(String s) {
-        if (StringUtils.isBlank(s)) {
+        if (NBlankable.isBlank(s)) {
             s = "Figure";
         }
         return s;

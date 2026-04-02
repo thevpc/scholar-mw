@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadruplot.libraries.calc3d.thevpc.plot;
 
-import net.thevpc.common.util.MinMax;
+import net.thevpc.nuts.math.NDoubleRange;
 import net.thevpc.scholar.hadruplot.model.PlotModel;
 import net.thevpc.scholar.hadruplot.extension.PlotModelProvider;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotModel;
@@ -20,19 +20,19 @@ public class PlotCanvasCurveCalc3d extends PlotCanvasAnyCalc3d {
 
         PlotModel m = plotModelProvider.getModel();
         ValuesPlotXDoubleModelFace data = new ValuesPlotXDoubleModelFace((ValuesPlotModel) m, config);
-        MinMax xminMax = new MinMax();
-        MinMax yminMax = new MinMax();
-        MinMax zminMax = new MinMax();
+        NDoubleRange xminMax = NDoubleRange.of();
+        NDoubleRange yminMax = NDoubleRange.of();
+        NDoubleRange zminMax = NDoubleRange.of();
         for (int i = 0; i < data.size(); i++) {
 //            String key = data.getYTitle(i);
             double[] x = data.getX(i);
             double[] y = data.getY(i);
             Point3D[] r = new Point3D[y.length];
             for (int k = 0; k < y.length; k++) {
-                xminMax.registerValue(x[k]);
-                yminMax.registerValue(y[k]);
-                zminMax.registerValue(x[k]);
-                zminMax.registerValue(y[k]);
+                xminMax.add(x[k]);
+                yminMax.add(y[k]);
+                zminMax.add(x[k]);
+                zminMax.add(y[k]);
                 r[k] = new Point3D(x[k], y[k], 0);
             }
             chartPanel.addElement(Calc3dFactory.createCurve(r));
@@ -40,9 +40,9 @@ public class PlotCanvasCurveCalc3d extends PlotCanvasAnyCalc3d {
 
         Preferences preferences = chartPanel.getSettings().getPreferences();
         preferences.setClipBox(
-                new Box3D(xminMax.getMin(), xminMax.getMax(),
-                        yminMax.getMin(), yminMax.getMax(),
-                        zminMax.getMin(), zminMax.getMax())
+                new Box3D(xminMax.min(), xminMax.max(),
+                        yminMax.min(), yminMax.max(),
+                        zminMax.min(), zminMax.max())
         );
         chartPanel.applySettings(preferences,true);
     }

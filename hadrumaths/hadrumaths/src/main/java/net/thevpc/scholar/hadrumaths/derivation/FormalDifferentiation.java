@@ -1,10 +1,13 @@
 package net.thevpc.scholar.hadrumaths.derivation;
 
-import net.thevpc.common.collections.ClassMap;
+import net.thevpc.nuts.reflect.NClassMap;
+import net.thevpc.nuts.text.NMsg;
+import net.thevpc.nuts.util.NAssert;
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.derivation.formal.*;
+import net.thevpc.scholar.hadrumaths.format.ObjectFormat;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleValue;
@@ -20,7 +23,7 @@ import net.thevpc.scholar.hadrumaths.symbolic.polymorph.num.*;
 import net.thevpc.scholar.hadrumaths.symbolic.polymorph.trigo.*;
 
 public class FormalDifferentiation implements FunctionDifferentiatorManager {
-    private final ClassMap<FunctionDifferentiator> map = new ClassMap<FunctionDifferentiator>(Expr.class, FunctionDifferentiator.class, 40);
+    private final NClassMap<Expr,FunctionDifferentiator> map = NClassMap.of(Expr.class, FunctionDifferentiator.class, 40);
 
     public FormalDifferentiation() {
         register(Acos.class, new AcosDifferentiator());
@@ -68,7 +71,7 @@ public class FormalDifferentiation implements FunctionDifferentiatorManager {
     }
 
     public FunctionDifferentiator getDerivator(Class f1Class) {
-        return map.getRequired(f1Class);
+        return NAssert.requireNamedNonNull(map.get(f1Class), NMsg.ofC("FunctionDifferentiator for type "+f1Class.getName()));
     }
 
 

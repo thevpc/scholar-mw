@@ -43,7 +43,7 @@ public class StrSaveAction extends StructureAction {
 
     public void execute(RunningProjectThread thread) throws Exception {
         File selectFile = (File) thread.getProperties().get("SelectedFile");
-        String ext = FileUtils.getFileExtension(selectFile);
+        String ext = NIOUtils.getFileExtension(selectFile);
         if(ext.length()==0){
             selectFile=new File(selectFile.getParentFile(),selectFile.getName()+".str");
         }

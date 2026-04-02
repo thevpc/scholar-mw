@@ -67,7 +67,7 @@ public abstract class NTxHwSpaceComplexMatrixNTxSolver extends NTxSolverRunImpl 
     @Override
     public List<NTxSimulationResult> execute() {
         MomStructure str = ((MoMStrNTxSimulationPlan) plan()).str;
-        NChronometer chronometer = NChronometer.startNow();
+        NChronometer chronometer = NChronometer.of();
         str.log().log(NMsg.ofC("------------------"));
         str.log().log(NMsg.ofC("[%s] %s: ", outputName(), solverName()));
         str.log().log(NMsg.ofC("------------------"));

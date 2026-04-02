@@ -6,10 +6,13 @@ import net.thevpc.common.mon.ProgressMonitors;
 import net.thevpc.nuts.elem.NElement;
 
 
-import net.thevpc.common.collections.ClassMap;
-import net.thevpc.common.util.IntTuple2;
 import net.thevpc.nuts.elem.NObjectElementBuilder;
+import net.thevpc.nuts.reflect.NReflect;
+import net.thevpc.nuts.reflect.NReflectUtils;
+import net.thevpc.nuts.reflect.NTypeNamePlatformDomain;
 import net.thevpc.nuts.time.NChronometer;
+import net.thevpc.nuts.util.NIntUplet2;
+import net.thevpc.nuts.util.NIterator;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.ExpressionRewriterFactory;
@@ -27,7 +30,6 @@ import net.thevpc.scholar.hadrumaths.symbolic.polymorph.num.Pow;
 import net.thevpc.scholar.hadrumaths.transform.ExpressionRewriter;
 import net.thevpc.scholar.hadrumaths.transform.ExpressionRewriterRuleSet;
 import net.thevpc.scholar.hadrumaths.transform.ExpressionRewriterSuite;
-import net.thevpc.common.util.IntPairIterator;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.util.*;
@@ -164,11 +166,11 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
             Class[] c1Values = getExprClassHierarchy(c0.getC1());
             Class[] c2Values = getExprClassHierarchy(c0.getC2());
 
-            IntPairIterator it = new IntPairIterator();
+            NIterator<NIntUplet2> it = NIterator.ofInt2();
             while (it.hasNext()) {
-                IntTuple2 v = it.next();
-                int v1 = v.getValue1();
-                int v2 = v.getValue2();
+                NIntUplet2 v = it.next();
+                int v1 = v.firstInt();
+                int v2 = v.secondInt();
                 if (v1 >= c1Values.length && v2 >= c2Values.length) {
                     break;
                 }
@@ -198,7 +200,7 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
     protected Class[] getExprClassHierarchy(Class c1) {
         Class[] found = cachedExprHierarchy.get(c1);
         if (found == null) {
-            found = Stream.of(ClassMap.findClassHierarchy(c1, null)).filter(x -> !excludedExprHierarchy.contains(x)
+            found = Stream.of(NReflectUtils.findClassHierarchy(c1, null, NTypeNamePlatformDomain.of())).filter(x -> !excludedExprHierarchy.contains(x)
                     && Expr.class.isAssignableFrom(x)).toArray(Class[]::new);
             cachedExprHierarchy.put(c1, found);
         }

@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadruplot;
 
-import net.thevpc.common.util.ArrayUtils;
+import net.thevpc.nuts.util.NArrays;
 import net.thevpc.scholar.hadruplot.console.PlotConfigManager;
 import net.thevpc.scholar.hadruplot.util.PlotUtils;
 
@@ -25,8 +25,8 @@ public class PlotMatrix implements Serializable, Cloneable {
 
     public PlotMatrix(Object[][] matrix, double[] columns, double[] rows) {
         this.matrix = matrix;
-        this.rows = rows != null ? rows : ArrayUtils.dtimes(0.0, matrix.length == 0 ? 0 : matrix.length - 1, matrix.length);
-        this.columns = columns != null ? columns : ArrayUtils.dtimes(0.0, matrix.length == 0 ? 0 : (matrix[0].length - 1), matrix.length == 0 ? 0 : (matrix[0].length));
+        this.rows = rows != null ? rows : NArrays.linear(0.0, matrix.length == 0 ? 0 : matrix.length - 1, matrix.length);
+        this.columns = columns != null ? columns : NArrays.linear(0.0, matrix.length == 0 ? 0 : (matrix[0].length - 1), matrix.length == 0 ? 0 : (matrix[0].length));
     }
 
     public double[] getColumns() {

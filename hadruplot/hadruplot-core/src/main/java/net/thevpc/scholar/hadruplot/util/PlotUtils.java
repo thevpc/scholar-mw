@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadruplot.util;
 
+import net.thevpc.nuts.util.NArrays;
 import net.thevpc.scholar.hadruplot.extension.PlotNumbers;
-import net.thevpc.common.util.ArrayUtils;
 import net.thevpc.scholar.hadruplot.*;
 import net.thevpc.scholar.hadruplot.console.PlotConfigManager;
 
@@ -12,8 +12,6 @@ import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ServiceLoader;
-import java.util.function.Consumer;
 import java.util.function.ToDoubleFunction;
 
 public class PlotUtils {
@@ -46,7 +44,7 @@ public class PlotUtils {
             if (expectedSize <= 0) {
                 return new double[0];
             }
-            return ArrayUtils.dsteps(1, expectedSize, 1.0);
+            return NArrays.range(1, expectedSize, 1.0);
         }
         return a[0];
     }
@@ -56,10 +54,10 @@ public class PlotUtils {
             if (expectedSize <= 0) {
                 return new double[0];
             }
-            return ArrayUtils.dsteps(1, expectedSize, 1.0);
+            return NArrays.range(1, expectedSize, 1.0);
         }
         if (a.length<expectedSize) {
-            return ArrayUtils.dsteps(1, expectedSize, 1.0);
+            return NArrays.range(1, expectedSize, 1.0);
         }
         return a;
     }

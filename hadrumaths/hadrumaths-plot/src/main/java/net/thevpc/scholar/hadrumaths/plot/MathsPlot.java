@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.thevpc.common.mvn.PomId;
-import net.thevpc.common.mvn.PomIdResolver;
+import net.thevpc.nuts.artifact.NId;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NElementFactoryContext;
 import net.thevpc.nuts.elem.NElementMapper;
@@ -292,7 +291,7 @@ public class MathsPlot {
     }
 
     public static String getHadrumathsPlotVersion() {
-        return PomIdResolver.resolvePomId(MathsPlot.class, new PomId("", "", "DEV")).getVersion();
+        return NId.getForClass(MathsPlot.class).map(x->x.getVersion().getValue()).orElse("DEV");
     }
 
 }

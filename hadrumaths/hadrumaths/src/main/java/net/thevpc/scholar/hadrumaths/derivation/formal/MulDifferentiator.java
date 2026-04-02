@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths.derivation.formal;
 
-import net.thevpc.common.collections.CollectionUtils;
+import net.thevpc.nuts.util.NCollections;
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.Expr;
@@ -32,7 +32,7 @@ public class MulDifferentiator implements FunctionDifferentiator {
         if (children.size() == 2) {
             return derive(children.get(0), children.get(1), varIndex, d);
         }
-        List<Expr> aL = CollectionUtils.head(children, -1);
+        List<Expr> aL = NCollections.head(children, -1);
         Expr a = prod(aL.toArray(new Expr[0]));
         Expr b = children.get(children.size() - 1);
         return derive(a, b, varIndex, d);

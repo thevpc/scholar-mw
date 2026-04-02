@@ -1,6 +1,8 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
+import net.thevpc.nuts.reflect.NTypeNameDomain;
+import net.thevpc.nuts.reflect.NTypeNamePlatformDomain;
 
 import java.lang.reflect.Array;
 
@@ -8,15 +10,15 @@ public class ArrayMatrixStore<T> implements MatrixStore<T> {
     private final T[][] items;
 
     public ArrayMatrixStore(int rows, int cols, VectorSpace clazz) {
-        this(rows, cols, clazz.getItemType().getTypeClass());
+        this(rows, cols, NTypeNamePlatformDomain.of().getTypeClass(clazz.getItemType()));
     }
 
     public ArrayMatrixStore(int rows, int cols, Class clazz) {
         items = (T[][]) Array.newInstance(clazz, rows, cols);
     }
 
-    public ArrayMatrixStore(int rows, int cols, TypeName clazz) {
-        this(rows, cols, clazz.getTypeClass());
+    public ArrayMatrixStore(int rows, int cols, NTypeName clazz) {
+        this(rows, cols, NTypeNamePlatformDomain.of().getTypeClass(clazz));
     }
 
     public ArrayMatrixStore(T[][] items) {

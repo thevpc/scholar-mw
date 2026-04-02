@@ -1,15 +1,13 @@
 package net.thevpc.scholar.hadruplot.libraries.simple.heatmap;
 
+import net.thevpc.nuts.math.NDoubleRange;
+import net.thevpc.nuts.text.NTextFormat;
+import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.scholar.hadruplot.extension.PlotModelProvider;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotXYDoubleModelFace;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotModel;
-import net.thevpc.common.strings.StringUtils;
-import net.thevpc.common.util.DoubleFormat;
-import net.thevpc.common.util.MinMax;
-import net.thevpc.common.util.PercentDoubleFormat;
 import net.thevpc.scholar.hadruplot.console.PlotConfigManager;
 import net.thevpc.scholar.hadruplot.util.PlotNormalizer;
-import net.thevpc.scholar.hadruplot.util.SimpleDoubleFormat;
 import net.thevpc.scholar.hadruplot.*;
 
 import javax.swing.*;
@@ -102,14 +100,14 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel {
         area.addPropertyChangeListener("zMinMax", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                MinMax m = (MinMax) evt.getNewValue();
-                legendUnits.setMin(m.getMin());
-                legendUnits.setMax(m.getMax());
+                NDoubleRange m = (NDoubleRange) evt.getNewValue();
+                legendUnits.setMin(m.min());
+                legendUnits.setMax(m.max());
             }
         });
         legend = new HeatMapPlotArea(false, -1, colorPalette, new Dimension(10, 400), null, null, null);
         legendUnits = new HeatMapPlotUnitsArea(false, area.getMinValue(), area.getMaxValue(), model.getZformat(), 5, new Dimension(50, 400));
-        titleLabel = new JLabel(StringUtils.trim(model.getTitle()), SwingConstants.CENTER);
+        titleLabel = new JLabel(NStringUtils.trim(model.getTitle()), SwingConstants.CENTER);
         if (titleLabel.getText().length() == 0) {
             titleLabel.setVisible(false);
         }
@@ -169,7 +167,7 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel {
 
     private void updateAreaByModel() {
         area.setModel(new ValuesPlotXYDoubleModelFace(model, null, true), model.getPlotType().getType() == PlotType.HEATMAP);
-        titleLabel.setText(StringUtils.trim(model.getTitle()));
+        titleLabel.setText(NStringUtils.trim(model.getTitle()));
         repaint();
     }
 
@@ -232,12 +230,12 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel {
     private class PercentStatusBarElement extends StatusBarElement {
         public PercentStatusBarElement(String name) {
             super(name);
-            doubleFormat = PercentDoubleFormat.INSTANCE;
+            doubleFormat = NTextFormat.ofPercent();
         }
     }
 
     private class StatusBarElement extends JLabel {
-        protected DoubleFormat doubleFormat = SimpleDoubleFormat.INSTANCE;
+        protected NTextFormat<Number> doubleFormat = NTextFormat.ofNumber();
 
         //        Dimension d=new Dimension(100, 10);
         public StatusBarElement(String name) {
@@ -271,7 +269,7 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel {
                 setText((String) d);
                 d = "";
             } else {
-                setText(doubleFormat.formatDouble(PlotConfigManager.Numbers.toDouble(d)));
+                setText(doubleFormat.toString(PlotConfigManager.Numbers.toDouble(d)));
             }
             setToolTipText(String.valueOf(d));
             return this;

@@ -6,7 +6,7 @@ package net.thevpc.scholar.hadruplot;
 
 import net.thevpc.common.swing.tab.JDraggableTabbedPane;
 import net.thevpc.common.swing.SwingUtilities3;
-import net.thevpc.common.util.ArrayUtils;
+import net.thevpc.nuts.util.NArrays;
 import net.thevpc.scholar.hadruplot.console.PlotConfigManager;
 
 import javax.swing.*;
@@ -108,7 +108,7 @@ public class DynMultiPlot {
         }
 
 
-        final double[] x0 = ArrayUtils.dsteps(0.0, max - 1, 1);
+        final double[] x0 = NArrays.range(0.0, max - 1, 1);
 //        final double[][] x = new double[all.length][];
         final double[][] dblValues = new double[all.length][max];
 

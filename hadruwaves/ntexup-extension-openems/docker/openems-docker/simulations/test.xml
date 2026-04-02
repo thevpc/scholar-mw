@@ -1,25 +1,247 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+Inset-fed microstrip patch antenna @ 2.4 GHz
+Substrate : FR4, eps_r=4.4, h=1.6 mm
+Patch     : W=38.0 mm, L=29.4 mm
+Feed line : W_f=3.1 mm (50-ohm on FR4/1.6mm)
+Inset     : depth=10.3 mm, gap=1.5 mm
+All coordinates in mm  (DeltaUnit="1e-3")
+Origin    : bottom-left corner of patch at (x=−W/2, y=0, z=0)
+-->
 <openEMS>
-  <FDTD NumberOfTimesteps="2000" endCriteria="1e-5">
-    <Excitation Type="0" f0="2.4e9" fc="1e9" />
-    <BoundaryCond xmin="PEC" xmax="PEC" ymin="PEC" ymax="PEC" zmin="PEC" zmax="PEC" />
-  </FDTD>
 
-  <CSXCAD>
-    <Setup Unit="1e-3" />
-    <RectilinearGrid>
-      <XLines>-40 -20 0 20 40</XLines>
-      <YLines>-100 -50 0 50 100</YLines>
-      <ZLines>-1.7 -1.6 0 5 10</ZLines>
-    </RectilinearGrid>
-    <Properties>
-      <Material Name="substrate">
-        <Property Name="Epsilon" Value="4.4" />
-        <Box Priority="0">
-          <P1>-40 -100 -1.6</P1>
-          <P2 40 100 0 />
-        </Box>
-      </Material>
-    </Properties>
-  </CSXCAD>
-</openEMS>
+  <FDTD NumberOfTimesteps="300000" endCriteria="1e-5">
+    <!--
+    Gaussian pulse: center 2.4 GHz, −3dB BW = 2.0 GHz
+    → sweeps roughly 0.4 – 4.4 GHz in one shot
+    -->
+    <Excitation Type="0" f0="2.4e9" fc="2.0e9" />
+    <!--
+    All sides absorbing (MUR = 1st-order Mur ABC).
+    Use PML_8 instead of MUR for higher accuracy at oblique angles.
+    -->
+    <BoundaryCond xmin="PML_8" xmax="PML_8"
+                  ymin="PML_8" ymax="PML_8"
+                  zmin="PML_8" zmax="PML_8" />
+    </FDTD>
+
+    <ContinuousStructure CoordSystem="0">
+
+      <RectilinearGrid DeltaUnit="1e-3">
+        <!--
+        Key X positions:
+        ±29   domain edge  (10 mm margin beyond patch)
+        ±19   patch edge   (W/2 = 19)
+        ±3.05 inset notch  (W_f/2 + gap = 1.55+1.5)
+        ±1.55 feed edge    (W_f/2)
+        0    symmetry axis
+        -->
+
+        <!--
+        Key Y positions:
+        -20    domain bottom
+        -15    port bottom  (start of feed below patch)
+        -14    port top     (feed line starts here)
+        0    patch bottom edge / inset slot entrance
+        10.3  inset depth  (feed connects to patch interior)
+        29.4  patch top edge  (L = 29.4)
+        39    domain top   (~ 10 mm margin above patch)
+        -->
+
+        <!--
+        Key Z positions:
+        -10   domain bottom  (air cushion below ground)
+        -4   intermediate
+        -1.6 ground plane / substrate bottom
+        -1.2, -0.8, -0.4   4 layers through 1.6 mm substrate
+        0   substrate top / patch + feed surface
+        2, 5, 10, 15   air above patch
+        -->
+
+
+        <XLines>-35,-30,-25,-19,-10,-3.05,-1.55,0,1.55,3.05,10,19,25,30,35</XLines>
+        <YLines>-35,-30,-25,-20,-15,-14.5,-14,-10,-5,0,5,10.3,15,20,24.7,29.4,39,45,50,55</YLines>
+        <ZLines>-20,-16,-12,-8,-4,-2.1,-1.6,-1.2,-0.8,-0.4,0,0.5,2,5,10,15,20,25,30,35</ZLines>
+
+      </RectilinearGrid>
+
+      <Properties>
+
+        <!-- ============================================================
+        GROUND PLANE  —  infinite PEC sheet at z = −1.6 mm
+        Spans full substrate footprint.
+        ============================================================ -->
+        <Metal Name="ground">
+          <Primitives>
+            <Box Priority="10">
+              <P1 X="-29" Y="-20" Z="-1.6" />
+              <P2 X="29"  Y="39"  Z="-1.6" />
+            </Box>
+          </Primitives>
+        </Metal>
+
+        <!-- ============================================================
+        SUBSTRATE  —  FR4, eps_r = 4.4, loss tangent ~ 0.02
+        ============================================================ -->
+        <Material Name="substrate">
+          <Property Epsilon="4.4" Kappa="0.00096" />
+          <!-- Kappa = 2*pi*f0*eps0*eps_r*tan_delta = 2pi*2.4e9*8.85e-12*4.4*0.02 ≈ 0.00096 S/m -->
+          <Primitives>
+            <Box Priority="1">
+              <P1 X="-29" Y="-20" Z="-1.6" />
+              <P2 X="29"  Y="39"  Z="0"    />
+            </Box>
+          </Primitives>
+        </Material>
+
+        <!-- ============================================================
+        PATCH  —  split into 3 boxes to carve the inset notches.
+        The two notch slots (gap=1.5 mm either side of feed) are
+        simply the absence of metal between the three boxes.
+
+        x: −19 ←[left flank]→ −3.05  [gap 1.5mm]  −1.55←[feed]→+1.55  [gap 1.5mm]  +3.05 ←[right flank]→ +19
+        y: 0 ..10.3  (inset zone)
+        full width above y=10.3
+        ============================================================ -->
+        <Metal Name="patch">
+          <Primitives>
+
+            <!-- Left flank (inset zone) -->
+            <Box Priority="10">
+              <P1 X="-19"  Y="0"    Z="0" />
+              <P2 X="-3.05" Y="10.3" Z="0" />
+            </Box>
+
+            <!-- Right flank (inset zone) -->
+            <Box Priority="10">
+              <P1 X="3.05" Y="0"    Z="0" />
+              <P2 X="19"   Y="10.3" Z="0" />
+            </Box>
+
+            <!-- Full-width body above the inset -->
+            <Box Priority="10">
+              <P1 X="-19" Y="10.3" Z="0" />
+              <P2 X="19"  Y="29.4" Z="0" />
+            </Box>
+
+          </Primitives>
+        </Metal>
+
+        <!-- ============================================================
+        FEED LINE  —  50-ohm microstrip, W_f = 3.1 mm
+        Starts at port top (y=−14), runs through inset to y=10.3
+        where it contacts the patch interior.
+        ============================================================ -->
+        <Metal Name="feed">
+          <Primitives>
+            <Box Priority="10">
+              <P1 X="-1.55" Y="-14"  Z="0" />
+              <P2 X="1.55"  Y="10.3" Z="0" />
+            </Box>
+          </Primitives>
+        </Metal>
+
+        <!-- ============================================================
+        LUMPED PORT  (y = −15 .. −14, full substrate height)
+
+        Implemented as three overlapping primitives on the same box:
+        1. Excitation  — soft voltage source, E in −z direction
+        2. LumpedElement — 50-ohm parallel resistor (port Z0)
+        3. ProbeBox V  — integrates E along z → time-domain voltage
+        4. ProbeBox I  — integrates H around feed → time-domain current
+
+        The V and I time-series are written to disk and can be
+        post-processed into S11 via FFT (V_inc, V_ref from superposition).
+        ============================================================ -->
+
+        <!-- 1. Excitation: soft source, E pointing in −z -->
+        <Excitation Name="port1_exc" Type="0" Excite="0,0,-1">
+          <Primitives>
+            <Box Priority="100">
+              <P1 X="-1.55" Y="-15" Z="-1.6" />
+              <P2 X="1.55"  Y="-14" Z="0"    />
+            </Box>
+          </Primitives>
+        </Excitation>
+
+        <!-- 1. Parallel 50-ohm termination — Direction is integer, not string -->
+        <LumpedElement Name="port1_R" R="50" Direction="2" Caps="1">
+          <Primitives>
+            <Box Priority="100">
+              <P1 X="-1.55" Y="-15" Z="-1.6" />
+              <P2 X="1.55"  Y="-14" Z="0"    />
+            </Box>
+          </Primitives>
+        </LumpedElement>
+
+        <!-- 2. Voltage probe — 1D line along Z (X and Y degenerate to a point) -->
+        <ProbeBox Name="port1_V" Type="0" Weight="1">
+          <Primitives>
+            <Box Priority="100">
+              <P1 X="0" Y="-14.5" Z="-1.6" />
+              <P2 X="0" Y="-14.5" Z="0"    />
+            </Box>
+          </Primitives>
+        </ProbeBox>
+
+        <!-- 3. Current probe — 2D surface with normal in Y (Y degenerate) -->
+        <ProbeBox Name="port1_I" Type="1" Weight="1">
+          <Primitives>
+            <Box Priority="100">
+              <P1 X="-2.55" Y="-14.5" Z="-2.1" />
+              <P2 X="2.55"  Y="-14.5" Z="0.5"  />
+            </Box>
+          </Primitives>
+        </ProbeBox>
+
+        <!-- ============================================================
+        FIELD DUMP  —  E-field snapshot at patch surface (z=0)
+        DumpType 0 = E-field,  DumpMode 0 = time-domain,
+        FileType 1 = HDF5.
+        Subsampling is set aggressively here (thin mesh anyway).
+        Remove or adjust for production runs.
+        ============================================================ -->
+        <DumpBox Name="Efield_xy" DumpType="0" DumpMode="0" FileType="0">
+          <Primitives>
+            <Box Priority="0">
+              <P1 X="-29" Y="-20" Z="0" />
+              <P2 X="29"  Y="39"  Z="0" />
+            </Box>
+          </Primitives>
+        </DumpBox>
+
+
+        <!-- Surface current density on patch -->
+        <DumpBox Name="J_patch" DumpType="2" DumpMode="0" FileType="0">
+          <Primitives>
+            <Box Priority="0">
+              <P1 X="-29" Y="-20" Z="0" />
+              <P2 X="29"  Y="39"  Z="0" />
+            </Box>
+          </Primitives>
+        </DumpBox>
+
+        <!-- H-field on patch surface -->
+        <DumpBox Name="H_patch" DumpType="1" DumpMode="0" FileType="0">
+          <Primitives>
+            <Box Priority="0">
+              <P1 X="-29" Y="-20" Z="0" />
+              <P2 X="29"  Y="39"  Z="0" />
+            </Box>
+          </Primitives>
+        </DumpBox>
+
+        <!-- E-field cross-section through substrate at port -->
+        <DumpBox Name="E_xz" DumpType="0" DumpMode="0" FileType="0">
+          <Primitives>
+            <Box Priority="0">
+              <P1 X="-19"   Y="-14.5" Z="-1.6" />
+              <P2 X="19"    Y="-14.5" Z="10"   />
+            </Box>
+          </Primitives>
+        </DumpBox>
+
+      </Properties>
+    </ContinuousStructure>
+
+  </openEMS>

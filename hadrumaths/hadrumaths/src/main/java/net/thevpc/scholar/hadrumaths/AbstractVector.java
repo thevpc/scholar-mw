@@ -4,7 +4,9 @@ package net.thevpc.scholar.hadrumaths;
 import net.thevpc.nuts.elem.NElement;
 
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
+import net.thevpc.nuts.reflect.NTypeNameDomain;
+import net.thevpc.nuts.reflect.NTypeNamePlatformDomain;
 import net.thevpc.scholar.hadrumaths.symbolic.Param;
 import net.thevpc.scholar.hadrumaths.util.ArrayUtils;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
@@ -48,7 +50,7 @@ public abstract class AbstractVector<T> implements Vector<T> {
         });
     }
 
-    public <R> Vector<R> transform(TypeName<R> toType, VectorTransform<T, R> op) {
+    public <R> Vector<R> transform(NTypeName<R> toType, VectorTransform<T, R> op) {
         return newReadOnlyInstanceFromModel(
                 toType, isRow(), new VectorModel<R>() {
                     @Override
@@ -141,12 +143,12 @@ public abstract class AbstractVector<T> implements Vector<T> {
     }
 
     @Override
-    public <R> Vector<R> to(TypeName<R> other) {
+    public <R> Vector<R> to(NTypeName<R> other) {
         if (other.equals(getComponentType())) {
             return (Vector<R>) this;
         }
         //should i check default types?
-        if (Maths.$COMPLEX.isAssignableFrom(other)) {
+        if (NTypeNamePlatformDomain.of().isAssignableFrom(Maths.$COMPLEX,other)) {
             return (Vector<R>) new ReadOnlyVector(
                     getComponentType(), isRow(),
                     new VectorModel() {
@@ -568,7 +570,7 @@ public abstract class AbstractVector<T> implements Vector<T> {
                     accepted.add(v);
                 }
             }
-            T[] objects = accepted.toArray((T[]) Array.newInstance(getComponentType().getTypeClass(), 0));
+            T[] objects = accepted.toArray((T[]) Array.newInstance(NTypeNamePlatformDomain.of().getTypeClass(getComponentType()), 0));
             return newInstanceFromValues(isRow(), objects);
         }
     }
@@ -782,7 +784,7 @@ public abstract class AbstractVector<T> implements Vector<T> {
     @Override
     public <E extends T> E[] toArray(E[] a) {
         if (a.length < size()) {
-            a = ArrayUtils.newArray(getComponentType().getTypeClass(), size());
+            a = ArrayUtils.newArray(NTypeNamePlatformDomain.of().getTypeClass(getComponentType()), size());
         }
         for (int i = 0; i < size(); i++) {
             a[i] = (E) get(i);
@@ -846,8 +848,8 @@ public abstract class AbstractVector<T> implements Vector<T> {
     }
 
     @Override
-    public <R> boolean isConvertibleTo(TypeName<R> other) {
-        if (other.isAssignableFrom(getComponentType())) {
+    public <R> boolean isConvertibleTo(NTypeName<R> other) {
+        if (NTypeNamePlatformDomain.of().isAssignableFrom(other,getComponentType())) {
             return true;
         }
 //        if (
@@ -856,7 +858,7 @@ public abstract class AbstractVector<T> implements Vector<T> {
 //                ) {
 //            return true;
 //        }
-        if (other.isAssignableFrom(getComponentType())) {
+        if (NTypeNamePlatformDomain.of().isAssignableFrom(other,getComponentType())) {
             return true;
         }
         VectorSpace<T> vs = null;
@@ -1065,8 +1067,8 @@ public abstract class AbstractVector<T> implements Vector<T> {
     }
 
     @Override
-    public <R> boolean acceptsType(TypeName<R> type) {
-        return getComponentType().getTypeClass().isAssignableFrom(type.getTypeClass());
+    public <R> boolean acceptsType(NTypeName<R> type) {
+        return NTypeNamePlatformDomain.of().getTypeClass(getComponentType()).isAssignableFrom(NTypeNamePlatformDomain.of().getTypeClass(type));
     }
 
     @Override
@@ -1088,7 +1090,7 @@ public abstract class AbstractVector<T> implements Vector<T> {
         return newReadOnlyInstanceFromModel(getComponentType(), row, new VectorModelFromCell<>(size, cellFactory));
     }
 
-    protected <R> Vector<R> newReadOnlyInstanceFromModel(TypeName<R> type, boolean row, VectorModel<R> model) {
+    protected <R> Vector<R> newReadOnlyInstanceFromModel(NTypeName<R> type, boolean row, VectorModel<R> model) {
         return Maths.vectorro(type, row, model);
     }
 

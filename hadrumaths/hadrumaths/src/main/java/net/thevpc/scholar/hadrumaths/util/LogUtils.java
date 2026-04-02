@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths.util;
 
-import net.thevpc.common.strings.StringUtils;
+import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.scholar.hadrumaths.Maths;
 
 import java.io.File;
@@ -55,7 +55,7 @@ public class LogUtils {
     public static void setLogFile(String pattern, int maxSize, int count) throws IOException {
         Logger rootLogger = Logger.getLogger(NET_VPC_SCHOLAR);
         int MEGA = 1024 * 1024;
-        if (StringUtils.trimToNull(pattern) == null) {
+        if (NStringUtils.trimToNull(pattern) == null) {
             pattern = "net-vpc-scholar-math-%g.log";
         }
         pattern = Maths.Config.expandPath(pattern);

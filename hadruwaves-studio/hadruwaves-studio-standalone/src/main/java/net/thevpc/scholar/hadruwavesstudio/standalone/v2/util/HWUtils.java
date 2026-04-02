@@ -8,12 +8,8 @@ import javax.swing.*;
 import java.io.File;
 import java.util.Map;
 
-import net.thevpc.jeep.JType;
-import net.thevpc.jeep.JTypes;
 import net.thevpc.common.props.PropertyEvent;
 import net.thevpc.common.props.PropertyListener;
-import net.thevpc.echo.Application;
-import net.thevpc.common.util.Tuple3;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.HadruwavesStudio;
 
 public class HWUtils {

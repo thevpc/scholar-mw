@@ -1,14 +1,15 @@
 package net.thevpc.scholar.hadruplot;
 
 import net.thevpc.nuts.reflect.NReflectUtils;
+import net.thevpc.nuts.text.NText;
+import net.thevpc.nuts.text.NTextFormat;
+import net.thevpc.nuts.util.NDoubleArrayList;
+import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.scholar.hadruplot.extension.PlotWindowManagerFactory;
 import net.thevpc.scholar.hadruplot.extension.defaults.DefaultPlotBuilderSupport;
 import net.thevpc.scholar.hadruplot.extension.PlotBuilderSupport;
 import net.thevpc.scholar.hadruplot.model.PlotModel;
-import net.thevpc.common.strings.StringUtils;
 import net.thevpc.common.swing.SwingUtilities3;
-import net.thevpc.common.collections.DoubleArrayList;
-import net.thevpc.common.util.DoubleFormat;
 import net.thevpc.scholar.hadruplot.console.PlotConfigManager;
 import net.thevpc.scholar.hadruplot.console.PlotConsole;
 import net.thevpc.scholar.hadruplot.model.custom.StringPlotModel;
@@ -51,9 +52,9 @@ public class PlotBuilder {
     private Map<String, Object> properties = new HashMap<String, Object>();
     private String library;
     private PlotWindowManager windowManager;
-    private DoubleFormat xformat;
-    private DoubleFormat yformat;
-    private DoubleFormat zformat;
+    private NTextFormat<Number> xformat;
+    private NTextFormat<Number> yformat;
+    private NTextFormat<Number> zformat;
     private PlotSamples samples;
     private String path = "/";
     private List<Object> itemsToPlot = new ArrayList<>();
@@ -135,7 +136,7 @@ public class PlotBuilder {
         return this;
     }
 
-    public DoubleFormat xformat() {
+    public NTextFormat<Number> xformat() {
         return xformat;
     }
 
@@ -143,12 +144,12 @@ public class PlotBuilder {
         return xformat(PlotConfigManager.Config.dblformat(format));
     }
 
-    public PlotBuilder xformat(DoubleFormat format) {
+    public PlotBuilder xformat(NTextFormat<Number> format) {
         this.xformat = format;
         return this;
     }
 
-    public DoubleFormat zformat() {
+    public NTextFormat<Number> zformat() {
         return xformat;
     }
 
@@ -156,7 +157,7 @@ public class PlotBuilder {
         return zformat(PlotConfigManager.Config.dblformat(format));
     }
 
-    public PlotBuilder zformat(DoubleFormat format) {
+    public PlotBuilder zformat(NTextFormat<Number> format) {
         this.zformat = format;
         return this;
     }
@@ -172,11 +173,11 @@ public class PlotBuilder {
 //        this.xformat = new ListDoubleFormat(format);
 //        return this;
 //    }
-    public DoubleFormat yformat() {
+    public NTextFormat<Number> yformat() {
         return xformat;
     }
 
-    public PlotBuilder yformat(DoubleFormat format) {
+    public PlotBuilder yformat(NTextFormat<Number> format) {
         this.yformat = format;
         return this;
     }
@@ -250,7 +251,7 @@ public class PlotBuilder {
                 || componentType.equals(Short.class)
                 || componentType.equals(Long.TYPE)
                 || componentType.equals(Long.class)) {
-            DoubleArrayList to = new DoubleArrayList(xvalue.size());
+            NDoubleArrayList to = new NDoubleArrayList(xvalue.size());
             for (Object o : xvalue) {
                 to.add(((Number) o).doubleValue());
             }
@@ -764,7 +765,7 @@ public class PlotBuilder {
             path = this.path + "/" + path;
         }
         StringBuilder sb = new StringBuilder();
-        for (String s : StringUtils.split(path, "/")) {
+        for (String s : NStringUtils.split(path, "/")) {
             sb.append("/").append(s);
         }
         if (sb.length() == 0) {
@@ -812,7 +813,7 @@ public class PlotBuilder {
         return this;
     }
 
-    public static class ListDoubleFormat implements DoubleFormat {
+    public static class ListDoubleFormat implements NTextFormat<Number> {
 
         private final List<String> values;
 
@@ -824,6 +825,10 @@ public class PlotBuilder {
         }
 
         @Override
+        public NText toText(Number object) {
+            return NText.of(formatDouble(object.doubleValue()));
+        }
+
         public String formatDouble(double value) {
             int index = (int) value;
             if (index < 0 || index >= values.size()) {
@@ -841,15 +846,15 @@ public class PlotBuilder {
         return converter;
     }
 
-    public DoubleFormat getXformat() {
+    public NTextFormat<Number> getXformat() {
         return xformat;
     }
 
-    public DoubleFormat getYformat() {
+    public NTextFormat<Number> getYformat() {
         return yformat;
     }
 
-    public DoubleFormat getZformat() {
+    public NTextFormat<Number> getZformat() {
         return zformat;
     }
 

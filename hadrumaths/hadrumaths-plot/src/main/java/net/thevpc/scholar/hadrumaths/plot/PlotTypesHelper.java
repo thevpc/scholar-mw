@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths.plot;
 
-import net.thevpc.common.collections.CollectionUtils;
+import net.thevpc.nuts.util.NCollections;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.geom.Point;
 import net.thevpc.scholar.hadrumaths.symbolic.ExprType;
@@ -145,9 +145,9 @@ public class PlotTypesHelper {
         } else if (obj instanceof Collection) {
             return (((Collection) obj).toArray());
         } else if (obj instanceof Iterable) {
-            return CollectionUtils.toList((Iterable) obj).toArray();
+            return NCollections.toList((Iterable) obj).toArray();
         } else if (obj instanceof Iterator) {
-            return CollectionUtils.toList((Iterator) obj).toArray();
+            return NCollections.toList((Iterator) obj).toArray();
         }
         throw new IllegalArgumentException("Not an Object Array");
     }

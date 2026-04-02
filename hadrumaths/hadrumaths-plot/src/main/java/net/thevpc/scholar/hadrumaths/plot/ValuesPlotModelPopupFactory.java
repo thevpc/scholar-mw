@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadrumaths.plot;
 
+import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.scholar.hadruplot.extension.PlotModelPopupFactory;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotModel;
-import net.thevpc.common.strings.StringUtils;
 import net.thevpc.common.swing.layout.GridBagLayout2;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.ComplexMatrix;
@@ -25,7 +25,7 @@ public class ValuesPlotModelPopupFactory implements PlotModelPopupFactory {
         if (context.getFunctionsMenu() != null) {context.getFunctionsMenu().removeAll();
             ButtonGroup g = new ButtonGroup();
             for (ToDoubleFunction<Object> toDoubleConverter : PlotDoubleConverter.values()) {
-                JCheckBoxMenuItem f = new JCheckBoxMenuItem(new Plot.DoubleTypeAction(context.getModelProvider(), StringUtils.toCapitalized(toDoubleConverter.toString()), toDoubleConverter));
+                JCheckBoxMenuItem f = new JCheckBoxMenuItem(new Plot.DoubleTypeAction(context.getModelProvider(), NNameFormat.UPPER_CAMEL_CASE.format(toDoubleConverter.toString()), toDoubleConverter));
                 f.setSelected(PlatformUtils.notnull(model.getConverter(), PlotDoubleConverter.ABS).equals(toDoubleConverter));
                 g.add(f);
                 context.getFunctionsMenu().add(f);

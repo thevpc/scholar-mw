@@ -1,16 +1,17 @@
 package net.thevpc.scholar.hadrumaths.plot;
 
-import net.thevpc.common.util.DoubleFormat;
+import net.thevpc.nuts.text.NTextFormat;
+import net.thevpc.nuts.util.NDoubleFormat;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadruplot.console.PlotConfig;
 
 public class MathsPlotConfig implements PlotConfig {
-    public DoubleFormat getPercentFormat() {
+    public NTextFormat<Number> getPercentFormat() {
         return Maths.Config.getPercentFormat();
     }
 
     @Override
-    public DoubleFormat dblformat(String format) {
+    public NTextFormat<Number> dblformat(String format) {
         return Maths.dblformat(format);
     }
 

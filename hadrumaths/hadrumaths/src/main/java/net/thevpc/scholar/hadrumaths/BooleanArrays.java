@@ -1,7 +1,8 @@
 package net.thevpc.scholar.hadrumaths;
 
 import net.thevpc.scholar.hadrumaths.symbolic.Range;
-import net.thevpc.common.collections.BitSet2;
+
+import java.util.BitSet;
 
 /**
  * Created by vpc on 4/7/17.
@@ -74,17 +75,17 @@ public class BooleanArrays {
 
     public static class Arr1 extends AbstractBooleanArray1 {
 
-        BitSet2 value;
+        BitSet value;
         int size;
 
-        public Arr1(int size, BitSet2 nbits) {
+        public Arr1(int size, BitSet nbits) {
             value = nbits;
             this.size = size;
         }
 
         public Arr1(int nbits) {
             size = nbits;
-            value = new BitSet2(nbits);
+            value = new BitSet(nbits);
         }
 
         @Override
@@ -98,7 +99,7 @@ public class BooleanArrays {
         }
 
         @Override
-        public BitSet2 toBitSet() {
+        public BitSet toBitSet() {
             return value;
         }
 
@@ -433,14 +434,14 @@ public class BooleanArrays {
 
     public static class Arr2 extends AbstractBooleanArray2 {
 
-        private BitSet2 val;
+        private BitSet val;
         private final int size1;
         private final int size2;
 
         public Arr2(int size1, int size2) {
             this.size1 = size1;
             this.size2 = size2;
-            this.val = new BitSet2(size1 * size2);
+            this.val = new BitSet(size1 * size2);
         }
 
         @Override
@@ -493,7 +494,7 @@ public class BooleanArrays {
         @Override
         public BooleanArray2 copy() {
             Arr2 a = new Arr2(size1, size2);
-            a.val = val.clone();
+            a.val = (BitSet) val.clone();
             return a;
         }
 
@@ -518,7 +519,7 @@ public class BooleanArrays {
 
     public static class Arr3 extends AbstractBooleanArray3 {
 
-        private BitSet2 val;
+        private BitSet val;
         private final int size1;
         private final int size2;
         private final int size3;
@@ -527,7 +528,7 @@ public class BooleanArrays {
             this.size1 = size1;
             this.size2 = size2;
             this.size3 = size3;
-            this.val = new BitSet2(size1 * size2 * size3);
+            this.val = new BitSet(size1 * size2 * size3);
         }
 
         public void setAll(int i, int j, int kFrom, int kTo, boolean value) {
@@ -558,7 +559,7 @@ public class BooleanArrays {
                 }
 
                 @Override
-                public BitSet2 toBitSet() {
+                public BitSet toBitSet() {
                     int x = i * size2 * size3 + j * size3;
                     return val.get(x, x + size3);
                 }
@@ -614,7 +615,7 @@ public class BooleanArrays {
         @Override
         public BooleanArray3 copy() {
             Arr3 a = new Arr3(size1, size2, size3);
-            a.val = val.clone();
+            a.val = (BitSet) val.clone();
             return a;
         }
 

@@ -1,8 +1,9 @@
 package net.thevpc.scholar.hadrumaths;
 
-//import net.thevpc.scholar.hadrumaths.interop.ojalgo.OjalgoHelper;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NReflect;
+import net.thevpc.nuts.reflect.NTypeName;
+import net.thevpc.nuts.reflect.NTypeNamePlatformDomain;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -2263,14 +2264,14 @@ public abstract class AbstractComplexMatrix extends AbstractMatrix<Complex> impl
     }
 
     @Override
-    public <R> boolean isConvertibleTo(TypeName<R> other) {
+    public <R> boolean isConvertibleTo(NTypeName<R> other) {
         if (
                 Maths.$COMPLEX.equals(other)
                         || Maths.$EXPR.equals(other)
         ) {
             return true;
         }
-        if (other.isAssignableFrom(getComponentType())) {
+        if (NTypeNamePlatformDomain.of().isAssignableFrom(other,getComponentType())) {
             return true;
         }
         for (Vector<Complex> ts : getRows()) {
@@ -2335,7 +2336,7 @@ public abstract class AbstractComplexMatrix extends AbstractMatrix<Complex> impl
     }
 
     @Override
-    public TypeName getComponentType() {
+    public NTypeName getComponentType() {
         return Maths.$COMPLEX;
     }
 

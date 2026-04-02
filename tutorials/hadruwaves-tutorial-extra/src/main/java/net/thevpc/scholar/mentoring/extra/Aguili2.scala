@@ -1,9 +1,6 @@
 package net.thevpc.scholar.mentoring.extra
-import net.thevpc.common.util.{FrequencyFormat, MetricFormat}
 import net.thevpc.scholar.hadrumaths.MathScala._
-import net.thevpc.scholar.hadrumaths.convergence.ConvergenceSolver
-import net.thevpc.scholar.hadruwaves.Physics._
-import net.thevpc.scholar.hadrumaths.{Complex, DoubleSolverX, Maths}
+import net.thevpc.scholar.hadrumaths.{Complex}
 import _root_.java.util.Arrays;
 
 object Aguili2 extends App {

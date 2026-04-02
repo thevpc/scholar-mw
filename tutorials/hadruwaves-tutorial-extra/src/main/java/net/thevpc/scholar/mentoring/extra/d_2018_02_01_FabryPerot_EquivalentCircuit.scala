@@ -1,6 +1,7 @@
 package net.thevpc.scholar.mentoring.extra
 
 import net.thevpc.nuts.elem.NElement
+import net.thevpc.nuts.time.NChronometer
 import net.thevpc.scholar.hadrumaths.MathScala._
 import net.thevpc.scholar.hadruwaves.Physics._
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector
@@ -68,7 +69,7 @@ object d_2018_02_01_FabryPerot_EquivalentCircuit {
   def main(args: Array[String]): Unit = {
     Maths.Config.setScalarProductOperator(
       ScalarProductOperatorFactory.hardFormal()); // !=quad
-    var cr = NChronometer.startNow
+    var cr = NChronometer.of()
 
 
     //======================================== Test Functions =====================================
@@ -141,7 +142,7 @@ object d_2018_02_01_FabryPerot_EquivalentCircuit {
     while (i < theta.length) {
       j = 0
       while (j < phi.length) {
-        val ccc = Chronometer.start()
+        val ccc = NChronometer.of()
         Etheta(i, j) = calculEtetha(theta(i), phi(j))
         Ephi(i, j) = calculEphi(theta(i), phi(j))
         j += 1

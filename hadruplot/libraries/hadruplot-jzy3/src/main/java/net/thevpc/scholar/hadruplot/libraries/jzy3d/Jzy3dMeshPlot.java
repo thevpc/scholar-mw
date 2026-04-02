@@ -1,11 +1,10 @@
 package net.thevpc.scholar.hadruplot.libraries.jzy3d;
 
+import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.scholar.hadruplot.extension.PlotModelProvider;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotXYDoubleModelFace;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotModel;
-import net.thevpc.common.strings.StringUtils;
 import net.thevpc.scholar.hadruplot.*;
-import net.thevpc.scholar.hadruplot.util.PlotUtils;
 import org.jzy3d.chart.Chart;
 import org.jzy3d.chart.ChartLauncher;
 import org.jzy3d.chart.Settings;
@@ -62,7 +61,7 @@ public class Jzy3dMeshPlot extends JPanel implements PlotComponentPanel {
         double[] y = model.getY();
         double[][] z = model.getZ();
 
-        titleLabel = new JLabel(StringUtils.trim(model.getTitle()), SwingConstants.CENTER);
+        titleLabel = new JLabel(NStringUtils.trim(model.getTitle()), SwingConstants.CENTER);
         JPopupMenu popup = new JPopupMenu();
         titleLabel.setComponentPopupMenu(popup);
         colorPalette=Plot.getColorPalette(plotModelProvider==null?null:plotModelProvider.getModel().getColorPalette());

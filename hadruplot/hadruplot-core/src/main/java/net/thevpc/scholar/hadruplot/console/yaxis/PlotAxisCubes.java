@@ -32,7 +32,7 @@ public abstract class PlotAxisCubes extends PlotAxis implements Cloneable {
     }
 
     public Iterator<ConsoleAction> createConsoleActionIterator(ConsoleActionParams p) {
-        NChronometer chronometer = NChronometer.startNow();
+        NChronometer chronometer = NChronometer.of();
 //        x1values = getX(direct, modele, x_axis);
 //        x2values = getY(direct, modele, x_axis);
         PlotHyperCube[] yvalues = eval(p);

@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 
 public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
 //    @Override
@@ -50,7 +50,7 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
 //    }
 
     @Override
-    public TypeName<Complex> getItemType() {
+    public NTypeName<Complex> getItemType() {
         return Maths.$COMPLEX;
     }
 
@@ -269,7 +269,7 @@ public class ComplexVectorSpace extends AbstractVectorSpace<Complex> {
     }
 
     @Override
-    public <R> boolean is(Complex value, TypeName<R> type) {
+    public <R> boolean is(Complex value, NTypeName<R> type) {
         if (Maths.$COMPLEX.equals(type) || Maths.$EXPR.equals(type)) {
             return true;
         }

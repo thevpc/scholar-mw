@@ -5,7 +5,6 @@ import net.thevpc.common.i18n.Str;
 import net.thevpc.common.msg.Message;
 import net.thevpc.common.msg.StringMessage;
 import net.thevpc.common.props.*;
-import net.thevpc.common.strings.StringUtils;
 import net.thevpc.echo.*;
 import net.thevpc.common.props.Path;
 import net.thevpc.echo.Button;
@@ -27,6 +26,7 @@ import net.thevpc.echo.CheckBox;
 import net.thevpc.echo.impl.DefaultApplication;
 import net.thevpc.echo.swing.peers.SwingFramePeer;
 import net.thevpc.echo.swing.swingx.AppSwingxConfigurator;
+import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.scholar.hadruwaves.SolverBuildResult;
 import net.thevpc.scholar.hadruwaves.project.*;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
@@ -147,14 +147,14 @@ public class HadruwavesStudioV2Impl implements HadruwavesStudio {
         String old = fileObject.filePath().get();
         File dir = null;
         String suffix = fileObject.defaultFileSuffix();
-        if (StringUtils.isBlank(old)) {
+        if (NBlankable.isBlank(old)) {
             File parentFile = app().currentWorkingDirectory().get() == null ? null : new File(app().currentWorkingDirectory().get());
             if (parentFile == null) {
                 parentFile = new File(System.getProperty("user.home"));
             }
             jfc.setCurrentDirectory(parentFile);
             jfc.setSelectedFile(new File(parentFile, name + "." + suffix));
-        } else if (!StringUtils.isBlank(old)) {
+        } else if (!NBlankable.isBlank(old)) {
             jfc.setSelectedFile(new File(old));
         }
         int d = jfc.showSaveDialog(appComponent());

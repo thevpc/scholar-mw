@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.collections.MapBuilder;
+import net.thevpc.nuts.util.NMaps;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.DoubleParam;
 
 import java.util.Arrays;
@@ -32,7 +32,7 @@ class SimpleSeq2 implements VectorModel<Expr> {
         String mname = m.getName();
         String nname = n.getName();
         Expr e = pattern.setParam(mname, value[0]).setParam(nname, value[1]);
-        e.setProperties(MapBuilder.<String, Object>of(mname, value[0], nname, value[1]).build());
+        e.setProperties(NMaps.<String, Object>of(mname, value[0], nname, value[1]));
 //                Map<String, Object> props = e.getProperties();
 //                props.put(mname, value[0]);
 //                props.put(nname, value[1]);

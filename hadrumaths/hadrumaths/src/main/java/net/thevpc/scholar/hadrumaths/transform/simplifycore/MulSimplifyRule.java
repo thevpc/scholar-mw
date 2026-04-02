@@ -5,7 +5,7 @@
  */
 package net.thevpc.scholar.hadrumaths.transform.simplifycore;
 
-import net.thevpc.common.collections.ClassMap;
+import net.thevpc.nuts.reflect.NClassMap;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleValue;
@@ -33,7 +33,7 @@ public class MulSimplifyRule extends AbstractExpressionRewriterRule {
 
     public static final ExpressionRewriterRule INSTANCE = new MulSimplifyRule();
     public static final Class<? extends Expr>[] TYPES = new Class[]{Mul.class};
-    private final ClassMap<MulAccumulator> accumulators = new ClassMap<>(Expr.class, MulAccumulator.class);
+    private final NClassMap<Expr,MulAccumulator> accumulators = NClassMap.of(Expr.class, MulAccumulator.class);
 
     public MulSimplifyRule() {
         regAccumulator(Complex.class, (MulAccumulator<Complex>) (a, context) -> context.mul(a));

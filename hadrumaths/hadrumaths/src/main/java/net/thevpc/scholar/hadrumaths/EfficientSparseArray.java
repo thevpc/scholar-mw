@@ -1,11 +1,11 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 
 public class EfficientSparseArray<T> implements SparseArray<T> {
     private SparseArray<T> base;
 
-    public EfficientSparseArray(TypeName<T> componentType, int length) {
+    public EfficientSparseArray(NTypeName<T> componentType, int length) {
         int initialSize = Math.max(length, 10);
         if (initialSize > 10) {
             initialSize = 10;
@@ -19,7 +19,7 @@ public class EfficientSparseArray<T> implements SparseArray<T> {
     }
 
     @Override
-    public TypeName<T> getComponentType() {
+    public NTypeName<T> getComponentType() {
         return base.getComponentType();
     }
 

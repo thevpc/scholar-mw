@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadruplot.libraries.simple.heatmap;
 
 
-import net.thevpc.common.util.DoubleFormat;
+import net.thevpc.nuts.text.NTextFormat;
 import net.thevpc.scholar.hadruplot.util.SimpleDoubleFormat;
 
 import javax.swing.*;
@@ -15,11 +15,11 @@ public class HeatMapPlotUnitsArea extends JComponent {
     private boolean horizontal;
     private double min;
     private double max;
-    private DoubleFormat doubleFormat;
+    private NTextFormat<Number> doubleFormat;
     private Font font;
     private Font font0;
 
-    public HeatMapPlotUnitsArea(boolean horizontal, double min, double max, DoubleFormat doubleFormat, int ticksCount, Dimension preferredDimension) {
+    public HeatMapPlotUnitsArea(boolean horizontal, double min, double max, NTextFormat<Number> doubleFormat, int ticksCount, Dimension preferredDimension) {
         if (ticksCount <= 2) {
             ticksCount = 2;
         }
@@ -90,9 +90,9 @@ public class HeatMapPlotUnitsArea extends JComponent {
         } else {
             double v2 = min + (v / 100.0) * (max - min);
             if (doubleFormat == null) {
-                return SimpleDoubleFormat.INSTANCE.formatDouble(v2);
+                return SimpleDoubleFormat.INSTANCE.toString(v2);
             }
-            return doubleFormat.formatDouble(v2);
+            return doubleFormat.toString(v2);
         }
     }
 

@@ -1,7 +1,6 @@
 package net.thevpc.scholar.hadruwaves;
 
-import net.thevpc.common.mvn.PomId;
-import net.thevpc.common.mvn.PomIdResolver;
+import net.thevpc.nuts.artifact.NId;
 import net.thevpc.scholar.hadrumaths.HadrumathsService;
 import net.thevpc.scholar.hadrumaths.HadrumathsServiceDesc;
 import net.thevpc.scholar.hadrumaths.Maths;
@@ -22,7 +21,7 @@ import java.util.logging.Logger;
 public class HadruwavesService implements HadrumathsService {
     private static final Logger log = Logger.getLogger(HadruwavesService.class.getName());
     public static String getVersion() {
-        return PomIdResolver.resolvePomId(HadruwavesService.class,new PomId("","","DEV")).getVersion();
+        return NId.getForClass(HadruwavesService.class).map(x->x.getVersion().getValue()).orElse("DEV");
     }
 
     @Override

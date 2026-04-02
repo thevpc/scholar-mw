@@ -1,9 +1,8 @@
 package net.thevpc.scholar.hadruplot.actions;
 
-import net.thevpc.common.io.FileUtils;
+import net.thevpc.nuts.io.NIOUtils;
 import net.thevpc.scholar.hadruplot.Plot;
 import net.thevpc.scholar.hadruplot.PlotFileType;
-import net.thevpc.scholar.hadruplot.actions.AbstractPlotAction;
 import net.thevpc.scholar.hadruplot.console.PlotConfigManager;
 
 import javax.swing.*;
@@ -49,7 +48,7 @@ public class LoadPlotAction extends AbstractPlotAction implements Serializable {
 
             @Override
             public boolean accept(File f) {
-                String e = FileUtils.getFileExtension(f).toLowerCase();
+                String e = NIOUtils.getFileExtension(f).toLowerCase();
                 if(f.isDirectory()){
                     return true;
                 }

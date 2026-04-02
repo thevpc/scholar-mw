@@ -2,6 +2,9 @@ package net.thevpc.scholar.hadrumaths.plot;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import net.thevpc.nuts.reflect.NTypeNameDomain;
+import net.thevpc.nuts.reflect.NTypeNamePlatformDomain;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.geom.Point;
 import net.thevpc.scholar.hadrumaths.symbolic.CustomFunction;
@@ -55,7 +58,7 @@ public class MathsPlotValueFactory extends DefaultPlotValueFactory {
         }
         if (obj instanceof Vector) {
             Vector vv = (Vector) obj;
-            if (Vector.class.isAssignableFrom(vv.getComponentType().getTypeClass())) {
+            if (Vector.class.isAssignableFrom(NTypeNamePlatformDomain.of().getTypeClass(vv.getComponentType()))) {
                 Object[] arr = vv.toArray();
                 return createPlotValue(arr, builder);
             }

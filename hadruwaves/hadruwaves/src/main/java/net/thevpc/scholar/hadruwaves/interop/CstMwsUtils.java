@@ -1,12 +1,11 @@
 package net.thevpc.scholar.hadruwaves.interop;
 
+import net.thevpc.nuts.util.NStringBuilder;
 import net.thevpc.scholar.hadrumaths.ArrayDoubleVector;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import net.thevpc.common.strings.StringBuilder2;
 
 public final class CstMwsUtils {
 
@@ -42,7 +41,7 @@ public final class CstMwsUtils {
         }
     }
 
-    public boolean accept(StringBuilder2 s, char c) {
+    public boolean accept(NStringBuilder s, char c) {
         if (s.length() == 0) {
             return true;
         }
@@ -65,51 +64,51 @@ public final class CstMwsUtils {
 
     public static String[] parseTitles(String titles) {
         List<String> all = new ArrayList<>();
-        StringBuilder2 sb = new StringBuilder2();
+        NStringBuilder sb = new NStringBuilder();
         char[] cc = titles.toCharArray();
         int par = 0;
         int brak = 0;
-        for (int i = 0; i < cc.length; i++) {
-            switch (cc[i]) {
+        for (char c : cc) {
+            switch (c) {
                 case '(': {
-                    sb.append(cc[i]);
+                    sb.append(c);
                     par++;
                     break;
                 }
                 case ')': {
-                    sb.append(cc[i]);
+                    sb.append(c);
                     par--;
                     break;
                 }
                 case '[': {
-                    sb.append(cc[i]);
+                    sb.append(c);
                     brak++;
                     break;
                 }
                 case ']': {
-                    sb.append(cc[i]);
+                    sb.append(c);
                     brak--;
                     break;
                 }
                 case ' ': {
-                    sb.append(cc[i]);
+                    sb.append(c);
                     break;
                 }
                 default: {
                     if (par > 0 ||
                             brak > 0 ||
                             (!sb.toString().trim().endsWith("]") && !sb.toString().trim().endsWith(")"))) {
-                        sb.append(cc[i]);
+                        sb.append(c);
                     } else {
                         all.add(sb.toString());
-                        sb.delete();
-                        sb.append(cc[i]);
+                        sb.clear();
+                        sb.append(c);
                     }
                 }
             }
         }
         String s = sb.toString().trim();
-        if (s.length() > 0) {
+        if (!s.isEmpty()) {
             all.add(s);
         }
         return all.toArray(new String[0]);

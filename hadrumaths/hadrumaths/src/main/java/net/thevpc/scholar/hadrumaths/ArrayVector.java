@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 import net.thevpc.scholar.hadrumaths.symbolic.Param;
 import net.thevpc.scholar.hadrumaths.util.PlatformUtils;
 
@@ -16,9 +16,9 @@ public class ArrayVector<T> extends AbstractVector<T> {
     private static final long serialVersionUID = 1L;
 
     private final ArrayList<T> values;
-    private final TypeName<T> componentType;
+    private final NTypeName<T> componentType;
 
-    public ArrayVector(TypeName<T> componentType, boolean row, T[] values) {
+    public ArrayVector(NTypeName<T> componentType, boolean row, T[] values) {
         this(componentType, row, values.length);
         appendAll(Arrays.asList(values));
     }
@@ -26,7 +26,7 @@ public class ArrayVector<T> extends AbstractVector<T> {
     //    public ArrayTList(Class<T> componentType) {
 //
 //    }
-    public ArrayVector(TypeName<T> componentType, boolean row, int initialSize) {
+    public ArrayVector(NTypeName<T> componentType, boolean row, int initialSize) {
         super(row);
         this.componentType = componentType;
         if (componentType == null) {
@@ -35,7 +35,7 @@ public class ArrayVector<T> extends AbstractVector<T> {
         values = new ArrayList<T>(initialSize);
     }
 
-    public ArrayVector(TypeName<T> componentType, boolean row, VectorModel<T> values) {
+    public ArrayVector(NTypeName<T> componentType, boolean row, VectorModel<T> values) {
         this(componentType, row, values.size());
         int s = values.size();
         for (int i = 0; i < s; i++) {
@@ -62,7 +62,7 @@ public class ArrayVector<T> extends AbstractVector<T> {
     }
 
     @Override
-    public TypeName<T> getComponentType() {
+    public NTypeName<T> getComponentType() {
         return componentType;
     }
 

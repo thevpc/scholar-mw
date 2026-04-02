@@ -9,11 +9,13 @@ import java.io.{File, UncheckedIOException}
 import java.util.concurrent.Callable
 import java.util.function
 import java.util.function.{DoublePredicate, Function, IntPredicate, Supplier, ToDoubleFunction}
-
 import net.thevpc.jeep.JContext
 import net.thevpc.common.mon.{MonitoredAction, ProgressMonitor}
-import net.thevpc.common.util._
-import net.thevpc.scholar.hadrumaths.MathScala.SComplexVector
+import net.thevpc.nuts.math.NIndexSelectionStrategy
+import net.thevpc.nuts.reflect.NTypeName
+import net.thevpc.nuts.text.NTextFormat
+import net.thevpc.nuts.time.NChronometer
+import net.thevpc.nuts.util.{NMemoryMeter, NMemorySnapshot}
 import net.thevpc.scholar.hadrumaths.cache.PersistenceCacheBuilder
 import net.thevpc.scholar.hadrumaths.geom.Point
 import net.thevpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator
@@ -24,10 +26,7 @@ import net.thevpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete
 import net.thevpc.scholar.hadrumaths.symbolic.polymorph.cond.IfExpr
 import net.thevpc.scholar.hadrumaths.symbolic.polymorph.{Any, ParametrizedScalarProduct}
 import net.thevpc.scholar.hadrumaths.util.adapters.ComplexMatrixFromComplexMatrix
-import net.thevpc.scholar.hadruplot.console.params._
 import net.thevpc.scholar.hadruplot.{PlotConfig, PlotDoubleConverter}
-//import java.util
-
 import net.thevpc.scholar
 import net.thevpc.scholar.hadrumaths.geom.Geometry
 
@@ -1475,27 +1474,27 @@ object MathScala {
   //        }
   //        throw new IllegalArgumentException("Unknown Axis "+axis);
   //    }
-  val $STRING: TypeName[String] = Maths.$STRING
-  val $COMPLEX: TypeName[Complex] = Maths.$COMPLEX
-  val $MATRIX: TypeName[ComplexMatrix] = Maths.$MATRIX
-  val $VECTOR: TypeName[ComplexVector] = Maths.$VECTOR
-  val $CMATRIX: TypeName[Matrix[Complex]] = Maths.$CMATRIX
-  val $CVECTOR: TypeName[Vector[Complex]] = Maths.$CVECTOR
-  val $DOUBLE: TypeName[java.lang.Double] = Maths.$DOUBLE
-  val $BOOLEAN: TypeName[java.lang.Boolean] = Maths.$BOOLEAN
-  val $POINT: TypeName[Point] = Maths.$POINT
-  val $FILE: TypeName[File] = Maths.$FILE
+  val $STRING: NTypeName[String] = Maths.$STRING
+  val $COMPLEX: NTypeName[Complex] = Maths.$COMPLEX
+  val $MATRIX: NTypeName[ComplexMatrix] = Maths.$MATRIX
+  val $VECTOR: NTypeName[ComplexVector] = Maths.$VECTOR
+  val $CMATRIX: NTypeName[Matrix[Complex]] = Maths.$CMATRIX
+  val $CVECTOR: NTypeName[Vector[Complex]] = Maths.$CVECTOR
+  val $DOUBLE: NTypeName[java.lang.Double] = Maths.$DOUBLE
+  val $BOOLEAN: NTypeName[java.lang.Boolean] = Maths.$BOOLEAN
+  val $POINT: NTypeName[Point] = Maths.$POINT
+  val $FILE: NTypeName[File] = Maths.$FILE
   //</editor-fold>
-  val $INTEGER: TypeName[java.lang.Integer] = Maths.$INTEGER
-  val $LONG: TypeName[java.lang.Long] = Maths.$LONG
-  val $EXPR: TypeName[Expr] = Maths.$EXPR
-  val $CLIST: TypeName[Vector[Complex]] = Maths.$CLIST
-  val $ELIST: TypeName[Vector[Expr]] = Maths.$EVECTOR
-  val $DLIST: TypeName[Vector[java.lang.Double]] = Maths.$DVECTOR
-  val $DLIST2: TypeName[Vector[Vector[java.lang.Double]]] = Maths.$DLIST2
-  val $ILIST: TypeName[Vector[java.lang.Integer]] = Maths.$IVECTOR
-  val $BLIST: TypeName[Vector[java.lang.Boolean]] = Maths.$BVECTOR
-  val $MLIST: TypeName[Vector[ComplexMatrix]] = Maths.$MVECTOR
+  val $INTEGER: NTypeName[java.lang.Integer] = Maths.$INTEGER
+  val $LONG: NTypeName[java.lang.Long] = Maths.$LONG
+  val $EXPR: NTypeName[Expr] = Maths.$EXPR
+  val $CLIST: NTypeName[Vector[Complex]] = Maths.$CLIST
+  val $ELIST: NTypeName[Vector[Expr]] = Maths.$EVECTOR
+  val $DLIST: NTypeName[Vector[java.lang.Double]] = Maths.$DVECTOR
+  val $DLIST2: NTypeName[Vector[Vector[java.lang.Double]]] = Maths.$DLIST2
+  val $ILIST: NTypeName[Vector[java.lang.Integer]] = Maths.$IVECTOR
+  val $BLIST: NTypeName[Vector[java.lang.Boolean]] = Maths.$BVECTOR
+  val $MLIST: NTypeName[Vector[ComplexMatrix]] = Maths.$MVECTOR
   val Config: MathsConfig = Maths.Config
   val PlotConfig: PlotConfig = net.thevpc.scholar.hadruplot.Plot.Config
   var DISTANCE_DOUBLE: DistanceStrategy[java.lang.Double] = Maths.DISTANCE_DOUBLE
@@ -1875,7 +1874,7 @@ object MathScala {
   }
 
   @throws[UncheckedIOException]
-  def loadTMatrix[T](componentType: TypeName[T], file: File): Matrix[T] = {
+  def loadTMatrix[T](componentType: NTypeName[T], file: File): Matrix[T] = {
     Maths.loadTMatrix(componentType, file)
   }
 
@@ -1940,7 +1939,7 @@ object MathScala {
   }
 
   @throws[UncheckedIOException]
-  def loadOrEval[T](ofType: TypeName[T], file: File, item: Supplier[T]): T = {
+  def loadOrEval[T](ofType: NTypeName[T], file: File, item: Supplier[T]): T = {
     Maths.loadOrEval(ofType, file, item)
   }
 
@@ -2029,19 +2028,19 @@ object MathScala {
     Maths.copyOf(vector)
   }
 
-  def columnTVector[T](cls: TypeName[T], cellFactory: VectorModel[T]): Vector[T] = {
+  def columnTVector[T](cls: NTypeName[T], cellFactory: VectorModel[T]): Vector[T] = {
     Maths.columnVector(cls, cellFactory)
   }
 
-  def rowTVector[T](cls: TypeName[T], cellFactory: VectorModel[T]): Vector[T] = {
+  def rowTVector[T](cls: NTypeName[T], cellFactory: VectorModel[T]): Vector[T] = {
     Maths.rowTVector(cls, cellFactory)
   }
 
-  def columnTVector[T](cls: TypeName[T], rows: Int, cellFactory: VectorCell[T]): Vector[T] = {
+  def columnTVector[T](cls: NTypeName[T], rows: Int, cellFactory: VectorCell[T]): Vector[T] = {
     Maths.columnVector(cls, rows, cellFactory)
   }
 
-  def rowTVector[T](cls: TypeName[T], rows: Int, cellFactory: VectorCell[T]): Vector[T] = {
+  def rowTVector[T](cls: NTypeName[T], rows: Int, cellFactory: VectorCell[T]): Vector[T] = {
     Maths.rowTVector(cls, rows, cellFactory)
   }
 
@@ -2100,7 +2099,7 @@ object MathScala {
     Maths.getColumn(a, index)
   }
 
-  def dtimes(min: Double, max: Double, times: Int, maxTimes: Int, strategy: IndexSelectionStrategy): Array[Double] = {
+  def dtimes(min: Double, max: Double, times: Int, maxTimes: Int, strategy: NIndexSelectionStrategy): Array[Double] = {
     Maths.dtimes(min, max, times, maxTimes, strategy)
   }
 
@@ -2120,7 +2119,7 @@ object MathScala {
     Maths.lsteps(min, max, step)
   }
 
-  def itimes(min: Int, max: Int, times: Int, maxTimes: Int, strategy: IndexSelectionStrategy): Array[Int] = {
+  def itimes(min: Int, max: Int, times: Int, maxTimes: Int, strategy: NIndexSelectionStrategy): Array[Int] = {
     Maths.itimes(min, max, times, maxTimes, strategy)
   }
 
@@ -3624,19 +3623,19 @@ object MathScala {
     Maths.bvector2
   }
 
-  def list[T](typeName: TypeName[T]): Vector[T] = {
+  def list[T](typeName: NTypeName[T]): Vector[T] = {
     Maths.vector(typeName)
   }
 
-  def list[T](typeName: TypeName[T], initialSize: Int): Vector[T] = {
+  def list[T](typeName: NTypeName[T], initialSize: Int): Vector[T] = {
     Maths.vector(typeName, initialSize)
   }
 
-  def listro[T](typeName: TypeName[T], row: Boolean, model: VectorModel[T]): Vector[T] = {
+  def listro[T](typeName: NTypeName[T], row: Boolean, model: VectorModel[T]): Vector[T] = {
     Maths.vectorro(typeName, row, model)
   }
 
-  def list[T](typeName: TypeName[T], row: Boolean, initialSize: Int): Vector[T] = {
+  def list[T](typeName: NTypeName[T], row: Boolean, initialSize: Int): Vector[T] = {
     Maths.vector(typeName, row, initialSize)
   }
 
@@ -3744,23 +3743,23 @@ object MathScala {
     Maths.lvector(row, size)
   }
 
-  def sum[T](ofType: TypeName[T], arr: T*): T = {
+  def sum[T](ofType: NTypeName[T], arr: T*): T = {
     Maths.sum(ofType, arr: _ *)
   }
 
-  def sum[T](ofType: TypeName[T], arr: VectorModel[T]): T = {
+  def sum[T](ofType: NTypeName[T], arr: VectorModel[T]): T = {
     Maths.sum(ofType, arr)
   }
 
-  def sum[T](ofType: TypeName[T], size: Int, arr: VectorCell[T]): T = {
+  def sum[T](ofType: NTypeName[T], size: Int, arr: VectorCell[T]): T = {
     Maths.sum(ofType, size, arr)
   }
 
-  def mul[T](ofType: TypeName[T], arr: T*): T = {
+  def mul[T](ofType: NTypeName[T], arr: T*): T = {
     Maths.mul(ofType, arr: _ *)
   }
 
-  def mul[T](ofType: TypeName[T], arr: VectorModel[T]): T = {
+  def mul[T](ofType: NTypeName[T], arr: VectorModel[T]): T = {
     Maths.mul(ofType, arr)
   }
 
@@ -3872,11 +3871,11 @@ object MathScala {
     Maths.expr(matrix)
   }
 
-  def tmatrix[T](ofType: TypeName[T], model: MatrixModel[T]): Matrix[T] = {
+  def tmatrix[T](ofType: NTypeName[T], model: MatrixModel[T]): Matrix[T] = {
     Maths.tmatrix(ofType, model)
   }
 
-  def tmatrix[T](ofType: TypeName[T], rows: Int, columns: Int, model: MatrixCell[T]): Matrix[T] = {
+  def tmatrix[T](ofType: NTypeName[T], rows: Int, columns: Int, model: MatrixCell[T]): Matrix[T] = {
     Maths.tmatrix(ofType, rows, columns, model)
   }
 
@@ -4028,11 +4027,11 @@ object MathScala {
     Maths.formatMetric(value)
   }
 
-  def memoryInfo: MemoryInfo = {
+  def memoryInfo: NMemorySnapshot = {
     Maths.memoryInfo
   }
 
-  def memoryMeter: MemoryMeter = {
+  def memoryMeter: NMemoryMeter = {
     Maths.memoryMeter
   }
 
@@ -4056,14 +4055,6 @@ object MathScala {
     Maths.formatDimension(dimension)
   }
 
-  def formatPeriodNanos(period: Long): String = {
-    Maths.formatPeriodNanos(period)
-  }
-
-  def formatPeriodMillis(period: Long): String = {
-    Maths.formatPeriodMillis(period)
-  }
-
   def sizeOf(src: Class[_]): Int = {
     Maths.sizeOf(src)
   }
@@ -4072,15 +4063,15 @@ object MathScala {
     Maths.invokeMonitoredAction(mon, messagePrefix, run)
   }
 
-  def chrono(): Chronometer = {
+  def chrono(): NChronometer = {
     Maths.chrono
   }
 
-  def chrono(name: String): Chronometer = {
+  def chrono(name: String): NChronometer = {
     Maths.chrono(name)
   }
 
-  def chrono(name: String, r: Runnable): Chronometer = {
+  def chrono(name: String, r: Runnable): NChronometer = {
     Maths.chrono(name, r)
   }
 
@@ -4092,27 +4083,27 @@ object MathScala {
     Maths.solverExecutorService(threads)
   }
 
-  def chrono(r: Runnable): Chronometer = {
+  def chrono(r: Runnable): NChronometer = {
     Maths.chrono(r)
   }
 
-  def percentFormat: DoubleFormat = {
+  def percentFormat: NTextFormat[Number] = {
     Maths.percentFormat
   }
 
-  def frequencyFormat: DoubleFormat = {
+  def frequencyFormat: NTextFormat[Number] = {
     Maths.frequencyFormat
   }
 
-  def metricFormat: DoubleFormat = {
+  def metricFormat: NTextFormat[Number] = {
     Maths.metricFormat
   }
 
-  def memoryFormat: DoubleFormat = {
+  def memoryFormat: NTextFormat[Number] = {
     Maths.memoryFormat
   }
 
-  def dblformat(format: String): DoubleFormat = {
+  def dblformat(format: String): NTextFormat[Number] = {
     Maths.dblformat(format)
   }
 
@@ -4128,7 +4119,7 @@ object MathScala {
     Maths.toArray[T](t, coll);
   }
 
-  def toArray[T](t: TypeName[T], coll: java.util.Collection[_ >: T]): Array[T] = {
+  def toArray[T](t: NTypeName[T], coll: java.util.Collection[_ >: T]): Array[T] = {
     //   Maths.toArray(t, coll)
     Maths.toArray(t, null).asInstanceOf[Array[T]]
   }
@@ -4193,7 +4184,7 @@ object MathScala {
     Maths.ematrix(t)
   }
 
-  def getVectorSpace[T](cls: TypeName[T]): VectorSpace[T] = {
+  def getVectorSpace[T](cls: NTypeName[T]): VectorSpace[T] = {
     Maths.getVectorSpace(cls)
   }
 

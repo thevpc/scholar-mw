@@ -1,7 +1,6 @@
 package net.thevpc.scholar.hadruplot.model;
 
-import net.thevpc.scholar.hadruplot.model.ValuesPlotModel;
-import net.thevpc.common.util.ArrayUtils;
+import net.thevpc.nuts.util.NArrays;
 import net.thevpc.scholar.hadruplot.util.PlotModelUtils;
 import net.thevpc.scholar.hadruplot.util.PlotUtils;
 
@@ -41,7 +40,7 @@ public class ValuesPlotXComplexModelFace {
                         initialIndexesList.add(i);
                         double xmultiplier = plotViewConfig.getXMultiplierAt(i, 1) * defaultXMultiplier;
                         double ymultiplier = plotViewConfig.getYMultiplierAt(i, 1);
-                        xAxisList.add(PlotModelUtils.mul(ArrayUtils.dsteps(1, yAxis[i].length,1), xmultiplier));
+                        xAxisList.add(PlotModelUtils.mul(NArrays.range(1.0, yAxis[i].length,1), xmultiplier));
                         yAxisList.add(PlotUtils.mul(yAxis[i], ymultiplier));
                         yTitleList.add(PlotModelUtils.resolveYTitle(model, i));
                     }
@@ -65,7 +64,7 @@ public class ValuesPlotXComplexModelFace {
                                     }
                                 }
                                 if (!ok) {
-                                    xAxisList.add(PlotModelUtils.mul(ArrayUtils.dsteps(1, yAxis[i].length,1), xmultiplier));
+                                    xAxisList.add(PlotModelUtils.mul(NArrays.range(1.0, yAxis[i].length,1), xmultiplier));
                                 }
                             } else {
                                 xAxisList.add(xAxisList.get(xAxisList.size() - 1));
@@ -79,7 +78,7 @@ public class ValuesPlotXComplexModelFace {
         }
         x = xAxisList.toArray(new double[0][]);
         y = yAxisList.toArray(new Object[0][]);
-        initialIndexes = ArrayUtils.unboxIntegerList(initialIndexesList);
+        initialIndexes = NArrays.unboxInts(initialIndexesList);
 
         //rename titles with the same name
         HashSet<String> visited = new HashSet<>();

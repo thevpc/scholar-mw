@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadruplot.libraries.simple.curve;
 
 
-import net.thevpc.common.util.MinMax;
+import net.thevpc.nuts.math.NDoubleRange;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -386,18 +386,18 @@ public class CurveStat extends Graph {
             yLabs = curves[0].getYLabels();
         }
         for (int i = 0; i < nbrCurves; i++) {
-            MinMax xmm = new MinMax();
-            MinMax ymm = new MinMax();
+            NDoubleRange xmm = NDoubleRange.of();
+            NDoubleRange ymm = NDoubleRange.of();
             for (int j = 0; j < curves[i].getXLabels().length; j++) {
                 double[] xv = curves[i].getXValues();
                 double[] yv = curves[i].getYValues();
                 for (int ii = 0; ii < xv.length; ii++) {
-                    xmm.registerValue(xv[i]);
-                    ymm.registerValue(yv[i]);
+                    xmm.add(xv[i]);
+                    ymm.add(yv[i]);
                 }
             }
-            xxMax = xmm.getMax();
-            yyMax = ymm.getMax();
+            xxMax = xmm.max();
+            yyMax = ymm.max();
             if (curves[i].getXInType() == xIntype) {
                 if (xIntype == GraphConstants.IN_STRINGS) {
                     if (!coherentLabels(xLabs, curves[i].getXLabels())) {

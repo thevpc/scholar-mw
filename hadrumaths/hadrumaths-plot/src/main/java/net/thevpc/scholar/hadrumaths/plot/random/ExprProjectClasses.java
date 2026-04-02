@@ -9,7 +9,7 @@ public class ExprProjectClasses {
     public static Class[] getProjectClasses() {
         if (EXPR_CLASSES == null) {
             System.err.println("Loading project classes...");
-            NChronometer c = NChronometer.startNow();
+            NChronometer c = NChronometer.of();
             EXPR_CLASSES = ClassPathUtils.resolveContextClassesList(false).stream()
                     .filter(x->x.getName().startsWith("net.thevpc.scholar."))
                     .toArray(Class[]::new);

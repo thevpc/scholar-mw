@@ -1,9 +1,9 @@
 package net.thevpc.scholar.hadruplot.component;
 
+import net.thevpc.nuts.math.NDoubleRange;
 import net.thevpc.scholar.hadruplot.model.PlotModel;
 import net.thevpc.scholar.hadruplot.model.ValuesPlotModel;
 import net.thevpc.scholar.hadruplot.model.PlotHyperCubePlotModel;
-import net.thevpc.common.util.MinMax;
 import net.thevpc.scholar.hadruplot.util.DefaultPlotNormalizer;
 import net.thevpc.scholar.hadruplot.util.PlotUtils;
 
@@ -298,12 +298,12 @@ public class PlotHyperCubePlotPanel extends BasePlotComponent implements PlotPan
         }
 
         public double[][] normalize(double[][] baseValues) {
-            MinMax minMax = new MinMax();
+            NDoubleRange minMax = NDoubleRange.of();
             switch (normalizerType) {
                 case MATRIX: {
                     for (double[] y : baseValues) {
                         for (double x : y) {
-                            minMax.registerValue(x);
+                            minMax.add(x);
                         }
                     }
                     break;
@@ -320,7 +320,7 @@ public class PlotHyperCubePlotPanel extends BasePlotComponent implements PlotPan
                             for (Object[][] z : c3) {
                                 for (Object[] y : z) {
                                     for (Object x : y) {
-                                        minMax.registerValue(dc.applyAsDouble(x));
+                                        minMax.add(dc.applyAsDouble(x));
                                     }
                                 }
                             }
@@ -338,7 +338,7 @@ public class PlotHyperCubePlotPanel extends BasePlotComponent implements PlotPan
                         for (Object[][] z : c3) {
                             for (Object[] y : z) {
                                 for (Object x : y) {
-                                    minMax.registerValue(dc.applyAsDouble(x));
+                                    minMax.add(dc.applyAsDouble(x));
                                 }
                             }
                         }
@@ -346,7 +346,7 @@ public class PlotHyperCubePlotPanel extends BasePlotComponent implements PlotPan
                     break;
                 }
             }
-            return normalize(baseValues, minMax.getMin(), minMax.getMax());
+            return normalize(baseValues, minMax.min(), minMax.max());
         }
     }
 

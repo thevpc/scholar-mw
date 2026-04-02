@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadruplot;
 
-import net.thevpc.common.util.ArrayUtils;
+import net.thevpc.nuts.util.NArrays;
 
 public class PlotCube {
     private double[] x;
@@ -11,20 +11,20 @@ public class PlotCube {
     public PlotCube(double[] x, double[] y, double[] z, Object[][][] values) {
         this.values = values;
         if (z == null) {
-            z = ArrayUtils.dsteps(0, values.length, 1);
+            z = NArrays.range(0.0, values.length, 1);
         }
         if (y == null) {
             if (values.length == 0) {
                 y = new double[0];
             } else {
-                y = ArrayUtils.dsteps(0, values[0].length, 1);
+                y = NArrays.range(0.0, values[0].length, 1);
             }
         }
         if (x == null) {
             if (values[0].length == 0) {
                 x = new double[0];
             } else {
-                x = ArrayUtils.dsteps(0, values[0][0].length, 1);
+                x = NArrays.range(0.0, values[0][0].length, 1);
             }
         }
         this.x = x;

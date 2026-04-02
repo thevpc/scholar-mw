@@ -11,6 +11,8 @@ import net.thevpc.nuts.elem.NElement;
 
 
 import net.thevpc.nuts.elem.NObjectElementBuilder;
+import net.thevpc.nuts.reflect.NTypeNameDomain;
+import net.thevpc.nuts.reflect.NTypeNamePlatformDomain;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.Vector;
@@ -118,7 +120,7 @@ public class ListTestFunctions extends TestFunctionsBase implements Cloneable {
 
             }
             throw new IllegalArgumentException("Unsupported Expr " + i);
-        } else if (i instanceof Vector && Maths.$EXPR.isAssignableFrom(((Vector) i).getComponentType())) {
+        } else if (i instanceof Vector && NTypeNamePlatformDomain.of().isAssignableFrom(Maths.$EXPR,((Vector) i).getComponentType())) {
             List<DoubleToVector> found = new ArrayList<DoubleToVector>();
             for (Expr expr : ((Vector<Expr>) i)) {
                 found.addAll(linearizeFunctions(expr));

@@ -1,6 +1,9 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NReflect;
+import net.thevpc.nuts.reflect.NTypeName;
+import net.thevpc.nuts.reflect.NTypeNameDomain;
+import net.thevpc.nuts.reflect.NTypeNamePlatformDomain;
 import net.thevpc.scholar.hadrumaths.util.ArrayUtils;
 import net.thevpc.scholar.hadrumaths.util.adapters.ComplexMatrixFromComplexMatrix;
 import net.thevpc.scholar.hadrumaths.util.adapters.DoubleMatrixFromMatrix;
@@ -807,7 +810,7 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
 
     @Override
     public Vector<Vector<T>> getRows() {
-        return (Vector<Vector<T>>) Maths.columnVector(TypeName.of(Vector.class, getComponentType()), new VectorModel<Vector<T>>() {
+        return (Vector<Vector<T>>) Maths.columnVector(NTypeName.of(Vector.class, getComponentType()), new VectorModel<Vector<T>>() {
             @Override
             public int size() {
                 return getRowCount();
@@ -822,7 +825,7 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
 
     @Override
     public Vector<Vector<T>> getColumns() {
-        return (Vector<Vector<T>>) Maths.columnVector(TypeName.of(Vector.class, getComponentType()), new VectorModel<Vector<T>>() {
+        return (Vector<Vector<T>>) Maths.columnVector(NTypeName.of(Vector.class, getComponentType()), new VectorModel<Vector<T>>() {
             @Override
             public int size() {
                 return getColumnCount();
@@ -2414,17 +2417,17 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
     }
 
     @Override
-    public <R> boolean isConvertibleTo(TypeName<R> other) {
+    public <R> boolean isConvertibleTo(NTypeName<R> other) {
         if (
                 Maths.$COMPLEX.equals(other)
                         || Maths.$EXPR.equals(other)
         ) {
             return true;
         }
-        if (other.isAssignableFrom(getComponentType())) {
+        if (NTypeNamePlatformDomain.of().isAssignableFrom(other,getComponentType())) {
             return true;
         }
-        VectorSpace<T> vs = Maths.getVectorSpace(getComponentType());
+        VectorSpace<T> vs = Maths.getVectorSpace((NTypeName<T>) getComponentType());
         for (Vector<T> ts : getRows()) {
             if (!ts.isConvertibleTo(other)) {
                 return false;
@@ -2434,7 +2437,7 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
     }
 
     @Override
-    public <R> Matrix<R> to(TypeName<R> other) {
+    public <R> Matrix<R> to(NTypeName<R> other) {
         if (other.equals(getComponentType())) {
             return (Matrix<R>) this;
         }
@@ -2496,11 +2499,11 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
     }
 
     private T[][] newT(int size1, int size2) {
-        return ArrayUtils.newArray(getComponentType().getTypeClass(), size1, size2);
+        return ArrayUtils.newArray(NTypeNamePlatformDomain.of().getTypeClass(getComponentType()), size1, size2);
     }
 
     private T[] newT(int size) {
-        return ArrayUtils.newArray(getComponentType().getTypeClass(), size);
+        return ArrayUtils.newArray(NTypeNamePlatformDomain.of().getTypeClass(getComponentType()), size);
     }
 
     private void checkSquare() {

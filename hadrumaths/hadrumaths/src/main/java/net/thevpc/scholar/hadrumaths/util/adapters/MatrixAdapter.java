@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths.util.adapters;
 
-import net.thevpc.common.util.TypeName;
+import net.thevpc.nuts.reflect.NTypeName;
 import net.thevpc.scholar.hadrumaths.AbstractMatrix;
 import net.thevpc.scholar.hadrumaths.Matrix;
 import net.thevpc.scholar.hadrumaths.VectorSpace;
@@ -10,11 +10,11 @@ import java.util.function.Function;
 public class MatrixAdapter<R, T> extends AbstractMatrix<T> {
     private static final long serialVersionUID = 1L;
     protected Matrix<R> base;
-    private final TypeName<T> componentType;
+    private final NTypeName<T> componentType;
     private final Function<R, T> converterTo;
     private final Function<T, R> converterFrom;
 
-    public MatrixAdapter(Matrix<R> base, TypeName<T> componentType) {
+    public MatrixAdapter(Matrix<R> base, NTypeName<T> componentType) {
         this.base = base;
         this.componentType = componentType;
         VectorSpace<R> vs = base.getComponentVectorSpace();
@@ -43,12 +43,12 @@ public class MatrixAdapter<R, T> extends AbstractMatrix<T> {
     }
 
     @Override
-    public TypeName<T> getComponentType() {
+    public NTypeName<T> getComponentType() {
         return componentType;
     }
 
     @Override
-    public <R> Matrix<R> to(TypeName<R> other) {
+    public <R> Matrix<R> to(NTypeName<R> other) {
         if (other.equals(getComponentType())) {
             return (Matrix<R>) this;
         }
