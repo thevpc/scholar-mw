@@ -12,6 +12,7 @@ import net.thevpc.scholar.hadrumaths.symbolic.double2double.Linear;
  * Time: 15:15:16
  */
 final class LinearVsCstScalarProduct implements FormalScalarProductHelper {
+    public static final LinearVsCstScalarProduct INSTANCE = new LinearVsCstScalarProduct();
     @Override
     public int hashCode() {
         return getClass().getName().hashCode();

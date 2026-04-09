@@ -11,9 +11,9 @@ import net.thevpc.common.mon.ProgressMonitorFactory;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.GeometryFactory;
-import net.thevpc.scholar.hadrumaths.geom.Geometry;
-import net.thevpc.scholar.hadrumaths.geom.Point;
-import net.thevpc.scholar.hadrumaths.geom.Polygon;
+import net.thevpc.scholar.hadrumaths.geom.HGeometry;
+import net.thevpc.scholar.hadrumaths.geom.HPoint;
+import net.thevpc.scholar.hadrumaths.geom.HPolygon;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.math.Epsilon;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.math.Vector3D;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.thevpc.Point3D;
@@ -322,11 +322,11 @@ public class HWSolverMoM implements HWSolver {
                 if (ge instanceof Element3DPolygonTemplate) {
                     Element3DPolygonTemplate pol = (Element3DPolygonTemplate) ge;
                     Point3DTemplate[] points = pol.getPoints();
-                    Point[] points0 = new Point[points.length];
+                    HPoint[] points0 = new HPoint[points.length];
                     int i = 0;
                     for (Point3DTemplate point : points) {
                         Point3D s = point.eval(configuration);
-                        Point sp = new Point(s.getX(), s.getY(), s.getZ());
+                        HPoint sp = new HPoint(s.getX(), s.getY(), s.getZ());
                         if (!Epsilon.isZero(sp.z)) {
                             messages.error("Unsupported Polygon with invalid z");
                         }
@@ -342,17 +342,17 @@ public class HWSolverMoM implements HWSolver {
                 if (ge instanceof Element3DPolygonTemplate) {
                     Element3DPolygonTemplate pol = (Element3DPolygonTemplate) ge;
                     Point3DTemplate[] points = pol.getPoints();
-                    Point[] points0 = new Point[points.length];
+                    HPoint[] points0 = new HPoint[points.length];
                     int i = 0;
                     for (Point3DTemplate point : points) {
                         Point3D s = point.eval(configuration);
-                        Point sp = new Point(s.getX(), s.getY(), s.getZ());
+                        HPoint sp = new HPoint(s.getX(), s.getY(), s.getZ());
                         if (!Epsilon.isZero(sp.z)) {
                             messages.error("Unsupported Polygon with invalid z");
                         }
                         points0[i++] = sp;
                     }
-                    Polygon sgeo = GeometryFactory.createPolygon(points0);
+                    HPolygon sgeo = GeometryFactory.createPolygon(points0);
                     Expr sexpr=pm.expr().eval(configuration);
                     sexpr=combine(sexpr,sgeo);
                     planarSources.add(new ExprPlanarSource(sexpr, pm.impedance().eval(configuration),sgeo));
@@ -365,11 +365,11 @@ public class HWSolverMoM implements HWSolver {
                 if (ge instanceof Element3DPolygonTemplate) {
                     Element3DPolygonTemplate pol = (Element3DPolygonTemplate) ge;
                     Point3DTemplate[] points = pol.getPoints();
-                    Point[] points0 = new Point[points.length];
+                    HPoint[] points0 = new HPoint[points.length];
                     int i = 0;
                     for (Point3DTemplate point : points) {
                         Point3D s = point.eval(configuration);
-                        Point sp = new Point(s.getX(), s.getY(), s.getZ());
+                        HPoint sp = new HPoint(s.getX(), s.getY(), s.getZ());
 //                        if (!Epsilon.isZero(sp.z)) {
 //                            throw throwMomError("Unsupported Polygon with invalid z");
 //                        }
@@ -400,7 +400,7 @@ public class HWSolverMoM implements HWSolver {
 
         //include sources because they should be included in test functions
         for (PlanarSource planarSource : planarSources) {
-            for (Polygon polygon : planarSource.getGeometry().toPolygons()) {
+            for (HPolygon polygon : planarSource.getGeometry().toPolygons()) {
                 metalPolygons.addPolygon(polygon);
             }
         }
@@ -446,19 +446,19 @@ public class HWSolverMoM implements HWSolver {
     }
 
     private class PolygonCheckingHelper {
-        List<Polygon> metalPolygons=new ArrayList<>();
+        List<HPolygon> metalPolygons=new ArrayList<>();
         List<Boolean> matchedPolygons =new ArrayList<>();
 
-        public void addPolygon(Polygon p){
+        public void addPolygon(HPolygon p){
             metalPolygons.add(p);
             matchedPolygons.add(false);
         }
 
         protected Expr addExpr(Expr expr){
             Domain domain = expr.getDomain();
-            Geometry gAll=null;
+            HGeometry gAll=null;
             for (int i = 0; i < metalPolygons.size(); i++) {
-                Geometry g = metalPolygons.get(i).intersectGeometry(domain.toGeometry());
+                HGeometry g = metalPolygons.get(i).intersectGeometry(domain.toGeometry());
                 if(!g.isEmpty()){
                     if(gAll==null){
                         gAll=g;
@@ -497,7 +497,7 @@ public class HWSolverMoM implements HWSolver {
         return mat;
     }
 
-    private Expr combine(Expr expr,Geometry geom){
+    private Expr combine(Expr expr, HGeometry geom){
         if(geom.isRectangular()){
             Domain dom = geom.getDomain();
             if(dom.equals(expr.getDomain())){
