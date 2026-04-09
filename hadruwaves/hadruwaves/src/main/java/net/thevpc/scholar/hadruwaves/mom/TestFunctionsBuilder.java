@@ -13,6 +13,7 @@ import net.thevpc.scholar.hadrumaths.meshalgo.MeshZoneTypeFilter;
 import net.thevpc.scholar.hadrumaths.meshalgo.rect.GridPrecision;
 import net.thevpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
 import net.thevpc.scholar.hadrumaths.meshalgo.triconsdes.MeshConsDesAlgo;
+import net.thevpc.scholar.hadrumaths.meshalgo.triconsdes.MeshTriangulationOptions;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.ListTestFunctions;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.GpAdaptiveMesh;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.BoxModesPattern;
@@ -24,7 +25,7 @@ import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.GpPatter
  */
 public class TestFunctionsBuilder {
 
-    private Geometry geometry;
+    private HGeometry geometry;
     private ListTestFunctions allTestFunctions;
     private net.thevpc.scholar.hadruwaves.mom.TestFunctions testFunctions;
     private int complexity = 1;
@@ -46,7 +47,7 @@ public class TestFunctionsBuilder {
     private Domain bounds;
 
 
-    public TestFunctionsBuilder addGeometry(Point... points) {
+    public TestFunctionsBuilder addGeometry(HPoint... points) {
         return addGeometry(GeometryFactory.createPolygon(points));
     }
 
@@ -54,14 +55,14 @@ public class TestFunctionsBuilder {
         return addGeometry(geometry.toGeometry());
     }
 
-    public TestFunctionsBuilder addGeometry(Geometry geometry) {
+    public TestFunctionsBuilder addGeometry(HGeometry geometry) {
         if (this.geometry == null) {
             this.geometry = geometry;
-            if (geometry != null && geometry instanceof GeometryList) {
-                ((GeometryList) geometry).setDomain(getBounds());
+            if (geometry != null && geometry instanceof HGeometryList) {
+                ((HGeometryList) geometry).setDomain(getBounds());
             }
         } else {
-            GeometryList geometryList = GeometryFactory.createPolygonList(this.geometry, geometry);
+            HGeometryList geometryList = GeometryFactory.createPolygonList(this.geometry, geometry);
             geometryList.setDomain(getBounds());
             this.geometry = geometryList;
         }
@@ -103,7 +104,9 @@ public class TestFunctionsBuilder {
         if (geometry == null) {
             throw new NullPointerException("Missing Geometry");
         }
-        return apply(TestFunctionsFactory.createRWG(geometry, getComplexity()));
+        MeshTriangulationOptions o = new MeshTriangulationOptions();
+        o.setMaxCount(getComplexity());
+        return apply(TestFunctionsFactory.createRWG(geometry, o));
     }
 
     public net.thevpc.scholar.hadruwaves.mom.TestFunctions buildRooftops() {
@@ -167,8 +170,8 @@ public class TestFunctionsBuilder {
         return apply(createBoxModes(geometry, getComplexity(), isInheritInvariance(), getInvariance(), getIncludedModes(), getExcludedModes(), getGpSymmetry(), getGridPrecision()));
     }
 
-    public GpAdaptiveMesh createBoxModes(Geometry geometry, int complexity, boolean inheritInvariance, Axis axisInvariance, int[] includedModes, int[] excludedModes, TestFunctionsSymmetry gpSymmetry, GridPrecision gridPrecision) {
-        GeometryList geometry2 = GeometryFactory.createPolygonList(geometry);
+    public GpAdaptiveMesh createBoxModes(HGeometry geometry, int complexity, boolean inheritInvariance, Axis axisInvariance, int[] includedModes, int[] excludedModes, TestFunctionsSymmetry gpSymmetry, GridPrecision gridPrecision) {
+        HGeometryList geometry2 = GeometryFactory.createPolygonList(geometry);
         if (bounds != null) {
             geometry2.setDomain(bounds);
         }
@@ -199,9 +202,9 @@ public class TestFunctionsBuilder {
         Domain d = null;
         if (geometry instanceof Domain) {
             d = (Domain) geometry;
-        } else if (geometry instanceof Polygon) {
-            if (((Polygon) geometry).isRectangular()) {
-                d = ((Polygon) geometry).getDomain();
+        } else if (geometry instanceof HPolygon) {
+            if (((HPolygon) geometry).isRectangular()) {
+                d = ((HPolygon) geometry).getDomain();
             }
         }
         if (d == null) {
@@ -448,7 +451,7 @@ public class TestFunctionsBuilder {
         return f;
     }
 
-    public Geometry getGeometry() {
+    public HGeometry getGeometry() {
         return geometry;
     }
 
