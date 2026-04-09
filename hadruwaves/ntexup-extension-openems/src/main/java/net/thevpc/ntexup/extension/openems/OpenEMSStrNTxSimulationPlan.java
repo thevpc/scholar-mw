@@ -5,15 +5,13 @@ import net.thevpc.ntexup.extension.mwsimulator.NTxSimulationPlanImpl;
 import net.thevpc.ntexup.extension.mwsimulator.NTxSolverRun;
 import net.thevpc.ntexup.extension.openems.solvers.NTxHwS11NTxSolver;
 import net.thevpc.nuts.io.NDigest;
-import net.thevpc.nuts.log.NLogger;
-import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.util.NNameFormat;
 
 import java.nio.charset.StandardCharsets;
 
 public class OpenEMSStrNTxSimulationPlan extends NTxSimulationPlanImpl {
-    public OpenEMSStrNTxSimulationPlan(String name, NTxRendererContext rendererContext) {
-        super(name, rendererContext);
+    public OpenEMSStrNTxSimulationPlan(String id, String name,NTxRendererContext rendererContext) {
+        super(id, name,rendererContext);
     }
 
     @Override

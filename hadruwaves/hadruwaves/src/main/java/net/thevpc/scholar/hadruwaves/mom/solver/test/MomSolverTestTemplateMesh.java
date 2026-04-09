@@ -10,14 +10,12 @@ import java.util.List;
 import java.util.Map;
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.Expr;
-import net.thevpc.scholar.hadrumaths.geom.DefaultGeometryList;
-import net.thevpc.scholar.hadrumaths.geom.Geometry;
-import net.thevpc.scholar.hadrumaths.geom.GeometryList;
-import net.thevpc.scholar.hadrumaths.geom.Polygon;
+import net.thevpc.scholar.hadrumaths.geom.*;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshAlgoType;
 import net.thevpc.scholar.hadrumaths.meshalgo.rect.GridPrecision;
 import net.thevpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
+import net.thevpc.scholar.hadrumaths.meshalgo.triconsdes.MeshTriangulationOptions;
 import net.thevpc.scholar.hadruwaves.mom.TestFunctionsSymmetry;
 import net.thevpc.scholar.hadruwaves.mom.solver.AbstractMomSolverTestTemplate;
 import net.thevpc.scholar.hadruwaves.mom.solver.HWSolverMoM;
@@ -84,12 +82,12 @@ public class MomSolverTestTemplateMesh extends AbstractMomSolverTestTemplate {
         return invariance;
     }
 
-    private Polygon[] toPolygonEff(HWConfigurationRun configuration) {
-        List<Polygon> all = new ArrayList<>();
+    private HPolygon[] toPolygonEff(HWConfigurationRun configuration) {
+        List<HPolygon> all = new ArrayList<>();
         for (HWProjectPolygon e : polygons()) {
             all.add(e.eval(configuration));
         }
-        return all.toArray(new Polygon[0]);
+        return all.toArray(new HPolygon[0]);
     }
 
     @Override
@@ -99,7 +97,7 @@ public class MomSolverTestTemplateMesh extends AbstractMomSolverTestTemplate {
         if (pt == null) {
             pt = GpPatternType.RWG;
         }
-        GeometryList gl = new DefaultGeometryList((Geometry[]) toPolygonEff(configuration));
+        HGeometryList gl = new DefaultHGeometryList((HGeometry[]) toPolygonEff(configuration));
         switch (pt) {
             case MODES: {
                 GpModes m = new GpModes(gl, symmetry.eval(configuration), complexity.eval(configuration));
@@ -118,7 +116,9 @@ public class MomSolverTestTemplateMesh extends AbstractMomSolverTestTemplate {
                 return m.arr();
             }
             case RWG: {
-                GpRWG m = new GpRWG(gl, symmetry.eval(configuration), complexity.eval(configuration));
+                MeshTriangulationOptions options = new MeshTriangulationOptions();
+                options.setMaxCount(complexity.eval(configuration));
+                GpRWG m = new GpRWG(gl, symmetry.eval(configuration), options);
                 m.setInvariance(invariance.eval(configuration));
                 return m.arr();
             }

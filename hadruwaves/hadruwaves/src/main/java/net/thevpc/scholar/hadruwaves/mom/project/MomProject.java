@@ -20,7 +20,8 @@ import java.util.logging.Logger;
 import net.thevpc.nuts.util.NIndexedMap;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.Domain;
-import net.thevpc.scholar.hadrumaths.geom.Geometry;
+import net.thevpc.scholar.hadrumaths.geom.DefaultHGeometryList;
+import net.thevpc.scholar.hadrumaths.geom.HGeometry;
 import net.thevpc.scholar.hadruwaves.ModeType;
 import net.thevpc.scholar.hadruwaves.mom.*;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.GpAdaptiveMultiMesh;
@@ -33,7 +34,6 @@ import net.thevpc.scholar.hadrumaths.util.config.Configuration;
 import net.thevpc.scholar.hadruwaves.WallBorders;
 import net.thevpc.scholar.hadruwaves.ModeIndex;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.TestFunctionCell;
-import net.thevpc.scholar.hadrumaths.geom.DefaultGeometryList;
 import net.thevpc.scholar.hadruwaves.Boundary;
 import net.thevpc.scholar.hadruwaves.mom.project.areamaterial.ModalSourceMaterial;
 import net.thevpc.scholar.hadruwaves.mom.project.areamaterial.PecMaterial;
@@ -406,16 +406,16 @@ public class MomProject implements Serializable, Cloneable {
                         stack.push(sa);
                     }
                 } else {
-                    Stack<AreaZone> children = new Stack<AreaZone>();
+                    Stack<AreaZone> children = new Stack<>();
                     children.push(o);
-                    ArrayList<Geometry> pp = new ArrayList<Geometry>();
+                    ArrayList<HGeometry> pp = new ArrayList<>();
                     while (!children.isEmpty()) {
                         o = children.pop();
                         int ac = ag.getAreasCount();
                         for (int i = 0; i < ac; i++) {
                             Area sa = ag.getArea(i);
                             if (filter.accept(sa)) {
-                                for (Geometry pol : sa.getShape().getPolygons(this.getDomain())) {
+                                for (HGeometry pol : sa.getShape().getPolygons(this.getDomain())) {
                                     if (!this.getDomain().includes(pol.getDomain())) {
                                         throw new IllegalArgumentException(sa.getMaterial().getName() + " " + sa.getName() + " is outside structure domain");
                                     }
@@ -434,7 +434,7 @@ public class MomProject implements Serializable, Cloneable {
                     if (pp.size() > 0) {
                         found.add(new TestFunctionCell(
                                 ag.getDomain(),
-                                new DefaultGeometryList(this.getDomain(), pp),
+                                new DefaultHGeometryList(this.getDomain(), pp),
                                 gpm.getPattern(),
                                 gpm.getSymmetry(),
                                 gpm.getMeshAlgo(),

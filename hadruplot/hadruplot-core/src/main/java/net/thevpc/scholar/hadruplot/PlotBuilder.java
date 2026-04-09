@@ -3,6 +3,8 @@ package net.thevpc.scholar.hadruplot;
 import net.thevpc.nuts.reflect.NReflectUtils;
 import net.thevpc.nuts.text.NText;
 import net.thevpc.nuts.text.NTextFormat;
+import net.thevpc.nuts.time.NChronometer;
+import net.thevpc.nuts.time.NChronometerView;
 import net.thevpc.nuts.util.NDoubleArrayList;
 import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.scholar.hadruplot.extension.PlotWindowManagerFactory;
@@ -12,8 +14,10 @@ import net.thevpc.scholar.hadruplot.model.PlotModel;
 import net.thevpc.common.swing.SwingUtilities3;
 import net.thevpc.scholar.hadruplot.console.PlotConfigManager;
 import net.thevpc.scholar.hadruplot.console.PlotConsole;
+import net.thevpc.scholar.hadruplot.model.custom.ChronometerModel;
 import net.thevpc.scholar.hadruplot.model.custom.StringPlotModel;
 import net.thevpc.scholar.hadruplot.model.custom.SwingComponentPlotModel;
+import net.thevpc.scholar.hadruplot.model.custom.TextContentPlotModel;
 
 import javax.swing.*;
 import java.io.File;
@@ -25,11 +29,11 @@ import java.util.function.ToDoubleFunction;
  */
 public class PlotBuilder {
 
-    private static PlotBuilderSupport defaultSupport = new DefaultPlotBuilderSupport();
-    private static List<PlotBuilderSupport> supports = new ArrayList<>();
+    private static final PlotBuilderSupport defaultSupport = new DefaultPlotBuilderSupport();
+    private static final List<PlotBuilderSupport> supports = new ArrayList<>();
 
     static {
-        supports.addAll(NReflectUtils.listServices(PlotBuilderSupport.class,PlotBuilder.class));
+        supports.addAll(NReflectUtils.listServices(PlotBuilderSupport.class, PlotBuilder.class));
         supports.add(defaultSupport);
     }
 
@@ -59,7 +63,7 @@ public class PlotBuilder {
     private String path = "/";
     private List<Object> itemsToPlot = new ArrayList<>();
     private List<Object> xsamplesToPlot = new ArrayList<>();
-    private List<PlotBuilderListener> listeners = new ArrayList<>();
+    private final List<PlotBuilderListener> listeners = new ArrayList<>();
 
     //    public PlotComponent plotAll(Object... any) {
 //        return plot((Object) any);
@@ -607,15 +611,30 @@ public class PlotBuilder {
 
     public PlotModel createPlotModel(Object any) {
         if (any instanceof String) {
-            return new StringPlotModel((String) any);
+            StringPlotModel mm = new StringPlotModel((String) any);
+            postConfigure(mm);
+            return mm;
         }
         if (any instanceof TextContent) {
-            return new StringPlotModel((String) any);
+            TextContent tt=(TextContent) any;
+            TextContentPlotModel mm = new TextContentPlotModel(tt);
+            postConfigure(mm);
+            return mm;
         }
         if (any instanceof JComponent) {
-            return new SwingComponentPlotModel(new DefaultPlotValue(
-                    "swing", any
-            ));
+            SwingComponentPlotModel mm = new SwingComponentPlotModel((JComponent) any);
+            postConfigure(mm);
+            return mm;
+        }
+        if (any instanceof NChronometer) {
+            ChronometerModel mm = new ChronometerModel((NChronometer) any);
+            postConfigure(mm);
+            return mm;
+        }
+        if (any instanceof NChronometerView) {
+            ChronometerModel mm = new ChronometerModel((NChronometerView) any);
+            postConfigure(mm);
+            return mm;
         }
         if (any instanceof PlotModel) {
             PlotModel mm = (PlotModel) any;

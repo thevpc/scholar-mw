@@ -89,12 +89,12 @@ public class MomStructureFractalZop extends MomStructure {
 //        return helper;
 //    }
 
-    private static GeometryList asRect(GeometryList other) {
-        Geometry[] transform = ((FractalAreaGeometryList) other).getTransform();
+    private static HGeometryList asRect(HGeometryList other) {
+        HGeometry[] transform = ((FractalAreaHGeometryList) other).getTransform();
         for (int i = 0; i < transform.length; i++) {
             transform[i] = GeometryFactory.createPolygon(transform[i].getDomain());
         }
-        return new DefaultGeometryList(other.getBounds(), transform);
+        return new DefaultHGeometryList(other.getBounds(), transform);
     }
 
     @Override
@@ -332,8 +332,8 @@ public class MomStructureFractalZop extends MomStructure {
     public Zoperator[] Zop() {
         MomStructureFractalZop str2 = this;
         GpAdaptiveMesh gpAdaptatif = ((GpAdaptiveMesh) str2.getDirectGpTestFunctions());
-        FractalAreaGeometryList polygon = (FractalAreaGeometryList) gpAdaptatif.getPolygons(str2.getCircuitType());
-        Geometry[] transform = polygon.getTransform();
+        FractalAreaHGeometryList polygon = (FractalAreaHGeometryList) gpAdaptatif.getPolygons(str2.getCircuitType());
+        HGeometry[] transform = polygon.getTransform();
         Zoperator[] ops = new Zoperator[transform.length];
         Domain domain = str2.getDomain();
         int theK = str2.realK;
@@ -412,8 +412,8 @@ public class MomStructureFractalZop extends MomStructure {
     public Yoperator[] Yop() {
         MomStructureFractalZop str2 = this;
         GpAdaptiveMesh gpAdaptatif = ((GpAdaptiveMesh) str2.getDirectGpTestFunctions());
-        FractalAreaGeometryList polygon = (FractalAreaGeometryList) gpAdaptatif.getPolygons(str2.getCircuitType());
-        Geometry[] transform = polygon.getTransform();
+        FractalAreaHGeometryList polygon = (FractalAreaHGeometryList) gpAdaptatif.getPolygons(str2.getCircuitType());
+        HGeometry[] transform = polygon.getTransform();
         Yoperator[] ops = new Yoperator[transform.length];
         Domain domain = str2.getDomain();
         int theK = str2.realK;

@@ -50,7 +50,7 @@ class PersistenceLockedCache<T> implements Callable<T> {
                 c.stop();
             }
             if (oldValue != null) {
-                if (timeThresholdMilli > 0 && c.getDurationMs() > timeThresholdMilli * 1000000) {
+                if (timeThresholdMilli > 0 && c.durationMs() > timeThresholdMilli * 1000000) {
                     persistenceCache.log().log(NMsg.ofC("[PersistenceCache] " + cacheItemName + " loading took too long (" + c + " > "
                             + NDuration.ofMillis(timeThresholdMilli).truncatedToSeconds().toString() + ")" + " (" + objCache.getObjectCacheFile(cacheItemName).getFile() + ")").asFineFail());
                 }
@@ -67,7 +67,7 @@ class PersistenceLockedCache<T> implements Callable<T> {
             oldValue = (T) evaluator.evaluate(args, runMon);
             computeChrono.stop();
             if (objCache != null && cacheEnabled && cacheMode != CacheMode.READ_ONLY) {
-                long computeTime = computeChrono.getDurationMs();
+                long computeTime = computeChrono.durationMs();
                 if (computeTime >= persistenceCache.getMinimumTimeForCache()) {
                     NChronometer storeChrono = NChronometer.of();
                     objCache.store(cacheItemName, oldValue, storeMon);
@@ -77,14 +77,14 @@ class PersistenceLockedCache<T> implements Callable<T> {
                     stat.add(NElement.ofPair("name", NElement.ofString(cacheItemName)));
                     stat.add(NElement.ofPair("eval",
                             NElement.ofObject(
-                                    NElement.ofPair("nanos", NElement.ofLong(computeChrono.getDurationMs())),
-                                    NElement.ofPair("str", NElement.ofString(computeChrono.getDuration().toString()))
+                                    NElement.ofPair("nanos", NElement.ofLong(computeChrono.durationMs())),
+                                    NElement.ofPair("str", NElement.ofString(computeChrono.duration().toString()))
                             ))
                     );
                     stat.add(NElement.ofPair("store",
                             NElement.ofObject(
-                                    NElement.ofPair("nanos", NElement.ofLong(storeChrono.getDurationMs())),
-                                    NElement.ofPair("str", NElement.ofString(computeChrono.getDuration().toString()))
+                                    NElement.ofPair("nanos", NElement.ofLong(storeChrono.durationMs())),
+                                    NElement.ofPair("str", NElement.ofString(computeChrono.duration().toString()))
                             ))
                     );
                     if (persistenceCache.isLogLoadStatsEnabled()) {
@@ -95,12 +95,12 @@ class PersistenceLockedCache<T> implements Callable<T> {
                             //
                         }
                         loadChrono.stop();
-                        boolean longLoadNDetected = timeThresholdMilli > 0 && loadChrono.getDurationMs() > timeThresholdMilli * 1000000;
+                        boolean longLoadNDetected = timeThresholdMilli > 0 && loadChrono.durationMs() > timeThresholdMilli * 1000000;
                         stat.add(NElement.ofPair(
                                 "load",
                                 NElement.ofObject(
-                                        NElement.ofPair("nanos", NElement.ofLong(loadChrono.getDurationMs())),
-                                        NElement.ofPair("str", NElement.ofString(computeChrono.getDuration().toString()))
+                                        NElement.ofPair("nanos", NElement.ofLong(loadChrono.durationMs())),
+                                        NElement.ofPair("str", NElement.ofString(computeChrono.duration().toString()))
                                 )));
                         if (longLoadNDetected) {
                             stat.add(NElement.ofPair("slowLoading", NElement.ofBoolean(true)));

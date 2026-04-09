@@ -13,8 +13,8 @@ import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.cache.CacheKey;
 import net.thevpc.scholar.hadrumaths.cache.ObjectCache;
 import net.thevpc.scholar.hadrumaths.cache.PersistenceCache;
-import net.thevpc.scholar.hadrumaths.geom.Geometry;
-import net.thevpc.scholar.hadrumaths.geom.Polygon;
+import net.thevpc.scholar.hadrumaths.geom.HGeometry;
+import net.thevpc.scholar.hadrumaths.geom.HPolygon;
 import net.thevpc.scholar.hadrumaths.io.HadrumathsIOUtils;
 import net.thevpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
@@ -50,7 +50,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
 
-import net.thevpc.scholar.hadrumaths.geom.GeometryList;
+import net.thevpc.scholar.hadrumaths.geom.HGeometryList;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshAlgoType;
 import net.thevpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
 import net.thevpc.scholar.hadrumaths.meshalgo.triconsdes.MeshConsDesAlgo;
@@ -759,7 +759,6 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
     }
 
     public TestFunctions testFunctions() {
-
         return testFunctions;
     }
 
@@ -979,7 +978,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
         if (getPersistentCache().isEnabled()) {
             return getCurrentCache(true).getStat(type);
         } else {
-            return chrono.getDurationMs();
+            return chrono.durationMs();
         }
     }
 
@@ -1151,12 +1150,12 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
         HWMaterialTemplate PEC_TEMPLATE = project.materials().get("PEC");//new HWMaterialTemplate(Material.PEC, project);
         HWMaterialTemplate VACUUM_TEMPLATE = project.materials().get("Vacuum");// new HWMaterialTemplate(Material.VACUUM, project);
         if (true) {
-            LinkedHashSet<Polygon> polygons = new LinkedHashSet<>();
-            for (Geometry geometry : testFunctions().getGeometries()) {
+            LinkedHashSet<HPolygon> polygons = new LinkedHashSet<>();
+            for (HGeometry geometry : testFunctions().getGeometries()) {
                 Collections.addAll(polygons, geometry.toPolygons());
             }
             int index = 0;
-            for (Polygon polygon : polygons) {
+            for (HPolygon polygon : polygons) {
                 index++;
                 scene.components().add(new HWProjectPolygon(
                         "Microstrip Element #" + index, PEC_TEMPLATE,
@@ -1181,7 +1180,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
             } else if (testFunctions() instanceof GpRWG) {
                 GpRWG gp = (GpRWG) testFunctions();
                 MomSolverTestTemplateMesh m = new MomSolverTestTemplateMesh();
-                m.complexity().set(String.valueOf(((MeshConsDesAlgo) gp.getMeshAlgo()).getOption().getMaxTriangles()));
+                m.complexity().set(String.valueOf(((MeshConsDesAlgo) gp.getMeshAlgo()).getOption().getMaxCount()));
                 m.pattern().set(String.valueOf(GpPatternType.RWG));
                 m.mesh().set(String.valueOf(MeshAlgoType.TRIANGLE_CONS_DES));
                 m.symmetry().set(String.valueOf(gp.getSymmetry()));
@@ -1193,7 +1192,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
             } else if (testFunctions() instanceof GpPolyedron) {
                 GpPolyedron gp = (GpPolyedron) testFunctions();
                 MomSolverTestTemplateMesh m = new MomSolverTestTemplateMesh();
-                m.complexity().set(String.valueOf(((MeshConsDesAlgo) gp.getMeshAlgo()).getOption().getMaxTriangles()));
+                m.complexity().set(String.valueOf(((MeshConsDesAlgo) gp.getMeshAlgo()).getOption().getMaxCount()));
                 m.pattern().set(String.valueOf(GpPatternType.POLYEDRON));
                 m.mesh().set(String.valueOf(MeshAlgoType.TRIANGLE_CONS_DES));
                 m.symmetry().set(String.valueOf(gp.getSymmetry()));
@@ -1283,25 +1282,25 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
             Sources sources = getSources();
             if (sources instanceof PlanarSources) {
                 for (DoubleToVector sourceFunction : ((PlanarSources) sources).getSourceFunctions()) {
-                    LinkedHashSet<Polygon> polygons = new LinkedHashSet<>();
-                    for (Geometry geometry : sourceFunction.getDomain().toGeometry().toPolygons()) {
+                    LinkedHashSet<HPolygon> polygons = new LinkedHashSet<>();
+                    for (HGeometry geometry : sourceFunction.getDomain().toGeometry().toPolygons()) {
                         Collections.addAll(polygons, geometry.toPolygons());
                     }
                     int index = 0;
-                    for (Polygon polygon : polygons) {
+                    for (HPolygon polygon : polygons) {
                         index++;
                         scene.components().add(new HWPlanarPort(
                                 "Planar Source #" + index, SceneHelper.createPolygonTemplate(polygon, 0)));
                     }
                 }
             } else if (sources instanceof ModalSources) {
-                LinkedHashSet<Polygon> polygons = new LinkedHashSet<>();
-                for (Geometry geometry : Domain.ofBounds(domain3D.xmin(), domain3D.xmax(), domain3D.ymin(), domain3D.ymax(), domain3D.zmin(), h + zw)
+                LinkedHashSet<HPolygon> polygons = new LinkedHashSet<>();
+                for (HGeometry geometry : Domain.ofBounds(domain3D.xmin(), domain3D.xmax(), domain3D.ymin(), domain3D.ymax(), domain3D.zmin(), h + zw)
                         .toGeometry().toPolygons()) {
                     Collections.addAll(polygons, geometry.toPolygons());
                 }
                 int index = 0;
-                for (Polygon polygon : polygons) {
+                for (HPolygon polygon : polygons) {
                     index++;
                     scene.components().add(
                             new HWModalPort(
@@ -1332,14 +1331,14 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
 
     private List<Element3DPolygonTemplate> polygonsOf(GpAdaptiveMesh gp) {
         List<Element3DPolygonTemplate> ret = new ArrayList<>();
-        LinkedHashSet<Polygon> polygons = new LinkedHashSet<Polygon>();
+        LinkedHashSet<HPolygon> polygons = new LinkedHashSet<HPolygon>();
 
-        for (GeometryList polygon : gp.getPolygons()) {
-            for (Geometry geometry : polygon) {
+        for (HGeometryList polygon : gp.getPolygons()) {
+            for (HGeometry geometry : polygon) {
                 Collections.addAll(polygons, geometry.toPolygons());
             }
         }
-        for (Polygon polygon : polygons) {
+        for (HPolygon polygon : polygons) {
             ret.add(new Element3DPolygonTemplate(polygon));
         }
         return ret;

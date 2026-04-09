@@ -708,7 +708,7 @@ public class PersistenceCacheImpl implements PersistenceCache {
                                         //
                                     }
                                     c.stop();
-                                    if (timeThresholdMilli > 0 && c.getDurationMs() > timeThresholdMilli * 1000000) {
+                                    if (timeThresholdMilli > 0 && c.durationMs() > timeThresholdMilli * 1000000) {
                                         System.out.println("[PersistenceCache] " + cacheItemName + " loading took too long (" + c + " > " + NDuration.ofMillis(timeThresholdMilli) + ")");
                                     }
                                 }

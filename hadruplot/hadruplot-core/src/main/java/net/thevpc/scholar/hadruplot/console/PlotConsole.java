@@ -419,6 +419,9 @@ public class PlotConsole implements PlotComponentDisplayer, PlotManager, Progres
 //            plotConsoleFrame = new DefaultPlotConsoleFrame(this, getFrameTitle());
             plotConsoleFrame = new DefaultPlotConsoleFrame2(this, getFrameTitle());
             plotConsoleFrame.setDefaultCloseOperation(closeOption);
+
+            // This is the "Strong" replacement for finalize
+
             for (PlotConsoleTool plotConsoleTool : NReflectUtils.listServices(PlotConsoleTool.class, PlotConsole.class)) {
                 addTool(plotConsoleTool);
             }

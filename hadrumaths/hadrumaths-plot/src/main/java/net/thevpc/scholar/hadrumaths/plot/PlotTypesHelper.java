@@ -2,7 +2,7 @@ package net.thevpc.scholar.hadrumaths.plot;
 
 import net.thevpc.nuts.util.NCollections;
 import net.thevpc.scholar.hadrumaths.*;
-import net.thevpc.scholar.hadrumaths.geom.Point;
+import net.thevpc.scholar.hadrumaths.geom.HPoint;
 import net.thevpc.scholar.hadrumaths.symbolic.ExprType;
 
 import java.lang.reflect.Array;
@@ -95,14 +95,14 @@ public class PlotTypesHelper {
         return complexes;
     }
 
-    public static Point[] toPointArray(Object obj) {
+    public static HPoint[] toPointArray(Object obj) {
         Object[] objects = toObjectArray(obj);
         if (obj == null) {
             return null;
         }
-        Point[] arr = new Point[objects.length];
+        HPoint[] arr = new HPoint[objects.length];
         for (int i = 0; i < arr.length; i++) {
-            arr[i] = (Point) objects[i];
+            arr[i] = (HPoint) objects[i];
         }
         return arr;
     }
@@ -190,15 +190,15 @@ public class PlotTypesHelper {
         throw new IllegalArgumentException("Not an Complex[][][]");
     }
 
-    public static Point[][] toPointArray2(Object obj) {
+    public static HPoint[][] toPointArray2(Object obj) {
         if (obj == null) {
             return null;
         }
         if (obj.getClass().isArray()) {
-            if (obj.getClass().getComponentType().equals(Point[].class)) {
-                return (Point[][]) obj;
+            if (obj.getClass().getComponentType().equals(HPoint[].class)) {
+                return (HPoint[][]) obj;
             }
-            Point[][] arr = new Point[Array.getLength(obj)][];
+            HPoint[][] arr = new HPoint[Array.getLength(obj)][];
             for (int i = 0; i < arr.length; i++) {
                 arr[i] = toPointArray(Array.get(obj, i));
             }

@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadruwaves.mom.util;
 
 import net.thevpc.scholar.hadrumaths.Domain;
-import net.thevpc.scholar.hadrumaths.geom.GeometryList;
+import net.thevpc.scholar.hadrumaths.geom.HGeometryList;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.GpAdaptiveMesh;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.PolygonPlot;
@@ -22,7 +22,7 @@ public class Plot2 {
         jFrame.add(new PolygonPlot(functions.getPolygons()[0],functions.getMeshAlgo(),functions.getPattern(),str.getDomain()));
         jFrame.setVisible(true);
     }
-    public static void show(String title, GeometryList geometryList, MeshAlgo algo, GpPattern pattern, Domain domain){
+    public static void show(String title, HGeometryList geometryList, MeshAlgo algo, GpPattern pattern, Domain domain){
         JFrame jFrame = new JFrame(title);
         jFrame.add(new PolygonPlot(geometryList,algo==null?MeshAlgoRect.RECT_ALGO_LOW_RESOLUTION:algo,pattern,domain));
         jFrame.setVisible(true);
