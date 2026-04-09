@@ -1,13 +1,16 @@
 package net.thevpc.scholar.hadruwaves.mom.str.momstr;
 
+import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.common.mon.ProgressMonitors;
 import net.thevpc.common.mon.VoidMonitoredAction;
-
 import net.thevpc.nuts.elem.NElement;
-
-import net.thevpc.scholar.hadrumaths.*;
+import net.thevpc.scholar.hadrumaths.Complex;
+import net.thevpc.scholar.hadrumaths.ComplexMatrix;
+import net.thevpc.scholar.hadrumaths.ComplexVector;
+import net.thevpc.scholar.hadrumaths.DoubleMatrix;
+import net.thevpc.scholar.hadrumaths.Maths;
+import net.thevpc.scholar.hadrumaths.MutableComplex;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
-import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.scholar.hadruwaves.ModeInfo;
 import net.thevpc.scholar.hadruwaves.Physics;
 import net.thevpc.scholar.hadruwaves.mom.ModeFunctions;

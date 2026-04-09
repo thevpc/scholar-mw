@@ -200,12 +200,8 @@ public class TestFunctionsBuilder {
         }
         ListTestFunctions list = TestFunctionsFactory.createList();
         Domain d = null;
-        if (geometry instanceof Domain) {
-            d = (Domain) geometry;
-        } else if (geometry instanceof HPolygon) {
-            if (((HPolygon) geometry).isRectangular()) {
-                d = ((HPolygon) geometry).getDomain();
-            }
+        if (geometry.isRectangular() && geometry.isSingular()) {
+            d = geometry.getDomain();
         }
         if (d == null) {
             throw new NullPointerException("Non rectangular Geometry");
