@@ -5,7 +5,7 @@ import net.thevpc.nuts.elem.NElement;
 
 import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Domain;
-import net.thevpc.scholar.hadrumaths.geom.Geometry;
+import net.thevpc.scholar.hadrumaths.geom.HGeometry;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZoneType;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZoneTypeFilter;
@@ -196,7 +196,7 @@ public abstract class RectMeshAttachGpPattern extends AbstractGpPattern implemen
         for (int i = 0; i < all2.length; i++) {
             MeshZone area = all2[i];
             if (area.getGeometry().isRectangular()) {
-                Geometry area1 = area.getGeometry();
+                HGeometry area1 = area.getGeometry();
                 //area1.g
                 Domain bounds1 = area1.getDomain();
                 if (filter.accept(MeshZoneType.BORDER_NORTH)) {

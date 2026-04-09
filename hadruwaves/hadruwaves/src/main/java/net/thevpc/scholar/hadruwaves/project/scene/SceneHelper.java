@@ -3,8 +3,8 @@ package net.thevpc.scholar.hadruwaves.project.scene;
 import net.thevpc.nuts.math.NDoubleRange;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Maths;
-import net.thevpc.scholar.hadrumaths.geom.Geometry;
-import net.thevpc.scholar.hadrumaths.geom.Point;
+import net.thevpc.scholar.hadrumaths.geom.HGeometry;
+import net.thevpc.scholar.hadrumaths.geom.HPoint;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.elements.Element3D;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.elements.Element3DPolygon;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.math.Vector3D;
@@ -25,10 +25,10 @@ public class SceneHelper {
         return new Element3DCurve2(a);
     }
 
-    public static Element3D createPolygon(Geometry geometry, double z) {
+    public static Element3D createPolygon(HGeometry geometry, double z) {
 
         List<Point3D> a = new ArrayList<>();
-        for (Point point : geometry.toPolygon().getPoints()) {
+        for (HPoint point : geometry.toPolygon().getPoints()) {
             a.add(new Point3D(point.x, point.y, z));
         }
         return Calc3dFactory.createPolygon(a.toArray(new Point3D[0]));
@@ -47,10 +47,10 @@ public class SceneHelper {
         return new Element3DPolygonTemplate(a.toArray(new Point3DTemplate[0]));
     }
 
-    public static Element3DPolygonTemplate createPolygonTemplate(Geometry geometry, double z) {
+    public static Element3DPolygonTemplate createPolygonTemplate(HGeometry geometry, double z) {
 
         List<Point3DTemplate> a = new ArrayList<>();
-        for (Point point : geometry.toPolygon().getPoints()) {
+        for (HPoint point : geometry.toPolygon().getPoints()) {
             a.add(new Point3DTemplate(point.x, point.y, z));
         }
         return new Element3DPolygonTemplate(a.toArray(new Point3DTemplate[0]));
