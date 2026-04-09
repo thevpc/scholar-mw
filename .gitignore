@@ -97,3 +97,7 @@
 *.kate-swp
 /hadruwaves/ntexup-extension-openems/docker/openems-docker/simulations/test-20*.xml
 /hadruwaves/target/
+/validation_output.txt
+/test_output.txt
+/test_output_cache_disabled.txt
+/test_output_debug.txt
