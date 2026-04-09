@@ -8,7 +8,7 @@ import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.scholar.hadrumaths.*;
-import net.thevpc.scholar.hadrumaths.geom.Geometry;
+import net.thevpc.scholar.hadrumaths.geom.HGeometry;
 import net.thevpc.scholar.hadruwaves.ModeIndex;
 import net.thevpc.scholar.hadruwaves.mom.sources.PlanarSource;
 import net.thevpc.scholar.hadruwaves.mom.sources.PlanarSources;
@@ -66,15 +66,15 @@ public class SourceFactory extends AbstractFactory {
         return createPlanarSources().add(createPlanarSource(fct, characteristicImpedance));
     }
 
-    public static PlanarSources createPlanarSources(double value, Complex characteristicImpedance, Axis polarization, Geometry geometry) {
+    public static PlanarSources createPlanarSources(double value, Complex characteristicImpedance, Axis polarization, HGeometry geometry) {
         return createPlanarSources().add(createPlanarSource((polarization == null || polarization == Axis.X) ? value : 0, (polarization == null || polarization == Axis.Y) ? value : 0, characteristicImpedance, polarization, geometry));
     }
 
-    public static PlanarSources createPlanarSources(double xvalue, double yvalue, Complex characteristicImpedance, Axis polarization, Geometry geometry) {
+    public static PlanarSources createPlanarSources(double xvalue, double yvalue, Complex characteristicImpedance, Axis polarization, HGeometry geometry) {
         return createPlanarSources().add(createPlanarSource(xvalue, yvalue, characteristicImpedance, polarization, geometry));
     }
 
-    public static PlanarSource createPlanarSource(double xvalue, double yvalue, Complex characteristicImpedance, Axis polarization, Geometry geometry) {
+    public static PlanarSource createPlanarSource(double xvalue, double yvalue, Complex characteristicImpedance, Axis polarization, HGeometry geometry) {
         return new CstPlanarSource(xvalue, yvalue, characteristicImpedance, polarization, GeometryFactory.createPolygonList(geometry));
     }
 
@@ -90,7 +90,7 @@ public class SourceFactory extends AbstractFactory {
         return createPlanarSource(value, characteristicImpedance, polarization, geometry.toGeometry());
     }
 
-    public static PlanarSource createPlanarSource(double value, Complex characteristicImpedance, Axis polarization, Geometry geometry) {
+    public static PlanarSource createPlanarSource(double value, Complex characteristicImpedance, Axis polarization, HGeometry geometry) {
         return new CstPlanarSource((polarization == null || polarization == Axis.X) ? value : 0, (polarization == null || polarization == Axis.Y) ? value : 0, characteristicImpedance, polarization, GeometryFactory.createPolygonList(geometry));
     }
 
@@ -98,7 +98,7 @@ public class SourceFactory extends AbstractFactory {
         return createPlanarSource(fct, characteristicImpedance, null);
     }
 
-    public static PlanarSource createPlanarSource(Expr fct, Complex characteristicImpedance, Geometry geometry) {
+    public static PlanarSource createPlanarSource(Expr fct, Complex characteristicImpedance, HGeometry geometry) {
         return new ExprPlanarSource(fct, characteristicImpedance, geometry);
     }
 
@@ -115,7 +115,7 @@ public class SourceFactory extends AbstractFactory {
         return new GroupedCutOffModalSources(defaultSourceCount, sourceCountPerDimension);
     }
 
-    public static NOptional<Sources> parseSources(NElement element, Function<NElement,Geometry> geometrySupplier) {
+    public static NOptional<Sources> parseSources(NElement element, Function<NElement, HGeometry> geometrySupplier) {
         if (element.isNumber()) {
             NOptional<Source> i = parseSource(element, geometrySupplier);
             if(i.isPresent()) {
@@ -198,12 +198,12 @@ public class SourceFactory extends AbstractFactory {
         return NOptional.ofNamedError("sources");
     }
 
-    public static NOptional<Source> parseSource(NElement element, Function<NElement,Geometry> geometrySupplier) {
+    public static NOptional<Source> parseSource(NElement element, Function<NElement, HGeometry> geometrySupplier) {
         if (element == null || element.isNull()) {
             return NOptional.ofNamedEmpty("source");
         }
         if (element.isNumber()) {
-            Geometry g = geometrySupplier.apply(NElement.ofString("source"));
+            HGeometry g = geometrySupplier.apply(NElement.ofString("source"));
             Domain d = g == null ? null : g.getDomain();
             Expr r = Maths.expr(element);
             if (d != null) {
@@ -248,7 +248,7 @@ public class SourceFactory extends AbstractFactory {
                     if(value==null){
                         value=DoubleExpr.of(1);
                     }
-                    Geometry g = geometrySupplier.apply(NElement.ofString(NStringUtils.firstNonBlank(sourceName,"source")));
+                    HGeometry g = geometrySupplier.apply(NElement.ofString(NStringUtils.firstNonBlank(sourceName,"source")));
                     Domain d = g == null ? null : g.getDomain();
                     if (d != null) {
                         value = value.mul(d);

@@ -3,33 +3,33 @@ package net.thevpc.scholar.hadrumaths.geom;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.GeometryFactory;
 
-public abstract class SimpleFractalGeometryList extends DefaultFractalGeometryList {
+public abstract class SimpleFractalHGeometryList extends DefaultFractalHGeometryList {
 
-    public SimpleFractalGeometryList(int level, Domain domain) {
+    public SimpleFractalHGeometryList(int level, Domain domain) {
         super(level, domainToPolygon(domain));
         rebuild();
     }
 
-    public static Polygon domainToPolygon(Domain domain) {
+    public static HPolygon domainToPolygon(Domain domain) {
         return domainToPolygon(domain, 1);
     }
 
-    public static Polygon domainToPolygon(Domain domain, int color) {
+    public static HPolygon domainToPolygon(Domain domain, int color) {
         return GeometryFactory.createPolygon(
-                new Point(domain.xmin(),domain.ymin()),
-                new Point(domain.xmax(),domain.ymin()),
-                new Point(domain.xmax(),domain.ymax()),
-                new Point(domain.xmin(),domain.ymax())
+                new HPoint(domain.xmin(),domain.ymin()),
+                new HPoint(domain.xmax(),domain.ymin()),
+                new HPoint(domain.xmax(),domain.ymax()),
+                new HPoint(domain.xmin(),domain.ymax())
         );
     }
 
     @Override
-    public DefaultFractalGeometryList newInstance(int level, Geometry domain) {
+    public DefaultFractalHGeometryList newInstance(int level, HGeometry domain) {
         return newInstance(level, domain.getDomain());
     }
 
-    public DefaultFractalGeometryList newInstance(int level, Domain domain) {
-        DefaultFractalGeometryList polygonList = (DefaultFractalGeometryList) this.clone();
+    public DefaultFractalHGeometryList newInstance(int level, Domain domain) {
+        DefaultFractalHGeometryList polygonList = (DefaultFractalHGeometryList) this.clone();
         polygonList.setDomain(domain);
         polygonList.setLevel(level);
         polygonList.rebuild();
@@ -47,5 +47,5 @@ public abstract class SimpleFractalGeometryList extends DefaultFractalGeometryLi
     }
 
     @Override
-    public abstract Polygon[] getMotif();
+    public abstract HPolygon[] getMotif();
 }
