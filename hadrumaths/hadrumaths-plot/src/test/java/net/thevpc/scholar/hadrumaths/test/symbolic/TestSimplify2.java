@@ -117,8 +117,8 @@ public class TestSimplify2 {
                 sp.rewriteOrSame(e, null);
             }
             chrono.stop();
-            System.out.println(chrono.getDuration());
-            System.out.println(NDuration.ofNanos((chrono.getDuration().toNanos()/iterationsCount)));
+            System.out.println(chrono.duration());
+            System.out.println(NDuration.ofNanos((chrono.duration().toNanos()/iterationsCount)));
             //Count{newValue=24, bestEffort=68, unmodified=152, totalModified=92, total=244}
             // 6s 603ms  16us 498ns
             // 66us  30ns
