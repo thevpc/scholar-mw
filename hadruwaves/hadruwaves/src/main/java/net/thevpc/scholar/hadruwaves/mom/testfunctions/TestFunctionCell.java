@@ -5,7 +5,7 @@ import net.thevpc.nuts.elem.NElement;
 
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.HSerializable;
-import net.thevpc.scholar.hadrumaths.geom.GeometryList;
+import net.thevpc.scholar.hadrumaths.geom.HGeometryList;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.GpPattern;
 import net.thevpc.scholar.hadrumaths.Domain;
@@ -24,21 +24,21 @@ public class TestFunctionCell implements HSerializable {
     private String name;
     private Axis invariance;
     private TestFunctionsSymmetry symmetry = TestFunctionsSymmetry.NO_SYMMETRY;
-    private GeometryList areaGeometryList;
+    private HGeometryList areaGeometryList;
 
-    public TestFunctionCell(GeometryList polygons, GpPattern pattern, TestFunctionsSymmetry symmetry, MeshAlgo meshAlgo, Axis invariance) {
+    public TestFunctionCell(HGeometryList polygons, GpPattern pattern, TestFunctionsSymmetry symmetry, MeshAlgo meshAlgo, Axis invariance) {
         this("NONAME", polygons.getSmallestBounds(), polygons, pattern, symmetry,meshAlgo,invariance);
     }
 
     @Deprecated
-    public TestFunctionCell(Domain domain, GeometryList polygons, GpPattern pattern, TestFunctionsSymmetry symmetry, MeshAlgo meshAlgo, Axis invariance) {
+    public TestFunctionCell(Domain domain, HGeometryList polygons, GpPattern pattern, TestFunctionsSymmetry symmetry, MeshAlgo meshAlgo, Axis invariance) {
         this("NONAME", domain, polygons, pattern, symmetry,meshAlgo,invariance);
     }
 
     //TODO
     //ramener tout ca dans RectAreaShape
     @Deprecated
-    public TestFunctionCell(String name, Domain domain, GeometryList polygons, GpPattern pattern, TestFunctionsSymmetry symmetry, MeshAlgo meshAlgo, Axis invariance) {
+    public TestFunctionCell(String name, Domain domain, HGeometryList polygons, GpPattern pattern, TestFunctionsSymmetry symmetry, MeshAlgo meshAlgo, Axis invariance) {
         this.domain = domain;
         this.pattern = pattern;
         this.invariance = invariance;
@@ -89,7 +89,7 @@ public class TestFunctionCell implements HSerializable {
         this.symmetry = symmetry;
     }
 
-    public GeometryList getAreaGeometryList() {
+    public HGeometryList getAreaGeometryList() {
         return areaGeometryList;
     }
 }
