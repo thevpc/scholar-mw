@@ -7,7 +7,7 @@ package net.thevpc.scholar.hadruwaves.util;
 
 import java.text.DecimalFormat;
 import net.thevpc.scholar.hadrumaths.geom.Dimension;
-import net.thevpc.scholar.hadrumaths.geom.Point;
+import net.thevpc.scholar.hadrumaths.geom.HPoint;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.thevpc.Point3D;
 import net.thevpc.scholar.hadrumaths.units.FrequencyUnit;
 import net.thevpc.scholar.hadruwaves.project.HWProject;
@@ -33,7 +33,7 @@ public class ProjectFormatter {
                 + ")";
     }
 
-    public static String formatPoint(HWProject p, Point v, Mode unitSuffix) {
+    public static String formatPoint(HWProject p, HPoint v, Mode unitSuffix) {
         return "("
                 + formatDimension(p, v.x, unitSuffix)
                 + "," + formatDimension(p, v.y, unitSuffix)
