@@ -2,19 +2,22 @@ package net.thevpc.scholar.hadruplot.model.custom;
 
 import javax.swing.*;
 import java.awt.*;
+
+import net.thevpc.scholar.hadruplot.DefaultPlotValue;
 import net.thevpc.scholar.hadruplot.component.BasePlotPanel;
 import net.thevpc.scholar.hadruplot.PlotPanel;
 import net.thevpc.scholar.hadruplot.PlotValue;
 import net.thevpc.scholar.hadruplot.extension.PlotPanelFactory;
 import net.thevpc.scholar.hadruplot.model.BasePlotModel;
+import net.thevpc.scholar.hadruplot.model.value.PlotValueComponentType;
 
 public class SwingComponentPlotModel extends BasePlotModel implements PlotPanelFactory {
     private JComponent component;
     private PlotValue value;
 
-    public SwingComponentPlotModel(PlotValue value) {
-        this.value = value;
-        this.component = (JComponent)value.getValue();
+    public SwingComponentPlotModel(JComponent value) {
+        this.value = new DefaultPlotValue(PlotValueComponentType.INSTANCE.getName(),value);
+        this.component = value;
     }
 
     public PlotValue getPlotValue() {
