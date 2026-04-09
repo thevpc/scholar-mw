@@ -230,7 +230,7 @@ public class MutableComplex {
 
     public void add(MutableComplex complex) {
         this.real += complex.real;
-        this.imag += complex.real;
+        this.imag += complex.imag;
 //        return this;
         //DevUtils.run(this::debug_check);
     }
