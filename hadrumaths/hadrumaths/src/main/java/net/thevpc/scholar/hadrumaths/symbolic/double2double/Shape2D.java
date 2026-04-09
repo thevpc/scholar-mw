@@ -2,8 +2,7 @@ package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
-import net.thevpc.scholar.hadrumaths.geom.DefaultPolygon;
-import net.thevpc.scholar.hadrumaths.geom.Geometry;
+import net.thevpc.scholar.hadrumaths.geom.HGeometry;
 
 /**
  * User: taha Date: 2 juil. 2003 Time: 14:29:58
@@ -14,13 +13,13 @@ public final class Shape2D extends AbstractDoubleToDouble {
     private static final long serialVersionUID = 1L;
     //    public static final int CODE = 1;
     public double value;
-    private final Geometry geometry;
+    private final HGeometry geometry;
 
     public Shape2D(double cst, Domain domain) {
         this(cst, GeometryFactory.createPolygon(domain));
     }
 
-    public Shape2D(double cst, Geometry geometry) {
+    public Shape2D(double cst, HGeometry geometry) {
         this.value = cst;
         this.geometry = geometry;
     }
@@ -69,7 +68,7 @@ public final class Shape2D extends AbstractDoubleToDouble {
 
     @Override
     public AbstractDoubleToDouble translate(double deltaX, double deltaY) {
-        return new Shape2D(value, getGeometry().translateGeometry(deltaX, deltaY));
+        return new Shape2D(value, getGeometry().translate(deltaX, deltaY));
     }
 
     public boolean isSymmetric(AxisXY axis) {
@@ -81,7 +80,7 @@ public final class Shape2D extends AbstractDoubleToDouble {
         return Complex.of(value);
     }
 
-    public Geometry getGeometry() {
+    public HGeometry getGeometry() {
         return geometry;
     }
 
@@ -126,7 +125,7 @@ public final class Shape2D extends AbstractDoubleToDouble {
 //    }
 
     @Override
-    public Expr mul(Geometry domain) {
+    public Expr mul(HGeometry domain) {
         return new Shape2D(value, getGeometry().intersectGeometry(domain));
     }
 
