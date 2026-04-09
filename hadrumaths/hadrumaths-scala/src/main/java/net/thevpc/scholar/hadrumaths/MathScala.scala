@@ -17,7 +17,7 @@ import net.thevpc.nuts.text.NTextFormat
 import net.thevpc.nuts.time.NChronometer
 import net.thevpc.nuts.util.{NMemoryMeter, NMemorySnapshot}
 import net.thevpc.scholar.hadrumaths.cache.PersistenceCacheBuilder
-import net.thevpc.scholar.hadrumaths.geom.Point
+import net.thevpc.scholar.hadrumaths.geom.HPoint
 import net.thevpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator
 import net.thevpc.scholar.hadrumaths.symbolic._
 import net.thevpc.scholar.hadrumaths.symbolic.double2complex.CDiscrete
@@ -28,7 +28,7 @@ import net.thevpc.scholar.hadrumaths.symbolic.polymorph.{Any, ParametrizedScalar
 import net.thevpc.scholar.hadrumaths.util.adapters.ComplexMatrixFromComplexMatrix
 import net.thevpc.scholar.hadruplot.{PlotConfig, PlotDoubleConverter}
 import net.thevpc.scholar
-import net.thevpc.scholar.hadrumaths.geom.Geometry
+import net.thevpc.scholar.hadrumaths.geom.HGeometry
 
 import scala.collection.{Iterable, Iterator}
 
@@ -396,14 +396,14 @@ object MathScala {
     def :/(v: ComplexVector): ComplexMatrix = value.dotdiv(v.toMatrix)
   }
 
-  implicit class SGemortry(val value: Geometry) {
+  implicit class SGemortry(val value: HGeometry) {
     def *(v: Double): Expr = value.mul(v);
 
     def *(v: Int): Expr = value.mul(v);
 
     def *(v: Expr): Expr = value.mul(v);
 
-    def *(v: Geometry): Expr = value.mul(Maths.expr(v));
+    def *(v: HGeometry): Expr = value.mul(Maths.expr(v));
   }
 
 
@@ -432,7 +432,7 @@ object MathScala {
 
     def -(v: Expr): Expr = value.sub(Any.unwrap(v))
 
-    def *(v: Geometry): Expr = value.mul(Maths.expr(v))
+    def *(v: HGeometry): Expr = value.mul(Maths.expr(v))
 
     def *(v: Expr): Expr = value.mul(Any.unwrap(v))
 
@@ -557,7 +557,7 @@ object MathScala {
 
     def -(v: Expr): Expr = value.sub(Any.unwrap(v))
 
-    def *(v: Geometry): Expr = value.mul(Maths.expr(v))
+    def *(v: HGeometry): Expr = value.mul(Maths.expr(v))
 
     def *(v: Expr): Expr = value.mul(Any.unwrap(v))
 
@@ -632,7 +632,7 @@ object MathScala {
 
     def -(v: Expr): Expr = value.sub(Any.unwrap(v))
 
-    def *(v: Geometry): Expr = value.mul(Maths.expr(v))
+    def *(v: HGeometry): Expr = value.mul(Maths.expr(v))
 
     def *(v: Expr): Expr = value.mul(Any.unwrap(v))
 
@@ -1482,7 +1482,7 @@ object MathScala {
   val $CVECTOR: NTypeName[Vector[Complex]] = Maths.$CVECTOR
   val $DOUBLE: NTypeName[java.lang.Double] = Maths.$DOUBLE
   val $BOOLEAN: NTypeName[java.lang.Boolean] = Maths.$BOOLEAN
-  val $POINT: NTypeName[Point] = Maths.$POINT
+  val $POINT: NTypeName[HPoint] = Maths.$POINT
   val $FILE: NTypeName[File] = Maths.$FILE
   //</editor-fold>
   val $INTEGER: NTypeName[java.lang.Integer] = Maths.$INTEGER
@@ -2667,7 +2667,7 @@ object MathScala {
     Maths.dumpSimple(o)
   }
 
-  def expr(value: Double, geometry: Geometry): DoubleToDouble = {
+  def expr(value: Double, geometry: HGeometry): DoubleToDouble = {
     Maths.expr(value, geometry)
   }
 
@@ -2679,11 +2679,11 @@ object MathScala {
     Maths.expr(domain)
   }
 
-  def expr(domain: Geometry): DoubleToDouble = {
+  def expr(domain: HGeometry): DoubleToDouble = {
     Maths.expr(domain)
   }
 
-  def expr(a: Complex, geometry: Geometry): Expr = {
+  def expr(a: Complex, geometry: HGeometry): Expr = {
     Maths.expr(a, geometry)
   }
 
@@ -3903,7 +3903,7 @@ object MathScala {
     Maths.normalize(a)
   }
 
-  def normalize(a: Geometry): Expr = {
+  def normalize(a: HGeometry): Expr = {
     Maths.normalize(a)
   }
 

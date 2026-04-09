@@ -1,5 +1,6 @@
 package net.thevpc.scholar.hadrumaths.plot;
 
+import net.thevpc.scholar.hadrumaths.geom.HPoint;
 import net.thevpc.scholar.hadrumaths.plot.model.AxisVectorPlotModel;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
 import net.thevpc.scholar.hadruplot.extension.ClassResolvers;
@@ -14,7 +15,6 @@ import net.thevpc.scholar.hadruplot.model.value.PlotValueType;
 import net.thevpc.scholar.hadruplot.model.value.PlotValueArrayType;
 import net.thevpc.scholar.hadrumaths.Samples;
 import net.thevpc.scholar.hadrumaths.*;
-import net.thevpc.scholar.hadrumaths.geom.Point;
 import net.thevpc.scholar.hadrumaths.symbolic.double2complex.CDiscrete;
 import net.thevpc.scholar.hadrumaths.symbolic.double2vector.VDiscrete;
 import net.thevpc.scholar.hadrumaths.util.ArrayUtils;
@@ -120,14 +120,14 @@ public class MathsPlotModelFactory implements PlotModelFactory {
                 return PlotModelUtils._plotComplexArray1(y, col ? PlotType.MATRIX : PlotType.CURVE, col, builder, complexType);
             }
             case "point":
-                return _plotPoints(new Point[][]{{(Point) type.toValue(data.getValue(), Point.class)}}, builder);
+                return _plotPoints(new HPoint[][]{{(HPoint) type.toValue(data.getValue(), HPoint.class)}}, builder);
             case "point[][]": {
                 PlotValueArrayType oo = (PlotValueArrayType) type;
-                return _plotPoints((Point[][]) oo.toArray(type.toValue(data.getValue(), Point[][].class), Point[][].class), builder);
+                return _plotPoints((HPoint[][]) oo.toArray(type.toValue(data.getValue(), HPoint[][].class), HPoint[][].class), builder);
             }
             case "point[]": {
                 PlotValueArrayType oo = (PlotValueArrayType) type;
-                return _plotPoints(new Point[][]{(Point[]) oo.toArray(type.toValue(data.getValue(), Point[].class), Point[].class)}, builder);
+                return _plotPoints(new HPoint[][]{(HPoint[]) oo.toArray(type.toValue(data.getValue(), HPoint[].class), HPoint[].class)}, builder);
             }
             case "expr":
                 return _plotExprArray(new Expr[]{(Expr) type.toValue(data.getValue(), Expr.class)}, builder);
@@ -203,7 +203,7 @@ public class MathsPlotModelFactory implements PlotModelFactory {
 //        }
 //        return plotType;
 //    }
-    private PlotModel _plotPoints(Point[][] xy, PlotBuilder builder) {
+    private PlotModel _plotPoints(HPoint[][] xy, PlotBuilder builder) {
         double[][] x = new double[xy.length][];
         double[][] y = new double[xy.length][];
         for (int i = 0; i < xy.length; i++) {

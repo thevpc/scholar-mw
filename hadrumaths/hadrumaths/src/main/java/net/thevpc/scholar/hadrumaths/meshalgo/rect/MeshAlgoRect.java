@@ -5,7 +5,7 @@ import net.thevpc.nuts.elem.NElement;
 
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Maths;
-import net.thevpc.scholar.hadrumaths.geom.Geometry;
+import net.thevpc.scholar.hadrumaths.geom.HGeometry;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZoneShape;
@@ -14,7 +14,6 @@ import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -144,23 +143,23 @@ public class MeshAlgoRect implements MeshAlgo, Cloneable {
 //        );
 //    }
 
-    private List<Geometry> autoFusion(Geometry polygon, List<Geometry> all) {
+    private List<HGeometry> autoFusion(HGeometry polygon, List<HGeometry> all) {
         Domain domain = polygon.getDomain();
         double maxRelativeSizeXAbsolute = maxRelativeSizeX * domain.xwidth();
         double maxRelativeSizeYAbsolute = maxRelativeSizeY * domain.ywidth();
         boolean changes = true;
         while (changes) {
             changes = false;
-            Geometry[] all2 = all.toArray(new Geometry[0]);
+            HGeometry[] all2 = all.toArray(new HGeometry[0]);
             for (int i = 0; i < all2.length; i++) {
-                Geometry area = all2[i];
-                Geometry fusion = null;
-                Geometry union = null;
+                HGeometry area = all2[i];
+                HGeometry fusion = null;
+                HGeometry union = null;
                 if (area.isRectangular()) {
                     for (int j = i + 1; j < all2.length; j++) {
-                        Geometry other = all2[j];
+                        HGeometry other = all2[j];
                         if (other.isRectangular()) {
-                            Geometry a2 = area.clone();
+                            HGeometry a2 = area.clone();
                             a2 = a2.addGeometry(other);
                             if (a2.isRectangular()) {
                                 Domain d = a2.getDomain();
@@ -188,22 +187,22 @@ public class MeshAlgoRect implements MeshAlgo, Cloneable {
         return all;
     }
 
-    public Collection<MeshZone> meshPolygon(Geometry polygon) {
+    public List<MeshZone> meshPolygon(HGeometry polygon) {
         Domain domain = polygon.getDomain();
         double maxAbsoluteSizeX = maxRelativeSizeX * domain.xwidth();
         double maxAbsoluteSizeY = maxRelativeSizeY * domain.ywidth();
         double minAbsoluteSizeX = minRelativeSizeX * domain.xwidth();
         double minAbsoluteSizeY = minRelativeSizeY * domain.ywidth();
-        List<Geometry> res = mesh(polygon, maxAbsoluteSizeX, maxAbsoluteSizeY, minAbsoluteSizeX, minAbsoluteSizeY);
+        List<HGeometry> res = mesh(polygon, maxAbsoluteSizeX, maxAbsoluteSizeY, minAbsoluteSizeX, minAbsoluteSizeY);
         res = autoFusion(polygon, res);
         ArrayList<MeshZone> zones = new ArrayList<MeshZone>();
-        for (Geometry re : res) {
+        for (HGeometry re : res) {
             zones.add(new MeshZone(re, MeshZoneShape.RECTANGLE, MeshZoneType.MAIN));
         }
         return zones;
     }
 
-    private List<Geometry> mesh(Geometry p, double maxAbsoluteSizeX, double maxAbsoluteSizeY, double minAbsoluteSizeX, double minAbsoluteSizeY) {
+    private List<HGeometry> mesh(HGeometry p, double maxAbsoluteSizeX, double maxAbsoluteSizeY, double minAbsoluteSizeX, double minAbsoluteSizeY) {
         if (minAbsoluteSizeX <= 0 || minAbsoluteSizeY <= 0) {
             throw new IllegalArgumentException("min size <=0");
         }
@@ -215,7 +214,7 @@ public class MeshAlgoRect implements MeshAlgo, Cloneable {
 
         int maxx = ((int) Maths.round(dw / maxAbsoluteSizeX));
         int maxy = ((int) Maths.round(dh / maxAbsoluteSizeY));
-        List<Geometry> areas = new ArrayList<Geometry>();
+        List<HGeometry> areas = new ArrayList<>();
 
         if (maxAbsoluteSizeX < minAbsoluteSizeX && maxAbsoluteSizeY < minAbsoluteSizeY) {
             return areas;
@@ -229,7 +228,7 @@ public class MeshAlgoRect implements MeshAlgo, Cloneable {
                         dmy + (j * maxAbsoluteSizeY),
                         maxAbsoluteSizeY
                 );
-                Geometry a = r.toGeometry();
+                HGeometry a = r.toGeometry();
                 String prefix = "i,j :" + i + "," + j + " : " + gridPrecision + " : ";
                 //AreaComponent.showDialog(prefix+"before",a,p);
                 a = a.intersectGeometry(p);
@@ -243,7 +242,7 @@ public class MeshAlgoRect implements MeshAlgo, Cloneable {
                             areas.add(a);
                         } else {
                             //AreaComponent.showDialog(prefix+"non rect",a,p);
-                            List<Geometry> sub = mesh(a, r.getXwidth() / dividerX, r.getYwidth() / dividerY, minAbsoluteSizeX, minAbsoluteSizeY);
+                            List<HGeometry> sub = mesh(a, r.getXwidth() / dividerX, r.getYwidth() / dividerY, minAbsoluteSizeX, minAbsoluteSizeY);
                             if (sub.size() > 0) {
                                 areas.addAll(sub);
                             }
@@ -251,7 +250,7 @@ public class MeshAlgoRect implements MeshAlgo, Cloneable {
                         }
                     } else {
                         //AreaComponent.showDialog(prefix+"non singular",a,p);
-                        List<Geometry> sub = mesh(a, r.getXwidth() / dividerX, r.getYwidth() / dividerY, minAbsoluteSizeX, minAbsoluteSizeY);
+                        List<HGeometry> sub = mesh(a, r.getXwidth() / dividerX, r.getYwidth() / dividerY, minAbsoluteSizeX, minAbsoluteSizeY);
                         if (sub.size() > 0) {
                             areas.addAll(sub);
                         }

@@ -1,7 +1,5 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.nuts.reflect.NTypeName;
-
 /**
  * Created by vpc on 3/23/17.
  */

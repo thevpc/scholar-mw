@@ -31,7 +31,7 @@ class MatrixBMatrixStrCacheSupport extends StrCacheSupport<ComplexMatrix> {
             matrix = matrix.sparsify(ceil.doubleValue());
         }
         if (matrix.norm1() == 0) {
-            throw new IllegalArgumentException("B matrix is Null (norm=0)");
+//            throw new IllegalArgumentException("B matrix is Null (norm=0)");
         }
         return matrix;
     }
