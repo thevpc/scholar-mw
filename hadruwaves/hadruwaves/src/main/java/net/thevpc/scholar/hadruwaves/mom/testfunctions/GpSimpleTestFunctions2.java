@@ -2,11 +2,10 @@ package net.thevpc.scholar.hadruwaves.mom.testfunctions;
 
 import net.thevpc.nuts.elem.NElement;
 
-
 import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Maths;
-import net.thevpc.scholar.hadrumaths.geom.Geometry;
+import net.thevpc.scholar.hadrumaths.geom.HGeometry;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 
@@ -23,6 +22,7 @@ import java.util.List;
  * @creationtime 10 juil. 2007 23:14:54
  */
 public class GpSimpleTestFunctions2 extends TestFunctionsBase implements Cloneable {
+
     private TestFunctionCell[] cells;
     private Domain globalDomain;
 
@@ -30,6 +30,16 @@ public class GpSimpleTestFunctions2 extends TestFunctionsBase implements Cloneab
         super();
         this.cells = cells;
         this.globalDomain = globalDomain;
+    }
+
+    @Override
+    public List<MeshZone> mesh() {
+        List<MeshZone> mz = new ArrayList<>();
+        for (int i1 = 0, cellsLength = cells.length; i1 < cellsLength; i1++) {
+            TestFunctionCell cell = cells[i1];
+            mz.add(new MeshZone(cell.getDomain()));
+        }
+        return mz;
     }
 
     @Override
@@ -41,7 +51,7 @@ public class GpSimpleTestFunctions2 extends TestFunctionsBase implements Cloneab
                 for (int i1 = 0; i1 < cells.length; i1++) {
                     TestFunctionCell cell = cells[i1];
                     GpPattern pattern = cell.getPattern();
-                    DoubleToVector[] allGp = pattern.createFunctions(globalDomain, new MeshZone(cell.getDomain()), monitor, null,log());
+                    DoubleToVector[] allGp = pattern.createFunctions(globalDomain, new MeshZone(cell.getDomain()), monitor, null, log());
                     int maxGp = allGp.length;
                     for (int i = 0; i < maxGp; i++) {
                         DoubleToVector _gp = allGp[i];
@@ -63,13 +73,14 @@ public class GpSimpleTestFunctions2 extends TestFunctionsBase implements Cloneab
         h.add("cells", NElementHelper.elem(cells));
         return h.build();
     }
+
     @Override
-    public Geometry[] getGeometries() {
-        List<Geometry> all = new ArrayList<>();
+    public HGeometry[] getGeometries() {
+        List<HGeometry> all = new ArrayList<>();
         for (TestFunctionCell cell : cells) {
             all.add(cell.getAreaGeometryList());
         }
-        return all.toArray(new Geometry[0]);
+        return all.toArray(new HGeometry[0]);
     }
 
 }

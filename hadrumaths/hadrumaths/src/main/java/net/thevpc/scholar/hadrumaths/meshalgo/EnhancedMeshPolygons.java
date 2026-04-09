@@ -4,7 +4,8 @@ package net.thevpc.scholar.hadrumaths.meshalgo;
 import net.thevpc.nuts.elem.NElement;
 
 import net.thevpc.scholar.hadrumaths.HSerializable;
-import net.thevpc.scholar.hadrumaths.geom.Triangle;
+import net.thevpc.scholar.hadrumaths.geom.DefaultHTriangle;
+import net.thevpc.scholar.hadrumaths.geom.HTriangle;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.awt.*;
@@ -36,12 +37,14 @@ public class EnhancedMeshPolygons implements HSerializable {
 //        return h.toString();
 //    }
 
-    public Triangle firstTriangleInZoneValide(List<Triangle> t) {
+    public HTriangle firstTriangleInZoneValid(List<HTriangle> t) {
         int k = -1;
-        Collections.sort(t, Triangle.SURFACE_COMPARATOR);
+        Collections.sort(t, DefaultHTriangle.SURFACE_COMPARATOR);
         for (int j = 0; j < t.size(); j++) {
             for (int i = 0; i < polygon.length; i++) {
-                if ((polygon[i].contains(t.get(j).p1.x, t.get(j).p1.y) || polygon[i].contains(t.get(j).p2.x, t.get(j).p2.y) || polygon[i].contains(t.get(j).p3.x, t.get(j).p3.y)) && t.get(j).getSurface() > surface) {
+                if ((polygon[i].contains(t.get(j).p1().x, t.get(j).p1().y)
+                        || polygon[i].contains(t.get(j).p2().x, t.get(j).p2().y)
+                        || polygon[i].contains(t.get(j).p3().x, t.get(j).p3().y)) && t.get(j).area() > surface) {
                     k = j;
                     j = t.size();
                     i = t.size();
@@ -55,11 +58,13 @@ public class EnhancedMeshPolygons implements HSerializable {
         }
     }
 
-    public boolean isZoneValide(java.util.List<Triangle> t) {
+    public boolean isZoneValide(java.util.List<HTriangle> t) {
         int k = 0;
-        for (Triangle a : t) {
+        for (HTriangle a : t) {
             for (Polygon b : polygon) {
-                if ((b.contains(a.p1.x, a.p1.y) || b.contains(a.p2.x, a.p2.y) || b.contains(a.p3.x, a.p3.y)) && a.getSurface() > surface) {
+                if ((b.contains(a.p1().x, a.p1().y)
+                        || b.contains(a.p2().x, a.p2().y)
+                        || b.contains(a.p3().x, a.p3().y)) && a.area() > surface) {
                     k = 1;
                 }
             }

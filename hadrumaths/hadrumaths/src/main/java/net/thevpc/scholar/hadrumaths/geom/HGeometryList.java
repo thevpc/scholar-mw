@@ -1,7 +1,6 @@
 package net.thevpc.scholar.hadrumaths.geom;
 
 import net.thevpc.scholar.hadrumaths.Domain;
-import net.thevpc.scholar.hadrumaths.HSerializable;
 
 import java.util.Collection;
 
@@ -9,46 +8,46 @@ import java.util.Collection;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 12 juin 2007 10:41:27
  */
-public interface GeometryList extends Cloneable, Iterable<Geometry>, Geometry {
+public interface HGeometryList extends Cloneable, Iterable<HGeometry>, HGeometry {
 
 //    Dumper getDumpStringHelper();
 
-    Geometry set(int index, Geometry element);
+    HGeometry set(int index, HGeometry element);
 
-    Geometry remove(int index);
+    HGeometry remove(int index);
 
-    void add(int index, Geometry element);
+    void add(int index, HGeometry element);
 
-    boolean add(Geometry o);
+    boolean add(HGeometry o);
 
     boolean remove(Object o);
 
     void clear();
 
-    boolean addAll(GeometryList c);
+    boolean addAll(HGeometryList c);
 
-    boolean addAll(Collection<? extends Geometry> c);
+    boolean addAll(Collection<? extends HGeometry> c);
 
-    boolean addAll(int index, Collection<? extends Geometry> c);
+    boolean addAll(int index, Collection<? extends HGeometry> c);
 
     Domain getDomain(Domain rectangle2D, Domain domain);
 
     Domain getBounds();
 
-    GeometryList clone();
+    HGeometryList clone();
 
 
     int size();
 
-    Geometry get(int i);
+    HGeometry get(int i);
 
     void setAttribute(String name, Object value);
 
     Object getAttribute(String name);
 
-    GeometryList getDual();
+    HGeometryList getDual();
 
-    Collection<Geometry> toCollection();
+    Collection<HGeometry> toCollection();
 
     Domain getSmallestBounds();
 

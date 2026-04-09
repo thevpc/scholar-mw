@@ -4,15 +4,14 @@ import net.thevpc.common.mon.MonitoredAction;
 import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.nuts.elem.NElement;
 
-
 import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.nuts.util.NMaps;
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Expressions;
 import net.thevpc.scholar.hadrumaths.Maths;
-import net.thevpc.scholar.hadrumaths.geom.Geometry;
-import net.thevpc.scholar.hadrumaths.geom.GeometryList;
+import net.thevpc.scholar.hadrumaths.geom.HGeometry;
+import net.thevpc.scholar.hadrumaths.geom.HGeometryList;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
@@ -41,14 +40,32 @@ public class GpAdaptiveMultiMesh extends TestFunctionsBase implements Cloneable 
         this.domain = domain;
     }
 
-    private Collection<DoubleToVector> gpImpl(TestFunctionCell cell, ProgressMonitor monitor) {
+    private List<MeshZone> subMesh(TestFunctionCell cell) {
+        Domain globalDomain = getStructure().getDomain();
+        HGeometryList geometryList = cell.getAreaGeometryList();
+        Domain globalBounds = geometryList.getBounds();
+        List<MeshZone> allZonesInit = new ArrayList<MeshZone>();
+        for (HGeometry polygon : geometryList) {
+            allZonesInit.addAll(cell.getMeshAlgo().meshPolygon(polygon));
+        }
+        allZonesInit = cell.getPattern().transform(allZonesInit, globalBounds);
+        ArrayList<MeshZone> allZones = new ArrayList<MeshZone>();
+        for (MeshZone zone : allZonesInit) {
+            zone.setDomainRelative(globalBounds, globalDomain);
+            allZones.add(zone);
+        }
+        Collections.sort(allZones, MeshZone.ZONES_COMPARATOR);
+        return allZones;
+    }
+
+    private Collection<DoubleToVector> subGpImpl(TestFunctionCell cell, ProgressMonitor monitor) {
         ArrayList<DoubleToVector> f = new ArrayList<DoubleToVector>();
         Domain globalDomain = getStructure().getDomain();
 
-        GeometryList geometryList = cell.getAreaGeometryList();
+        HGeometryList geometryList = cell.getAreaGeometryList();
         Domain globalBounds = geometryList.getBounds();
         List<MeshZone> allZonesInit = new ArrayList<MeshZone>();
-        for (Geometry polygon : geometryList) {
+        for (HGeometry polygon : geometryList) {
             allZonesInit.addAll(cell.getMeshAlgo().meshPolygon(polygon));
         }
         allZonesInit = cell.getPattern().transform(allZonesInit, globalBounds);
@@ -64,7 +81,7 @@ public class GpAdaptiveMultiMesh extends TestFunctionsBase implements Cloneable 
             gps = TestFunctionsSymmetry.NO_SYMMETRY;
         }
         for (MeshZone zone : allZones) {
-            DoubleToVector[] allGpFunctions = cell.getPattern().createFunctions(globalDomain, zone, monitor, getStructure(),log());
+            DoubleToVector[] allGpFunctions = cell.getPattern().createFunctions(globalDomain, zone, monitor, getStructure(), log());
             int goodCount = allGpFunctions.length;
             partCounter++;
             switch (gps) {
@@ -183,6 +200,16 @@ public class GpAdaptiveMultiMesh extends TestFunctionsBase implements Cloneable 
     }
 
     @Override
+    public List<MeshZone> mesh() {
+        List<MeshZone> all = new ArrayList<MeshZone>();
+        for (int i = 0; i < cells.length; i++) {
+            TestFunctionCell gpCell = cells[i];
+            all.addAll(subMesh(gpCell));
+        }
+        return all;
+    }
+
+    @Override
     public DoubleToVector[] gpImpl(ProgressMonitor monitor) {
         return Maths.invokeMonitoredAction(monitor, "Gp Detection", new MonitoredAction<DoubleToVector[]>() {
             @Override
@@ -190,7 +217,7 @@ public class GpAdaptiveMultiMesh extends TestFunctionsBase implements Cloneable 
                 ArrayList<DoubleToVector> all = new ArrayList<DoubleToVector>();
                 for (int i = 0; i < cells.length; i++) {
                     TestFunctionCell gpCell = cells[i];
-                    all.addAll(gpImpl(gpCell, monitor));
+                    all.addAll(subGpImpl(gpCell, monitor));
                     monitor.setProgress(1.0 * i / cells.length, "Gp Detection");
                 }
                 return all.toArray(new DoubleToVector[all.size()]);
@@ -243,11 +270,11 @@ public class GpAdaptiveMultiMesh extends TestFunctionsBase implements Cloneable 
     }
 
     @Override
-    public Geometry[] getGeometries() {
-        List<Geometry> all = new ArrayList<>();
+    public HGeometry[] getGeometries() {
+        List<HGeometry> all = new ArrayList<>();
         for (TestFunctionCell cell : cells) {
             all.add(cell.getAreaGeometryList());
         }
-        return all.toArray(new Geometry[0]);
+        return all.toArray(new HGeometry[0]);
     }
 }

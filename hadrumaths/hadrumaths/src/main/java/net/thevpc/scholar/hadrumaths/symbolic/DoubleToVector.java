@@ -1,6 +1,7 @@
 package net.thevpc.scholar.hadrumaths.symbolic;
 
 import net.thevpc.scholar.hadrumaths.*;
+import net.thevpc.scholar.hadrumaths.geom.HGeometry;
 
 import java.io.Serializable;
 
@@ -38,6 +39,25 @@ public interface DoubleToVector extends DoubleDomainExpr, Serializable {
         return evalVector(x, y, z, BooleanMarker.none());
     }
 
+    @Override
+    default HGeometry getDomainGeometry() {
+        HGeometry g = null;
+        for (Expr e : new Expr[]{getX(), getY(), getZ()}) {
+            if (e != null && !e.isZero() && !e.isNaN()) {
+                HGeometry g2 = e.getDomainGeometry();
+                if (g == null) {
+                    g = g2;
+                } else {
+                    g = g.addGeometry(g2);
+                }
+            }
+        }
+        if (g == null) {
+            g = getDomain().toGeometry();
+        }
+        return g;
+    }
+
     ComplexVector evalVector(double x, double y, double z, BooleanMarker defined);
 
     default ComplexVector[] evalVector(double[] x, double y, Domain d0, Out<Range> ranges) {
@@ -45,7 +65,7 @@ public interface DoubleToVector extends DoubleDomainExpr, Serializable {
     }
 
     default ComplexVector[][] evalVector(double[] x, double[] y, Domain d0) {
-        return evalVector(x,y,d0,null);
+        return evalVector(x, y, d0, null);
     }
 
     default ComplexVector[][] evalVector(double[] x, double[] y, Domain d0, Out<Range> ranges) {

@@ -11,12 +11,10 @@ import net.thevpc.nuts.elem.NElement;
 
 
 import net.thevpc.nuts.elem.NObjectElementBuilder;
-import net.thevpc.nuts.reflect.NTypeNameDomain;
 import net.thevpc.nuts.reflect.NTypeNamePlatformDomain;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.Maths;
-import net.thevpc.scholar.hadrumaths.Vector;
-import net.thevpc.scholar.hadrumaths.geom.Geometry;
+import net.thevpc.scholar.hadrumaths.geom.HGeometry;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.mom.HintAxisType;
@@ -24,6 +22,8 @@ import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 import net.thevpc.scholar.hadruwaves.mom.TestFunctions;
 
 import java.util.*;
+import net.thevpc.scholar.hadrumaths.Vector;
+import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.symbolic.ExprDefaults;
 
 /**
@@ -144,6 +144,52 @@ public class ListTestFunctions extends TestFunctionsBase implements Cloneable {
             throw new IllegalArgumentException("Unsupported Expr " + i);
         }
     }
+    private List<MeshZone> linearizeMesh(Object i) {
+        if (i instanceof Expr) {
+            Expr ie = (Expr) i;
+            switch (ie.getType()) {
+                case DOUBLE_DOUBLE: {
+                    DoubleToVector v = Maths.vector(ie.toDD()).toDV();
+                    return Arrays.asList(new MeshZone(v.getDomainGeometry()));
+                }
+
+                case DOUBLE_COMPLEX: {
+                    DoubleToVector v = Maths.vector(ie.toDC()).toDV();
+                    v = (DoubleToVector) ExprDefaults.copyProperties(ie, v);
+                    return Arrays.asList(new MeshZone(v.getDomainGeometry()));
+                }
+
+                case DOUBLE_CVECTOR: {
+                    DoubleToVector v = ie.toDV();
+                    return Arrays.asList(new MeshZone(v.getDomainGeometry()));
+                }
+
+            }
+            throw new IllegalArgumentException("Unsupported Expr " + i);
+        } else if (i instanceof Vector && NTypeNamePlatformDomain.of().isAssignableFrom(Maths.$EXPR,((Vector) i).getComponentType())) {
+            List<MeshZone> found = new ArrayList<>();
+            for (Expr expr : ((Vector<Expr>) i)) {
+                found.addAll(linearizeMesh(expr));
+            }
+            return found;
+        } else if (i instanceof net.thevpc.scholar.hadruwaves.mom.TestFunctions) {
+            return ((TestFunctions) i).mesh();
+        } else if (i instanceof List) {
+            List<MeshZone> found = new ArrayList<>();
+            for (Object expr : (List) i) {
+                found.addAll(linearizeMesh(expr));
+            }
+            return found;
+        } else if (i instanceof Object[]) {
+            List<MeshZone> found = new ArrayList<>();
+            for (Object expr : (Object[]) i) {
+                found.addAll(linearizeMesh(expr));
+            }
+            return found;
+        } else {
+            throw new IllegalArgumentException("Unsupported Expr " + i);
+        }
+    }
 
     public List<net.thevpc.scholar.hadruwaves.mom.TestFunctions> getSubTestFunctions() {
         List<net.thevpc.scholar.hadruwaves.mom.TestFunctions> found = new ArrayList<net.thevpc.scholar.hadruwaves.mom.TestFunctions>();
@@ -172,9 +218,18 @@ public class ListTestFunctions extends TestFunctionsBase implements Cloneable {
     }
 
     @Override
+    public List<MeshZone> mesh() {
+        List<MeshZone> mz=new ArrayList<>();
+        for (Object object : list) {
+            mz.addAll(linearizeMesh(object));
+        }
+        return mz;
+    }
+    
+    @Override
     protected DoubleToVector[] gpImpl(ProgressMonitor monitor) {
         List<DoubleToVector> all = (List) toList().toList();
-        return all.toArray(new DoubleToVector[all.size()]);
+        return all.toArray(new DoubleToVector[0]);
     }
 
     protected DoubleToVector[] rebuildCachedFunctions(ProgressMonitor monitor) {
@@ -240,15 +295,15 @@ public class ListTestFunctions extends TestFunctionsBase implements Cloneable {
     }
 
     @Override
-    public Geometry[] getGeometries() {
-        Set<Geometry> ss = new HashSet<>();
+    public HGeometry[] getGeometries() {
+        Set<HGeometry> ss = new HashSet<>();
         List<DoubleToVector> found = new ArrayList<DoubleToVector>();
         for (Object expr : list) {
             for (DoubleToVector linearizeFunction : linearizeFunctions(expr)) {
                 ss.add(linearizeFunction.getDomain().toGeometry());
             }
         }
-        return ss.toArray(new Geometry[0]);
+        return ss.toArray(new HGeometry[0]);
     }
     public boolean isEmpty() {
         return list.isEmpty();

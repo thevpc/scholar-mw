@@ -71,7 +71,7 @@ public class HRMIClient implements HadrumathsClient {
         NChronometer c = NChronometer.of();
         try {
             remote.ping();
-            ret = c.stop().getDurationMs();
+            ret = c.stop().durationMs();
         } catch (IOException e) {
             //
         }

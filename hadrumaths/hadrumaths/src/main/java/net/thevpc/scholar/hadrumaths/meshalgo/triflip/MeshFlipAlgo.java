@@ -10,24 +10,23 @@ import net.thevpc.scholar.hadrumaths.meshalgo.*;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class MeshFlipAlgo implements MeshAlgo {
     private static final long serialVersionUID = 1L;
     OptionFlip option;
-    ArrayList<Triangle> listeTriangle;
+    ArrayList<HTriangle> listeTriangle;
 
     public MeshFlipAlgo() {
-        listeTriangle = new ArrayList<Triangle>();
+        listeTriangle = new ArrayList<>();
     }
 
-    public Collection<MeshZone> meshPolygon(Geometry polygon) {
-        return meshPolygon(new Geometry[]{polygon});
+    public List<MeshZone> meshPolygon(HGeometry polygon) {
+        return meshPolygon(new HGeometry[]{polygon});
     }
 
-    public Collection<MeshZone> meshPolygon(Geometry[] polygons) {
-        for (Geometry polygon : polygons) {
+    public List<MeshZone> meshPolygon(HGeometry[] polygons) {
+        for (HGeometry polygon : polygons) {
             initPolygon(polygon);
         }
         int iteration = 1;
@@ -35,7 +34,7 @@ public class MeshFlipAlgo implements MeshAlgo {
             constructionTriangle(iteration);
         }
         ArrayList<MeshZone> ret = new ArrayList<MeshZone>();
-        for (Triangle triangle : listeTriangle) {
+        for (HTriangle triangle : listeTriangle) {
             MeshZone z = new MeshZone(triangle, MeshZoneShape.TRIANGLE, MeshZoneType.MAIN);
             ret.add(z);
         }
@@ -48,13 +47,13 @@ public class MeshFlipAlgo implements MeshAlgo {
 //        return h.toString();
 //    }
 
-    private void initPolygon(Geometry geom) {
-        Polygon pg = geom.toPolygon();
-        List<Point> gpoints = pg.getPoints();
-        ArrayList<Triangle> listeTriangle1 = new ArrayList<Triangle>();
-        ArrayList<Point> points = new ArrayList<Point>();
+    private void initPolygon(HGeometry geom) {
+        HPolygon pg = geom.toPolygon();
+        List<HPoint> gpoints = pg.getPoints();
+        ArrayList<HTriangle> listeTriangle1 = new ArrayList<HTriangle>();
+        ArrayList<HPoint> points = new ArrayList<HPoint>();
         for (int i = 0; i < gpoints.size(); i++) {
-            Point p = gpoints.get(i);
+            HPoint p = gpoints.get(i);
             if (p.x != 0 || p.y != 0) {
                 points.add(p);
             }
@@ -64,16 +63,16 @@ public class MeshFlipAlgo implements MeshAlgo {
         for (int i = 0; i < points.size(); i++) {
             for (int j = 0; j < points.size(); j++) {
                 if ((points.get(i).x != points.get(j).x) || (points.get(i).y != points.get(j).y)) {
-                    for (Point point : points) {
+                    for (HPoint point : points) {
                         if (((point.x != points.get(j).x) || (point.y != points.get(j).y)) && ((point.x != points.get(i).x) || (point.y != points.get(i).y))) {
 
                             int inter = 0;
-                            Point w = Point.create(points.get(i).x, points.get(i).y);
-                            Point x = Point.create(points.get(j).x, points.get(j).y);
-                            Point q = Point.create(point.x, point.y);
-                            Triangle t = (new Triangle(w, x, q));
+                            HPoint w = HPoint.create(points.get(i).x, points.get(i).y);
+                            HPoint x = HPoint.create(points.get(j).x, points.get(j).y);
+                            HPoint q = HPoint.create(point.x, point.y);
+                            HTriangle t = (new DefaultHTriangle(w, x, q));
                             if (!listeTriangle1.isEmpty()) {
-                                for (Triangle aListeTriangle1 : listeTriangle1) {
+                                for (HTriangle aListeTriangle1 : listeTriangle1) {
                                     if (t.intersection(aListeTriangle1)) {
                                         inter = 1;
                                     }
@@ -82,7 +81,7 @@ public class MeshFlipAlgo implements MeshAlgo {
                             if ((inter == 0) && (listeTriangle1.size() < gpoints.size() - 2)) {
                                 listeTriangle1.add(t);
                                 for (int b = 0; b < listeTriangle1.size(); b++) {
-                                    Triangle v = listeTriangle1.get(b);
+                                    HTriangle v = listeTriangle1.get(b);
                                     for (int z = b + 1; z < listeTriangle1.size(); z++) {
                                         if (v.equals(listeTriangle1.get(z))) {
                                             listeTriangle1.remove(z);
@@ -96,17 +95,17 @@ public class MeshFlipAlgo implements MeshAlgo {
                 }
             }
         }
-        for (Triangle aListeTriangle1 : listeTriangle1) {
+        for (HTriangle aListeTriangle1 : listeTriangle1) {
             listeTriangle.add(aListeTriangle1);
         }
 
     }
 
     private void constructionTriangle(int iteration) {
-        ArrayList<Triangle> ld = new ArrayList<Triangle>();
-        ArrayList<Triangle> newTriangle = new ArrayList<Triangle>();
-        Point p;
-        Triangle t = option.selectMeshTriangle(listeTriangle, iteration);
+        ArrayList<HTriangle> ld = new ArrayList<HTriangle>();
+        ArrayList<HTriangle> newTriangle = new ArrayList<HTriangle>();
+        HPoint p;
+        HTriangle t = option.selectMeshTriangle(listeTriangle, iteration);
         p = t.getBarycenter();
         for (int i = 0; i < listeTriangle.size(); i++) {
             if (t.equals(listeTriangle.get(i))) {
@@ -114,24 +113,24 @@ public class MeshFlipAlgo implements MeshAlgo {
                 i = i - 1;
             }
         }
-        ld.add(new Triangle(p, t.p1, t.p2));
-        ld.add(new Triangle(p, t.p1, t.p3));
-        ld.add(new Triangle(p, t.p2, t.p3));
-        for (Triangle aLd : ld) {
+        ld.add(new DefaultHTriangle(p, t.p1(), t.p2()));
+        ld.add(new DefaultHTriangle(p, t.p1(), t.p3()));
+        ld.add(new DefaultHTriangle(p, t.p2(), t.p3()));
+        for (HTriangle aLd : ld) {
             int k = 0;
             for (int j = 0; j < listeTriangle.size(); j++) {
-                if (aLd.isNeighberhood(listeTriangle.get(j))) {
+                if (aLd.isNeighborhood(listeTriangle.get(j))) {
                     k = 1;
-                    ArrayList<Point> m = new ArrayList<Point>();
-                    ArrayList<Point> n = new ArrayList<Point>();
-                    ArrayList<Point> op = new ArrayList<Point>();
-                    ArrayList<Point> v = new ArrayList<Point>();
-                    m.add(listeTriangle.get(j).p1);
-                    m.add((listeTriangle.get(j)).p2);
-                    m.add((listeTriangle.get(j)).p3);
-                    n.add(aLd.p1);
-                    n.add(aLd.p2);
-                    n.add(aLd.p3);
+                    ArrayList<HPoint> m = new ArrayList<HPoint>();
+                    ArrayList<HPoint> n = new ArrayList<HPoint>();
+                    ArrayList<HPoint> op = new ArrayList<HPoint>();
+                    ArrayList<HPoint> v = new ArrayList<HPoint>();
+                    m.add(listeTriangle.get(j).p1());
+                    m.add((listeTriangle.get(j)).p2());
+                    m.add((listeTriangle.get(j)).p3());
+                    n.add(aLd.p1());
+                    n.add(aLd.p2());
+                    n.add(aLd.p3());
                     for (int u = 0; u < m.size(); u++) {
                         int s = 0;
                         while ((s < n.size())) {
@@ -150,11 +149,11 @@ public class MeshFlipAlgo implements MeshAlgo {
                     }
                     op.add(m.get(0));
                     op.add(n.get(0));
-                    Point p1 = aLd.getCenter();
-                    Point p2 = listeTriangle.get(j).getCenter();
-                    if ((p1.distance(op.get(0)) < aLd.getRayonCercle()) || (p2.distance(op.get(1)) < listeTriangle.get(j).getRayonCercle())) {
-                        newTriangle.add(new Triangle(op.get(0), op.get(1), v.get(0)));
-                        newTriangle.add(new Triangle(op.get(0), op.get(1), v.get(1)));
+                    HPoint p1 = aLd.getCenter();
+                    HPoint p2 = listeTriangle.get(j).getCenter();
+                    if ((p1.distance(op.get(0)) < aLd.getCircleRadius()) || (p2.distance(op.get(1)) < listeTriangle.get(j).getCircleRadius())) {
+                        newTriangle.add(new DefaultHTriangle(op.get(0), op.get(1), v.get(0)));
+                        newTriangle.add(new DefaultHTriangle(op.get(0), op.get(1), v.get(1)));
                         listeTriangle.remove(j);
                         j = j - 1;
                     } else {
@@ -167,7 +166,7 @@ public class MeshFlipAlgo implements MeshAlgo {
 
             }
         }
-        for (Triangle aNewTriangle : newTriangle) {
+        for (HTriangle aNewTriangle : newTriangle) {
             listeTriangle.add(aNewTriangle);
         }
     }

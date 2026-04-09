@@ -5,9 +5,9 @@ import net.thevpc.ntexup.extension.hadruwaves.base.NTxHwComplexNTxSolver;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
-public class NTxHwZinNTxSolver extends NTxHwComplexNTxSolver {
+public class NTxHwZinSolver extends NTxHwComplexNTxSolver {
 
-    public NTxHwZinNTxSolver(MoMStrNTxSimulationPlan moMStrSimulationQuery, String computeName, String solverName) {
+    public NTxHwZinSolver(MoMStrNTxSimulationPlan moMStrSimulationQuery, String computeName, String solverName) {
         super(moMStrSimulationQuery, computeName, solverName,"input-impedance");
     }
 

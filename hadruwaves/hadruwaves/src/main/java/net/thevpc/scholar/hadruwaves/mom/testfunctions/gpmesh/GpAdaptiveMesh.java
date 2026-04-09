@@ -2,11 +2,13 @@ package net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh;
 
 import net.thevpc.nuts.elem.NElement;
 
-
 import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.nuts.util.NMaps;
 import net.thevpc.scholar.hadrumaths.Domain;
+import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.geom.*;
+import net.thevpc.scholar.hadrumaths.meshalgo.tri.MeshTriangulationAlgo;
+import net.thevpc.scholar.hadrumaths.meshalgo.triconsdes.MeshTriangulationOptions;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.symbolic.double2vector.DefaultDoubleToVector;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshAlgo;
@@ -17,11 +19,15 @@ import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.mom.CircuitType;
 import net.thevpc.scholar.hadruwaves.mom.TestFunctions;
 import net.thevpc.scholar.hadruwaves.mom.TestFunctionsSymmetry;
+import net.thevpc.scholar.hadruwaves.mom.sources.PlanarSource;
+import net.thevpc.scholar.hadruwaves.mom.sources.PlanarSources;
+import net.thevpc.scholar.hadruwaves.mom.sources.Sources;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.TestFunctionsBase;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.GpPattern;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import net.thevpc.scholar.hadrumaths.Axis;
 
@@ -36,83 +42,101 @@ import net.thevpc.scholar.hadruwaves.mom.project.MomStructureAware;
 public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
 
     public static final MeshAlgo MESH_RECT = new MeshAlgoRect();
-    private GeometryList[] polygons;
+    private HGeometryList[] polygons;
     private TestFunctionsSymmetry symmetry = TestFunctionsSymmetry.NO_SYMMETRY;
     private GpPattern pattern;
     private Axis invariance;
     private String name;
     private MeshAlgo meshAlgo = MESH_RECT.clone();
-    private Domain domain;
-    private CircuitType circuitType;
+    private final Domain domain;
+    private final CircuitType circuitType;
 
-    public GpAdaptiveMesh(GeometryList polygonsSerial, GpPattern pattern, MeshAlgo meshAlgo) {
+    public GpAdaptiveMesh(HGeometryList polygonsSerial, GpPattern pattern, MeshAlgo meshAlgo) {
         this(polygonsSerial, polygonsSerial, pattern, meshAlgo);
     }
 
     @Deprecated
-    public GpAdaptiveMesh(GeometryList polygonsSerial, GeometryList polygonsParallel, GpPattern pattern, MeshAlgo meshAlgo) {
-        this(polygonsSerial, polygonsParallel, pattern, TestFunctionsSymmetry.NO_SYMMETRY, meshAlgo,null,null);
+    public GpAdaptiveMesh(HGeometryList polygonsSerial, HGeometryList polygonsParallel, GpPattern pattern, MeshAlgo meshAlgo) {
+        this(polygonsSerial, polygonsParallel, pattern, TestFunctionsSymmetry.NO_SYMMETRY, meshAlgo, null, null);
     }
 
-    public GpAdaptiveMesh(GeometryList polygonsSerial, GpPattern pattern, TestFunctionsSymmetry symmetry, MeshAlgo meshAlgo) {
-        this(polygonsSerial, polygonsSerial.getDual() == null ? polygonsSerial : polygonsSerial.getDual(), pattern, symmetry, meshAlgo,null,null);
+    public GpAdaptiveMesh(HGeometryList polygonsSerial, GpPattern pattern, TestFunctionsSymmetry symmetry, MeshAlgo meshAlgo) {
+        this(polygonsSerial, polygonsSerial.getDual() == null ? polygonsSerial : polygonsSerial.getDual(), pattern, symmetry, meshAlgo, null, null);
     }
 
-    public GpAdaptiveMesh(GeometryList polygonsSerial, GpPattern pattern, TestFunctionsSymmetry symmetry, MeshAlgo meshAlgo, Domain domain, CircuitType circuitType) {
-        this(polygonsSerial, polygonsSerial.getDual() == null ? polygonsSerial : polygonsSerial.getDual(), pattern, symmetry, meshAlgo,domain,circuitType);
+    public GpAdaptiveMesh(HGeometryList polygonsSerial, GpPattern pattern, TestFunctionsSymmetry symmetry, MeshAlgo meshAlgo, Domain domain, CircuitType circuitType) {
+        this(polygonsSerial, polygonsSerial.getDual() == null ? polygonsSerial : polygonsSerial.getDual(), pattern, symmetry, meshAlgo, domain, circuitType);
     }
 
     @Deprecated
-    public GpAdaptiveMesh(GeometryList polygonsSerial, GeometryList polygonsParallel, GpPattern pattern, TestFunctionsSymmetry symmetry, MeshAlgo meshAlgo, Domain domain, CircuitType circuitType) {
+    public GpAdaptiveMesh(HGeometryList polygonsSerial, HGeometryList polygonsParallel, GpPattern pattern, TestFunctionsSymmetry symmetry, MeshAlgo meshAlgo, Domain domain, CircuitType circuitType) {
         super();
-        this.polygons = new GeometryList[]{polygonsSerial.clone(), polygonsParallel == null ? polygonsSerial.clone() : polygonsParallel.clone()};
-        this.domain=domain;
-        this.circuitType=circuitType;
+        this.polygons = new HGeometryList[]{polygonsSerial.clone(), polygonsParallel == null ? polygonsSerial.clone() : polygonsParallel.clone()};
+        this.domain = domain;
+        this.circuitType = circuitType;
         setPattern(pattern);
         setMeshAlgo(meshAlgo);
         setSymmetry(symmetry);
     }
 
     @Override
-    public DoubleToVector[] gpImpl(ProgressMonitor monitor) {
-        ArrayList<DoubleToVector> f = new ArrayList<DoubleToVector>();
+    public List<MeshZone> mesh() {
         MomStructure currentStructure = getStructure();
-        Domain globalDomain = domain!=null? domain: currentStructure ==null?null: currentStructure.getDomain();
-        CircuitType circuitType1 = circuitType!=null ?circuitType: currentStructure ==null?null: currentStructure.getCircuitType();
+        Domain globalDomain = domain != null ? domain : currentStructure == null ? null : currentStructure.getDomain();
+        CircuitType circuitType1 = circuitType != null ? circuitType : currentStructure == null ? null : currentStructure.getCircuitType();
         //default circuit!
-        if(circuitType1==null){
-            circuitType1=CircuitType.SERIAL;
-        }
-
-        GeometryList geometryList = polygons[circuitType1.ordinal()];
-        Domain polygonDomain = geometryList.getBounds();
-//        if(globalDomain==null){
-//            globalDomain=globalBounds;
-//        }
-        List<MeshZone> allZonesInit = new ArrayList<MeshZone>();
-        for (Geometry polygon : geometryList) {
-            allZonesInit.addAll(meshAlgo.meshPolygon(polygon));
+        if (circuitType1 == null) {
+            circuitType1 = CircuitType.SERIAL;
         }
         GpPattern currentPattern = getPattern();
-        //if (allZonesInit.size() == 0) {
-//            Plot2.show("test", geometryList, getMeshAlgo(), currentPattern,(polygonDomain==null?globalDomain:polygonDomain));
-        //}
-//        for (MeshZone zone : allZonesInit) {
-//            AreaComponent.showDialog("allZonesInit",zone.getGeometry().scale(400,400));
-//        }
-        allZonesInit = currentPattern.transform(allZonesInit, polygonDomain==null?globalDomain:polygonDomain);
-        ArrayList<MeshZone> allZones = new ArrayList<MeshZone>();
-        for (MeshZone zone : allZonesInit) {
-            zone.setDomainRelative(polygonDomain==null?globalDomain:polygonDomain, globalDomain);
+
+        HGeometryList geometryList = polygons[circuitType1.ordinal()];
+        Sources sources = currentStructure == null ? null : currentStructure.getSources();
+
+        MeshAlgo meshAlgo = this.meshAlgo.clone();
+        if (meshAlgo instanceof MeshTriangulationAlgo) {
+            MeshTriangulationAlgo mo = (MeshTriangulationAlgo) meshAlgo;
+            if (sources instanceof PlanarSources) {
+                List<PlanarSource> planarSources = Arrays.asList(((PlanarSources) sources).getPlanarSources());
+                ((MeshTriangulationAlgo) meshAlgo).getOption().setLocals(
+                        planarSources.stream().map(PlanarSource::getGeometry).collect(Collectors.toList())
+                );
+            }
+            MeshTriangulationOptions options = mo.getOption();
+            if (options.getMaxEdgeLength() <= 0) {
+                if (currentStructure != null) {
+                    if (currentStructure.getFrequency() != 0) {
+                        double lambda = Maths.C / currentStructure.getFrequency();
+                        options.setMaxEdgeLength(lambda / 10);
+                    }
+                }
+            }
+        }
+        List<MeshZone> meshZones = meshAlgo.meshPolygon(geometryList);
+
+        Domain polygonDomain = geometryList.getBounds();
+        //this will build RWG zones based on the the triangles (or rectangles depending on the mesh algo)
+        List<MeshZone> allZonesInit1 = currentPattern.transform(meshZones, polygonDomain == null ? globalDomain : polygonDomain);
+        ArrayList<MeshZone> allZones = new ArrayList<>();
+        for (MeshZone zone : allZonesInit1) {
+            zone.setDomainRelative(polygonDomain == null ? globalDomain : polygonDomain, globalDomain);
             allZones.add(zone);
         }
         Collections.sort(allZones, MeshZone.ZONES_COMPARATOR);
+        return allZones;
+    }
+
+
+    @Override
+    public DoubleToVector[] gpImpl(ProgressMonitor monitor) {
+        ArrayList<DoubleToVector> f = new ArrayList<DoubleToVector>();
+        List<MeshZone> allZones = mesh();
+        MomStructure currentStructure = getStructure();
+        Domain globalDomain = domain != null ? domain : currentStructure == null ? null : currentStructure.getDomain();
         int partCounter = 0;
-//        for (MeshZone zone : allZones) {
-//            AreaComponent.showDialog(zone.getGeometry().scale(400,400));
-//        }
+        GpPattern currentPattern = getPattern();
         for (MeshZone zone : allZones) {
-            DoubleToVector[] allGpFunctions = currentPattern.createFunctions(globalDomain, zone, monitor, currentStructure,log());
+            DoubleToVector[] allGpFunctions = currentPattern.createFunctions(globalDomain, zone, monitor, currentStructure, log());
             int goodCount = allGpFunctions.length;
             partCounter++;
             switch (getSymmetry()) {
@@ -121,10 +145,10 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
                         DoubleToVector fct = allGpFunctions[i];
                         if (fct == null) {
 
-                        }else if(fct.isZero()) {
-                        }else  {
+                        } else if (fct.isZero()) {
+                        } else {
                             if (invariance == null || fct.isInvariant(invariance)) {
-                                fct= fct.setProperty("Cell", partCounter).toDV();
+                                fct = fct.setProperty("Cell", partCounter).toDV();
                                 f.add(fct);
                             }
                         }
@@ -138,13 +162,13 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
                             if (zone.getDomain().xmax() <= globalDomain.getCenterX()) {
                                 DoubleToVector fct = fmotif;
                                 if (invariance == null || fct.isInvariant(invariance)) {
-                                    fct= fct.setProperty("Cell", partCounter).toDV();
+                                    fct = fct.setProperty("Cell", partCounter).toDV();
                                     f.add(fct);
                                 }
                             } else {
                                 DoubleToVector fct = xsymmetric(fmotif);
                                 if (invariance == null || fct.isInvariant(invariance)) {
-                                    fct= fct.setProperty("Cell", partCounter + " [Symmetric]").toDV();
+                                    fct = fct.setProperty("Cell", partCounter + " [Symmetric]").toDV();
                                     f.add(fct);
                                 }
                             }
@@ -159,13 +183,13 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
                             if (zone.getDomain().ymax() <= globalDomain.getCenterY()) {
                                 DoubleToVector fct = fmotif;
                                 if (invariance == null || fct.isInvariant(invariance)) {
-                                    fct= fct.setProperty("Cell", partCounter).toDV();
+                                    fct = fct.setProperty("Cell", partCounter).toDV();
                                     f.add(fct);
                                 }
                             } else {
                                 DoubleToVector fct = ysymmetric(fmotif);
                                 if (invariance == null || fct.isInvariant(invariance)) {
-                                    fct= fct.setProperty("Cell", partCounter + " [Symmetric]").toDV();
+                                    fct = fct.setProperty("Cell", partCounter + " [Symmetric]").toDV();
                                     f.add(fct);
                                 }
                             }
@@ -185,7 +209,7 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
                                     if (c2 != null) {
                                         DoubleToVector fct = DefaultDoubleToVector.add(c, c2);
                                         if (invariance == null || fct.isInvariant(invariance)) {
-                                            fct= fct.setProperty("Cell", partCounter).toDV();
+                                            fct = fct.setProperty("Cell", partCounter).toDV();
                                             f.add(fct);
                                         }
                                     }
@@ -193,7 +217,7 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
                                     DoubleToVector fct = allGpFunctions[i];
                                     if (fct != null) {
                                         if (invariance == null || fct.isInvariant(invariance)) {
-                                            fct= fct.setProperty("Cell", partCounter).toDV();
+                                            fct = fct.setProperty("Cell", partCounter).toDV();
                                             f.add(fct);
                                         }
                                     }
@@ -216,10 +240,10 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
                                         DoubleToVector fct = DefaultDoubleToVector.add(c, c2);
                                         if (invariance == null || fct.isInvariant(invariance)) {
 
-                                            fct= fct.setProperties(
+                                            fct = fct.setProperties(
                                                     NMaps.of(
                                                             "Cell", partCounter,
-                                                        "invarianceGp", (fct.isInvariant(Axis.X) ? "X" : "") + (fct.isInvariant(Axis.Y) ? "Y" : "")
+                                                            "invarianceGp", (fct.isInvariant(Axis.X) ? "X" : "") + (fct.isInvariant(Axis.Y) ? "Y" : "")
                                                     )
                                             ).toDV();
                                             f.add(fct);
@@ -229,7 +253,7 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
                                     DoubleToVector fct = allGpFunctions[i];
                                     if (fct != null) {
                                         if (invariance == null || fct.isInvariant(invariance)) {
-                                            fct= fct.setProperty("Cell", partCounter).toDV();
+                                            fct = fct.setProperty("Cell", partCounter).toDV();
                                             f.add(fct);
                                         }
                                     }
@@ -259,12 +283,11 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
         invalidateCache();
     }
 
-    
-    public GeometryList getPolygons(CircuitType circuit) {
+    public HGeometryList getPolygons(CircuitType circuit) {
         return getPolygons()[circuit.ordinal()];
     }
 
-    public GeometryList[] getPolygons() {
+    public HGeometryList[] getPolygons() {
         //gp();
         return polygons;
     }
@@ -272,11 +295,11 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
     @Override
     public void setStructure(MomStructure structure) {
         super.setStructure(structure);
-        for (GeometryList geometryList : polygons) {
-            if(geometryList instanceof FractalAreaGeometryList){
-                ((FractalAreaGeometryList) geometryList).setLevel(structure.getFractalScale());
+        for (HGeometryList geometryList : polygons) {
+            if (geometryList instanceof FractalAreaHGeometryList) {
+                ((FractalAreaHGeometryList) geometryList).setLevel(structure.getFractalScale());
             }
-            if(geometryList instanceof MomStructureAware){
+            if (geometryList instanceof MomStructureAware) {
                 ((MomStructureAware) geometryList).setStructure(structure);
             }
         }
@@ -284,9 +307,9 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
 
     @Override
     protected DoubleToVector[] rebuildCachedFunctions(ProgressMonitor monitor) {
-        for (GeometryList geometryList : polygons) {
-            if (geometryList instanceof FractalAreaGeometryList) {
-                ((FractalAreaGeometryList) geometryList).setLevel(getStructure().getFractalScale());
+        for (HGeometryList geometryList : polygons) {
+            if (geometryList instanceof FractalAreaHGeometryList) {
+                ((FractalAreaHGeometryList) geometryList).setLevel(getStructure().getFractalScale());
             }
         }
 //        if (meshAlgo instanceof MeshAlgoRect && pattern instanceof RectMeshAttachGpPattern) {
@@ -328,7 +351,6 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
         return h.build();
     }
 
-
     @Override
     public String toString() {
         if (name != null) {
@@ -369,7 +391,7 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
     @Override
     public TestFunctions clone() {
         GpAdaptiveMesh c = (GpAdaptiveMesh) super.clone();
-        c.polygons = new GeometryList[]{polygons[CircuitType.SERIAL.ordinal()].clone(), polygons[CircuitType.PARALLEL.ordinal()].clone()};
+        c.polygons = new HGeometryList[]{polygons[CircuitType.SERIAL.ordinal()].clone(), polygons[CircuitType.PARALLEL.ordinal()].clone()};
         c.meshAlgo = meshAlgo.clone();
         return c;
     }
@@ -383,7 +405,7 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
     }
 
     @Override
-    public Geometry[] getGeometries() {
+    public HGeometry[] getGeometries() {
         return polygons;
     }
 }

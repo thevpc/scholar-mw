@@ -11,27 +11,30 @@ import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 import java.util.Arrays;
 
-public class NTxHwModeImpedanceNTxSolver extends NTxHwNopNTxSolver {
+public class NTxHwModeImpedanceSolver extends NTxHwNopNTxSolver {
 
-    public NTxHwModeImpedanceNTxSolver(MoMStrNTxSimulationPlan moMStrSimulationQuery, String computeName, String solverName) {
+    public NTxHwModeImpedanceSolver(MoMStrNTxSimulationPlan moMStrSimulationQuery, String computeName, String solverName) {
         super(moMStrSimulationQuery, computeName, solverName,"mode-impedance");
     }
 
     @Override
-    protected void nop(MomStructure str) {
+    protected void nop() {
+        MomStructure str = momStructure();
         ModeFunctions modes = str.modeFunctions();
         ModeInfo[] modesArr = modes.getModes();
-        str.log().log(NMsg.ofC("------------------"));
-        str.log().log(NMsg.ofC("[%s] MODE FUNCTIONS (%s) : ", outputName(),modesArr.length));
-        str.log().log(NMsg.ofC("------------------"));
+        log(NMsg.ofC("------------------"));
+        log(NMsg.ofC("[%s] MODE FUNCTIONS (%s) : ", outputName(),modesArr.length));
+        log(NMsg.ofC("------------------"));
         for (int i = 0; i < modesArr.length; i++) {
             if(i>10){
                 break;
             }
             ModeInfo mode = modesArr[i];
-            str.log().log(NMsg.ofC("%s : %s", mode.mode, mode.impedance.impedanceValue()));
+            log(NMsg.ofC("%s : %s", mode.mode, mode.impedance.impedanceValue()));
         }
-        Plot.title(solverType()+"-"+outputName()).plot(Arrays.stream(str.modeFunctions().getModes()).map(x -> x.impedance.impedanceValue()).toArray(Complex[]::new));
+        if (plan().rendererContext().isAnimate()) {
+            Plot.cd(fullPath()).title(fullName()).plot(Arrays.stream(str.modeFunctions().getModes()).map(x -> x.impedance.impedanceValue()).toArray(Complex[]::new));
+        }
     }
 
 

@@ -10,22 +10,22 @@ import java.util.List;
  * Created by vpc on 1/23/14.
  */
 public class GeometryFactory extends AbstractFactory {
-    public static Point point(double x) {
-        return Point.create(x);
+    public static HPoint point(double x) {
+        return HPoint.create(x);
     }
 
-    public static Point point(double x, double y) {
-        return Point.create(x, y);
+    public static HPoint point(double x, double y) {
+        return HPoint.create(x, y);
     }
 
-    public static Point point(double x, double y, double z) {
-        return Point.create(x, y, z);
+    public static HPoint point(double x, double y, double z) {
+        return HPoint.create(x, y, z);
     }
 
-    public static GeometryList createPolygonList(Geometry... list) {
-        List<Geometry> list1 = new ArrayList<Geometry>();
+    public static HGeometryList createPolygonList(HGeometry... list) {
+        List<HGeometry> list1 = new ArrayList<HGeometry>();
         if (list != null) {
-            for (Geometry x : list) {
+            for (HGeometry x : list) {
                 if (x != null) {
                     list1.add(x);
                 }
@@ -33,42 +33,42 @@ public class GeometryFactory extends AbstractFactory {
         }
 
         if (list1.isEmpty()) {
-            return new DefaultGeometryList();
+            return new DefaultHGeometryList();
         }
         if (list1.size() == 1) {
-            if (list1.get(0) instanceof GeometryList) {
-                return (GeometryList) list1.get(0);
+            if (list1.get(0) instanceof HGeometryList) {
+                return (HGeometryList) list1.get(0);
             }
         }
-        DefaultGeometryList list2 = new DefaultGeometryList();
-        for (Geometry x : list1) {
+        DefaultHGeometryList list2 = new DefaultHGeometryList();
+        for (HGeometry x : list1) {
             list2.add(x);
         }
         return list2;
     }
 
-    public static GeometryList createPolygonList() {
-        return new DefaultGeometryList();
+    public static HGeometryList createPolygonList() {
+        return new DefaultHGeometryList();
     }
 
-    public static Polygon createPolygon(Domain domainXY) {
-        return new DefaultPolygon(domainXY);
+    public static HPolygon createPolygon(Domain domainXY) {
+        return new DefaultHPolygon(domainXY);
     }
 
-    public static Polygon createPolygon(Point... points) {
-        return new DefaultPolygon(points);
+    public static HPolygon createPolygon(HPoint... points) {
+        return new DefaultHPolygon(points);
     }
 
-    public static Polygon createPolygon(List<Point> points) {
-        return new DefaultPolygon(points);
+    public static HPolygon createPolygon(List<HPoint> points) {
+        return new DefaultHPolygon(points);
     }
 
 
-    public static RegularPolygon createRegularPolygon() {
-        return new RegularPolygon();
+    public static RegularHPolygon createRegularPolygon() {
+        return new RegularHPolygon();
     }
 
-    public static EllipticPolygon createEllipticPolygon() {
-        return new EllipticPolygon();
+    public static EllipticHPolygon createEllipticPolygon() {
+        return new EllipticHPolygon();
     }
 }

@@ -18,8 +18,8 @@ import net.thevpc.nuts.util.NMemoryMeter;
 import net.thevpc.nuts.util.NMemorySnapshot;
 import net.thevpc.scholar.hadrumaths.cache.PersistenceCacheBuilder;
 import net.thevpc.scholar.hadrumaths.expeval.ExpressionManagerFactory;
-import net.thevpc.scholar.hadrumaths.geom.Geometry;
-import net.thevpc.scholar.hadrumaths.geom.Point;
+import net.thevpc.scholar.hadrumaths.geom.HGeometry;
+import net.thevpc.scholar.hadrumaths.geom.HPoint;
 import net.thevpc.scholar.hadrumaths.scalarproducts.MatrixScalarProductCache;
 import net.thevpc.scholar.hadrumaths.scalarproducts.MemComplexScalarProductCache;
 import net.thevpc.scholar.hadrumaths.scalarproducts.MemDoubleScalarProductCache;
@@ -261,7 +261,7 @@ public final class Maths {
     public static final NTypeName<Vector<Complex>> $CVECTOR = new NTypeName(Vector.class.getName(), $COMPLEX);
     public static final NTypeName<Double> $DOUBLE = new NTypeName(Double.class.getName());
     public static final NTypeName<Boolean> $BOOLEAN = new NTypeName(Boolean.class.getName());
-    public static final NTypeName<Point> $POINT = new NTypeName(Point.class.getName());
+    public static final NTypeName<HPoint> $POINT = new NTypeName(HPoint.class.getName());
     public static final NTypeName<File> $FILE = new NTypeName(File.class.getName());
     //</editor-fold>
     public static final NTypeName<Integer> $INTEGER = new NTypeName(Integer.class.getName());
@@ -1819,7 +1819,7 @@ public final class Maths {
         return domain.toDD();
     }
 
-    public static Expr expr(Complex a, Geometry geometry) {
+    public static Expr expr(Complex a, HGeometry geometry) {
         if (geometry == null) {
             return a;
         }
@@ -3560,15 +3560,15 @@ public final class Maths {
         return d.sqrt();
     }
 
-    public static Expr normalize(Geometry a) {
+    public static Expr normalize(HGeometry a) {
         return normalize(expr(a));
     }
 
-    public static DoubleToDouble expr(Geometry domain) {
+    public static DoubleToDouble expr(HGeometry domain) {
         return expr(1, domain);
     }
 
-    public static DoubleToDouble expr(double value, Geometry geometry) {
+    public static DoubleToDouble expr(double value, HGeometry geometry) {
         if (geometry == null) {
             geometry = Domain.FULLXY.toGeometry();
         }

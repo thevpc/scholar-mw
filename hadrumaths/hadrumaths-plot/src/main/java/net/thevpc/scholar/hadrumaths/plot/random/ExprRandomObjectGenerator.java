@@ -3,12 +3,12 @@ package net.thevpc.scholar.hadrumaths.plot.random;
 import net.thevpc.nuts.reflect.NClassMultiMap;
 import net.thevpc.nuts.util.NDecision;
 import net.thevpc.nuts.util.NDecisionFilter;
-import net.thevpc.scholar.hadrumaths.geom.Polygon;
+import net.thevpc.scholar.hadrumaths.geom.HPolygon;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceExprType;
 import net.thevpc.scholar.hadrumaths.util.internal.CanProduceClass;
 import net.thevpc.scholar.hadrumaths.*;
-import net.thevpc.scholar.hadrumaths.geom.Geometry;
-import net.thevpc.scholar.hadrumaths.geom.Point;
+import net.thevpc.scholar.hadrumaths.geom.HGeometry;
+import net.thevpc.scholar.hadrumaths.geom.HPoint;
 import net.thevpc.scholar.hadrumaths.integration.DIntegralXY;
 import net.thevpc.scholar.hadrumaths.integration.DQuadIntegralXY;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
@@ -490,7 +490,7 @@ public class ExprRandomObjectGenerator extends RandomObjectGenerator<ExprRandomO
             }
         });
 
-        register(Geometry.class, new Generator() {
+        register(HGeometry.class, new Generator() {
                     @Override
                     public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
                         NClassMultiMap<Object, InstanceValidator> filter2 = NClassMultiMap.of(Object.class, InstanceValidator.class);
@@ -575,10 +575,10 @@ public class ExprRandomObjectGenerator extends RandomObjectGenerator<ExprRandomO
                     }
                 }
         );
-        register(Polygon.class, new Generator() {
+        register(HPolygon.class, new Generator() {
                     @Override
                     public Object generate(Class cls, Class asType, RandomObjectGeneratorContext context) {
-                        return GeometryFactory.createPolygon(new Point(0, 0), new Point(1, 0), new Point(1, 1));
+                        return GeometryFactory.createPolygon(new HPoint(0, 0), new HPoint(1, 0), new HPoint(1, 1));
                     }
                 }
         );

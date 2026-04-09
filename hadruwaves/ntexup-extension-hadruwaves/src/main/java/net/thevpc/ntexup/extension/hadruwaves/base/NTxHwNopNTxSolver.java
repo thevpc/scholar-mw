@@ -10,32 +10,25 @@ import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class NTxHwNopNTxSolver extends NTxSolverRunImpl {
+public abstract class NTxHwNopNTxSolver extends NTxHwNTxSolver {
 
-    public NTxHwNopNTxSolver(MoMStrNTxSimulationPlan moMStrSimulationQuery, String computeName, String solverName, String solverType) {
-        super(computeName, solverName, solverType,moMStrSimulationQuery);
-    }
-
-    @Override
-    public NElement toElement() {
-        return NElement.ofNamedUplet(outputName(),NElement.ofPair("solver",solverType()));
+    public NTxHwNopNTxSolver(MoMStrNTxSimulationPlan plan, String computeName, String solverName, String solverType) {
+        super(plan,computeName, solverName, solverType);
     }
 
     @Override
     public List<NTxSimulationResult> execute() {
-        MomStructure str = ((MoMStrNTxSimulationPlan) plan()).str;
         NChronometer chronometer = NChronometer.of();
-        str.log().log(NMsg.ofC("------------------"));
-        str.log().log(NMsg.ofC("[%s] %s : ", outputName(), solverName()));
-        str.log().log(NMsg.ofC("------------------"));
-        nop(str);
-        str.log().log(NMsg.ofC("[%s] %s Finished in %s : ", outputName(), solverName(),chronometer.stop()));
+        log(NMsg.ofC("------------------"));
+        log(NMsg.ofC("[%s] %s : ", outputName(), solverName()));
+        log(NMsg.ofC("------------------"));
+        nop();
+        log(NMsg.ofC("[%s] %s Finished in %s : ", outputName(), solverName(),chronometer.stop()));
         return Arrays.asList(
                 NTxSimulationResultFactory.createPlot2dCurve(outputName(), null, Arrays.asList(0.0))
         );
     }
 
-    protected abstract void nop(MomStructure str);
-
+    protected abstract void nop();
 
 }

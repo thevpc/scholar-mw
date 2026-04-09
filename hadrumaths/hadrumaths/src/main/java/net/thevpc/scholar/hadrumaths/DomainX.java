@@ -42,9 +42,9 @@ public final class DomainX extends Domain implements Cloneable {
             case 1: {
                 Expressions.domainIntersectHelper(xmin, xmax, other.xmin(), other.xmax(), minMax);
                 switch ((int) minMax[2]) {
-                    case 0:
-                        return this;
                     case 1:
+                        return this;
+                    case 2:
                         return other;
                 }
                 return Domain.ofBounds(minMax[0], minMax[1]);

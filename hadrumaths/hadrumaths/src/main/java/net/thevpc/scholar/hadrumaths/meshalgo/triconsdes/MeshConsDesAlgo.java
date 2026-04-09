@@ -1,8 +1,6 @@
 package net.thevpc.scholar.hadrumaths.meshalgo.triconsdes;
 
-
 import net.thevpc.nuts.elem.NElement;
-
 
 import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.geom.*;
@@ -10,18 +8,19 @@ import net.thevpc.scholar.hadrumaths.meshalgo.*;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
+
     private static final long serialVersionUID = 1L;
-    private MeshOptionsConsDes option = new MeshOptionsConsDes();
+    private MeshTriangulationOptions option = new MeshTriangulationOptions();
 
     public MeshConsDesAlgo(int maxTriangles) {
-        this(new MeshOptionsConsDes().setMaxTriangles(maxTriangles));
+        this(new MeshTriangulationOptions().setMaxCount(maxTriangles));
     }
 
-    public MeshConsDesAlgo(MeshOptionsConsDes options) {
+    public MeshConsDesAlgo(MeshTriangulationOptions options) {
         this();
         this.option = options;
     }
@@ -41,13 +40,13 @@ public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
         return sb.build();
     }
 
-    public Collection<MeshZone> meshPolygon(Geometry polygon) {
-        return meshPolygon(new Geometry[]{polygon});
+    public List<MeshZone> meshPolygon(HGeometry polygon) {
+        return meshPolygon(new HGeometry[]{polygon});
     }
 
-    public Collection<MeshZone> meshPolygon(Geometry[] polygons) {
+    public List<MeshZone> meshPolygon(HGeometry[] polygons) {
         AlgoInfo info = new AlgoInfo();
-        for (Geometry polygon : polygons) {
+        for (HGeometry polygon : polygons) {
             initPolygon(polygon, info);
         }
         int iteration = 1;
@@ -58,46 +57,48 @@ public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
 //            if(!option.isMeshAllowed(info.triangles, iteration)){
 //                break;
 //            }
-
             constructTriangles(info, iteration);
             iteration++;
         }
         ArrayList<MeshZone> ret = new ArrayList<MeshZone>();
-        for (Triangle triangle : info.triangles) {
+        for (HTriangle triangle : info.triangles) {
 
             MeshZone z = new MeshZone(triangle, MeshZoneShape.TRIANGLE, MeshZoneType.MAIN);
 
 //            MeshZone z = new MeshZone(triangle.toPolygon().toArea(), MeshZoneShape.TRIANGLE, MeshZoneType.MAIN);
-
             ret.add(z);
         }
         return ret;
     }
 
-    private void initPolygon(Geometry geom, AlgoInfo info) {
-        Polygon pg = geom.toPolygon();
-        ArrayList<Triangle> trianglesList = new ArrayList<Triangle>();
-        ArrayList<Point> points = new ArrayList<Point>();
-        List<Point> gpoints = pg.getPoints();
+    private void initPolygon_old(HGeometry geom, AlgoInfo info) {
+        HPolygon pg = geom.toPolygon();
+        ArrayList<HTriangle> trianglesList = new ArrayList<HTriangle>();
+        ArrayList<HPoint> points = new ArrayList<HPoint>();
+        List<HPoint> gpoints = pg.getPoints();
         points.addAll(gpoints);
         points.add(gpoints.get(0));
 
         for (int i = 0; i < points.size(); i++) {
             for (int j = i + 1; j < points.size(); j++) {
-                Point pi = points.get(i);
-                Point pj = points.get(j);
+                HPoint pi = points.get(i);
+                HPoint pj = points.get(j);
                 if (!pi.equals(pj)) {
-                    for (Point point : points) {
+                    for (HPoint point : points) {
                         if (!pi.equals(point) && !pj.equals(point)) {
 
                             int inter = 0;
-                            Point w = pi;
-                            Point x = pj;
-                            Point q = point;
+                            HPoint w = pi;
+                            HPoint x = pj;
+                            HPoint q = point;
                             if (!GeomUtils.getDomain(w, x, q).isEmpty()) {
-                                Triangle t = (new Triangle(w, x, q));
+                                HTriangle t = (new DefaultHTriangle(w, x, q));
+                                HPoint centroid = t.getBarycenter();
+                                if (!pg.contains(centroid.x, centroid.y)) {
+                                    continue;
+                                }
                                 if (!trianglesList.isEmpty()) {
-                                    for (Triangle aListeTriangle1 : trianglesList) {
+                                    for (HTriangle aListeTriangle1 : trianglesList) {
                                         if (t.intersection(aListeTriangle1)) {
                                             inter = 1;
                                         }
@@ -106,7 +107,7 @@ public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
                                 if ((inter == 0) && (trianglesList.size() < gpoints.size() - 2)) {
                                     trianglesList.add(t);
                                     for (int b = 0; b < trianglesList.size(); b++) {
-                                        Triangle v = trianglesList.get(b);
+                                        HTriangle v = trianglesList.get(b);
                                         for (int z = b + 1; z < trianglesList.size(); z++) {
                                             if (v.equals(trianglesList.get(z))) {
                                                 trianglesList.remove(z);
@@ -121,21 +122,97 @@ public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
                 }
             }
         }
-        for (Triangle aListeTriangle1 : trianglesList) {
+        for (HTriangle aListeTriangle1 : trianglesList) {
             info.triangles.add(aListeTriangle1);
         }
 
     }
 
+    private void initPolygon(HGeometry geom, AlgoInfo info) {
+        HPolygon pg = geom.toPolygon();
+        List<HPoint> ring = new ArrayList<>(pg.getPoints());
+
+        // Remove closing duplicate
+        if (ring.size() > 1 && ring.get(0).equals(ring.get(ring.size() - 1))) {
+            ring.remove(ring.size() - 1);
+        }
+
+        // Compute signed area to determine winding (positive = CCW)
+        double signedArea = 0;
+        int n0 = ring.size();
+        for (int i = 0; i < n0; i++) {
+            HPoint a = ring.get(i);
+            HPoint b = ring.get((i + 1) % n0);
+            signedArea += (a.x * b.y - b.x * a.y);
+        }
+        // Ensure CCW for ear-clipping
+        if (signedArea < 0) {
+            Collections.reverse(ring);
+        }
+
+        while (ring.size() >= 3) {
+            boolean earFound = false;
+            int n = ring.size();
+            for (int i = 0; i < n; i++) {
+                HPoint prev = ring.get((i - 1 + n) % n);
+                HPoint curr = ring.get(i);
+                HPoint next = ring.get((i + 1) % n);
+
+                // Convex and non-degenerate check BEFORE constructing Triangle
+                double cross = (curr.x - prev.x) * (next.y - prev.y)
+                        - (curr.y - prev.y) * (next.x - prev.x);
+                if (cross <= 0) {
+                    continue;  // concave or collinear
+                }
+                // Extra collinearity guard - skip zero-area ears
+                if (Math.abs(cross) < 1e-20) {
+                    continue;
+                }
+
+                HTriangle ear = new DefaultHTriangle(prev, curr, next);
+
+                // Centroid inside polygon
+                HPoint centroid = ear.getBarycenter();
+                if (!pg.contains(centroid.x, centroid.y)) {
+                    continue;
+                }
+
+                // No other vertex inside ear
+                boolean valid = true;
+                for (int j = 0; j < n; j++) {
+                    if (j == (i - 1 + n) % n || j == i || j == (i + 1) % n) {
+                        continue;
+                    }
+                    HPoint test = ring.get(j);
+                    if (ear.contains(test.x, test.y)) {
+                        valid = false;
+                        break;
+                    }
+                }
+                if (!valid) {
+                    continue;
+                }
+
+                info.triangles.add(ear);
+                ring.remove(i);
+                earFound = true;
+                break;
+            }
+            if (!earFound) {
+                break;
+            }
+        }
+    }
+
     private void destructTriangles(AlgoInfo info, int iteration) {
-        Triangle t = option.selectMeshTriangle(info.triangles, iteration);
+        HTriangle t = option.selectMeshTriangle(info.triangles, iteration);
         if (t != null) {
-            Point p = t.getBarycenter();
+            HPoint p = t.getBarycenter();
             //DPoint o = new DPoint();
             if (!(info.triangles.isEmpty())) {
                 for (int i = 0; i < info.triangles.size(); i++) {
-                    Point o = (info.triangles.get(i)).getCenter();
-                    if (t.isNeighberhood(info.triangles.get(i)) && (info.triangles.get(i).getRayonCercle() >= o.distance(p))) {
+                    HPoint o = (info.triangles.get(i)).getCenter();
+                    if (t.isNeighborhood(info.triangles.get(i)) && (info.triangles.get(i).getCircleRadius() >= o.distance(p))) {
                         info.listeDetruite.add(info.triangles.get(i));
                         info.triangles.remove(i);
                         i = i - 1;
@@ -148,33 +225,33 @@ public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
     }
 
     private void constructTriangles(AlgoInfo info, int iteration) {
-        Triangle selectedTriangle;
+        HTriangle selectedTriangle;
 
-        Point barycenter;
+        HPoint barycenter;
 //        DPoint h = new DPoint();
         if (!info.listeDetruite.isEmpty()) {
             selectedTriangle = info.selectedTriangle;
             barycenter = selectedTriangle.getBarycenter();
             //si on a un seul Triangle dans la liste des triangles detruites:
             if (info.listeDetruite.size() == 1) {
-                Triangle t1 = info.listeDetruite.get(0);
-                info.triangles.add(new Triangle(t1.p1, t1.p3, barycenter));
-                info.triangles.add(new Triangle(t1.p1, t1.p2, barycenter));
-                info.triangles.add(new Triangle(t1.p2, t1.p3, barycenter));
+                HTriangle t1 = info.listeDetruite.get(0);
+                info.triangles.add(new DefaultHTriangle(t1.p1(), t1.p3(), barycenter));
+                info.triangles.add(new DefaultHTriangle(t1.p1(), t1.p2(), barycenter));
+                info.triangles.add(new DefaultHTriangle(t1.p2(), t1.p3(), barycenter));
             }
             //si on a 4 triangles dans la liste des triangles detruites:
             if (info.listeDetruite.size() == 4) {
-                ArrayList<Point> n = new ArrayList<Point>();
-                n.add(0, selectedTriangle.p1);
-                n.add(1, selectedTriangle.p2);
-                n.add(2, selectedTriangle.p3);
-                for (Triangle aListeDetruite : info.listeDetruite) {
+                ArrayList<HPoint> n = new ArrayList<HPoint>();
+                n.add(0, selectedTriangle.p1());
+                n.add(1, selectedTriangle.p2());
+                n.add(2, selectedTriangle.p3());
+                for (HTriangle aListeDetruite : info.listeDetruite) {
                     if (!(selectedTriangle.equals(aListeDetruite))) {
-                        ArrayList<Point> pt = new ArrayList<Point>();
-                        ArrayList<Point> m = new ArrayList<Point>();
-                        m.add(0, aListeDetruite.p1);
-                        m.add(1, aListeDetruite.p2);
-                        m.add(2, aListeDetruite.p3);
+                        ArrayList<HPoint> pt = new ArrayList<HPoint>();
+                        ArrayList<HPoint> m = new ArrayList<HPoint>();
+                        m.add(0, aListeDetruite.p1());
+                        m.add(1, aListeDetruite.p2());
+                        m.add(2, aListeDetruite.p3());
                         for (int u = 0; u < m.size(); u++) {
                             int j = 0;
                             while ((j < n.size())) {
@@ -190,8 +267,8 @@ public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
 
                             }
                         }
-                        info.triangles.add(new Triangle(m.get(0), pt.get(0), barycenter));
-                        info.triangles.add(new Triangle(m.get(0), pt.get(1), barycenter));
+                        info.triangles.add(new DefaultHTriangle(m.get(0), pt.get(0), barycenter));
+                        info.triangles.add(new DefaultHTriangle(m.get(0), pt.get(1), barycenter));
                         for (int r = 0; r < m.size(); r++) {
                             m.remove(r);
                             r = r - 1;
@@ -205,25 +282,25 @@ public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
             }
             //si on a deux triangles dans la liste des triangles detruites:
             if (info.listeDetruite.size() == 2) {
-                ArrayList<Point> n = new ArrayList<Point>();
+                ArrayList<HPoint> n = new ArrayList<HPoint>();
 
-                n.add(0, selectedTriangle.p1);
-                n.add(1, selectedTriangle.p2);
-                n.add(2, selectedTriangle.p3);
-                for (Triangle aListeDetruite : info.listeDetruite) {
+                n.add(0, selectedTriangle.p1());
+                n.add(1, selectedTriangle.p2());
+                n.add(2, selectedTriangle.p3());
+                for (HTriangle aListeDetruite : info.listeDetruite) {
 //                    int k = 0;
                     if (!selectedTriangle.equals(aListeDetruite)) {
-                        ArrayList<Point> pt = new ArrayList<Point>();
-                        ArrayList<Point> m = new ArrayList<Point>();
-                        m.add(0, aListeDetruite.p1);
-                        m.add(1, aListeDetruite.p2);
-                        m.add(2, aListeDetruite.p3);
+                        ArrayList<HPoint> pt = new ArrayList<HPoint>();
+                        ArrayList<HPoint> m = new ArrayList<HPoint>();
+                        m.add(0, aListeDetruite.p1());
+                        m.add(1, aListeDetruite.p2());
+                        m.add(2, aListeDetruite.p3());
 
                         for (int u = 0; u < m.size(); u++) {
                             int j = 0;
                             while ((j < n.size())) {
-                                Point mu_point = m.get(u);
-                                Point nj_point = n.get(j);
+                                HPoint mu_point = m.get(u);
+                                HPoint nj_point = n.get(j);
                                 if (!mu_point.equals(nj_point)) {
                                     j = j + 1;
                                 } else {
@@ -235,10 +312,10 @@ public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
                                 }
                             }
                         }
-                        info.triangles.add(new Triangle(m.get(0), pt.get(0), barycenter));
-                        info.triangles.add(new Triangle(m.get(0), pt.get(1), barycenter));
-                        info.triangles.add(new Triangle(n.get(0), pt.get(0), barycenter));
-                        info.triangles.add(new Triangle(n.get(0), pt.get(1), barycenter));
+                        info.triangles.add(new DefaultHTriangle(m.get(0), pt.get(0), barycenter));
+                        info.triangles.add(new DefaultHTriangle(m.get(0), pt.get(1), barycenter));
+                        info.triangles.add(new DefaultHTriangle(n.get(0), pt.get(0), barycenter));
+                        info.triangles.add(new DefaultHTriangle(n.get(0), pt.get(1), barycenter));
                     }
 
                 }
@@ -246,22 +323,21 @@ public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
             }
 
             //si on a 3 triangles dans la liste des triangles detruites:
-
             if (info.listeDetruite.size() == 3) {
 //                int k = 0;
-                ArrayList<Point> res = new ArrayList<Point>();
-                for (Triangle tr : info.listeDetruite) {
-                    if (!selectedTriangle.equals(tr) && selectedTriangle.isNeighberhood(tr)) {
-                        ArrayList<Point> n = new ArrayList<Point>(selectedTriangle.getPoints());
-                        ArrayList<Point> m = new ArrayList<Point>(tr.getPoints());
-                        ArrayList<Point> pt = new ArrayList<Point>();
+                ArrayList<HPoint> res = new ArrayList<>();
+                for (HTriangle tr : info.listeDetruite) {
+                    if (!selectedTriangle.equals(tr) && selectedTriangle.isNeighborhood(tr)) {
+                        ArrayList<HPoint> n = new ArrayList<HPoint>(selectedTriangle.getPoints());
+                        ArrayList<HPoint> m = new ArrayList<HPoint>(tr.getPoints());
+                        ArrayList<HPoint> pt = new ArrayList<HPoint>();
                         GeomUtils.dispatch(selectedTriangle.getPoints(), tr.getPoints(), n, m, pt);
-                        info.triangles.add(new Triangle(m.get(0), pt.get(0), barycenter));
-                        info.triangles.add(new Triangle(m.get(0), pt.get(1), barycenter));
+                        info.triangles.add(new DefaultHTriangle(m.get(0), pt.get(0), barycenter));
+                        info.triangles.add(new DefaultHTriangle(m.get(0), pt.get(1), barycenter));
                         res.add(n.get(0));
                     }
                 }
-                info.triangles.add(new Triangle(res.get(0), res.get(1), barycenter));
+                info.triangles.add(new DefaultHTriangle(res.get(0), res.get(1), barycenter));
             }
         }
         for (int i = 0; i < info.listeDetruite.size(); i++) {
@@ -269,7 +345,7 @@ public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
             i = i - 1;
         }
         for (int i = 0; i < info.triangles.size(); i++) {
-            Triangle v = info.triangles.get(i);
+            HTriangle v = info.triangles.get(i);
             for (int j = i + 1; j < info.triangles.size(); j++) {
                 if (v.equals(info.triangles.get(j))) {
                     info.triangles.remove(j);
@@ -279,7 +355,7 @@ public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
         }
     }
 
-    public MeshOptionsConsDes getOption() {
+    public MeshTriangulationOptions getOption() {
         return option;
     }
 
@@ -287,7 +363,7 @@ public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void setOption(MeshOptionsConsDes op) {
+    public void setOption(MeshTriangulationOptions op) {
         this.option = op;
     }
 
@@ -300,13 +376,13 @@ public class MeshConsDesAlgo implements MeshAlgo, Cloneable {
     }
 
     private static class AlgoInfo {
-        private final List<Triangle> triangles = new ArrayList<Triangle>();
-        private final List<Triangle> listeDetruite = new ArrayList<Triangle>();
-        private Triangle selectedTriangle;
+
+        private final List<HTriangle> triangles = new ArrayList<HTriangle>();
+        private final List<HTriangle> listeDetruite = new ArrayList<HTriangle>();
+        private HTriangle selectedTriangle;
 
         public AlgoInfo() {
         }
     }
-
 
 }

@@ -11,7 +11,7 @@ import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.Expr;
-import net.thevpc.scholar.hadrumaths.geom.Geometry;
+import net.thevpc.scholar.hadrumaths.geom.HGeometry;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.mom.sources.PlanarSource;
@@ -26,9 +26,9 @@ public class ExprPlanarSource implements PlanarSource, Cloneable {
 
     private DoubleToVector fct;
     private Complex characteristicImpedance;
-    private Geometry geometry;
+    private HGeometry geometry;
 
-    public ExprPlanarSource(Expr fct, Complex characteristicImpedance,Geometry geometry) {
+    public ExprPlanarSource(Expr fct, Complex characteristicImpedance, HGeometry geometry) {
         this.fct = fct.toDV();
         if(geometry==null){
             geometry=fct.getDomain().toGeometry();
@@ -41,7 +41,7 @@ public class ExprPlanarSource implements PlanarSource, Cloneable {
     }
 
     @Override
-    public Geometry getGeometry() {
+    public HGeometry getGeometry() {
         return geometry;
     }
 

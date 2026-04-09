@@ -5,7 +5,7 @@ import net.thevpc.nuts.elem.NElement;
 
 
 import net.thevpc.nuts.elem.NObjectElementBuilder;
-import net.thevpc.scholar.hadrumaths.geom.Triangle;
+import net.thevpc.scholar.hadrumaths.geom.HTriangle;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.util.List;
@@ -17,10 +17,10 @@ public class FlipSegmentLengthPrecision implements FlipPrecision {
         longueur = lg;
     }
 
-    public boolean isPrecisionValide(List<Triangle> triangles) {
+    public boolean isPrecisionValide(List<HTriangle> triangles) {
         int k = 0;
-        for (Triangle triangle : triangles) {
-            if ((triangle.p1.distance(triangle.p2) > longueur) || (triangle.p1.distance(triangle.p3) > longueur) || (triangle.p3.distance(triangle.p2) > longueur)) {
+        for (HTriangle triangle : triangles) {
+            if (triangle.longestEdge() > longueur) {
                 k = 1;
             }
         }

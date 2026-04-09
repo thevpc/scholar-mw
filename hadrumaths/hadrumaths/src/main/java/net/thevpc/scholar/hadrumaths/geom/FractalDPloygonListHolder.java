@@ -11,12 +11,12 @@ import net.thevpc.scholar.hadrumaths.util.NElementHelper;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 12 juin 2007 11:37:42
  */
-public class FractalDPloygonListHolder extends DefaultGeometryList implements FractalAreaGeometryList, Cloneable {
-    private final FractalAreaGeometryList base;
-    private final Point translation;
+public class FractalDPloygonListHolder extends DefaultHGeometryList implements FractalAreaHGeometryList, Cloneable {
+    private final FractalAreaHGeometryList base;
+    private final HPoint translation;
 
 
-    public FractalDPloygonListHolder(FractalAreaGeometryList base, Domain domain, Point translation) {
+    public FractalDPloygonListHolder(FractalAreaHGeometryList base, Domain domain, HPoint translation) {
         super(domain);
         this.base = base;
         this.translation = translation;
@@ -39,8 +39,8 @@ public class FractalDPloygonListHolder extends DefaultGeometryList implements Fr
     }
 
     @Override
-    public FractalAreaGeometryList clone() {
-        return (FractalAreaGeometryList) super.clone();
+    public FractalAreaHGeometryList clone() {
+        return (FractalAreaHGeometryList) super.clone();
     }
 
     public int getLevel() {
@@ -50,16 +50,16 @@ public class FractalDPloygonListHolder extends DefaultGeometryList implements Fr
     public void setLevel(int level) {
         base.setLevel(level);
         clear();
-        for (Geometry polygon : base) {
-            add(polygon.translateGeometry(translation.x, translation.y));
+        for (HGeometry polygon : base) {
+            add(polygon.translate(translation.x, translation.y));
         }
     }
 
 
-    public Geometry[] getTransform() {
-        Geometry[] polygons = base.getTransform();
+    public HGeometry[] getTransform() {
+        HGeometry[] polygons = base.getTransform();
         for (int i = 0; i < polygons.length; i++) {
-            polygons[i] = polygons[i].translateGeometry(translation.x, translation.y);
+            polygons[i] = polygons[i].translate(translation.x, translation.y);
         }
         return polygons;
     }

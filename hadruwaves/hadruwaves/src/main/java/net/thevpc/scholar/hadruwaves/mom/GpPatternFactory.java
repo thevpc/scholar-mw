@@ -16,13 +16,6 @@ import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.SisiCoco
 public final class GpPatternFactory extends AbstractFactory{
     public final static GpPattern POLYEDRE = new PolyhedronPattern(true, true);
     public final static GpPattern ECHELON = new EchelonPattern();
-    public final static GpPattern RWG10 = new RWGPattern(10);
-    public final static GpPattern RWG20 = new RWGPattern(20);
-    public final static GpPattern RWG50 = new RWGPattern(50);
-    public final static GpPattern RWG = new RWGPattern();
-    public final static GpPattern RWG100 = new RWGPattern(100);
-    public final static GpPattern RWG200 = new RWGPattern(200);
-    public final static GpPattern RWG600 = new RWGPattern(600);
 
     public final static GpPattern ROOFTOP = new RooftopPattern(false, false);
     public final static GpPattern ROOFTOP_ATTACHXY = new RooftopPattern(true, true);

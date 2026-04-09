@@ -2,10 +2,7 @@ package net.thevpc.scholar.hadrumaths.meshalgo;
 
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.GeometryFactory;
-import net.thevpc.scholar.hadrumaths.geom.DefaultPolygon;
-import net.thevpc.scholar.hadrumaths.geom.Geometry;
-import net.thevpc.scholar.hadrumaths.geom.Point;
-import net.thevpc.scholar.hadrumaths.geom.Polygon;
+import net.thevpc.scholar.hadrumaths.geom.*;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -70,10 +67,10 @@ public class MeshZone {
     };
     private final MeshZoneShape shape;
     private boolean enabled = true;
-    private Geometry geometry;
+    private HGeometry geometry;
     private final MeshZoneType type;
     private Domain domain;
-    private Polygon polygon;
+    private HPolygon polygon;
     private Domain globalDomain;
     private Domain domain0;
     private Map<String, Object> userProperties;
@@ -84,7 +81,32 @@ public class MeshZone {
         setDomain(domain);
     }
 
-    public MeshZone(Geometry geometry, MeshZoneShape shape, MeshZoneType type) {
+    public MeshZone(HGeometry geometry) {
+        MeshZoneShape shape;
+        MeshZoneType type;
+        if(geometry.isTriangular()){
+            shape=MeshZoneShape.TRIANGLE;
+            type=MeshZoneType.MAIN;
+        }else if(geometry.isRectangular()){
+            shape=MeshZoneShape.RECTANGLE;
+            type=MeshZoneType.MAIN;
+        }else if(geometry.isPolygonal()){
+            shape=MeshZoneShape.POLYGON;
+            type=MeshZoneType.MAIN;
+        }else{
+            shape=MeshZoneShape.POLYGON;
+            type=MeshZoneType.MAIN;
+        }
+        this.type=type;
+        this.geometry=geometry;
+        this.shape=shape;
+        setProperty("MeshZoneType", type);
+        setProperty("MeshZoneShape", shape);
+        Domain r = geometry.getDomain();
+        setProperty("Bounds", "[x=" + r.xmin() + ",y=" + r.ymin() + ",w=" + r.xwidth() + ",h=" + r.ywidth() + "]");
+    }
+
+    public MeshZone(HGeometry geometry, MeshZoneShape shape, MeshZoneType type) {
         this.geometry = geometry;
         this.shape = shape;
         this.type = type;
@@ -176,7 +198,7 @@ public class MeshZone {
         }
     }
 
-    public Polygon getPolygon() {
+    public HPolygon getPolygon() {
         return polygon;
     }
 
@@ -209,8 +231,8 @@ public class MeshZone {
             double dymin = (y0 - domain0.getYMin()) / domain0.getYwidth() * globalDomain.ywidth() + globalDomain.ymin();
             double dxmax = (x1 - domain0.getXMin()) / domain0.getXwidth() * globalDomain.xwidth() + globalDomain.xmin();
             double dymax = (y1 - domain0.getYMin()) / domain0.getYwidth() * globalDomain.ywidth() + globalDomain.ymin();
-            Polygon p = geometry.toPolygon();
-            List<Point> points = p.getPoints();
+            HPolygon p = geometry.toPolygon();
+            List<HPoint> points = p.getPoints();
             double[] x = new double[]{points.get(0).x,points.get(1).x,points.get(2).x};
             double[] y = new double[]{points.get(0).y,points.get(1).y,points.get(2).y};
             for (int i = 0; i < x.length; i++) {
@@ -232,15 +254,15 @@ public class MeshZone {
         scale = !this.globalDomain.equals(domain0);
     }
 
-    public Geometry getGeometry() {
+    public HGeometry getGeometry() {
         return geometry;
     }
 
-    public Point toEffectivePoint(Point p) {
+    public HPoint toEffectivePoint(HPoint p) {
         if (!scale) {
             return p;
         }
-        return Point.create(toEffectiveX(p.x), toEffectiveY(p.y));
+        return HPoint.create(toEffectiveX(p.x), toEffectiveY(p.y));
     }
 
     public double toEffectiveX(double x) {

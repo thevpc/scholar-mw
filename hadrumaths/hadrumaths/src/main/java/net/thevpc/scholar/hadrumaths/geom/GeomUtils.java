@@ -21,14 +21,29 @@ public final class GeomUtils {
     private GeomUtils() {
     }
 
-    public static Set<Point> roundSet(List<Point> a, double epsilon) {
+    public static boolean isValidTriangle(HPoint p1, HPoint p2, HPoint p3) {
+        if (p1.equals(p2) || p1.equals(p3) || p2.equals(p3)) {
+            return false;
+        }
+        Domain domain = GeomUtils.getDomain(p1, p2, p3);
+        if (domain.isEmpty()) {
+            return false;
+        }
+        double a = new DefaultHTriangle(p1, p2, p3).area();
+        if(a==0){
+            return false;
+        }
+        return true;
+    }
+
+    public static Set<HPoint> roundSet(List<HPoint> a, double epsilon) {
         HashSet<Integer> ignored = new HashSet<Integer>();
-        Set<Point> p = new HashSet<Point>();
+        Set<HPoint> p = new HashSet<HPoint>();
         for (int i = 0; i < a.size(); i++) {
             if (!ignored.contains(i)) {
-                Point x = a.get(i);
+                HPoint x = a.get(i);
                 for (int j = i + 1; j < a.size(); j++) {
-                    Point r = a.get(j);
+                    HPoint r = a.get(j);
                     if (r.roundEquals(x, epsilon)) {
                         ignored.add(j);
                     }
@@ -39,12 +54,12 @@ public final class GeomUtils {
         return p;
     }
 
-    public static List<Point> roundIntersect(List<Point> a, List<Point> b, double epsilon) {
-        List<Point> a2 = new ArrayList<Point>(a);
-        List<Point> b2 = new ArrayList<Point>();
-        for (Point p1 : b) {
-            Point p2 = null;
-            for (Point r : a) {
+    public static List<HPoint> roundIntersect(List<HPoint> a, List<HPoint> b, double epsilon) {
+        List<HPoint> a2 = new ArrayList<HPoint>(a);
+        List<HPoint> b2 = new ArrayList<HPoint>();
+        for (HPoint p1 : b) {
+            HPoint p2 = null;
+            for (HPoint r : a) {
                 if (r.roundEquals(p1, epsilon)) {
                     p2 = r;
                     break;
@@ -60,10 +75,10 @@ public final class GeomUtils {
         return a2;
     }
 
-    public static Point closest(Point a, List<Point> all) {
+    public static HPoint closest(HPoint a, List<HPoint> all) {
         double bestDistance = -1;
-        Point bestPoint = null;
-        for (Point tt : all) {
+        HPoint bestPoint = null;
+        for (HPoint tt : all) {
             double currDistance = tt.distance(a);
             if (bestDistance < 0 || currDistance < bestDistance) {
                 bestDistance = currDistance;
@@ -73,11 +88,11 @@ public final class GeomUtils {
         return bestPoint;
     }
 
-    public static Triangle biggest(List<Triangle> all) {
+    public static HTriangle longestEdge(List<HTriangle> all) {
         double d = -1;
-        Triangle t = null;
-        for (Triangle triangle : all) {
-            double dd = triangle.getSurface();
+        HTriangle t = null;
+        for (HTriangle triangle : all) {
+            double dd = triangle.longestEdge();
             if (dd > d) {
                 d = dd;
                 t = triangle;
@@ -86,11 +101,24 @@ public final class GeomUtils {
         return t;
     }
 
-    public static Triangle smallest(List<Triangle> all) {
+    public static HTriangle biggestArea(List<HTriangle> all) {
         double d = -1;
-        Triangle t = null;
-        for (Triangle triangle : all) {
-            double dd = triangle.getSurface();
+        HTriangle t = null;
+        for (HTriangle triangle : all) {
+            double dd = triangle.area();
+            if (dd > d) {
+                d = dd;
+                t = triangle;
+            }
+        }
+        return t;
+    }
+
+    public static HTriangle smallestArea(List<HTriangle> all) {
+        double d = -1;
+        HTriangle t = null;
+        for (HTriangle triangle : all) {
+            double dd = triangle.area();
             if (d == -1 || dd < d) {
                 d = dd;
                 t = triangle;
@@ -99,11 +127,11 @@ public final class GeomUtils {
         return t;
     }
 
-    public static Triangle biggest(Triangle[] all) {
+    public static HTriangle biggestArea(HTriangle[] all) {
         double d = -1;
-        Triangle t = null;
-        for (Triangle triangle : all) {
-            double dd = triangle.getSurface();
+        HTriangle t = null;
+        for (HTriangle triangle : all) {
+            double dd = triangle.area();
             if (dd > d) {
                 d = dd;
                 t = triangle;
@@ -112,11 +140,11 @@ public final class GeomUtils {
         return t;
     }
 
-    public static Triangle smallest(Triangle[] all) {
+    public static HTriangle smallestArea(HTriangle[] all) {
         double d = -1;
-        Triangle t = null;
-        for (Triangle triangle : all) {
-            double dd = triangle.getSurface();
+        HTriangle t = null;
+        for (HTriangle triangle : all) {
+            double dd = triangle.area();
             if (d == -1 || dd < d) {
                 d = dd;
                 t = triangle;
@@ -134,11 +162,11 @@ public final class GeomUtils {
 //        return isTriangle(triange1);
 //    }
 
-    public static boolean is4Edges(Polygon polygon) {
+    public static boolean is4Edges(HPolygon polygon) {
         if (!polygon.isSingular()) {
             return false;
         }
-        List<Point> points = polygon.getPoints();
+        List<HPoint> points = polygon.getPoints();
         return points.size() == 4 || (points.size() == 5 &&
                 points.get(0).equals(points.get(4))
         );
@@ -152,7 +180,7 @@ public final class GeomUtils {
 //        return a.toArea().isRectangular();
 //    }
 
-    public static boolean approxEqualAreaPoints(Point p1, Point p2) {
+    public static boolean approxEqualAreaPoints(HPoint p1, HPoint p2) {
         return p1.distance(p2) < 1E-4;
     }
 
@@ -291,7 +319,7 @@ public final class GeomUtils {
         Path2D.Double d = new Path2D.Double();
         d.setWindingRule(pi.getWindingRule());
         double[] coords = new double[6];
-        List<Point> visited = new ArrayList<Point>();
+        List<HPoint> visited = new ArrayList<HPoint>();
         class Curve {
             final int type;
             final double[] values;
@@ -307,13 +335,13 @@ public final class GeomUtils {
             int type = pi.currentSegment(coords);
             switch (type) {
                 case PathIterator.SEG_MOVETO: {
-                    Point p = Point.create((coords[0]), (coords[1]));
+                    HPoint p = HPoint.create((coords[0]), (coords[1]));
                     visited.add(p);
                     curves.add(new Curve(type, (coords[0]), (coords[1])));
                     break;
                 }
                 case PathIterator.SEG_LINETO: {
-                    Point p = Point.create((coords[0]), (coords[1]));
+                    HPoint p = HPoint.create((coords[0]), (coords[1]));
                     if (visited.get(visited.size() - 1).equals(p)) {
                     } else if (visited.size() > 1 && visited.get(visited.size() - 2).equals(p)) {
                         visited.remove(visited.size() - 1);
@@ -361,16 +389,16 @@ public final class GeomUtils {
         return d;
     }
 
-    public static List<Point> toPoints(Area a) {
+    public static List<HPoint> toPoints(Area a) {
         PathIterator pi = a.getPathIterator(null);
-        ArrayList<Point> points = new ArrayList<Point>();
+        ArrayList<HPoint> points = new ArrayList<HPoint>();
         double[] coords = new double[23];
         boolean first = true;
         while (!pi.isDone()) {
             switch (pi.currentSegment(coords)) {
                 case PathIterator.SEG_MOVETO:
                     if (first) {
-                        Point p = Point.create(coords[0], coords[1]);
+                        HPoint p = HPoint.create(coords[0], coords[1]);
                         if (!found(p, points)) {
                             points.add(p);
                         }
@@ -380,7 +408,7 @@ public final class GeomUtils {
                     }
                     break;
                 case PathIterator.SEG_LINETO:
-                    Point p = Point.create(coords[0], coords[1]);
+                    HPoint p = HPoint.create(coords[0], coords[1]);
                     if (!found(p, points)) {
                         points.add(p);
                     }
@@ -397,12 +425,12 @@ public final class GeomUtils {
         return points;
     }
 
-    public static boolean found(Point p, Collection<Point> coll) {
+    public static boolean found(HPoint p, Collection<HPoint> coll) {
         return found(p, coll, 1E-4);
     }
 
-    public static boolean found(Point p, Collection<Point> coll, double precision) {
-        for (Point dPoint : coll) {
+    public static boolean found(HPoint p, Collection<HPoint> coll, double precision) {
+        for (HPoint dPoint : coll) {
             if (p.distance(dPoint) <= precision) {
                 return true;
             }
@@ -410,10 +438,10 @@ public final class GeomUtils {
         return false;
     }
 
-    public static void dispatch(List<Point> points1, List<Point> points2, List<Point> left, List<Point> right, List<Point> intersection) {
-        Set<Point> sleft = new HashSet<Point>();
-        Set<Point> sright = new HashSet<Point>();
-        Set<Point> sintersection = new HashSet<Point>();
+    public static void dispatch(List<HPoint> points1, List<HPoint> points2, List<HPoint> left, List<HPoint> right, List<HPoint> intersection) {
+        Set<HPoint> sleft = new HashSet<HPoint>();
+        Set<HPoint> sright = new HashSet<HPoint>();
+        Set<HPoint> sintersection = new HashSet<HPoint>();
         dispatch(points1, points2, sleft, sright, sintersection);
 
         left.clear();
@@ -434,7 +462,7 @@ public final class GeomUtils {
      * @param intersection items in points1not found in points2
      * @return
      */
-    public static void dispatch(List<Point> points1, List<Point> points2, Set<Point> left, Set<Point> right, Set<Point> intersection) {
+    public static void dispatch(List<HPoint> points1, List<HPoint> points2, Set<HPoint> left, Set<HPoint> right, Set<HPoint> intersection) {
         left.clear();
         left.addAll(points1);
 
@@ -448,7 +476,7 @@ public final class GeomUtils {
         right.removeAll(intersection);
     }
 
-    public static Domain getDomain(Point... points) {
+    public static Domain getDomain(HPoint... points) {
         double minx = Double.NaN;
         double maxx = Double.NaN;
         double miny = Double.NaN;

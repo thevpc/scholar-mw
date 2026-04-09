@@ -96,3 +96,4 @@
 /hadruwaves/ntexup-extension-openems/docker/openems-docker/simulations/port1_V
 *.kate-swp
 /hadruwaves/ntexup-extension-openems/docker/openems-docker/simulations/test-20*.xml
+/hadruwaves/target/

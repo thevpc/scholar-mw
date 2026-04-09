@@ -5,9 +5,9 @@ import net.thevpc.ntexup.extension.hadruwaves.base.NTxHwComplexNTxSolver;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
-public class NTxHwS11NTxSolver extends NTxHwComplexNTxSolver {
+public class NTxHwS11Solver extends NTxHwComplexNTxSolver {
 
-    public NTxHwS11NTxSolver(MoMStrNTxSimulationPlan moMStrSimulationQuery, String computeName, String solverName) {
+    public NTxHwS11Solver(MoMStrNTxSimulationPlan moMStrSimulationQuery, String computeName, String solverName) {
         super(moMStrSimulationQuery,computeName, solverName,"s-parameters");
     }
 

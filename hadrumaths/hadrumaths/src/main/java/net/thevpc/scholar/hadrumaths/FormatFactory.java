@@ -7,7 +7,7 @@ import net.thevpc.nuts.util.NLRUMap;
 import net.thevpc.scholar.hadrumaths.format.*;
 import net.thevpc.scholar.hadrumaths.format.impl.*;
 import net.thevpc.scholar.hadrumaths.format.params.*;
-import net.thevpc.scholar.hadrumaths.geom.Polygon;
+import net.thevpc.scholar.hadrumaths.geom.HPolygon;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
 import net.thevpc.scholar.hadrumaths.symbolic.conv.DefaultDoubleToComplex;
 import net.thevpc.scholar.hadrumaths.symbolic.conv.Imag;
@@ -116,7 +116,7 @@ public class FormatFactory extends AbstractFactory {
         register(ZZ.class, new ZZObjectFormat());
         register(Shape2D.class, new Shape2DObjectFormat());
         register(CDiscrete.class, new CDiscreteObjectFormat());
-        register(Polygon.class, new PolygonObjectFormat());
+        register(HPolygon.class, new PolygonObjectFormat());
         register(Polyhedron.class, new PolyhedronObjectFormat());
         register(String.class, new StringObjectFormat());
         register(DDzIntegralXY.class, new DDzIntegralXYObjectFormat());
@@ -137,6 +137,8 @@ public class FormatFactory extends AbstractFactory {
             }
             context.append("}");
         });
+        register(RWG.class, new RWGFormat());
+
 //        register(AbstractComparatorExpr.class, new ObjectFormat() {
 //            @Override
 //            public String format(Object o, ObjectFormatParamSet format) {

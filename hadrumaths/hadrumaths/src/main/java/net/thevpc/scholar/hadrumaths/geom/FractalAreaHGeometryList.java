@@ -6,15 +6,15 @@ import java.io.Serializable;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 12 juin 2007 10:43:22
  */
-public interface FractalAreaGeometryList extends GeometryList, Cloneable, Serializable {
+public interface FractalAreaHGeometryList extends HGeometryList, Cloneable, Serializable {
 
     int getLevel();
 
     void setLevel(int level);
 
 
-    Geometry[] getTransform();
+    HGeometry[] getTransform();
 
     @Override
-    FractalAreaGeometryList clone();
+    FractalAreaHGeometryList clone();
 }

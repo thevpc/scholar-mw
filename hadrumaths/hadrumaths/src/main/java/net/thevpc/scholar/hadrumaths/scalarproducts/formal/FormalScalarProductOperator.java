@@ -7,7 +7,6 @@ import net.thevpc.nuts.elem.NElement;
 
 
 import net.thevpc.nuts.elem.NObjectElementBuilder;
-import net.thevpc.nuts.reflect.NReflect;
 import net.thevpc.nuts.reflect.NReflectUtils;
 import net.thevpc.nuts.reflect.NTypeNamePlatformDomain;
 import net.thevpc.nuts.time.NChronometer;
@@ -48,7 +47,7 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
     private final Set<ClassClassKey> noHelperCache = new HashSet<ClassClassKey>();
     private final ScalarProductOperator fallback;
     private FormalScalarProductHelper fallbackHelper;
-    private Set<Class> excludedExprHierarchy = new HashSet<>(Arrays.asList(
+    private final Set<Class> excludedExprHierarchy = new HashSet<>(Arrays.asList(
             DoubleToDoubleDefaults.DoubleToDoubleSimple1.class,
             DoubleToDoubleDefaults.DoubleToDoubleSimple2.class,
             DoubleToDoubleDefaults.DoubleToDoubleSimple3.class,
@@ -70,7 +69,7 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
     //
 //    public FormalScalarProductHelper getScalarProduct(Class f1Class, Class f2Class) {
 //    }
-    private Map<Class, Class[]> cachedExprHierarchy = new HashMap<>();
+    private final Map<Class, Class[]> cachedExprHierarchy = new HashMap<>();
 
     public FormalScalarProductOperator(boolean hermitian, ScalarProductOperator fallback) {
         super(hermitian);
@@ -93,46 +92,47 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
         EXPAND_SIMPLIFY_RULE_SET.addRule(ToDDxyLinearRule.INSTANCE);
         expressionRewriter.add(EXPAND_SIMPLIFY_RULE_SET);
 
-        register(CosXCosY.class, CosXCosY.class, new CosCosVsCosCosScalarProduct(), 2);
-        register(CosXCosY.class, CosXPlusY.class, new CosCosVsCosXPlusYProduct(), 2);
-        register(CosXPlusY.class, CosXPlusY.class, new CosXPlusYVsCosXPlusYProduct(), 2);
-        register(CosXPlusY.class, DoubleValue.class, new CosXPlusYVsCstProduct(), 2);
-        register(CosXPlusY.class, Linear.class, new CosXPlusYVsLinearProduct(), 2);
+        register(CosXCosY.class, CosXCosY.class, CosCosVsCosCosScalarProduct.INSTANCE, 2);
+        register(CosXCosY.class, CosXPlusY.class, CosCosVsCosXPlusYProduct.INSTANCE, 2);
+        register(CosXPlusY.class, CosXPlusY.class, CosXPlusYVsCosXPlusYProduct.INSTANCE, 2);
+        register(CosXPlusY.class, DoubleValue.class, CosXPlusYVsCstProduct.INSTANCE, 2);
+        register(CosXPlusY.class, Linear.class, CosXPlusYVsLinearProduct.INSTANCE, 2);
         register(CosXCosY.class, CosXCosY.class, Domain2To1ScalarProduct.INSTANCE, 1);
 
-        register(CosXCosY.class, DoubleValue.class, new CosCosVsDoubleXYScalarProduct(), 2);
+        register(CosXCosY.class, DoubleValue.class, CosCosVsDoubleXYScalarProduct.INSTANCE, 2);
         register(CosXCosY.class, DoubleValue.class, Domain2To1ScalarProduct.INSTANCE, 1);
 
-        register(CosXCosY.class, Linear.class, new CosCosVsLinearScalarProduct(), 2);
+        register(CosXCosY.class, Linear.class, CosCosVsLinearScalarProduct.INSTANCE, 2);
         register(CosXCosY.class, Linear.class, Domain2To1ScalarProduct.INSTANCE, 1);
 
-        register(Linear.class, Linear.class, new LinearVsLinearScalarProduct(), 2);
+        register(Linear.class, Linear.class, LinearVsLinearScalarProduct.INSTANCE, 2);
         register(Linear.class, Linear.class, Domain2To1ScalarProduct.INSTANCE, 1);
 
-        register(Linear.class, DoubleValue.class, new LinearVsCstScalarProduct(), 2);
+        register(Linear.class, DoubleValue.class, LinearVsCstScalarProduct.INSTANCE, 2);
         register(Linear.class, DoubleValue.class, Domain2To1ScalarProduct.INSTANCE, 1);
 
-        register(DoubleValue.class, DoubleValue.class, new DoubleDoubleValueVsDoubleDoubleValueScalarProduct(), 1, 2, 3);
+        register(DoubleValue.class, DoubleValue.class, DoubleDoubleValueVsDoubleDoubleValueScalarProduct.INSTANCE, 1, 2, 3);
 
-        register(CosXCosY.class, CosXCosY.class, new CosCosVsCosCosScalarProduct(), 2);
+        register(CosXCosY.class, CosXCosY.class, CosCosVsCosCosScalarProduct.INSTANCE, 2);
+        register(CosXCosY.class, CosXCosY.class, Domain2To1ScalarProduct.INSTANCE, 1);
+        register(DoubleToDouble.class, RWG.class, RWGVsAnyScalarProduct.INSTANCE, 1,2);
+
+        register(CosXCosY.class, CosXCosY.class, CosCosVsCosCosScalarProduct.INSTANCE, 2);
         register(CosXCosY.class, CosXCosY.class, Domain2To1ScalarProduct.INSTANCE, 1);
 
-        register(CosXCosY.class, CosXCosY.class, new CosCosVsCosCosScalarProduct(), 2);
+        register(CosXCosY.class, CosXCosY.class, CosCosVsCosCosScalarProduct.INSTANCE, 2);
         register(CosXCosY.class, CosXCosY.class, Domain2To1ScalarProduct.INSTANCE, 1);
 
-        register(CosXCosY.class, CosXCosY.class, new CosCosVsCosCosScalarProduct(), 2);
+        register(CosXCosY.class, CosXCosY.class, CosCosVsCosCosScalarProduct.INSTANCE, 2);
         register(CosXCosY.class, CosXCosY.class, Domain2To1ScalarProduct.INSTANCE, 1);
 
-        register(CosXCosY.class, CosXCosY.class, new CosCosVsCosCosScalarProduct(), 2);
-        register(CosXCosY.class, CosXCosY.class, Domain2To1ScalarProduct.INSTANCE, 1);
-
-        register(CosXCosY.class, UFunction.class, new CosCosVsUScalarProduct(), 2);
+        register(CosXCosY.class, UFunction.class, CosCosVsUScalarProduct.INSTANCE, 2);
         register(CosXCosY.class, UFunction.class, Domain2To1ScalarProduct.INSTANCE, 1);
 
-        register(DDiscrete.class, Expr.class, new DDiscreteVsAnyScalarProduct(), 1, 2, 3);
+        register(DDiscrete.class, Expr.class, DDiscreteVsAnyScalarProduct.INSTANCE, 1, 2, 3);
 
 //        register(DDxyDisc DDiscreteVsAnyScalarProduct DDxyDiscreteVsAnyScalarProduct());
-        register(Plus.class, Expr.class, new PlusVsAnyScalarProduct(), 2);
+        register(Plus.class, Expr.class, PlusVsAnyScalarProduct.INSTANCE, 2);
         register(Plus.class, Expr.class, Domain2To1ScalarProduct.INSTANCE, 1);
     }
 
@@ -211,8 +211,6 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
         DoubleToDouble[] opts = toCanonicalScalarProductPair(f1, f2);
         DoubleToDouble f1opt = opts[0];
         DoubleToDouble f2opt = opts[1];
-//        DoubleToDouble f1opt= expressionRewriter.rewriteOrSame(f1).toDD();
-//        DoubleToDouble f2opt= expressionRewriter.rewriteOrSame(f2).toDD();
 
         Domain inter = f1opt.getDomain().intersect(f2opt.getDomain()).intersect(domain);
         if (f1opt.isZero() || f2opt.isZero()) {
@@ -290,7 +288,7 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
 //        if (cache != null ? !cache.equals(that.cache) : that.cache != null) return false;
 //        if (noHelperCache != null ? !noHelperCache.equals(that.noHelperCache) : that.noHelperCache != null)
 //            return false;
-        if (fallback != null ? !fallback.equals(that.fallback) : that.fallback != null) return false;
+        if (!Objects.equals(fallback, that.fallback)) return false;
 //        if (fallbackHelper != null ? !fallbackHelper.equals(that.fallbackHelper) : that.fallbackHelper != null)
 //            return false;
         return expressionRewriter != null ? expressionRewriter.equals(that.expressionRewriter) : that.expressionRewriter == null;
@@ -321,7 +319,7 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
         List<Expr> foundMul = new ArrayList<>();
         Expr e1 = null;
         Expr e2 = null;
-        for (Expr expr : ((expressionToExpand instanceof Mul) ? expressionToExpand.getChildren() : Arrays.asList(expressionToExpand))) {
+        for (Expr expr : ((expressionToExpand instanceof Mul) ? expressionToExpand.getChildren() : Collections.singletonList(expressionToExpand))) {
             if (expr.isNarrow(ExprType.COMPLEX_EXPR)) {
                 cst.add(expr);
             } else {
@@ -392,7 +390,7 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
 
         }
 
-        if (getScalarProduct0(e1.getClass(), e2.getClass(), domainDimension) != null) {
+        if (getScalarProduct0(e1.getClass(), e2.getClass(), domainDimension) != null || fallbackHelper != null) {
             return new DoubleToDouble[]{e1.toDD(), e2.toDD()};
         }
         throw new IllegalArgumentException("Unsupported expansion " + expressionToExpand.getClass() + " :: " + expressionToExpand);
@@ -452,7 +450,7 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
 
             OperatorToFormalScalarProductHelper that = (OperatorToFormalScalarProductHelper) o;
 
-            return fallback != null ? fallback.equals(that.fallback) : that.fallback == null;
+            return Objects.equals(fallback, that.fallback);
         }
     }
 

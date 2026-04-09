@@ -138,7 +138,7 @@ public class HSocketClient implements HadrumathsClient {
             connection.out().writeUTF(fsId);
             connection.out().writeByte(FSConstants.Command.PING.ordinal());
             connection.consumeResponseHeader();
-            ret = c.stop().getDurationMs();
+            ret = c.stop().durationMs();
         } catch (IOException e) {
             connection.invalidate();
         }

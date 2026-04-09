@@ -16,13 +16,14 @@ import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import net.thevpc.nuts.text.NTextFormat;
 
-public abstract class NTxHwComplexNTxSolver extends NTxSolverRunImpl {
+public abstract class NTxHwComplexNTxSolver extends NTxHwNTxSolver {
     private NTxSweep sweep;
     private NTxSweepTarget sweepParam;
 
     public NTxHwComplexNTxSolver(MoMStrNTxSimulationPlan plan, String computeName, String solverName, String solverType) {
-        super(computeName, solverName, solverType, plan);
+        super(plan,computeName, solverName, solverType);
     }
 
     @Override
@@ -40,8 +41,7 @@ public abstract class NTxHwComplexNTxSolver extends NTxSolverRunImpl {
 
     @Override
     public NElement toElement() {
-        NUpletElementBuilder b = NElement.ofUpletBuilder(outputName());
-        b.add(NElement.ofPair("solver", solverType()));
+        NUpletElementBuilder b = super.toElement().asUplet().get().builder();
         if (sweepParam != null) {
             b.add(NElement.ofPair("param", sweepParam.name()));
             b.add(NElement.ofPair("sweep", sweep.toElement()));
@@ -58,18 +58,21 @@ public abstract class NTxHwComplexNTxSolver extends NTxSolverRunImpl {
         if (sweep != null) {
             switch (sweepParam) {
                 case FREQ: {
+                    NTextFormat<Number> ff = NTextFormat.ofFrequency("");
                     str.log().log(NMsg.ofC("------------------"));
                     str.log().log(NMsg.ofC("[%s] %s (%s over %s): ", outputName(), solverName(), sweepParam, sweep));
                     str.log().log(NMsg.ofC("------------------"));
                     double[] dv = sweep.doubleValues();
                     for (double fr : dv) {
                         str.setFrequency(fr);
+                        str.log().log(NMsg.ofC("use freq %s",ff.toText(fr)));
                         Complex c = evalComplex(str);
                         complexValues.add(NDoubleComplex.of(c.getReal(), c.getImag()).numberValue());
                     }
                     x = Arrays.stream(dv).boxed().toArray(Number[]::new);
                     break;
                 }
+
                 default: {
                     x=new Number[]{0.0};
                     complexValues.add(0.0);
@@ -100,7 +103,9 @@ public abstract class NTxHwComplexNTxSolver extends NTxSolverRunImpl {
                 .set("x", NTxObjs.elem(NElement.ofArray(Arrays.stream(x).map(xx->NElement.ofNumber(xx)).toArray(NElement[]::new))))
                 .set("y", NTxObjs.elem(ye))
         );
-        Plot.title(solverType() + "-" + outputName()).plot(y);
+        if (plan().rendererContext().isAnimate()) {
+            Plot.cd(fullPath()).title(fullName()).plot(y);
+        }
         str.log().log(NMsg.ofC("[%s] %s Finished in %s : ", outputName(), solverName(), chronometer.stop()));
         return Collections.singletonList(
                 NTxSimulationResultFactory.createPlot2dCurve(outputName(), sweep, complexValues)

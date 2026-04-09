@@ -14,15 +14,12 @@ import net.thevpc.ntexup.lib.geometry3d.impl.NTx3DUtils;
 import net.thevpc.nuts.elem.*;
 import net.thevpc.nuts.log.NLog;
 import net.thevpc.nuts.text.NMsg;
-import net.thevpc.nuts.util.NLiteral;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.scholar.hadrumaths.Domain;
-import net.thevpc.scholar.hadrumaths.DomainX;
 import net.thevpc.scholar.hadrumaths.Maths;
-import net.thevpc.scholar.hadrumaths.geom.DefaultPolygon;
-import net.thevpc.scholar.hadrumaths.geom.Geometry;
-import net.thevpc.scholar.hadrumaths.geom.Point;
+import net.thevpc.scholar.hadrumaths.geom.*;
+import net.thevpc.scholar.hadrumaths.meshalgo.triconsdes.MeshTriangulationOptions;
 import net.thevpc.scholar.hadruwaves.Boundary;
 import net.thevpc.scholar.hadruwaves.Material;
 import net.thevpc.scholar.hadruwaves.WallBorders;
@@ -37,6 +34,29 @@ import java.util.Objects;
 import java.util.function.Function;
 
 public class MomParser {
+
+    static List<HGeometry> findAntennaGeometry(NTxFunctionCallContext args) {
+        String geometryId = null;
+        NTxResolutionContext context = args.scopedContext();
+        geometryId = NTxMwSimulationUtils.findSceneGeometryId(args);
+
+        if (geometryId == null) {
+            context.log(NMsg.ofC("missing 'geometry'").asError());
+            return new ArrayList<>();
+        }
+        String finalGeometryId = geometryId;
+        NTxNode scene3D = context.findNodeByProperty("name",
+                e -> e.isAnyStringOrName() && e.asStringValue().get().equals(finalGeometryId)
+        ).orNull();
+        if (scene3D == null || !Objects.equals(scene3D.type(), "scene3d")) {
+            context.log(NMsg.ofC("'geometry' %s could not be resolved in the current scope", finalGeometryId).asError());
+            return new ArrayList<>();
+        }
+        NTxNumberElement3 sceneSize = NTxMwSimulationUtils.findSceneSize(scene3D, context).orDefault();
+        NTxNumberElement3 scenePosition = NTxMwSimulationUtils.findScenePosition(scene3D, context).orDefault();
+        return parsePlanarGeometriesByName(NElement.ofName("antenna"), args, scene3D, sceneSize, scenePosition);
+    }
+
     static MomStructure createMomStructure(NTxFunctionCallContext args) {
         //h will populate from node later
         MomStructure str = new MomStructure();
@@ -46,7 +66,7 @@ public class MomParser {
         geometryId = NTxMwSimulationUtils.findSceneGeometryId(args);
 
         if (geometryId == null) {
-            context.log().log(NMsg.ofC("missing 'geometry'").asError());
+            context.log(NMsg.ofC("missing 'geometry'").asError());
             return null;
         }
         str.setName(geometryId);
@@ -56,7 +76,7 @@ public class MomParser {
                 e -> e.isAnyStringOrName() && e.asStringValue().get().equals(finalGeometryId)
         ).orNull();
         if (scene3D == null || !Objects.equals(scene3D.type(), "scene3d")) {
-            context.log().log(NMsg.ofC("'geometry' %s could not be resolved in the current scope", finalGeometryId).asError());
+            context.log(NMsg.ofC("'geometry' %s could not be resolved in the current scope", finalGeometryId).asError());
             return null;
         }
         NTxNumberElement3 sceneSize = NTxMwSimulationUtils.findSceneSize(scene3D, context).orDefault();
@@ -80,25 +100,29 @@ public class MomParser {
         boolean t = !isEmptyTestFunctions(moMSolverQueryInfo.testFunctions);
         boolean b = !isEmptyTestFunctions(moMSolverQueryInfo.basisFunctions);
         if (t && b) {
-            context.log().log(NMsg.ofC("only galerkin is implemented for now. using basis functions and ignoring test functions").asError());
+            context.log(NMsg.ofC("only galerkin is implemented for now. using basis functions and ignoring test functions").asError());
             str.setTestFunctions(moMSolverQueryInfo.basisFunctions);
         } else if (t) {
             str.setTestFunctions(moMSolverQueryInfo.testFunctions);
         } else if (b) {
             str.setTestFunctions(moMSolverQueryInfo.basisFunctions);
         } else {
-            Geometry geometry = parseDefaultGeometry(args, scene3D, sceneSize, scenePosition);
+            HGeometry geometry = parseDefaultGeometry(args, scene3D, sceneSize, scenePosition);
             if (geometry != null) {
-                str.setTestFunctions(TestFunctionsFactory.createRWG(geometry, 100));
+                str.setTestFunctions(TestFunctionsFactory.createRWG(geometry, new MeshTriangulationOptions().setMaxEdgeLength(
+                        Maths.C/str.getFrequency()/10
+                )));
             } else {
-                context.log().log(NMsg.ofC("missing 'geometry'").asError());
+                context.log(NMsg.ofC("missing 'geometry'").asError());
             }
         }
         return str;
     }
 
     private static boolean isEmptyTestFunctions(TestFunctions testFunctions) {
-        if (testFunctions == null) return true;
+        if (testFunctions == null) {
+            return true;
+        }
         if (testFunctions instanceof ListTestFunctions) {
             return ((ListTestFunctions) testFunctions).isEmpty();
         }
@@ -150,7 +174,7 @@ public class MomParser {
                     case "sources": {
                         NOptional<Sources> s = SourceFactory.parseSources(pv, geometryResolver(args, scene3D, sceneSize, scenePosition));
                         if (!s.isPresent()) {
-                            context.log().log(NMsg.ofC("missing 'sources'").asError());
+                            context.log(NMsg.ofC("missing 'sources'").asError());
                         } else {
                             query.sources = s.get();
                         }
@@ -163,24 +187,23 @@ public class MomParser {
             query.modes = new BoxModeFunctions().setSize(1024);
         }
         if (query.sources == null) {
-            context.log().log(NMsg.ofC("missing 'sources'").asError());
+            context.log(NMsg.ofC("missing 'sources'").asError());
         }
         if (query.basisFunctions == null && query.testFunctions == null) {
-            context.log().log(NMsg.ofC("missing 'basisFunctions' and/or 'testFunctions'").asError());
+            context.log(NMsg.ofC("missing 'basisFunctions' and/or 'testFunctions'").asError());
         }
         return query;
     }
-
 
     private static TestFunctions parseTestFunctions(NElement value, NTxFunctionCallContext args, NTxNode scene3D, NTxNumberElement3 sceneSize, NTxNumberElement3 scenePosition) {
         Function<NElement, NElement> evaluator = x -> args.scopedContext().evalExpression(x).orElse(x);
         return TestFunctionsFactory.parseTestFunctions(value, evaluator, geometryResolver(args, scene3D, sceneSize, scenePosition)).orDefault();
     }
 
-    private static Function<NElement, Geometry> geometryResolver(NTxFunctionCallContext args, NTxNode scene3D, NTxNumberElement3 sceneSize, NTxNumberElement3 scenePosition) {
-        return new Function<NElement, Geometry>() {
+    private static Function<NElement, HGeometry> geometryResolver(NTxFunctionCallContext args, NTxNode scene3D, NTxNumberElement3 sceneSize, NTxNumberElement3 scenePosition) {
+        return new Function<NElement, HGeometry>() {
             @Override
-            public Geometry apply(NElement element) {
+            public HGeometry apply(NElement element) {
                 if (element == null) {
                     return parseDefaultGeometry(args, scene3D, sceneSize, scenePosition);
                 }
@@ -189,8 +212,7 @@ public class MomParser {
         };
     }
 
-
-    private static Geometry parsePlanarGeometry(NTxNode node, NTxFunctionCallContext args, NTxNode scene3D, NTxNumberElement3 sceneSize, NTxNumberElement3 scenePosition) {
+    private static HGeometry parsePlanarGeometry(NTxNode node, NTxFunctionCallContext args, NTxNode scene3D, NTxNumberElement3 sceneSize, NTxNumberElement3 scenePosition) {
         String t = node.type();
         NTxResolutionContext context = args.scopedContext();
 
@@ -202,7 +224,7 @@ public class MomParser {
                     p = context.evalExpression(p).orNull();
                     NTxNumberElement3 ss = NTx3DUtils.resolveSize3DSI(context.evalExpression(s).orNull(), context);
                     NTxNumberElement3 pp = NTx3DUtils.resolveSize3DSI(context.evalExpression(p).orNull(), context);
-                    List<Point> realPoints = new ArrayList<>();
+                    List<HPoint> realPoints = new ArrayList<>();
                     if (ss != null && pp != null) {
                         double zs = ss.z.asDoubleValue().orElse(0.0);
                         double zp = pp.z.asDoubleValue().orElse(0.0);
@@ -212,11 +234,11 @@ public class MomParser {
                         double yw = ss.y.asDoubleValue().orElse(0.0);
                         double xmax = xmin + xw;
                         double ymax = ymin + yw;
-                        realPoints.add(new Point(xmin, ymin));
-                        realPoints.add(new Point(xmax, ymin));
-                        realPoints.add(new Point(xmax, ymax));
-                        realPoints.add(new Point(xmin, ymax));
-                        return new DefaultPolygon(realPoints);
+                        realPoints.add(new HPoint(xmin, ymin));
+                        realPoints.add(new HPoint(xmax, ymin));
+                        realPoints.add(new HPoint(xmax, ymax));
+                        realPoints.add(new HPoint(xmin, ymax));
+                        return new DefaultHPolygon(realPoints);
                     }
                 }
                 break;
@@ -229,20 +251,20 @@ public class MomParser {
                         NElement pointsValue = pointsEv.get();
                         if (pointsValue.isArray()) {
                             NArrayElement arr = pointsValue.asArray().get();
-                            List<Point> realPoints = new ArrayList<>();
+                            List<HPoint> realPoints = new ArrayList<>();
                             for (NElement child : arr.children()) {
                                 NTxNumberElement3 e = NTx3DUtils.resolveSize3D(child, context);
                                 if (e == null) {
                                     return null;
                                 }
                                 realPoints.add(
-                                        new Point(
+                                        new HPoint(
                                                 NTxNumberUtils.evalMeterPosition(e.x, sceneSize.x, scenePosition.x),
                                                 NTxNumberUtils.evalMeterPosition(e.y, sceneSize.y, scenePosition.y)
                                         )
                                 );
                             }
-                            return new DefaultPolygon(realPoints);
+                            return new DefaultHPolygon(realPoints);
                         }
                     }
                 }
@@ -250,7 +272,6 @@ public class MomParser {
         }
         return null;
     }
-
 
     private static BoxSpace findBottomSpaceFromScene(NTxNode scene3D, NTxFunctionCallContext args) {
         NTxResolutionContext context = args.scopedContext();
@@ -276,14 +297,13 @@ public class MomParser {
         return null;
     }
 
-    private static Geometry parseDefaultGeometry(NTxFunctionCallContext args, NTxNode scene3D, NTxNumberElement3 sceneSize, NTxNumberElement3 scenePosition) {
-        List<Geometry> allGeometries = new ArrayList<>();
+    private static HGeometry parseDefaultGeometry(NTxFunctionCallContext args, NTxNode scene3D, NTxNumberElement3 sceneSize, NTxNumberElement3 scenePosition) {
+        List<HGeometry> allGeometries = new ArrayList<>();
         for (NTxNode child : scene3D.children()) {
-            if (NTxMwSimulationUtils.isSimulationNode(child, "antenna")
-            ) {
-                Geometry geometry = parsePlanarGeometry(child, args, scene3D, sceneSize, scenePosition);
+            if (NTxMwSimulationUtils.isSimulationNode(child, "antenna")) {
+                HGeometry geometry = parsePlanarGeometry(child, args, scene3D, sceneSize, scenePosition);
                 if (geometry == null) {
-                    args.scopedContext().log().log(NMsg.ofC("unable to resolve %s as default antenna geometry", child).asError());
+                    args.log(NMsg.ofC("unable to resolve %s as default antenna geometry", child).asError());
                 } else {
                     allGeometries.add(geometry);
                 }
@@ -295,7 +315,7 @@ public class MomParser {
         if (allGeometries.size() == 1) {
             return allGeometries.get(0);
         }
-        Geometry geometry = allGeometries.get(0);
+        HGeometry geometry = allGeometries.get(0);
         for (int i = 1; i < allGeometries.size(); i++) {
             geometry = geometry.addGeometry(allGeometries.get(i));
         }
@@ -328,27 +348,60 @@ public class MomParser {
         return null;
     }
 
-    private static Geometry parsePlanarGeometryByName(NElement value, NTxFunctionCallContext args, NTxNode scene3D, NTxNumberElement3 sceneSize, NTxNumberElement3 scenePosition) {
+    private static HGeometry parsePlanarGeometryByName(NElement value, NTxFunctionCallContext args, NTxNode scene3D, NTxNumberElement3 sceneSize, NTxNumberElement3 scenePosition) {
         NOptional<NElement> evaluated = args.scopedContext().evalExpression(value);
         if (!evaluated.isPresent()) {
             return null;
         }
         NOptional<String> v = evaluated.flatMap(NElement::asStringValue);
         if (!v.isPresent()) {
-            args.scopedContext().log().log(NMsg.ofC("invalid geometry name :  %s", value).asError());
+            args.log(NMsg.ofC("invalid geometry name :  %s", value).asError());
             return null;
         }
+        List<HGeometry> all = new ArrayList<>();
         for (NTxNode child : scene3D.children()) {
             if (NTxMwSimulationUtils.isSimulationNode(child, v.get())) {
-                Geometry g = parsePlanarGeometry(child, args, scene3D, sceneSize, scenePosition);
+                HGeometry g = parsePlanarGeometry(child, args, scene3D, sceneSize, scenePosition);
                 if (g == null) {
-                    args.scopedContext().log().log(NMsg.ofC("unable to parse geometry named :  %s from %s", v.get(), child).asError());
+                    args.log(NMsg.ofC("unable to parse geometry named :  %s from %s", v.get(), child).asError());
                 }
-                return g;
+                all.add(g);
             }
         }
-        args.scopedContext().log().log(NMsg.ofC("not found geometry named :  %s", v.get()).asError());
-        return null;
+        if (all.isEmpty()) {
+            args.log(NMsg.ofC("not found geometry named :  %s", v.get()).asError());
+        }
+        if (all.size() == 1) {
+            return all.get(0);
+        }
+        HGeometryList gl=new DefaultHGeometryList();
+        for (int i = 0; i < all.size(); i++) {
+            gl.add(all.get(i));
+        }
+        return gl;
+    }
+
+    private static List<HGeometry> parsePlanarGeometriesByName(NElement value, NTxFunctionCallContext args, NTxNode scene3D, NTxNumberElement3 sceneSize, NTxNumberElement3 scenePosition) {
+        NOptional<NElement> evaluated = args.scopedContext().evalExpression(value);
+        if (!evaluated.isPresent()) {
+            return null;
+        }
+        NOptional<String> v = evaluated.flatMap(NElement::asStringValue);
+        if (!v.isPresent()) {
+            args.log(NMsg.ofC("invalid geometry name :  %s", value).asError());
+            return null;
+        }
+        List<HGeometry> all = new ArrayList<>();
+        for (NTxNode child : scene3D.children()) {
+            if (NTxMwSimulationUtils.isSimulationNode(child, v.get())) {
+                HGeometry g = parsePlanarGeometry(child, args, scene3D, sceneSize, scenePosition);
+                if (g == null) {
+                    args.log(NMsg.ofC("unable to parse geometry named :  %s from %s", v.get(), child).asError());
+                }
+                all.add(g);
+            }
+        }
+        return all;
     }
 
     private static NOptional<Domain> parseDomainPadding(NElement value, NTxFunctionCallContext args, NTxNode scene3D) {
@@ -361,14 +414,17 @@ public class MomParser {
                 NOptional<Double> a = NTxNumberUtils.toMeter(_compiler(args.scopedContext()).apply(g.get(0).get()));
                 NOptional<Double> b = NTxNumberUtils.toMeter(_compiler(args.scopedContext()).apply(g.get(1).get()));
                 if (a.isPresent() && b.isPresent()) {
-                    return NOptional.of(Domain.ofWidth(a.get(), b.get()));
+                    double aa = a.get();
+                    double bb = b.get();
+                    if (aa >= 0 && bb >= 0 && Double.isFinite(aa) && Double.isFinite(bb)) {
+                        return NOptional.of(Domain.ofWidth(0, aa, 0, bb));
+                    }
                 }
             }
         }
         NLog.ofScoped(Material.class).log(NMsg.ofC("invalid domain %s", value).asError());
         return NOptional.ofNamedError(NMsg.ofC("domain %s", value).asError());
     }
-
 
     private static MoMSolverQueryBoundaries parseMoMSolverQueryBoundaries(NElement value, NTxFunctionCallContext args, NTxNode scene3D) {
         NTxResolutionContext context = args.scopedContext();
@@ -446,7 +502,7 @@ public class MomParser {
                     }
                 }
             } else {
-                context.log().log(NMsg.ofC("'boundaries' should be an object. found %s", b).asError());
+                context.log(NMsg.ofC("'boundaries' should be an object. found %s", b).asError());
             }
         }
         if (bb.bottom == null) {
@@ -469,18 +525,19 @@ public class MomParser {
 
     private static Boundary parseBoundary(NElement value, NTxFunctionCallContext args) {
         return Boundary.parse(value.asStringValue().get()).ifNonPresent(
-                () -> args.scopedContext().log().log(NMsg.ofC("invalid 'boundary'  %s", value).asError())
+                () -> args.log(NMsg.ofC("invalid 'boundary'  %s", value).asError())
         ).orElse(Boundary.NOTHING);
     }
 
-
     private static class MoMSolverQueryBoundaries {
+
         WallBorders lateral;
         BoxSpace top;
         BoxSpace bottom;
     }
 
     private static class MoMSolverQueryInfo {
+
         double frequency;
         String geometry;
         ModeFunctions modes;

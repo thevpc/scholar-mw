@@ -19,13 +19,13 @@ import java.beans.PropertyChangeListener;
 
 public class HeatMapPlot extends JPanel implements PlotComponentPanel {
     private static final long serialVersionUID = 1L;
-    private HeatMapPlotArea area;
+    private final HeatMapPlotArea area;
     private PlotModelProvider plotModelProvider;
     private ValuesPlotModel model;
-    private JLabel titleLabel;
-    private StatusBar statusbar;
-    private HeatMapPlotArea legend;
-    private HeatMapPlotUnitsArea legendUnits;
+    private final JLabel titleLabel;
+    private final StatusBar statusbar;
+    private final HeatMapPlotArea legend;
+    private final HeatMapPlotUnitsArea legendUnits;
     PropertyChangeListener legendUpdater = new PropertyChangeListener() {
 
         public void propertyChange(PropertyChangeEvent evt) {
@@ -47,7 +47,7 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel {
     }
 
     public HeatMapPlot(ValuesPlotModel model) {
-        this(new ValuesPlotXYDoubleModelFace(model, null), model.getPlotType().getType() == PlotType.HEATMAP);
+        this(new ValuesPlotXYDoubleModelFace(model, null), model.getPlotType().getType() == PlotType.HEATMAP, model.getPlotType().getType() != PlotType.MATRIX);
         setModel(model);
     }
 
@@ -60,12 +60,12 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel {
     public HeatMapPlot(ValuesPlotModel model, ColorPalette palette, int preferredDim) {
         this(new ValuesPlotXYDoubleModelFace(model, null, true),
                 model.getPlotType().getType() == PlotType.HEATMAP,
-                palette, preferredDim);
+                model.getPlotType().getType() != PlotType.MATRIX, palette, preferredDim);
         setModel(model);
     }
 
-    public HeatMapPlot(ValuesPlotXYDoubleModelFace model, boolean reverseY) {
-        this(model, reverseY, null, 400);
+    public HeatMapPlot(ValuesPlotXYDoubleModelFace model, boolean reverseY, boolean computeYOverXRatio) {
+        this(model, reverseY, computeYOverXRatio, null, 400);
     }
 
     @Override
@@ -93,9 +93,9 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel {
         area.setNormalizer(normalizer);
     }
 
-    public HeatMapPlot(ValuesPlotXYDoubleModelFace model, boolean reverseY, ColorPalette colorPalette, int preferredDimension) {
+    public HeatMapPlot(ValuesPlotXYDoubleModelFace model, boolean reverseY, boolean computeYOverXRatio, ColorPalette colorPalette, int preferredDimension) {
         super(new BorderLayout());
-        area = new HeatMapPlotArea(model, reverseY, colorPalette, new Dimension(preferredDimension <= 1 ? 400 : preferredDimension, preferredDimension <= 1 ? 400 : preferredDimension));
+        area = new HeatMapPlotArea(model, reverseY, computeYOverXRatio, colorPalette, new Dimension(preferredDimension <= 1 ? 400 : preferredDimension, preferredDimension <= 1 ? 400 : preferredDimension));
         area.addPropertyChangeListener("colorPaletteContrasted", legendUpdater);
         area.addPropertyChangeListener("zMinMax", new PropertyChangeListener() {
             @Override
@@ -112,9 +112,9 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel {
             titleLabel.setVisible(false);
         }
         statusbar = new StatusBar();
-        statusbar.xLabel.setAnyValue(model.getxTitle()==null?"x":model.getxTitle());
-        statusbar.yLabel.setAnyValue(model.getyTitle()==null?"y":model.getyTitle());
-        statusbar.zLabel.setAnyValue(model.getzTitle()==null?"z":model.getzTitle());
+        statusbar.xLabel.setAnyValue(model.getxTitle() == null ? "x" : model.getxTitle());
+        statusbar.yLabel.setAnyValue(model.getyTitle() == null ? "y" : model.getyTitle());
+        statusbar.zLabel.setAnyValue(model.getzTitle() == null ? "z" : model.getzTitle());
         add(titleLabel, BorderLayout.NORTH);
 
         JPanel p = new JPanel();

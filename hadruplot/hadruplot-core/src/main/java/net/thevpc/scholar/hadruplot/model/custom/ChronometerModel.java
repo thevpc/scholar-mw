@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 import net.thevpc.nuts.time.NChronometer;
+import net.thevpc.nuts.time.NChronometerView;
 import net.thevpc.scholar.hadruplot.component.BasePlotPanel;
 import net.thevpc.scholar.hadruplot.PlotPanel;
 import net.thevpc.scholar.hadruplot.extension.PlotPanelFactory;
@@ -12,13 +13,16 @@ import net.thevpc.scholar.hadruplot.model.BasePlotModel;
 import net.thevpc.scholar.hadruplot.model.PlotModel;
 
 public class ChronometerModel extends BasePlotModel implements PlotPanelFactory {
-    private NChronometer chronometer;
+    private NChronometerView chronometer;
 
-    public ChronometerModel(NChronometer ch) {
+    public ChronometerModel(NChronometerView ch) {
         this.chronometer = ch;
     }
+    public ChronometerModel(NChronometer ch) {
+        this.chronometer = ch.asReadOnly();
+    }
 
-    public NChronometer getChronometer() {
+    public NChronometerView getChronometer() {
         return chronometer;
     }
 
@@ -51,6 +55,17 @@ public class ChronometerModel extends BasePlotModel implements PlotPanelFactory 
                 }
             });
             createTimer();
+
+            // This is the modern replacement for lifecycle management
+            addHierarchyListener(e -> {
+                if ((e.getChangeFlags() & HierarchyEvent.DISPLAYABILITY_CHANGED) != 0) {
+                    if (isDisplayable()) {
+                        createTimer();
+                    } else {
+                        killTimer();
+                    }
+                }
+            });
         }
 
         public ChronometerPlotPanel() {
@@ -91,13 +106,6 @@ public class ChronometerModel extends BasePlotModel implements PlotPanelFactory 
                 t = null;
             }
         }
-
-        @Override
-        protected void finalize() throws Throwable {
-            super.finalize();
-            killTimer();
-        }
-
 
     }
 }

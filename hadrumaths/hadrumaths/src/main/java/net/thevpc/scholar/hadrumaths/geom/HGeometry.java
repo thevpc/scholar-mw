@@ -9,6 +9,7 @@ import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.HSerializable;
+import net.thevpc.scholar.hadrumaths.meshalgo.tri.JTSHelper;
 
 import java.awt.geom.Path2D;
 import java.util.Map;
@@ -16,7 +17,10 @@ import java.util.Map;
 /**
  * @author vpc
  */
-public interface Geometry extends HSerializable {
+public interface HGeometry extends HSerializable {
+    static HGeometry fromPath(Path2D.Double path) {
+        return JTSHelper.fromJtsGeometry(JTSHelper.fromPath2D(path));
+    }
 
     Path2D.Double getPath();
 
@@ -32,37 +36,37 @@ public interface Geometry extends HSerializable {
 
     boolean isEmpty();
 
-    Geometry translateGeometry(double x, double y);
+    HGeometry translate(double x, double y);
+
+    double area();
 
     boolean contains(double x, double y);
 
-    Geometry clone();
+    HGeometry clone();
 
-    Surface toSurface();
+    HPolygon[] toPolygons();
 
-    Polygon[] toPolygons();
+    HPolygon toPolygon();
 
-    Polygon toPolygon();
+    HTriangle toTriangle();
 
-    Triangle toTriangle();
+    HGeometry scale(Domain newDomain);
 
-    Geometry scale(Domain newDomain);
-
-    Geometry scale(int width, int height);
+    HGeometry scale(int width, int height);
 
     boolean containsDomain(Domain geometry);
 
     Map<String, NElement> getProperties();
 
-    boolean containsGeometry(Geometry geometry);
+    boolean containsGeometry(HGeometry geometry);
 
-    Geometry intersectGeometry(Geometry geometry);
+    HGeometry intersectGeometry(HGeometry geometry);
 
-    Geometry subtractGeometry(Geometry geometry);
+    HGeometry subtractGeometry(HGeometry geometry);
 
-    Geometry addGeometry(Geometry geometry);
+    HGeometry addGeometry(HGeometry geometry);
 
-    Geometry exclusiveOrGeometry(Geometry geometry);
+    HGeometry exclusiveOrGeometry(HGeometry geometry);
 
     Expr toExpr();
 

@@ -2,10 +2,9 @@ package net.thevpc.scholar.hadruwaves.mom.testfunctions;
 
 import net.thevpc.nuts.elem.NElement;
 
-
 import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Maths;
-import net.thevpc.scholar.hadrumaths.geom.Geometry;
+import net.thevpc.scholar.hadrumaths.geom.HGeometry;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.common.mon.ProgressMonitor;
 
@@ -21,7 +20,8 @@ import java.util.List;
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 10 juil. 2007 23:14:54
  */
-public class GpSimpleTestFunctions extends TestFunctionsBase implements Cloneable{
+public class GpSimpleTestFunctions extends TestFunctionsBase implements Cloneable {
+
     private TestFunctionCell[] cells;
 
     public GpSimpleTestFunctions(TestFunctionCell... cells) {
@@ -30,15 +30,25 @@ public class GpSimpleTestFunctions extends TestFunctionsBase implements Cloneabl
     }
 
     @Override
+    public List<MeshZone> mesh() {
+        List<MeshZone> mz = new ArrayList<>();
+        for (int i1 = 0, cellsLength = cells.length; i1 < cellsLength; i1++) {
+            TestFunctionCell cell = cells[i1];
+            mz.add(new MeshZone(cell.getDomain()));
+        }
+        return mz;
+    }
+
+    @Override
     protected DoubleToVector[] gpImpl(ProgressMonitor monitor) {
         return Maths.invokeMonitoredAction(monitor, "Gp Detection", new MonitoredAction<DoubleToVector[]>() {
             @Override
             public DoubleToVector[] process(ProgressMonitor monitor, String messagePrefix) throws Exception {
-                ArrayList<DoubleToVector> all=new ArrayList<DoubleToVector>();
+                ArrayList<DoubleToVector> all = new ArrayList<DoubleToVector>();
                 for (int i1 = 0, cellsLength = cells.length; i1 < cellsLength; i1++) {
                     TestFunctionCell cell = cells[i1];
                     GpPattern pattern = cell.getPattern();
-                    DoubleToVector[] allGp = pattern.createFunctions(getStructure().getDomain(), new MeshZone(cell.getDomain()), monitor, getStructure(),log());
+                    DoubleToVector[] allGp = pattern.createFunctions(getStructure().getDomain(), new MeshZone(cell.getDomain()), monitor, getStructure(), log());
                     int maxGp = allGp.length;
                     for (int i = 0; i < maxGp; i++) {
                         DoubleToVector _gp = allGp[i];
@@ -46,7 +56,7 @@ public class GpSimpleTestFunctions extends TestFunctionsBase implements Cloneabl
                             all.add(_gp);
                         }
                     }
-                    monitor.setProgress(1.0*i1/cells.length,"Gp Detection");
+                    monitor.setProgress(1.0 * i1 / cells.length, "Gp Detection");
                 }
                 return all.toArray(new DoubleToVector[0]);
             }
@@ -61,12 +71,12 @@ public class GpSimpleTestFunctions extends TestFunctionsBase implements Cloneabl
     }
 
     @Override
-    public Geometry[] getGeometries() {
-        List<Geometry> all = new ArrayList<>();
+    public HGeometry[] getGeometries() {
+        List<HGeometry> all = new ArrayList<>();
         for (TestFunctionCell cell : cells) {
             all.add(cell.getAreaGeometryList());
         }
-        return all.toArray(new Geometry[0]);
+        return all.toArray(new HGeometry[0]);
     }
 
 }

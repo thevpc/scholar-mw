@@ -4,7 +4,7 @@ import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.thevpc.scholar.hadrumaths.format.ObjectFormatParamSet;
-import net.thevpc.scholar.hadrumaths.geom.Geometry;
+import net.thevpc.scholar.hadrumaths.geom.HGeometry;
 import net.thevpc.scholar.hadrumaths.symbolic.conv.DefaultDoubleToComplex;
 import net.thevpc.scholar.hadrumaths.symbolic.double2complex.DefaultComplexValue;
 import net.thevpc.scholar.hadrumaths.symbolic.double2matrix.DefaultDoubleToMatrix;
@@ -2653,7 +2653,7 @@ public class ExprDefaults {
         return AndExpr.of(me.toDD(), other.toDD());
     }
 
-    public static Expr mul(Expr me, Geometry domain) {
+    public static Expr mul(Expr me, HGeometry domain) {
         return Mul.of(me, Maths.expr(domain));
     }
 

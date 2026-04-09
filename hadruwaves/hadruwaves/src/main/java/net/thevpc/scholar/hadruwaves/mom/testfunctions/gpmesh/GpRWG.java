@@ -1,17 +1,18 @@
 package net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh;
 
-import net.thevpc.scholar.hadrumaths.geom.GeometryList;
+import net.thevpc.scholar.hadrumaths.geom.HGeometryList;
+import net.thevpc.scholar.hadrumaths.meshalgo.tri.MeshTriangulationAlgo;
+import net.thevpc.scholar.hadrumaths.meshalgo.triconsdes.MeshTriangulationOptions;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.RWGPattern;
 import net.thevpc.scholar.hadruwaves.mom.TestFunctionsSymmetry;
-import net.thevpc.scholar.hadrumaths.meshalgo.triconsdes.MeshConsDesAlgo;
 
 public class GpRWG extends GpAdaptiveMesh {
 
-    public GpRWG(GeometryList polygonsSerial, int trianglesCount) {
-        this(polygonsSerial, TestFunctionsSymmetry.NO_SYMMETRY, trianglesCount);
+    public GpRWG(HGeometryList polygonsSerial, MeshTriangulationOptions options) {
+        this(polygonsSerial, TestFunctionsSymmetry.NO_SYMMETRY, options);
     }
     
-    public GpRWG(GeometryList polygonsSerial, TestFunctionsSymmetry symmetry, int trianglesCount) {
-        super(polygonsSerial, new RWGPattern(), symmetry, new MeshConsDesAlgo(trianglesCount));
+    public GpRWG(HGeometryList polygonsSerial, TestFunctionsSymmetry symmetry, MeshTriangulationOptions options) {
+        super(polygonsSerial, new RWGPattern(), symmetry, new MeshTriangulationAlgo(options));
     }
 }

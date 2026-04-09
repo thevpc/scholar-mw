@@ -54,26 +54,20 @@ public class HeatMapPlotArea extends JComponent implements MouseMotionListener, 
         }
     };
 
-    //
-//    public HeatMapPlotArea(double[] x, double[] y, double[][] matrix) {
-//        this(x, y, matrix, null, null);
-//    }
-//
-//    public HeatMapPlotArea(double[] x, double[] y, double[][] matrix, JColorPalette colorPalette) {
-//        dsteps(x, y, matrix, colorPalette, null);
-//    }
-    public HeatMapPlotArea(ValuesPlotXYDoubleModelFace model, boolean reverseY, ColorPalette colorPalette, Dimension preferredDimension) {
-        double w = -1;
-        double h = -1;
-        if (model.getX() != null && model.getX().length > 0) {
-            w = model.getX()[model.getX().length - 1] - model.getX()[0];
-        }
-        if (model.getY() != null && model.getY().length > 0) {
-            h = model.getY()[model.getY().length - 1] - model.getY()[0];
-        }
+    public HeatMapPlotArea(ValuesPlotXYDoubleModelFace model, boolean reverseY, boolean computeYOverXRatio,ColorPalette colorPalette, Dimension preferredDimension) {
         double yOverXRatio = -1;
-        if (w > 0 && h > 0) {
-            yOverXRatio = h / w;
+        if(computeYOverXRatio) {
+            double w = -1;
+            double h = -1;
+            if (model.getX() != null && model.getX().length > 0) {
+                w = model.getX()[model.getX().length - 1] - model.getX()[0];
+            }
+            if (model.getY() != null && model.getY().length > 0) {
+                h = model.getY()[model.getY().length - 1] - model.getY()[0];
+            }
+            if (w > 0 && h > 0) {
+                yOverXRatio = h / w;
+            }
         }
         init(model, yOverXRatio, reverseY, colorPalette, preferredDimension);
     }

@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadrumaths;
 
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.scholar.hadrumaths.geom.Geometry;
+import net.thevpc.scholar.hadrumaths.geom.HGeometry;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
 
 import java.util.Collections;
@@ -27,7 +27,6 @@ public interface Expr extends HSerializable {
         return false;
     }
 
-
     /**
      * return complex value if this expression is defined as a valid non param
      * complex value. It may have domain. Otherwise throws ClassCastException
@@ -46,7 +45,6 @@ public interface Expr extends HSerializable {
     default boolean isCstDouble() {
         return false;
     }
-
 
     default NumberExpr toNumber() {
         return ExprDefaults.toNumber(this);
@@ -381,7 +379,7 @@ public interface Expr extends HSerializable {
         return ExprDefaults.mul(this, domain);
     }
 
-    default Expr mul(Geometry domain) {
+    default Expr mul(HGeometry domain) {
         return ExprDefaults.mul(this, domain);
     }
 
@@ -580,6 +578,10 @@ public interface Expr extends HSerializable {
 
     Domain getDomain();
 
+    default HGeometry getDomainGeometry(){
+        return getDomain().toGeometry();
+    }
+
     /**
      * create a clone expression with changed name
      *
@@ -661,7 +663,7 @@ public interface Expr extends HSerializable {
         return mul(domain);
     }
 
-    default Expr multiply(Geometry geometry) {
+    default Expr multiply(HGeometry geometry) {
         return mul(geometry);
     }
 

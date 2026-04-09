@@ -6,7 +6,7 @@ import net.thevpc.nuts.elem.NElement;
 
 import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.geom.GeomUtils;
-import net.thevpc.scholar.hadrumaths.geom.Triangle;
+import net.thevpc.scholar.hadrumaths.geom.HTriangle;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.util.List;
@@ -18,8 +18,8 @@ public class FlipSurfacePrecision implements FlipPrecision {
         airmax = air;
     }
 
-    public boolean isPrecisionValide(List<Triangle> t) {
-        return GeomUtils.smallest(t).getSurface() > airmax;
+    public boolean isPrecisionValide(List<HTriangle> t) {
+        return GeomUtils.smallestArea(t).area() > airmax;
 
     }
 

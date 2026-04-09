@@ -6,7 +6,7 @@ import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.HSerializable;
 import net.thevpc.scholar.hadrumaths.Maths;
 
-public class Point implements HSerializable {
+public class HPoint implements HSerializable {
     private static final long serialVersionUID = -1010101010101001002L;
     /**
      * Created by IntelliJ IDEA.
@@ -18,43 +18,43 @@ public class Point implements HSerializable {
     public final double x, y, z;
     public final int dimension;
 
-    public Point(double x, double y) {
+    public HPoint(double x, double y) {
         this.x = x;
         this.y = y;
         this.z = 0;
         this.dimension = 2;
     }
 
-    public Point(double x) {
+    public HPoint(double x) {
         this.x = x;
         this.y = 0;
         this.z = 0;
         this.dimension = 1;
     }
 
-    public Point(double x, double y, double z) {
+    public HPoint(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.dimension = 3;
     }
 
-    private Point(double x, double y, double z, int dim) {
+    private HPoint(double x, double y, double z, int dim) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.dimension = dim;
     }
 
-    public static Point create(double x) {
-        return new Point(x, 0, 0, 1);
+    public static HPoint create(double x) {
+        return new HPoint(x, 0, 0, 1);
     }
 
-    public static Point create(double x, double y, double z) {
-        return new Point(x, y, z, 3);
+    public static HPoint create(double x, double y, double z) {
+        return new HPoint(x, y, z, 3);
     }
 
-    public double distance(Point q) {
+    public double distance(HPoint q) {
         int d = Math.max(dimension, q.dimension);
         switch (d) {
             case 1: {
@@ -67,21 +67,21 @@ public class Point implements HSerializable {
         return (Math.sqrt((x - q.x) * (x - q.x) + (y - q.y) * (y - q.y) + (z - q.z) * (z - q.z)));
     }
 
-    public Point translate(double dx, double dy) {
+    public HPoint translate(double dx, double dy) {
         switch (dimension) {
             case 1: {
                 if (y == 0) {
-                    return new Point(x + dx);
+                    return new HPoint(x + dx);
 
                 } else {
                     throw new IllegalArgumentException("Unsupported");
                 }
             }
             case 2: {
-                return new Point(x + dx, y + dy);
+                return new HPoint(x + dx, y + dy);
             }
             case 3: {
-                return new Point(x + dx, y + dy, z + 0);
+                return new HPoint(x + dx, y + dy, z + 0);
             }
         }
         throw new IllegalArgumentException("Unsupported dimension");
@@ -98,12 +98,12 @@ public class Point implements HSerializable {
     public double getZ() {
         return z;
     }
-    
+
 
     @Override
     public int hashCode() {
         int result = 13;
-        result = 31 * Double.hashCode(x);
+        result = 31 * result + Double.hashCode(x);
         result = 31 * result + Double.hashCode(y);
         result = 31 * result + Double.hashCode(z);
         result = 31 * result + dimension;
@@ -111,15 +111,15 @@ public class Point implements HSerializable {
     }
 
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof Point)) {
+        if (obj == null || !(obj instanceof HPoint)) {
             return false;
         }
-        Point p = (Point) obj;
+        HPoint p = (HPoint) obj;
         return x == p.x && y == p.y && z == p.z && dimension == p.dimension;
     }
 
-    protected Point clone() {
-        return Point.create(x, y);
+    protected HPoint clone() {
+        return new HPoint(x, y, z, dimension);
     }
 
     public String toString() {
@@ -134,11 +134,11 @@ public class Point implements HSerializable {
         return "(" + x + "," + y + "," + z + ")";
     }
 
-    public static Point create(double x, double y) {
-        return new Point(x, y, 0, 2);
+    public static HPoint create(double x, double y) {
+        return new HPoint(x, y, 0, 2);
     }
 
-    public boolean roundEquals(Point p, double epsilon) {
+    public boolean roundEquals(HPoint p, double epsilon) {
         if (p == null) {
             return false;
         }

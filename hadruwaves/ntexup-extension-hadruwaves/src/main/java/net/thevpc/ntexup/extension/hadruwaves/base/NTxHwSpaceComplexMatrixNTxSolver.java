@@ -15,20 +15,19 @@ import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class NTxHwSpaceComplexMatrixNTxSolver extends NTxSolverRunImpl {
+public abstract class NTxHwSpaceComplexMatrixNTxSolver extends NTxHwNTxSolver {
     protected NTxSweep xSweep;
     protected NTxSweep ySweep;
     protected Axis axis = Axis.X;
 
     public NTxHwSpaceComplexMatrixNTxSolver(String computeName, String solverName, String solverType, MoMStrNTxSimulationPlan moMStrSimulationQuery) {
-        super(computeName, solverName, solverType, moMStrSimulationQuery);
+        super(moMStrSimulationQuery,computeName, solverName, solverType);
     }
 
 
     @Override
     public NElement toElement() {
-        NUpletElementBuilder b = NElement.ofUpletBuilder(outputName());
-        b.add(NElement.ofPair("solver", solverType()));
+        NUpletElementBuilder b = super.toElement().asUplet().get().builder();
         if (xSweep != null) {
             b.add(NElement.ofPair("x-sweep", xSweep.toElement()));
         }
@@ -66,19 +65,21 @@ public abstract class NTxHwSpaceComplexMatrixNTxSolver extends NTxSolverRunImpl 
 
     @Override
     public List<NTxSimulationResult> execute() {
-        MomStructure str = ((MoMStrNTxSimulationPlan) plan()).str;
+        MomStructure str = momStructure();
         NChronometer chronometer = NChronometer.of();
-        str.log().log(NMsg.ofC("------------------"));
-        str.log().log(NMsg.ofC("[%s] %s: ", outputName(), solverName()));
-        str.log().log(NMsg.ofC("------------------"));
+        log(NMsg.ofC("------------------"));
+        log(NMsg.ofC("[%s] %s: ", outputName(), solverName()));
+        log(NMsg.ofC("------------------"));
         ComplexMatrix matrix = matrix(str);
         for (int r = 0; r < matrix.getRowCount(); r++) {
             for (int c = 0; c < matrix.getColumnCount(); c++) {
-                str.log().log(NMsg.ofC(" %s-%s[%s,%s]=%s", solverName(), outputName(), c, r, matrix.get(r, c)));
+                log(NMsg.ofC(" %s-%s[%s,%s]=%s", solverName(), outputName(), c, r, matrix.get(r, c)));
             }
         }
-        str.log().log(NMsg.ofC("[%s] %s Finished in %s : ", outputName(), solverName(),chronometer.stop()));
-        Plot.title(solverType()+"-"+ outputName()).plot(matrix);
+        log(NMsg.ofC("[%s] %s Finished in %s : ", outputName(), solverName(),chronometer.stop()));
+        if (plan().rendererContext().isAnimate()) {
+            Plot.cd(fullPath()).title(fullName()).plot(matrix);
+        }
         return Collections.singletonList(
                 NTxSimulationResultFactory.createPlot2dCurve(outputName(), null, Collections.singletonList(0.0))
         );

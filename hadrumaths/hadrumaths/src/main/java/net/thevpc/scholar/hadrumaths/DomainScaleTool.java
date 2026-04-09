@@ -5,7 +5,10 @@ import net.thevpc.scholar.hadrumaths.geom.*;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Created by vpc on 4/1/16.
@@ -20,19 +23,55 @@ public abstract class DomainScaleTool {
         }
     }
 
+    /**
+     * Rescales multiple geometries together, preserving their relative
+     * positions and sizes, by computing a shared bounding domain across all of
+     * them and mapping it uniformly to the target domain.
+     *
+     * @param geometries the geometries to rescale
+     * @param to the target domain
+     * @return a list of rescaled geometries in the same order as the input
+     */
+    public static List<HGeometry> rescaleAll(List<HGeometry> geometries, Domain to) {
+        if (geometries == null || geometries.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        // Compute the union bounding domain across all geometries
+        Domain unified = geometries.stream()
+                .map(HGeometry::getDomain)
+                .filter(Objects::nonNull)
+                .reduce(Domain::expand)
+                .orElseThrow(() -> new IllegalArgumentException("No valid domains found in geometries"));
+
+        // One shared tool for all — this is what preserves relative layout
+        DomainScaleTool tool = DomainScaleTool.create(unified, to);
+
+        return geometries.stream()
+                .map(tool::rescale)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Varargs overload for convenience.
+     */
+    public static List<HGeometry> rescaleAll(Domain to, HGeometry... geometries) {
+        return rescaleAll(Arrays.asList(geometries), to);
+    }
+
     public abstract Domain rescale(Domain domain);
 
     public static DomainScaleTool createIdentity() {
         return new NoDomainScaleTool();
     }
 
-    public static Geometry rescale(Geometry g, Domain to) {
+    public static HGeometry rescale(HGeometry g, Domain to) {
         return DomainScaleTool.create(g.getDomain(), to).rescale(g);
     }
 
-    public abstract Geometry rescale(Geometry area);
+    public abstract HGeometry rescale(HGeometry area);
 
-    public static Geometry rescale(Geometry g, int x, int y) {
+    public static HGeometry rescale(HGeometry g, int x, int y) {
         return DomainScaleTool.create(g.getDomain(), Domain.ofBounds(0, x, 0, y)).rescale(g);
     }
 
@@ -45,22 +84,22 @@ public abstract class DomainScaleTool {
     public abstract double rescaleY(double y);
 
 //    public abstract java.awt.geom.Area rescale(java.awt.geom.Area area);
-
     public abstract DomainScaleTool inv();
 
     public abstract Path2D.Double rescale(Path2D.Double path);
 
     public abstract Path2D.Double rescale(PathIterator area);
 
-    public abstract Point rescale(Point point);
+    public abstract HPoint rescale(HPoint point);
 
-    public abstract Point[] rescale(Point[] points);
+    public abstract HPoint[] rescale(HPoint[] points);
 
-    public abstract List<Point> rescale(List<Point> points);
+    public abstract List<HPoint> rescale(List<HPoint> points);
 
-    public abstract Polygon rescale(Polygon polygon);
+    public abstract HPolygon rescale(HPolygon polygon);
 
     private static class NoDomainScaleTool extends DomainScaleTool {
+
         @Override
         public double rescaleX(double x) {
             return x;
@@ -82,7 +121,7 @@ public abstract class DomainScaleTool {
         }
 
         @Override
-        public Geometry rescale(Geometry area) {
+        public HGeometry rescale(HGeometry area) {
             return area;
         }
 
@@ -105,9 +144,8 @@ public abstract class DomainScaleTool {
 //        public java.awt.geom.Area rescale(java.awt.geom.Area area) {
 //            return area;
 //        }
-
         @Override
-        public Point rescale(Point point) {
+        public HPoint rescale(HPoint point) {
             return point;
         }
 
@@ -117,22 +155,23 @@ public abstract class DomainScaleTool {
         }
 
         @Override
-        public Point[] rescale(Point[] points) {
+        public HPoint[] rescale(HPoint[] points) {
             return points;
         }
 
         @Override
-        public List<Point> rescale(List<Point> points) {
-            return new ArrayList<Point>(points);
+        public List<HPoint> rescale(List<HPoint> points) {
+            return new ArrayList<HPoint>(points);
         }
 
         @Override
-        public Polygon rescale(Polygon polygon) {
+        public HPolygon rescale(HPolygon polygon) {
             return polygon;
         }
     }
 
     private static class SimpleDomainScaleTool extends DomainScaleTool {
+
         private final Domain from;
         private final Domain to;
 
@@ -164,8 +203,8 @@ public abstract class DomainScaleTool {
             return (y - from.ymin()) / from.ywidth() * to.ywidth() + to.ymin();
         }
 
-        public Geometry rescale(Geometry area) {
-            return new Surface(
+        public HGeometry rescale(HGeometry area) {
+            return HGeometry.fromPath(
                     rescale(area.getPath())
             );
         }
@@ -206,15 +245,15 @@ public abstract class DomainScaleTool {
             return d;
         }
 
-        public Point rescale(Point point) {
+        public HPoint rescale(HPoint point) {
 
             double x = rescaleX(point.x);
             double y = rescaleY(point.y);
-            return new Point(x, y);
+            return new HPoint(x, y);
         }
 
-        public Point[] rescale(Point[] points) {
-            Point[] all = new Point[points.length];
+        public HPoint[] rescale(HPoint[] points) {
+            HPoint[] all = new HPoint[points.length];
             for (int i = 0; i < all.length; i++) {
                 all[i] = rescale(points[i]);
             }
@@ -222,8 +261,8 @@ public abstract class DomainScaleTool {
         }
 
         @Override
-        public List<Point> rescale(List<Point> points) {
-            List<Point> all = new ArrayList<Point>();
+        public List<HPoint> rescale(List<HPoint> points) {
+            List<HPoint> all = new ArrayList<HPoint>();
 
             for (int i = 0; i < points.size(); i++) {
                 all.add(rescale(points.get(i)));
@@ -271,7 +310,7 @@ public abstract class DomainScaleTool {
             );
         }
 
-        public Polygon rescale(Polygon polygon) {
+        public HPolygon rescale(HPolygon polygon) {
             return GeometryFactory.createPolygon(
                     rescale(polygon.getPoints())
             );
