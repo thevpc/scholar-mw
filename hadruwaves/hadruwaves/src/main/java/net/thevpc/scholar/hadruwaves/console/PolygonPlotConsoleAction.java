@@ -2,23 +2,23 @@ package net.thevpc.scholar.hadruwaves.console;
 
 import net.thevpc.common.swing.win.WindowPath;
 import net.thevpc.scholar.hadrumaths.Domain;
+import net.thevpc.scholar.hadrumaths.geom.HGeometryList;
 import net.thevpc.scholar.hadruplot.console.*;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.PolygonPlot;
-import net.thevpc.scholar.hadrumaths.geom.GeometryList;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.GpPattern;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.thevpc.scholar.hadruplot.PlotPath;
 
 public class PolygonPlotConsoleAction implements ConsoleAction {
     private static final long serialVersionUID = 1L;
-    private GeometryList geometryList;
+    private HGeometryList geometryList;
     private String title;
     private WindowPath preferredPath;
     private MeshAlgo meshAlgo;
     private GpPattern pattern;
     private Domain domain;
 
-    public PolygonPlotConsoleAction(String title, GeometryList geometryList, MeshAlgo meshAlgo, GpPattern pattern, Domain domain, WindowPath preferredPath) {
+    public PolygonPlotConsoleAction(String title, HGeometryList geometryList, MeshAlgo meshAlgo, GpPattern pattern, Domain domain, WindowPath preferredPath) {
         this.geometryList = geometryList;
         this.title = title;
         this.meshAlgo = meshAlgo;
