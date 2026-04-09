@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadrumaths.test.removeme;
 
-import net.thevpc.scholar.hadrumaths.geom.Point;
-import net.thevpc.scholar.hadrumaths.geom.Polygon;
+import net.thevpc.scholar.hadrumaths.geom.HPoint;
+import net.thevpc.scholar.hadrumaths.geom.HPolygon;
 import net.thevpc.scholar.hadrumaths.AbsoluteSamples;
 import net.thevpc.scholar.hadrumaths.symbolic.polymorph.num.Mul;
 import net.thevpc.scholar.hadrumaths.symbolic.polymorph.num.Plus;
@@ -49,11 +49,11 @@ public class TestDomain {
         }
     }
     public static void main_i(String[] args) {
-        Polygon polygon = GeometryFactory.createPolygon(new Point[]{
-                new Point(0, 1),
-                new Point(1, 0),
-                new Point(0, -1),
-                new Point(-1, 0),
+        HPolygon polygon = GeometryFactory.createPolygon(new HPoint[]{
+                new HPoint(0, 1),
+                new HPoint(1, 0),
+                new HPoint(0, -1),
+                new HPoint(-1, 0),
         });
         Domain domain = polygon.getDomain();
         System.out.println(domain);
