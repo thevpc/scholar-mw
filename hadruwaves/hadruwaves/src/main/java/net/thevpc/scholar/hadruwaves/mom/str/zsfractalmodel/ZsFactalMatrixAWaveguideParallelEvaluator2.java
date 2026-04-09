@@ -6,8 +6,8 @@ import net.thevpc.common.mon.VoidMonitoredAction;
 import net.thevpc.nuts.elem.NElement;
 
 import net.thevpc.scholar.hadrumaths.*;
-import net.thevpc.scholar.hadrumaths.geom.FractalAreaGeometryList;
-import net.thevpc.scholar.hadrumaths.geom.Geometry;
+import net.thevpc.scholar.hadrumaths.geom.FractalAreaHGeometryList;
+import net.thevpc.scholar.hadrumaths.geom.HGeometry;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.thevpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
@@ -196,8 +196,8 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator2 implements MatrixAEvalua
     private Yoperator[] Yop(final MomStructureFractalZop str2, ProgressMonitor cmonitor) {
         ProgressMonitor monitor = ProgressMonitors.nonnull(cmonitor);
         GpAdaptiveMesh gpAdaptatif = ((GpAdaptiveMesh) str2.getDirectGpTestFunctions());
-        final FractalAreaGeometryList polygon = (FractalAreaGeometryList) gpAdaptatif.getPolygons(str2.getCircuitType());
-        final Geometry[] transform = polygon.getTransform();
+        final FractalAreaHGeometryList polygon = (FractalAreaHGeometryList) gpAdaptatif.getPolygons(str2.getCircuitType());
+        final HGeometry[] transform = polygon.getTransform();
         final Yoperator[] ops = new Yoperator[transform.length];
         final Domain domain = str2.getDomain();
         int theK = str2.realK;
