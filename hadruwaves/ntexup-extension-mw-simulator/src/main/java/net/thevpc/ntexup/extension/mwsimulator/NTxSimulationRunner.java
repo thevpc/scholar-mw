@@ -12,29 +12,38 @@ import java.util.concurrent.*;
 import java.util.function.Function;
 
 public class NTxSimulationRunner {
+
     private ExecutorService executorService;
     private Map<String, NCachedValue<NTxSimulationRunningProcess>> cachedResults = new ConcurrentHashMap<>();
 
     public NTxSimulationRunner() {
-        executorService = Executors.newFixedThreadPool(3);
+        ClassLoader contextClassLoader = getClass().getClassLoader();
+//        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        executorService = Executors.newFixedThreadPool(3, runnable -> {
+            Thread thread = new Thread(runnable);
+            thread.setContextClassLoader(contextClassLoader);
+            thread.setDaemon(true);
+            thread.setName("Simulation-Daemon-" + thread.getId());
+            return thread;
+        });
     }
 
-
     public <T extends NTxSimulationResults> NTxSimulationRunningProcess add(NCallable<T> def, NTxSimulationPlan query) {
-        NCachedValue<NTxSimulationRunningProcess> cv = cachedResults.computeIfAbsent(query.hash(), t -> NCachedValue.of(() ->
-                {
-                    synchronized (NTxSimulationRunner.this) {
-                        String taskId = UUID.randomUUID().toString();
-                        Future<T> f = executorService.submit(def);
-                        String n = NStringUtils.firstNonBlank(query.name(),"Result");
-                        return new MyNTxSimulationRunningProcess<T>(taskId, n, f);
-                    }
-                }
+        NCachedValue<NTxSimulationRunningProcess> cv = cachedResults.computeIfAbsent(query.hash(), t -> NCachedValue.of(()
+                -> {
+            synchronized (NTxSimulationRunner.this) {
+                String taskId = UUID.randomUUID().toString();
+                Future<T> f = executorService.submit(def);
+                String n = NStringUtils.firstNonBlank(query.id(), "Result");
+                return new MyNTxSimulationRunningProcess<T>(taskId, n, f);
+            }
+        }
         )).setExpiry(NDuration.ofHours(1));
         return cv.get();
     }
 
     private static class MyNTxSimulationRunningProcess<T extends NTxSimulationResults> implements NTxSimulationRunningProcess {
+
         private final String taskId;
         private final String name;
         private final Future<T> f;

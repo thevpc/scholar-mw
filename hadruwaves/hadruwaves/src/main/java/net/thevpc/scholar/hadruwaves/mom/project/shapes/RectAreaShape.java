@@ -6,10 +6,7 @@ package net.thevpc.scholar.hadruwaves.mom.project.shapes;
 
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.GeometryFactory;
-import net.thevpc.scholar.hadrumaths.geom.DefaultGeometryList;
-import net.thevpc.scholar.hadrumaths.geom.DefaultPolygon;
-import net.thevpc.scholar.hadrumaths.geom.GeometryList;
-import net.thevpc.scholar.hadrumaths.geom.Polygon;
+import net.thevpc.scholar.hadrumaths.geom.*;
 import net.thevpc.scholar.hadruwaves.mom.project.AbstractMomProjectItem;
 import net.thevpc.scholar.hadruwaves.mom.project.MomProject;
 import net.thevpc.scholar.hadrumaths.util.config.Configuration;
@@ -113,7 +110,7 @@ public class RectAreaShape extends AbstractMomProjectItem implements AreaShape{
         this.yExpression = String.valueOf(d / c.getDimensionUnit());
     }
 
-    public GeometryList getPolygons(Domain globalDomain) {
+    public HGeometryList getPolygons(Domain globalDomain) {
 //            DomainXY polygonsDomain0 = globalDomain;
 //            double precision = CELL_PIXELS_PRECISION;
 //            double precisionThreshold = precision * CELL_PIXELS_THRESHOLD;
@@ -133,8 +130,8 @@ public class RectAreaShape extends AbstractMomProjectItem implements AreaShape{
 //            if (xfactor > 1 || yfactor>1) {
 //                dd = new DomainXY((dd.xmin - polygonsDomain0.xmin) * xfactor, (dd.ymin - polygonsDomain0.ymin) * yfactor, dd.width * xfactor, dd.height * yfactor, DomainXY.Type.LENGTH);
 //            }
-            Polygon pp = GeometryFactory.createPolygon(dd);
-            return new DefaultGeometryList(globalDomain,pp);
+            HPolygon pp = GeometryFactory.createPolygon(dd);
+            return new DefaultHGeometryList(globalDomain,pp);
     }
 
     @Override

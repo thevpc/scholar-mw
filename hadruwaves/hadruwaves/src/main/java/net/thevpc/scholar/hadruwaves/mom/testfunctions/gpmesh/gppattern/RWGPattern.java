@@ -2,58 +2,38 @@ package net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 
 import net.thevpc.nuts.elem.NElement;
 
-
 import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.geom.*;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZoneShape;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZoneType;
-import net.thevpc.scholar.hadrumaths.symbolic.double2double.DDiscrete;
+import net.thevpc.scholar.hadrumaths.meshalgo.tri.MeshRefinementHelper;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.RWG;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
+import net.thevpc.scholar.hadruplot.libraries.calc3d.geometry3d.Geometry;
+import net.thevpc.scholar.hadruwaves.mom.HintAxisType;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
  * @creationtime 15 mai 2007 21:41:08
  */
 public final class RWGPattern extends AbstractGpPattern implements TriangularGpPattern, Cloneable {
-    boolean x;
-    boolean y;
-    private int gridx = 100;
-    private int gridy = 100;
 
-    public RWGPattern(boolean x, boolean y, int gridx, int gridy) {
-        this.x = x;
-        this.y = y;
-        this.gridx = gridx;
-        this.gridy = gridy;
-    }
-
-    public RWGPattern(boolean x, boolean y) {
-        this(x, y, 100, 100);
-    }
-
-    public RWGPattern(boolean x, boolean y, int grid) {
-        this(x, y, grid, grid);
-    }
-
-    public RWGPattern(int gridx, int gridy) {
-        this(true, true, gridx, gridy);
-    }
-
-    public RWGPattern(int gridx) {
-        this(true, true, gridx, gridx);
-    }
+    HintAxisType xy;
 
     public RWGPattern() {
-        this(true, true, 100, 100);
+        this(HintAxisType.XY);
     }
 
+    public RWGPattern(HintAxisType xy) {
+        this.xy = xy;
+    }
 
     @Override
     public RWGPattern copy() {
@@ -72,210 +52,221 @@ public final class RWGPattern extends AbstractGpPattern implements TriangularGpP
     @Override
     public NElement toElement() {
         NObjectElementBuilder h = super.toElement().toObject().get().builder();
-        h.add("x", NElementHelper.elem(x));
-        h.add("y", NElementHelper.elem(y));
-        h.add("gridx", NElementHelper.elem(gridx));
-        h.add("gridy", NElementHelper.elem(gridy));
+        h.add("axis", NElementHelper.elem(xy));
         return h.build();
     }
 
     public int getCount() {
+        switch (xy){
+            case X_ONLY:
+            case Y_ONLY:
+            case XY:
+                return 1;
+            case XY_SEPARATED:
+                return 2;
+        }
         return 1;
     }
 
     public DoubleToVector createFunction(int index, Domain globalDomain, MeshZone zone, MomStructure str) {
-        Polygon p = zone.getPolygon();
-        DoubleToVector f = Maths.vector(
-                (
-                        x ? DDiscrete.of(new RWG(1, p), gridx, gridy) : Maths.DZEROXY
-                ),
-                (
-                        y ? DDiscrete.of(new RWG(1, p), gridx, gridy) : Maths.DZEROXY
-                )
-        )
-                .setProperty("Type", (x & y) ? "Polyedre" : x ? "PolyedreX" : y ? "PolyedreY" : "0")
-                .setProperty("p", index).toDV();
-//                f.setProperties(properties);
-        return f;
+        HPolygon p = zone.getPolygon();
+        switch (xy){
+            case X_ONLY:{
+                return _xf(index, p);
+            }
+            case Y_ONLY:{
+                return _yf(index, p);
+            }
+            case XY:{
+                return _xyf(index, p);
+            }
+            case XY_SEPARATED:{
+                switch (index){
+                    case 0:{
+                        return _xf(index, p);
+                    }
+                    case 1:{
+                        return _yf(index, p);
+                    }
+                }
+            }
+        }
+        throw new IllegalArgumentException("xy="+xy);
+    }
 
-//
-////        AreaComponent.showDialog("1",area);
-//        switch (zone.getShape()) {
-//            default: {
-//                Polygon p = zone.getPolygon();
-////                PList<Point> ps = p.getPoints();
-////                Point p1 = ps.get(1);
-////                Point p2 = ps.get(3);
-//                try {
-//                    if (p1 != null && p2 != null) {
-//                        p1 = zone.toEffectivePoint(p1);
-//                        p2 = zone.toEffectivePoint(p2);
-//
-//                        Point s1 = null;
-//                        Point s2 = null;
-//                        for (Point dPoint : ps) {
-//                            if (!dPoint.equals(p1) && !dPoint.equals(p2)) {
-//                                if (s1 == null) {
-//                                    s1 = dPoint;
-//                                } else if (s2 == null) {
-//                                    s2 = dPoint;
-//                                } else {
-//                                    throw new IllegalArgumentException("How come?");
-//                                }
-//                            }
-//                        }
-////                        if (s1 != null && s2 != null) {
-////                            throw new IllegalArgumentException("How come?");
-////
-////                        }
-//                        p = new Polygon(s1, p1, s2, p2);
-//                        DoubleToVector f = Maths.vector(
-//                                (
-//                                        x ? DDiscrete.discretize(new RWG(1, p), gridx, gridy) : FunctionFactory.DZEROXY
-//                                ),
-//                                (
-//                                        y ? DDiscrete.discretize(new RWG(1, p), gridx, gridy) : FunctionFactory.DZEROXY
-//                                )
-//                        );
-//                        Map<String, Object> properties = f.getProperties();
-//                        properties.put("Type", (x & y) ? "Polyedre" : x ? "PolyedreX" : y ? "PolyedreY" : "0");
-//                        properties.put("p", index);
-////                f.setProperties(properties);
-//                        return f;
-//                    }
-//                } catch (RuntimeException ex) {
-//                    //
-//                    ex.printStackTrace();
-//                }
-//                p = new Polygon(ps);
-//                DoubleToVector f = Maths.vector(
-//                        (
-//                                x ? DDiscrete.discretize(new RWG(1, p), gridx, gridy) : FunctionFactory.DZEROXY
-//                        ),
-//                        (
-//                                y ? DDiscrete.discretize(new RWG(1, p), gridx, gridy) : FunctionFactory.DZEROXY
-//                        )
-//                );
-//                Map<String, Object> properties = f.getProperties();
-//                properties.put("Type", (x & y) ? "Cst" : x ? "CstX" : y ? "CstY" : "0");
-//                properties.put("p", index);
-//                return f;
-//            }
-//        }
+    private static DoubleToVector _yf(int index, HPolygon p) {
+        return Maths.vector(
+                        (Maths.DZEROXY),
+                        (new RWG(Axis.Y, 1, p))
+                )
+                .setProperty("Type", "PolyedreY")
+                .setProperty("p", index).toDV();
+    }
+
+    private static DoubleToVector _xf(int index, HPolygon p) {
+        return Maths.vector(
+                        (new RWG(Axis.X,1, p)),
+                        (Maths.DZEROXY)
+                )
+                .setProperty("Type", "PolyedreX")
+                .setProperty("p", index).toDV();
+    }
+    private static DoubleToVector _xyf(int index, HPolygon p) {
+        return Maths.vector(
+                        new RWG(Axis.X, 1, p),
+                        new RWG(Axis.Y, 1, p)
+                )
+                .setProperty("Type", "Polyedre")
+                .setProperty("p", index).toDV();
     }
 
     public String toString() {
         return getClass().getSimpleName();
     }
 
-    public boolean isAttachX() {
-        return false;
-    }
-
-    public boolean isAttachY() {
-        return false;
-    }
-
     public List<MeshZone> transform(List<MeshZone> zones, Domain globalBounds) {
-        ArrayList<MeshZone> newZones = new ArrayList<MeshZone>();
+        ArrayList<MeshZone> newZones = new ArrayList<>();
         ArrayList<MeshZone> triangles = new ArrayList<MeshZone>();
+        ArrayList<HTriangle> trianglesAll = new ArrayList<HTriangle>();
         TreeSet<Integer> remaining = new TreeSet<Integer>();
-        for (MeshZone zone : zones) {
+        HGeometry gg=null;
+        for (int i = 0; i < zones.size(); i++) {
+            MeshZone zone = zones.get(i);
+            trianglesAll.add((HTriangle) zone.getGeometry());
+        }
+        for (int i = 0; i < zones.size(); i++) {
+            MeshZone zone = zones.get(i);
             if (!zone.getGeometry().isTriangular()) {
-                zone.getGeometry().isTriangular();
-                //newZones.add(zone);
+                //zone.getGeometry().isTriangular();
             } else {
                 triangles.add(zone);
             }
+            if (gg == null) {
+                gg = zone.getGeometry();
+            } else {
+                gg = gg.addGeometry(zone.getGeometry());
+            }
         }
-        double err = Double.POSITIVE_INFINITY;
+        double minEdge = Double.POSITIVE_INFINITY;
         for (int i = 0; i < triangles.size(); i++) {
             remaining.add(i);
-            Geometry geometry = triangles.get(i).getGeometry();
-            Triangle t1 = geometry.toTriangle();
-            Domain dd = t1.getDomain();
-            if (err > dd.xwidth()) {
-                err = dd.xwidth();
-            }
-            if (err > dd.ywidth()) {
-                err = dd.ywidth();
-            }
+            HGeometry geometry = triangles.get(i).getGeometry();
+            HTriangle t = geometry.toTriangle();
+            minEdge = Math.min(minEdge, t.p1().distance(t.p2()));
+            minEdge = Math.min(minEdge, t.p2().distance(t.p3()));
+            minEdge = Math.min(minEdge, t.p1().distance(t.p3()));
         }
-        err = err / 10.0;
+        double err = minEdge / 10.0;
+        Set<Integer> visited = new HashSet<>();
         for (int i = 0; i < triangles.size(); i++) {
             MeshZone m1 = triangles.get(i);
-            Triangle t1 = m1.getGeometry().toTriangle();
-//            boolean ok=false;
+            HTriangle t1 = m1.getGeometry().toTriangle();
             for (int j = i + 1; j < triangles.size(); j++) {
                 MeshZone m2 = triangles.get(j);
-                Triangle t2 = m2.getGeometry().toTriangle();
-
-
-                List<Point> t1points = t1.getPoints();
-                List<Point> t2points = t2.getPoints();
-
-                List<Point> initialPoints = new ArrayList<Point>();
-                initialPoints.addAll(t1points);
-                initialPoints.addAll(t2points);
-                Set<Point> allNonDuplicatePoints = GeomUtils.roundSet(initialPoints, err);
-                List<Point> inter = GeomUtils.roundIntersect(t1points, t2points, err);
+                HTriangle t2 = m2.getGeometry().toTriangle();
+                List<HPoint> t1points = t1.getPoints();
+                List<HPoint> t2points = t2.getPoints();
+                List<HPoint> inter = GeomUtils.roundIntersect(t1points, t2points, err);
                 if (inter.size() == 2) {
-                    HashSet<Point> nonBase = new HashSet<Point>(allNonDuplicatePoints);
-                    nonBase.removeAll(inter);
-                    if (nonBase.size() != 2) {
+                    HPoint tip1 = null, tip2 = null;
+                    for (HPoint p : t1points) {
+                        if (!GeomUtils.found(p, inter, err)) {
+                            tip1 = p;
+                            break;
+                        }
+                    }
+                    for (HPoint p : t2points) {
+                        if (!GeomUtils.found(p, inter, err)) {
+                            tip2 = p;
+                            break;
+                        }
+                    }
+                    if (tip1 == null || tip2 == null) {
                         throw new IllegalArgumentException("Problem");
                     }
-                    Point[] nonBasePoints = nonBase.toArray(new Point[nonBase.size()]);
-                    Polygon area = GeometryFactory.createPolygon(
-                            nonBasePoints[0],
-                            inter.get(0),
-                            nonBasePoints[1],
-                            inter.get(1)
+                    List<HPoint> quad = new ArrayList<>(Arrays.asList(tip1, inter.get(0), tip2, inter.get(1)));
+                    final double cx = quad.stream().mapToDouble(p -> p.x).average().getAsDouble();
+                    final double cy = quad.stream().mapToDouble(p -> p.y).average().getAsDouble();
+
+                    quad.sort((a, b) -> Double.compare(
+                            Math.atan2(a.y - cy, a.x - cx),
+                            Math.atan2(b.y - cy, b.x - cx)
+                    ));
+                    HPolygon area = GeometryFactory.createPolygon(
+                            quad.get(0), quad.get(1), quad.get(2), quad.get(3)
                     );
-                    MeshZone meshZone = new MeshZone(area, MeshZoneShape.POLYGON, MeshZoneType.MAIN);
-//                        Point p1ok = GeomUtils.closest(p1, polyPoints);
-//                        Point p2ok = GeomUtils.closest(p2, polyPoints);
-//                        meshZone.setProperty("P1", p1ok);
-//                        meshZone.setProperty("P2", p2ok);
-                    newZones.add(meshZone);
-//                    AreaComponent.showDialog("area",area);
+                    if (!GeomUtils.is4Edges(area)) continue;
+                    double qarea = Math.abs(
+                            (quad.get(0).x - quad.get(2).x) * (quad.get(1).y - quad.get(3).y) -
+                                    (quad.get(1).x - quad.get(3).x) * (quad.get(0).y - quad.get(2).y)
+                    ) * 0.5;
+                    if (qarea < 1e-12) continue;
+
+                    {
+                        double ep3=1e-12;
+                        HGeometry u = area.subtractGeometry(gg);
+                        if(u.area()>ep3){
+                            continue;
+                        }
+                    }
+                    //final check
+                    if(!GeomUtils.isValidTriangle(quad.get(0), quad.get(1), quad.get(3))){
+                        continue;
+                    }
+                    if(!GeomUtils.isValidTriangle(quad.get(2), quad.get(1), quad.get(3))){
+                        continue;
+                    }
+                    newZones.add(new MeshZone(area, MeshZoneShape.POLYGON, MeshZoneType.MAIN));
+                    visited.add(i);
+                    visited.add(j);
                 }
-//                if (pp.size() == 2) {
-//                    Point[] points = pp.toArray(new Point[pp.size()]);
-//                    p1 = points[0];
-//                    p2 = points[1];
-//                    remaining.remove(i);
-//                    remaining.remove(j);
-//
-//
-//                    Geometry area =  m1.getGeometry().add(m2.getGeometry());
-//                    if(area.isPolygonal() && area.toPolygon().is4Edges()) {
-//                        PList<Point> polyPoints = area.toPolygon().getPoints();
-//                        MeshZone meshZone = new MeshZone(area, MeshZoneShape.POLYGON, MeshZoneType.MAIN);
-//                        Point p1ok = GeomUtils.closest(p1, polyPoints);
-//                        Point p2ok = GeomUtils.closest(p2, polyPoints);
-//                        meshZone.setProperty("P1", p1ok);
-//                        meshZone.setProperty("P2", p2ok);
-//                        newZones.add(meshZone);
-//                    }else{
-//                        AreaComponent.showDialog("m1.getGeometry(),m2.getGeometry()",m1.getGeometry(),m2.getGeometry());
-//                        AreaComponent.showDialog("m1.getGeometry(),m2.getGeometry(),area",m1.getGeometry(),m2.getGeometry(),area);
-//                        AreaComponent.showDialog("m2.getGeometry(),area",m2.getGeometry(),area);
-//                        AreaComponent.showDialog("area",area);
-//                        area =  m1.getGeometry().add(m2.getGeometry());
-//                        throw new RuntimeException("Not a 4 edges Polygon !!! : "+(area.isPolygonal()?"Poly":"NonPoly")+" , "+area.toSurface().getPoints().size());
-//                    }
-//                }
             }
         }
-//        if (remaining.size() > 0) {
-//            //evaluate error
-//            NDoubleMinMax m = new NDoubleMinMax();
-//
-//        }
-//        for (Integer integer : remaining) {
-//            System.err.println(">> remaining " + integer);
-//        }
+        for (int i = 0; i < triangles.size(); i++) {
+            if (!visited.contains(i)) {
+                HTriangle t = triangles.get(i).getGeometry().toTriangle();
+
+                // Find longest edge
+                HPoint a = t.p1(), b = t.p2(), c = t.p3();
+                double d12 = a.distance(b);
+                double d23 = b.distance(c);
+                double d13 = a.distance(c);
+
+                HPoint tip, e1, e2;
+                if (d23 >= d12 && d23 >= d13) {
+                    // longest edge is b-c, tip is a
+                    tip = a; e1 = b; e2 = c;
+                } else if (d12 >= d23 && d12 >= d13) {
+                    // longest edge is a-b, tip is c
+                    tip = c; e1 = a; e2 = b;
+                } else {
+                    // longest edge is a-c, tip is b
+                    tip = b; e1 = a; e2 = c;
+                }
+
+                // Midpoint of longest edge
+                HPoint mid = HPoint.create((e1.x + e2.x) / 2.0, (e1.y + e2.y) / 2.0);
+
+                if (!GeomUtils.isValidTriangle(tip, e1, mid)) continue;
+                if (!GeomUtils.isValidTriangle(tip, e2, mid)) continue;
+
+                // Sort quad by angle around centroid for correct winding
+                List<HPoint> quad = new ArrayList<>(Arrays.asList(tip, e1, mid, e2));
+                final double cx = quad.stream().mapToDouble(p -> p.x).average().getAsDouble();
+                final double cy = quad.stream().mapToDouble(p -> p.y).average().getAsDouble();
+                quad.sort((a2, b2) -> Double.compare(
+                        Math.atan2(a2.y - cy, a2.x - cx),
+                        Math.atan2(b2.y - cy, b2.x - cx)
+                ));
+
+                HPolygon area = GeometryFactory.createPolygon(
+                        quad.get(0), quad.get(1), quad.get(2), quad.get(3)
+                );
+                if (!GeomUtils.is4Edges(area)) continue;
+
+                newZones.add(new MeshZone(area, MeshZoneShape.POLYGON, MeshZoneType.MAIN));
+            }
+        }
         return newZones;
     }
 

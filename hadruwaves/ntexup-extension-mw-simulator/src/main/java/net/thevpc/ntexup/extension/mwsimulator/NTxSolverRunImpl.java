@@ -2,7 +2,9 @@ package net.thevpc.ntexup.extension.mwsimulator;
 
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.util.NAssert;
+import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NNameFormat;
+import net.thevpc.nuts.util.NStringUtils;
 
 public abstract class NTxSolverRunImpl implements NTxSolverRun {
     private final NTxSimulationPlan plan;
@@ -45,6 +47,18 @@ public abstract class NTxSolverRunImpl implements NTxSolverRun {
             this.compiled = true;
         }
         return this;
+    }
+
+    public String fullPath() {
+        return "/"+plan().name()+"/"+fullName();
+    }
+    public String fullName() {
+        String on = NStringUtils.trim(outputName());
+        String sn = NStringUtils.trim(solverName());
+        if (!NBlankable.isBlank(outputName()) && !on.equals(sn)) {
+            return sn + ":" + on;
+        }
+        return sn;
     }
 
     public String outputName() {

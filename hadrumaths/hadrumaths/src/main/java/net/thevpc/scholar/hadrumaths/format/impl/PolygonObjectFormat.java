@@ -5,21 +5,20 @@
 package net.thevpc.scholar.hadrumaths.format.impl;
 
 import net.thevpc.scholar.hadrumaths.format.ObjectFormatContext;
-import net.thevpc.scholar.hadrumaths.geom.DefaultPolygon;
-import net.thevpc.scholar.hadrumaths.geom.Point;
-import net.thevpc.scholar.hadrumaths.geom.Polygon;
+import net.thevpc.scholar.hadrumaths.geom.HPoint;
+import net.thevpc.scholar.hadrumaths.geom.HPolygon;
 
 import java.util.List;
 
 /**
  * @author vpc
  */
-public class PolygonObjectFormat extends AbstractObjectFormat<Polygon> {
+public class PolygonObjectFormat extends AbstractObjectFormat<HPolygon> {
 
     @Override
-    public void format(Polygon o, ObjectFormatContext context) {
+    public void format(HPolygon o, ObjectFormatContext context) {
         context.append("Polygon([");
-        List<Point> points1 = o.getPoints();
+        List<HPoint> points1 = o.getPoints();
         for (int i = 0; i < points1.size(); i++) {
             if (i > 0) {
                 context.append(",");
@@ -27,7 +26,7 @@ public class PolygonObjectFormat extends AbstractObjectFormat<Polygon> {
             context.append("(");
             context.append(points1.get(i).x);
             context.append(",");
-            context.append(points1.get(i).x);
+            context.append(points1.get(i).y);
             context.append(")");
         }
         context.append("]");

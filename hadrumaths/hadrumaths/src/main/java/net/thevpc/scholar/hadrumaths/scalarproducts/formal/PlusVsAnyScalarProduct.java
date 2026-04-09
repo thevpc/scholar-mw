@@ -12,6 +12,7 @@ import net.thevpc.scholar.hadrumaths.symbolic.polymorph.num.Plus;
  * Time: 15:15:16
  */
 final class PlusVsAnyScalarProduct implements FormalScalarProductHelper {
+    public static final PlusVsAnyScalarProduct INSTANCE = new PlusVsAnyScalarProduct();
     @Override
     public int hashCode() {
         return getClass().getName().hashCode();

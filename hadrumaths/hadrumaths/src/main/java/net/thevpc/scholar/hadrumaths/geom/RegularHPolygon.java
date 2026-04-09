@@ -1,6 +1,5 @@
 package net.thevpc.scholar.hadrumaths.geom;
 
-import net.thevpc.nuts.elem.NArrayElementBuilder;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Domain;
@@ -11,18 +10,19 @@ import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by vpc on 8/2/14.
  */
-public class RegularPolygon extends AbstractGeometry implements PolygonBuilder {
-    private Point center;
+public class RegularHPolygon extends AbstractHGeometry implements HPolygonBuilder {
+    private HPoint center;
     private double radius;
     private int sides;
     private float arcRatio;
     private double phase;
 
-    public Point getCenter() {
+    public HPoint getCenter() {
         return center;
     }
 
@@ -43,20 +43,20 @@ public class RegularPolygon extends AbstractGeometry implements PolygonBuilder {
     }
 
 
-    public RegularPolygon setCenter(Point center) {
+    public RegularHPolygon setCenter(HPoint center) {
         this.center = center;
         return this;
     }
 
-    public RegularPolygon setCenter(double x, double y) {
-        return setCenter(Point.create(x, y));
+    public RegularHPolygon setCenter(double x, double y) {
+        return setCenter(HPoint.create(x, y));
     }
 
     public double getRadius() {
         return radius;
     }
 
-    public RegularPolygon setRadius(double radius) {
+    public RegularHPolygon setRadius(double radius) {
         this.radius = radius;
         return this;
     }
@@ -65,7 +65,7 @@ public class RegularPolygon extends AbstractGeometry implements PolygonBuilder {
         return sides;
     }
 
-    public RegularPolygon setSides(int sides) {
+    public RegularHPolygon setSides(int sides) {
         this.sides = sides;
         return this;
     }
@@ -74,7 +74,7 @@ public class RegularPolygon extends AbstractGeometry implements PolygonBuilder {
         return arcRatio;
     }
 
-    public RegularPolygon setArcRatio(float arcRatio) {
+    public RegularHPolygon setArcRatio(float arcRatio) {
         this.arcRatio = arcRatio;
         return this;
     }
@@ -83,19 +83,14 @@ public class RegularPolygon extends AbstractGeometry implements PolygonBuilder {
         return phase;
     }
 
-    public RegularPolygon setPhase(double phase) {
+    public RegularHPolygon setPhase(double phase) {
         this.phase = phase;
         return this;
     }
 
     @Override
-    public Geometry clone() {
+    public HGeometry clone() {
         return super.clone();
-    }
-
-    @Override
-    public Surface toSurface() {
-        return toPolygon().toSurface();
     }
 
     @Override
@@ -120,7 +115,7 @@ public class RegularPolygon extends AbstractGeometry implements PolygonBuilder {
 
     @Override
     public boolean isTriangular() {
-        return sides == 3;
+        return sides == 3 && getValidArcRatio() == 1.0;
     }
 
     @Override
@@ -130,16 +125,17 @@ public class RegularPolygon extends AbstractGeometry implements PolygonBuilder {
 
     @Override
     public boolean isEmpty() {
-        return toSurface().isEmpty();
+        return toPolygon().isEmpty();
     }
 
     @Override
-    public Geometry translateGeometry(double x, double y) {
-        RegularPolygon poly = new RegularPolygon();
+    public HGeometry translate(double x, double y) {
+        RegularHPolygon poly = new RegularHPolygon();
         poly.setCenter(center.translate(x, y));
         poly.setSides(sides);
         poly.setArcRatio(arcRatio);
         poly.setPhase(phase);
+        poly.setRadius(radius);
         return poly;
     }
 
@@ -149,7 +145,7 @@ public class RegularPolygon extends AbstractGeometry implements PolygonBuilder {
     }
 
     @Override
-    public Polygon toPolygon() {
+    public HPolygon toPolygon() {
         if (center == null) {
             throw new IllegalArgumentException("Missing center");
         }
@@ -166,18 +162,18 @@ public class RegularPolygon extends AbstractGeometry implements PolygonBuilder {
         if (max == sides) {
             max = sides - 1;
         }
-        List<Point> all = new ArrayList<Point>();
+        List<HPoint> all = new ArrayList<HPoint>();
         double dblpi = 2 * Maths.PI;
         for (int i = 0; i <= max; i++) {
             double x = center.x + radius * Maths.cos2(i * dblpi / sides + phase);
             double y = center.y + radius * Maths.sin2(i * dblpi / sides + phase);
-            all.add(Point.create(x, y));
+            all.add(HPoint.create(x, y));
         }
-        return GeometryFactory.createPolygon(all.toArray(new Point[0]));
+        return GeometryFactory.createPolygon(all.toArray(new HPoint[0]));
     }
 
     @Override
-    public Triangle toTriangle() {
+    public HTriangle toTriangle() {
         throw new IllegalArgumentException("Not Triangular");
     }
 
@@ -193,7 +189,20 @@ public class RegularPolygon extends AbstractGeometry implements PolygonBuilder {
     }
 
     @Override
-    public Polygon[] toPolygons() {
-        return new Polygon[]{toPolygon()};
+    public HPolygon[] toPolygons() {
+        return new HPolygon[]{toPolygon()};
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        RegularHPolygon that = (RegularHPolygon) o;
+        return Double.compare(radius, that.radius) == 0 && sides == that.sides && Float.compare(arcRatio, that.arcRatio) == 0 && Double.compare(phase, that.phase) == 0 && Objects.equals(center, that.center);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), center, radius, sides, arcRatio, phase);
     }
 }

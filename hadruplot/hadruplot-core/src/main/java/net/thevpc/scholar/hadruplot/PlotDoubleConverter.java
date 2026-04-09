@@ -30,6 +30,30 @@ public abstract class PlotDoubleConverter implements ToDoubleFunction<Object> {
             return toDouble(d);
         }
     };
+    public static final PlotDoubleConverter DEFINED = new AbstractPlotDoubleConverter("DEFINED", true) {
+        @Override
+        public double toDouble(Object c) {
+            if (c == null) {
+                return Double.NaN;
+            }
+            if (c instanceof Number) {
+                double d = Math.abs(((Number) c).doubleValue());
+                if(Double.isNaN(d)){
+                    return Double.NaN;
+                }
+                if(d!=0){
+                    return 1;
+                }
+                return d;
+            }
+            return Double.NaN;
+        }
+
+        @Override
+        public Object toComplex(double d) {
+            return toDouble(d);
+        }
+    };
     public static final PlotDoubleConverter REAL = new AbstractPlotDoubleConverter("REAL", true) {
         @Override
         public double toDouble(Object c) {

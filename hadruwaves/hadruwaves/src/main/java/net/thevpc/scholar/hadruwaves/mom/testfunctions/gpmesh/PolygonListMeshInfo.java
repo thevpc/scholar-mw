@@ -1,9 +1,7 @@
 package net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh;
 
 import net.thevpc.scholar.hadrumaths.Domain;
-import net.thevpc.scholar.hadrumaths.geom.DefaultGeometryList;
-import net.thevpc.scholar.hadrumaths.geom.Geometry;
-import net.thevpc.scholar.hadrumaths.geom.GeometryList;
+import net.thevpc.scholar.hadrumaths.geom.*;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.GpPattern;
@@ -18,21 +16,21 @@ public class PolygonListMeshInfo {
 
     Domain from;
     java.util.List<MeshZone> meshZones;
-    GeometryList polygons;
+    HGeometryList polygons;
     MeshAlgo meshalgo;
     GpPattern pattern;
 
-    public PolygonListMeshInfo(GeometryList polygons, Domain globalDomain, MeshAlgo meshalgo, GpPattern pattern) {
+    public PolygonListMeshInfo(HGeometryList polygons, Domain globalDomain, MeshAlgo meshalgo, GpPattern pattern) {
         this.from = polygons.getBounds() == null ? globalDomain : polygons.getBounds();
         this.pattern = pattern;
-        this.polygons = new DefaultGeometryList(polygons);
+        this.polygons = new DefaultHGeometryList(polygons);
         this.meshalgo = meshalgo;
         rebuild();
     }
 
     public void rebuild(){
         java.util.List<MeshZone> zones = new ArrayList<MeshZone>();
-        for (Geometry polygon : this.polygons) {
+        for (HGeometry polygon : this.polygons) {
             zones.addAll(meshalgo.meshPolygon(polygon));
         }
         zones = pattern.transform(zones, from);

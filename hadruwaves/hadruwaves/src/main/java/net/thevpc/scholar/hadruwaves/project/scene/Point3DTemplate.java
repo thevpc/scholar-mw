@@ -4,7 +4,7 @@ package net.thevpc.scholar.hadruwaves.project.scene;
 import net.thevpc.nuts.elem.NElement;
 
 import net.thevpc.nuts.elem.NToElement;
-import net.thevpc.scholar.hadrumaths.geom.Point;
+import net.thevpc.scholar.hadrumaths.geom.HPoint;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.thevpc.Point3D;
 import net.thevpc.scholar.hadruwaves.project.Props2;
 import net.thevpc.scholar.hadruwaves.project.configuration.HWConfigurationRun;
@@ -33,7 +33,7 @@ public class Point3DTemplate implements NToElement {
         set(o);
     }
 
-    public Point3DTemplate(Point o) {
+    public Point3DTemplate(HPoint o) {
         set(o);
     }
 
@@ -53,7 +53,7 @@ public class Point3DTemplate implements NToElement {
         this.z.set(String.valueOf(o.getZ()));
     }
 
-    public void set(Point o) {
+    public void set(HPoint o) {
         this.x.set(String.valueOf(o.getX()));
         this.y.set(String.valueOf(o.getY()));
         this.z.set(String.valueOf(o.getZ()));
@@ -79,8 +79,8 @@ public class Point3DTemplate implements NToElement {
         );
     }
 
-    public Point evalPoint(HWConfigurationRun configuration) {
-        return new Point(
+    public HPoint evalPoint(HWConfigurationRun configuration) {
+        return new HPoint(
                 x.eval(configuration),
                 y.eval(configuration),
                 z.eval(configuration)

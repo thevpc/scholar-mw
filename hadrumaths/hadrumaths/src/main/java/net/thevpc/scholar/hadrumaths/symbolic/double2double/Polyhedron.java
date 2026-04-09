@@ -2,10 +2,7 @@ package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
-import net.thevpc.scholar.hadrumaths.geom.DefaultPolygon;
-import net.thevpc.scholar.hadrumaths.geom.Point;
-import net.thevpc.scholar.hadrumaths.geom.Polygon;
-import net.thevpc.scholar.hadrumaths.geom.Triangle;
+import net.thevpc.scholar.hadrumaths.geom.*;
 import net.thevpc.scholar.hadrumaths.symbolic.Range;
 
 import java.util.List;
@@ -22,9 +19,9 @@ public class Polyhedron extends AbstractDoubleToDouble {
 //    public static final int CODE = 1;
 
     public double max;
-    private final Polygon polygon;
-    private Triangle triangle;
-    private Point baricenter;
+    private final HPolygon polygon;
+    private DefaultHTriangle triangle;
+    private HPoint baricenter;
     private boolean isTriangle;
     private boolean isRectangle;
     private final Domain domain;
@@ -33,19 +30,19 @@ public class Polyhedron extends AbstractDoubleToDouble {
         this(max, GeometryFactory.createPolygon(domain));
     }
 
-    public Polyhedron(double max, Polygon polygon) {
+    public Polyhedron(double max, HPolygon polygon) {
         this.max = max;
         this.polygon = polygon;
         this.domain = max == 0 ? Domain.EMPTYXY : polygon.getDomain();
 //        name=("Polyedre");
-        List<Point> points = polygon.getPoints();
+        List<HPoint> points = polygon.getPoints();
         if (polygon.isRectangular()) {
             isRectangle = true;
         } else if (points.size() == 3 || (points.size() == 4 &&
                 points.get(0).equals(points.get(3))
         )) {
             isTriangle = true;
-            triangle = new Triangle(polygon);
+            triangle = new DefaultHTriangle(polygon);
             baricenter = triangle.getBarycenter();
         }
     }
@@ -111,12 +108,12 @@ public class Polyhedron extends AbstractDoubleToDouble {
         if (polygon.contains(x, y)) {
             if (isTriangle) {
                 defined.set();
-                Triangle t2;
-                Triangle t3;
+                HTriangle t2;
+                HTriangle t3;
                 double v;
-                t2 = new Triangle(triangle.p1, triangle.p2, baricenter);
+                t2 = new DefaultHTriangle(triangle.p1, triangle.p2, baricenter);
                 if (t2.toPolygon().contains(x, y)) {
-                    t3 = new Triangle(triangle.p1, triangle.p2, Point.create(x, y));
+                    t3 = new DefaultHTriangle(triangle.p1, triangle.p2, HPoint.create(x, y));
                     double h2 = t2.getHeight(3);
                     v = h2 == 0 ? 0 : t3.getHeight(3) / h2 * max;
                     if (Double.isNaN(v)) {
@@ -124,9 +121,9 @@ public class Polyhedron extends AbstractDoubleToDouble {
                     }
                     return v;
                 }
-                t2 = new Triangle(triangle.p2, triangle.p3, baricenter);
+                t2 = new DefaultHTriangle(triangle.p2, triangle.p3, baricenter);
                 if (t2.toPolygon().contains(x, y)) {
-                    t3 = new Triangle(triangle.p2, triangle.p3, Point.create(x, y));
+                    t3 = new DefaultHTriangle(triangle.p2, triangle.p3, HPoint.create(x, y));
                     double h2 = t2.getHeight(3);
                     v = h2 == 0 ? 0 : t3.getHeight(3) / h2 * max;
                     if (Double.isNaN(v)) {
@@ -135,9 +132,9 @@ public class Polyhedron extends AbstractDoubleToDouble {
                     return v;
                 }
 
-                t2 = new Triangle(triangle.p3, triangle.p1, baricenter);
+                t2 = new DefaultHTriangle(triangle.p3, triangle.p1, baricenter);
                 if (t2.toPolygon().contains(x, y)) {
-                    t3 = new Triangle(triangle.p3, triangle.p1, Point.create(x, y));
+                    t3 = new DefaultHTriangle(triangle.p3, triangle.p1, HPoint.create(x, y));
                     double h2 = t2.getHeight(3);
                     v = h2 == 0 ? 0 : t3.getHeight(3) / h2 * max;
                     if (Double.isNaN(v)) {
@@ -220,7 +217,7 @@ public class Polyhedron extends AbstractDoubleToDouble {
         return max;
     }
 
-    public Polygon getPolygon() {
+    public HPolygon getPolygon() {
         return polygon;
     }
 

@@ -7,18 +7,22 @@ import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.HSerializable;
 import net.thevpc.scholar.hadrumaths.Vector;
 import net.thevpc.scholar.hadrumaths.cache.ObjectCache;
-import net.thevpc.scholar.hadrumaths.geom.Geometry;
+import net.thevpc.scholar.hadrumaths.geom.HGeometry;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadruwaves.mom.str.TestFunctionsComparator;
-import net.thevpc.scholar.hadruwaves.mom.testfunctions.TestFunctionsBase;
 
 import java.beans.PropertyChangeListener;
+import java.util.List;
+import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 
 /**
  * Created by vpc on 3/16/15.
  */
 public interface TestFunctions extends HSerializable {
+
     MomStructure getStructure();
+
+    List<MeshZone> mesh();
 
     void setStructure(MomStructure structure);
 
@@ -35,6 +39,7 @@ public interface TestFunctions extends HSerializable {
     Vector<Expr> toList();
 
     DoubleToVector[] arr(ProgressMonitor monitor);
+
     DoubleToVector[] arr();
 
     DoubleToVector[] arr(ProgressMonitor monitor, ObjectCache objectCache);
@@ -70,9 +75,9 @@ public interface TestFunctions extends HSerializable {
 
     void removePropertyChangeListener(String property, PropertyChangeListener listener);
 
-    Geometry[] getGeometries();
+    HGeometry[] getGeometries();
 
-    NLogger log() ;
+    NLogger log();
 
     TestFunctions setLog(NLogger log);
 

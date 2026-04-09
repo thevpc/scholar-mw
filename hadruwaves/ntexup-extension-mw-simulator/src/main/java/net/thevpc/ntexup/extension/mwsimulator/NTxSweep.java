@@ -6,12 +6,11 @@ import net.thevpc.ntexup.api.eval.NTxValue;
 import net.thevpc.ntexup.api.util.NTxNumberUtils;
 import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.nuts.elem.*;
-import net.thevpc.nuts.math.NNumber;
 import net.thevpc.nuts.util.NArrays;
-import net.thevpc.nuts.util.NNumberUtils;
 import net.thevpc.nuts.util.NOptional;
 
 import java.util.Arrays;
+import net.thevpc.nuts.util.NToStringBuilder;
 
 public class NTxSweep implements NToElement {
     public Number rangeFrom;
@@ -42,6 +41,26 @@ public class NTxSweep implements NToElement {
         }
         return sweep.build();
     }
+
+    @Override
+    public String toString() {
+        NToStringBuilder sweep=new NToStringBuilder("sweep");
+        if (rangeFrom != null) {
+            sweep.add("from", rangeFrom);
+        }
+        if (rangeTo != null) {
+            sweep.add("to", rangeTo);
+        }
+        if (step != null) {
+            sweep.add("step", step);
+        }
+        if (count != null) {
+            sweep.add("count", count);
+        }
+        return sweep.build();
+    }
+    
+    
 
     public double[] doubleValues() {
         if (this.rangeFrom != null && this.rangeTo != null) {

@@ -2,14 +2,11 @@ package net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh;
 
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.geom.*;
-import net.thevpc.scholar.hadrumaths.geom.DefaultGeometryList;
-import net.thevpc.scholar.hadrumaths.geom.GeometryList;
+import net.thevpc.scholar.hadrumaths.geom.HGeometryList;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZoneType;
 import net.thevpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
-import net.thevpc.scholar.hadrumaths.meshalgo.triconsdes.MeshConsDesAlgo;
-import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.EchelonPattern;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.GpPattern;
 import net.thevpc.scholar.hadrumaths.DomainScaleTool;
 
@@ -49,7 +46,7 @@ public class PolygonComponent extends JComponent {
         rebuild();
     }
 
-    public PolygonComponent(GeometryList geometryList, MeshAlgo meshalgo, GpPattern pattern, Domain globalDomain) {
+    public PolygonComponent(HGeometryList geometryList, MeshAlgo meshalgo, GpPattern pattern, Domain globalDomain) {
         meshInfo = new PolygonListMeshInfo(geometryList, globalDomain, meshalgo, pattern);
         rebuild();
     }
@@ -99,7 +96,7 @@ public class PolygonComponent extends JComponent {
         if (transform != null) {
             g2d.setTransform(transform);
         }
-        for (Geometry polygon : meshInfo.polygons) {
+        for (HGeometry polygon : meshInfo.polygons) {
             if (polygonForegroundColor != null) {
                 Area area2 = new Area(ds.rescale(polygon).getPath());;
                 g.setColor(polygonForegroundColor);
@@ -225,7 +222,7 @@ public class PolygonComponent extends JComponent {
                 g2d.setComposite(oldComposite);
             }
         }
-        for (Geometry polygon : meshInfo.polygons) {
+        for (HGeometry polygon : meshInfo.polygons) {
             Area area2 = new Area(ds.rescale(polygon).getPath());
             Domain dom = polygon.getDomain();
             MeshAlgoRect _meshalgo = null;
@@ -790,7 +787,7 @@ public class PolygonComponent extends JComponent {
 //        }
 //    }
 
-    public Geometry getPolygon(int index) {
+    public HGeometry getPolygon(int index) {
         return meshInfo.polygons.get(index);
     }
 
@@ -798,7 +795,7 @@ public class PolygonComponent extends JComponent {
         return meshInfo.meshZones;
     }
 
-    public GeometryList getPolygonList() {
+    public HGeometryList getPolygonList() {
         return meshInfo.polygons;
     }
 
@@ -808,7 +805,7 @@ public class PolygonComponent extends JComponent {
         repaint();
     }
 
-    public void setPolygonList(GeometryList geometryList) {
+    public void setPolygonList(HGeometryList geometryList) {
         meshInfo = new PolygonListMeshInfo(geometryList, meshInfo.from, meshInfo.meshalgo, meshInfo.pattern);
         rebuild();
         repaint();

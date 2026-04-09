@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadrumaths.plot;
 
-import net.thevpc.scholar.hadrumaths.geom.Point;
+import net.thevpc.scholar.hadrumaths.geom.HPoint;
 import net.thevpc.scholar.hadruplot.model.value.AbstractPlotValueType;
 
 public class PlotValuePointType extends AbstractPlotValueType {
@@ -8,8 +8,8 @@ public class PlotValuePointType extends AbstractPlotValueType {
         super("point");
     }
 
-    public Point toPoint(Object o) {
-        return (Point) o;
+    public HPoint toPoint(Object o) {
+        return (HPoint) o;
     }
 
     @Override

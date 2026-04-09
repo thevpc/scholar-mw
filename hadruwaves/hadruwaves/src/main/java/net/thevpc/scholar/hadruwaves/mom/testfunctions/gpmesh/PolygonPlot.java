@@ -3,10 +3,11 @@ package net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh;
 import net.thevpc.common.swing.layout.GridBagLayout2;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.geom.*;
-import net.thevpc.scholar.hadrumaths.geom.Polygon;
+import net.thevpc.scholar.hadrumaths.geom.HPolygon;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
+import net.thevpc.scholar.hadrumaths.meshalgo.tri.MeshTriangulationAlgo;
 import net.thevpc.scholar.hadrumaths.meshalgo.triconsdes.MeshConsDesAlgo;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.GpPattern;
 
@@ -28,7 +29,7 @@ import java.util.BitSet;
 public class PolygonPlot extends JPanel {
 
     private BitSet selected;
-    private GeometryList currentGeometryList;
+    private HGeometryList currentGeometryList;
     private PolygonComponent polygonComponent;
     private JTable selectionTable = new JTable(new AbstractTableModel() {
         @Override
@@ -146,11 +147,11 @@ public class PolygonPlot extends JPanel {
     GpPattern pattern;
     Domain globalDomain;
 
-    public PolygonPlot(Domain rec, Polygon polygon, MeshAlgo meshAlgo, GpPattern pattern, Domain globalDomain) {
-        this(new DefaultGeometryList(rec, polygon), meshAlgo, pattern, globalDomain);
+    public PolygonPlot(Domain rec, HPolygon polygon, MeshAlgo meshAlgo, GpPattern pattern, Domain globalDomain) {
+        this(new DefaultHGeometryList(rec, polygon), meshAlgo, pattern, globalDomain);
     }
 
-    public PolygonPlot(GeometryList geometryList, MeshAlgo meshAlgo, GpPattern pattern, Domain globalDomain) {
+    public PolygonPlot(HGeometryList geometryList, MeshAlgo meshAlgo, GpPattern pattern, Domain globalDomain) {
         super(new BorderLayout());
         this.meshAlgo = meshAlgo;
         this.pattern = pattern;
@@ -225,18 +226,18 @@ public class PolygonPlot extends JPanel {
         p0.add(drawAttachEast, "X6");
         p0.add(drawAttachWest, "X7");
         p0.add(new JScrollPane(selectionTable), "X10");
-        if (geometryList instanceof FractalAreaGeometryList) {
+        if (geometryList instanceof FractalAreaHGeometryList) {
             JPanel p = new JPanel(new BorderLayout());
             p.setBorder(BorderFactory.createTitledBorder("Iteration K"));
             JSpinner ss = new JSpinner(new SpinnerNumberModel(1, 0, Integer.MAX_VALUE, 1));
-            ss.setValue(((FractalAreaGeometryList) geometryList).getLevel());
+            ss.setValue(((FractalAreaHGeometryList) geometryList).getLevel());
             p.add(ss);
             ss.putClientProperty("FractalPolygon", geometryList);
             ss.addChangeListener(
                     new ChangeListener() {
                         public void stateChanged(ChangeEvent e) {
                             JSpinner ss = (JSpinner) e.getSource();
-                            FractalAreaGeometryList polygon2DCollection = (FractalAreaGeometryList) ((FractalAreaGeometryList) ss.getClientProperty("FractalPolygon")).clone();
+                            FractalAreaHGeometryList polygon2DCollection = (FractalAreaHGeometryList) ((FractalAreaHGeometryList) ss.getClientProperty("FractalPolygon")).clone();
                             polygon2DCollection.setLevel(((Number) ss.getValue()).intValue());
                             if (getGpMeshAlgoRect() != null) {
                                 MeshAlgoRect gpMeshAlgoRect = getGpMeshAlgoRect();
@@ -245,7 +246,9 @@ public class PolygonPlot extends JPanel {
                                 gpMeshAlgoRect.setMaxRelativeSizeX(getMaxRelativeSizeXValue());
                                 gpMeshAlgoRect.setMaxRelativeSizeY(getMaxRelativeSizeYValue());
                             } else if (getMeshConsDesAlgo() != null) {
-                                getMeshConsDesAlgo().getOption().setMaxTriangles(((Number) minRelativeSizeX.getValue()).intValue());
+                                getMeshConsDesAlgo().getOption().setMaxCount(((Number) minRelativeSizeX.getValue()).intValue());
+                            } else if (getMeshTriangulationAlgo() != null) {
+                                getMeshTriangulationAlgo().getOption().setMaxCount(((Number) minRelativeSizeX.getValue()).intValue());
                             }
                             updatePolygonPainting();
                         }
@@ -407,7 +410,7 @@ public class PolygonPlot extends JPanel {
 
     private boolean isInSetPolygonList = false;
 
-    public void setPolygonList(GeometryList p) {
+    public void setPolygonList(HGeometryList p) {
         currentGeometryList =p;
         updatePolygonList();
     }
@@ -432,7 +435,7 @@ public class PolygonPlot extends JPanel {
                 setMaxRelativeSizeXValue(getGpMeshAlgoRect().getMaxRelativeSizeX());
                 setMaxRelativeSizeYValue(getGpMeshAlgoRect().getMaxRelativeSizeY());
             } else if (getMeshConsDesAlgo() != null) {
-                minRelativeSizeX.setValue(getMeshConsDesAlgo().getOption().getMaxTriangles());
+                minRelativeSizeX.setValue(getMeshConsDesAlgo().getOption().getMaxCount());
             }
 
             updatePolygonPaintingConfigure();
@@ -458,6 +461,12 @@ public class PolygonPlot extends JPanel {
     private MeshConsDesAlgo getMeshConsDesAlgo() {
         if (meshAlgo instanceof MeshConsDesAlgo) {
             return (MeshConsDesAlgo) meshAlgo;
+        }
+        return null;
+    }
+    private MeshTriangulationAlgo getMeshTriangulationAlgo() {
+        if (meshAlgo instanceof MeshTriangulationAlgo) {
+            return (MeshTriangulationAlgo) meshAlgo;
         }
         return null;
     }
@@ -540,13 +549,13 @@ public class PolygonPlot extends JPanel {
             getGpMeshAlgoRect().setMaxRelativeSizeX(getMaxRelativeSizeXValue());
             getGpMeshAlgoRect().setMaxRelativeSizeY(getMaxRelativeSizeYValue());
         } else if (getMeshConsDesAlgo() != null) {
-            getMeshConsDesAlgo().getOption().setMaxTriangles(((Number) minRelativeSizeX.getValue()).intValue());
+            getMeshConsDesAlgo().getOption().setMaxCount(((Number) minRelativeSizeX.getValue()).intValue());
         }
         updatePolygonPainting();
     }
 
 
-    private Iterable<Geometry> getCurrentPolygons() {
+    private Iterable<HGeometry> getCurrentPolygons() {
         int index = polygons.getSelectedIndex();
         if (index == 0) {
             return polygonComponent.getPolygonList();
@@ -606,7 +615,7 @@ public class PolygonPlot extends JPanel {
             getGpMeshAlgoRect().setMinRelativeSizeX(getMinRelativeSizeXValue());
             getGpMeshAlgoRect().setMinRelativeSizeY(getMinRelativeSizeYValue());
         } else if (getMeshConsDesAlgo() != null) {
-            getMeshConsDesAlgo().getOption().setMaxTriangles(((Number) minRelativeSizeX.getValue()).intValue());
+            getMeshConsDesAlgo().getOption().setMaxCount(((Number) minRelativeSizeX.getValue()).intValue());
         }
         updatePolygonPaintingConfigure();
         repaint();
