@@ -5,6 +5,7 @@ import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.DomainScaleTool;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.Maths;
+import net.thevpc.scholar.hadrumaths.meshalgo.tri.JTSHelper;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.Shape2D;
 
 import java.util.HashMap;
@@ -13,49 +14,49 @@ import java.util.Objects;
 
 /**
  */
-public abstract class AbstractGeometry implements Geometry {
+public abstract class AbstractHGeometry implements HGeometry {
 
     private Map<String, NElement> properties;
     @Override
-    public Geometry clone() {
+    public HGeometry clone() {
         try {
-            return (Geometry) super.clone();
+            return (HGeometry) super.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public Geometry scale(Domain newDomain) {
+    public HGeometry scale(Domain newDomain) {
         return DomainScaleTool.create(getDomain(), newDomain).rescale(this);
     }
 
-    public Geometry scale(int width, int height) {
+    public HGeometry scale(int width, int height) {
         return DomainScaleTool.create(getDomain(), Domain.ofBounds(0, width, 0, height)).rescale(this);
     }
 
     @Override
-    public Geometry intersectGeometry(Geometry geometry) {
-        return toSurface().intersectGeometry(geometry);
+    public double area() {
+        return JTSHelper.getArea(this);
     }
 
     @Override
-    public Geometry subtractGeometry(Geometry geometry) {
-        return toSurface().subtractGeometry(geometry);
+    public HGeometry intersectGeometry(HGeometry geometry) {
+        return JTSHelper.fromJtsGeometry(JTSHelper.intersect(JTSHelper.toJtsGeometry(this),JTSHelper.toJtsGeometry(geometry)));
     }
 
     @Override
-    public Geometry addGeometry(Geometry geometry) {
-        return toSurface().addGeometry(geometry);
+    public HGeometry subtractGeometry(HGeometry geometry) {
+        return JTSHelper.fromJtsGeometry(JTSHelper.minus(JTSHelper.toJtsGeometry(this),JTSHelper.toJtsGeometry(geometry)));
     }
 
     @Override
-    public Geometry exclusiveOrGeometry(Geometry geometry) {
-        return toSurface().exclusiveOrGeometry(geometry);
+    public HGeometry addGeometry(HGeometry geometry) {
+        return JTSHelper.fromJtsGeometry(JTSHelper.union(JTSHelper.toJtsGeometry(this),JTSHelper.toJtsGeometry(geometry)));
     }
 
     @Override
-    public Surface toSurface() {
-        return new Surface(getPath());
+    public HGeometry exclusiveOrGeometry(HGeometry geometry) {
+        return JTSHelper.fromJtsGeometry(JTSHelper.exclusiveOr(JTSHelper.toJtsGeometry(this),JTSHelper.toJtsGeometry(geometry)));
     }
 
     @Override
@@ -104,7 +105,7 @@ public abstract class AbstractGeometry implements Geometry {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AbstractGeometry that = (AbstractGeometry) o;
+        AbstractHGeometry that = (AbstractHGeometry) o;
         return Objects.equals(properties, that.properties);
     }
 
@@ -114,8 +115,8 @@ public abstract class AbstractGeometry implements Geometry {
     }
 
     @Override
-    public boolean containsGeometry(Geometry geometry) {
-        Geometry inter = intersectGeometry(geometry);
+    public boolean containsGeometry(HGeometry geometry) {
+        HGeometry inter = intersectGeometry(geometry);
         return inter.equals(geometry);
     }
 }

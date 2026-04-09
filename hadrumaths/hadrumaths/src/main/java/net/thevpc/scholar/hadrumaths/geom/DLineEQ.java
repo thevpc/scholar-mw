@@ -18,7 +18,7 @@ public class DLineEQ {
         this.c = c;
     }
 
-    public DLineEQ(Point p1, Point p2) {
+    public DLineEQ(HPoint p1, HPoint p2) {
         if (p1.x == p2.x && p1.y == p2.y) {
             this.a = 0;
             this.b = 0;
@@ -39,7 +39,7 @@ public class DLineEQ {
 
     }
 
-    public double getValue(Point p) {
+    public double getValue(HPoint p) {
         return getValue(p.x, p.y);
     }
 
@@ -47,14 +47,14 @@ public class DLineEQ {
         return a * x + b * y + c;
     }
 
-    public Point intersect(DLineEQ line) {
-        DMatrix c = new DMatrix(new double[][]{{line.a, line.b}, {this.a, this.b}});
+    public HPoint intersect(DLineEQ line) {
+        DMatrix dm = new DMatrix(new double[][]{{line.a, line.b}, {this.a, this.b}});
         DMatrix r;
         try {
-            r = c.solve(new DMatrix(new double[][]{{-line.c}, {-this.c}}));
+            r = dm.solve(new DMatrix(new double[][]{{-line.c}, {-this.c}}));
         } catch (Exception e) {
             return null;
         }
-        return Point.create(r.getDouble(0, 0), r.getDouble(1, 0));
+        return HPoint.create(r.getDouble(0, 0), r.getDouble(1, 0));
     }
 }

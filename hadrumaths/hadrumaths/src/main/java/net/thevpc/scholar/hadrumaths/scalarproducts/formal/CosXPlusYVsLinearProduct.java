@@ -13,6 +13,7 @@ import static java.lang.Math.*;
  * Time: 15:13:30
  */
 final class CosXPlusYVsLinearProduct implements FormalScalarProductHelper {
+    public static final CosXPlusYVsLinearProduct INSTANCE = new CosXPlusYVsLinearProduct();
 
     private static boolean tolerantEqual(double a, double b, double tolerance) {
         double diff = (a - b);

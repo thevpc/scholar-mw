@@ -11,12 +11,12 @@ import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.*;
-import net.thevpc.scholar.hadrumaths.geom.Geometry;
-import net.thevpc.scholar.hadrumaths.geom.GeometryList;
+import net.thevpc.scholar.hadrumaths.geom.HGeometry;
+import net.thevpc.scholar.hadrumaths.geom.HGeometryList;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshAlgo;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
-import net.thevpc.scholar.hadrumaths.meshalgo.triconsdes.MeshConsDesAlgo;
+import net.thevpc.scholar.hadrumaths.meshalgo.tri.MeshTriangulationAlgo;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.Expr;
@@ -34,13 +34,13 @@ import static net.thevpc.scholar.hadrumaths.Maths.*;
  */
 public class CstPlanarSource implements PlanarSource, Cloneable {
 
-    private GeometryList geometryList;
+    private HGeometryList geometryList;
     private Complex characteristicImpedance;
     private double xvalue;
     private double yvalue;
     private Axis polarization;
 
-    public CstPlanarSource(double xvalue, double yvalue, Complex characteristicImpedance, Axis polarization, GeometryList geometryList) {
+    public CstPlanarSource(double xvalue, double yvalue, Complex characteristicImpedance, Axis polarization, HGeometryList geometryList) {
         this.geometryList = geometryList;
         this.characteristicImpedance = characteristicImpedance;
         this.xvalue = xvalue;
@@ -49,7 +49,7 @@ public class CstPlanarSource implements PlanarSource, Cloneable {
     }
 
     @Override
-    public Geometry getGeometry() {
+    public HGeometry getGeometry() {
         return geometryList;
     }
 
@@ -61,12 +61,12 @@ public class CstPlanarSource implements PlanarSource, Cloneable {
         ArrayList<DoubleToComplex> allx = new ArrayList<DoubleToComplex>();
         ArrayList<DoubleToComplex> ally = new ArrayList<DoubleToComplex>();
         Collection<MeshZone> allZonesInit = new ArrayList<MeshZone>();
-        for (Geometry polygon : geometryList) {
+        for (HGeometry polygon : geometryList) {
             MeshAlgo m = null;
             if (polygon.isRectangular()) {
                 m = MeshAlgoRect.RECT_ALGO_LOW_RESOLUTION;
             } else {
-                m = new MeshConsDesAlgo(30);
+                m = new MeshTriangulationAlgo(30);
             }
             allZonesInit.addAll(m.meshPolygon(polygon));
         }
@@ -108,7 +108,7 @@ public class CstPlanarSource implements PlanarSource, Cloneable {
         return polarization;
     }
 
-    public GeometryList getGeometryList() {
+    public HGeometryList getGeometryList() {
         return geometryList;
     }
 

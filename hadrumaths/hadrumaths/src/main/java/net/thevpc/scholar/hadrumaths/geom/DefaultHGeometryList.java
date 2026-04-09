@@ -4,7 +4,9 @@ package net.thevpc.scholar.hadrumaths.geom;
 import net.thevpc.nuts.elem.NElement;
 
 import net.thevpc.scholar.hadrumaths.Domain;
+import net.thevpc.scholar.hadrumaths.meshalgo.tri.JTSHelper;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
+import org.locationtech.jts.geom.Geometry;
 
 import java.awt.geom.Path2D;
 import java.util.*;
@@ -13,16 +15,16 @@ import java.util.*;
  * @author : vpc
  * @creationtime 18 janv. 2006 16:04:29
  */
-public class DefaultGeometryList extends AbstractGeometry implements GeometryList {
+public class DefaultHGeometryList extends AbstractHGeometry implements HGeometryList {
     private static final long serialVersionUID = 1L;
     private Domain domain = null;
     private Domain smallestDomain = null;
-    private ArrayList<Geometry> list;
+    private ArrayList<HGeometry> list;
     private Map<String, Object> attributes;
 
-    public DefaultGeometryList(Iterable<Geometry> polygons) {
-        list = new ArrayList<Geometry>();
-        for (Geometry polygon : polygons) {
+    public DefaultHGeometryList(Iterable<HGeometry> polygons) {
+        list = new ArrayList<HGeometry>();
+        for (HGeometry polygon : polygons) {
             list.add(polygon);
         }
         rebuildSmallestDomain();
@@ -31,34 +33,34 @@ public class DefaultGeometryList extends AbstractGeometry implements GeometryLis
 
     protected void rebuildSmallestDomain() {
         Domain domain = Domain.EMPTYXY;
-        for (Geometry polygon : this) {
+        for (HGeometry polygon : this) {
             domain = domain.expand(polygon.getDomain());
         }
         smallestDomain = domain;
     }
 
-    public DefaultGeometryList(Geometry... polygons) {
-        list = new ArrayList<Geometry>(Arrays.asList(polygons));
+    public DefaultHGeometryList(HGeometry... polygons) {
+        list = new ArrayList<HGeometry>(Arrays.asList(polygons));
         rebuildSmallestDomain();
         this.domain = null;
     }
 
-    public DefaultGeometryList(Domain domain, Geometry... polygons) {
+    public DefaultHGeometryList(Domain domain, HGeometry... polygons) {
         this(domain);
-        for (Geometry polygon : polygons) {
+        for (HGeometry polygon : polygons) {
             add(polygon);
         }
     }
 
-    public DefaultGeometryList(Domain domain) {
+    public DefaultHGeometryList(Domain domain) {
         this.domain = domain;
         if (domain == null) {
             throw new NullPointerException();
         }
-        list = new ArrayList<Geometry>();
+        list = new ArrayList<HGeometry>();
     }
 
-    public DefaultGeometryList(Domain domain, Collection<? extends Geometry> c) {
+    public DefaultHGeometryList(Domain domain, Collection<? extends HGeometry> c) {
         this(domain);
         addAll(c);
     }
@@ -85,22 +87,22 @@ public class DefaultGeometryList extends AbstractGeometry implements GeometryLis
 //        return h;
 //    }
 
-    public Geometry set(int index, Geometry element) {
+    public HGeometry set(int index, HGeometry element) {
         smallestDomain = null;
         return list.set(index, element);
     }
 
-    public Geometry remove(int index) {
+    public HGeometry remove(int index) {
         smallestDomain = null;
         return list.remove(index);
     }
 
-    public void add(int index, Geometry element) {
+    public void add(int index, HGeometry element) {
         smallestDomain = null;
         list.add(index, element);
     }
 
-    public boolean add(Geometry o) {
+    public boolean add(HGeometry o) {
         smallestDomain = null;
         boolean b = list.add(o);
         return b;
@@ -116,20 +118,20 @@ public class DefaultGeometryList extends AbstractGeometry implements GeometryLis
         list.clear();
     }
 
-    public boolean addAll(GeometryList c) {
+    public boolean addAll(HGeometryList c) {
         smallestDomain = null;
-        for (Geometry polygon : c) {
+        for (HGeometry polygon : c) {
             list.add(polygon);
         }
         return c.size() > 0;
     }
 
-    public boolean addAll(Collection<? extends Geometry> c) {
+    public boolean addAll(Collection<? extends HGeometry> c) {
         smallestDomain = null;
         return list.addAll(c);
     }
 
-    public boolean addAll(int index, Collection<? extends Geometry> c) {
+    public boolean addAll(int index, Collection<? extends HGeometry> c) {
         smallestDomain = null;
         return list.addAll(index, c);
     }
@@ -151,7 +153,7 @@ public class DefaultGeometryList extends AbstractGeometry implements GeometryLis
         return list.size();
     }
 
-    public Geometry get(int i) {
+    public HGeometry get(int i) {
         return list.get(i);
     }
 
@@ -174,12 +176,12 @@ public class DefaultGeometryList extends AbstractGeometry implements GeometryLis
         return (name == null || attributes == null) ? null : attributes.get(name);
     }
 
-    public GeometryList getDual() {
+    public HGeometryList getDual() {
         return null;
     }
 
-    public Collection<Geometry> toCollection() {
-        return (Collection<Geometry>) list.clone();
+    public Collection<HGeometry> toCollection() {
+        return (Collection<HGeometry>) list.clone();
     }
 
     public Domain getSmallestBounds() {
@@ -189,35 +191,24 @@ public class DefaultGeometryList extends AbstractGeometry implements GeometryLis
         return smallestDomain;
     }
 
-    public GeometryList clone() {
-        DefaultGeometryList l = (DefaultGeometryList) super.clone();
-        l.list = new ArrayList<Geometry>(list.size());
+    public HGeometryList clone() {
+        DefaultHGeometryList l = (DefaultHGeometryList) super.clone();
+        l.list = new ArrayList<HGeometry>(list.size());
         for (int i = 0; i < list.size(); i++) {
-            Geometry polygon = list.get(i);
+            HGeometry polygon = list.get(i);
             l.list.add(polygon.clone());
         }
         return l;
     }
 
-    @Override
-    public Surface toSurface() {
-        if (list.isEmpty()) {
-            return Domain.EMPTYXY.toGeometry().toSurface();
-        }
-        Surface s = list.get(0).toSurface();
-        for (int i = 1; i < list.size(); i++) {
-            s = s.addGeometry(list.get(i));
-        }
-        return s;
-    }
 
-    public Iterator<Geometry> iterator() {
+    public Iterator<HGeometry> iterator() {
         return list.iterator();
     }
 
     @Override
     public Path2D.Double getPath() {
-        return toSurface().getPath();
+        return JTSHelper.getPath(asJtsGeometry());
     }
 
     @Override
@@ -239,36 +230,40 @@ public class DefaultGeometryList extends AbstractGeometry implements GeometryLis
 
     @Override
     public boolean isPolygonal() {
-        return list.size() == 1;
+        return JTSHelper.isPolygonal(asJtsGeometry());
     }
 
     @Override
     public boolean isTriangular() {
-        return isPolygonal() && list.get(0).isTriangular();
+        return JTSHelper.isTriangular(asJtsGeometry());
     }
 
     @Override
     public boolean isSingular() {
-        return list.size() < 2;
+        return JTSHelper.isSingular(asJtsGeometry());
     }
 
     @Override
     public boolean isEmpty() {
-        return toSurface().isEmpty();
+        return asJtsGeometry().isEmpty();
+    }
+
+    private Geometry asJtsGeometry() {
+        return JTSHelper.toJtsGeometry(this);
     }
 
     @Override
-    public Geometry translateGeometry(double x, double y) {
-        DefaultGeometryList list = new DefaultGeometryList();
-        for (Geometry geometry : list) {
-            list.add(geometry.translateGeometry(x, y));
+    public HGeometry translate(double x, double y) {
+        DefaultHGeometryList newList = new DefaultHGeometryList();
+        for (HGeometry geometry : this.list) {
+            newList.add(geometry.translate(x, y));
         }
-        return list;
+        return newList;
     }
 
     @Override
     public boolean contains(double x, double y) {
-        for (Geometry polygon : list) {
+        for (HGeometry polygon : list) {
             if (polygon.contains(x, y)) {
                 return true;
             }
@@ -277,7 +272,7 @@ public class DefaultGeometryList extends AbstractGeometry implements GeometryLis
     }
 
     @Override
-    public Polygon toPolygon() {
+    public HPolygon toPolygon() {
         if (isPolygonal()) {
             return list.get(0).toPolygon();
         }
@@ -285,19 +280,19 @@ public class DefaultGeometryList extends AbstractGeometry implements GeometryLis
     }
 
     @Override
-    public Triangle toTriangle() {
+    public HTriangle toTriangle() {
         if (isTriangular()) {
-            toPolygon().toTriangle();
+            return toPolygon().toTriangle();
         }
         throw new IllegalArgumentException("Not Triangular");
     }
 
     @Override
-    public Polygon[] toPolygons() {
-        List<Polygon> all=new ArrayList<>();
-        for (Geometry geometry : list) {
+    public HPolygon[] toPolygons() {
+        List<HPolygon> all=new ArrayList<>();
+        for (HGeometry geometry : list) {
             all.addAll(Arrays.asList(geometry.toPolygons()));
         }
-        return all.toArray(new Polygon[0]);
+        return all.toArray(new HPolygon[0]);
     }
 }

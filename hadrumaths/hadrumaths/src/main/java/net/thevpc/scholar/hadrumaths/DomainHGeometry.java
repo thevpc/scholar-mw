@@ -8,10 +8,10 @@ import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import java.awt.geom.Path2D;
 import java.util.Objects;
 
-class DomainGeometry extends AbstractGeometry implements Cloneable, NToElement {
+class DomainHGeometry extends AbstractHGeometry implements Cloneable, NToElement {
     private final Domain domain;
 
-    public DomainGeometry(Domain domain) {
+    public DomainHGeometry(Domain domain) {
         this.domain = domain;
         if (domain.getDimension() != 2 || domain.isInfinite()) {
             throw new IllegalArgumentException("Invalid Geometry");
@@ -45,7 +45,7 @@ class DomainGeometry extends AbstractGeometry implements Cloneable, NToElement {
 
     @Override
     public boolean isSingular() {
-        return false;
+        return true;
     }
 
     @Override
@@ -54,7 +54,7 @@ class DomainGeometry extends AbstractGeometry implements Cloneable, NToElement {
     }
 
     @Override
-    public Geometry translateGeometry(double x, double y) {
+    public HGeometry translate(double x, double y) {
         return domain.translateGeometry(x, y);
     }
 
@@ -64,17 +64,17 @@ class DomainGeometry extends AbstractGeometry implements Cloneable, NToElement {
     }
 
     @Override
-    public Polygon toPolygon() {
+    public HPolygon toPolygon() {
         return domain.toPolygon();
     }
 
     @Override
-    public Polygon[] toPolygons() {
-        return new Polygon[]{toPolygon()};
+    public HPolygon[] toPolygons() {
+        return new HPolygon[]{toPolygon()};
     }
 
     @Override
-    public Triangle toTriangle() {
+    public HTriangle toTriangle() {
         return domain.toTriangle();
     }
 
@@ -88,7 +88,7 @@ class DomainGeometry extends AbstractGeometry implements Cloneable, NToElement {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        DomainGeometry that = (DomainGeometry) o;
+        DomainHGeometry that = (DomainHGeometry) o;
 
         return Objects.equals(domain, that.domain);
     }

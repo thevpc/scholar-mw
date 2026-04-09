@@ -9,12 +9,12 @@ import net.thevpc.scholar.hadrumaths.util.NElementHelper;
  * @author : vpc
  * @creationtime 20 janv. 2006 10:49:49
  */
-public abstract class DefaultFractalGeometryList extends DefaultGeometryList implements FractalAreaGeometryList {
+public abstract class DefaultFractalHGeometryList extends DefaultHGeometryList implements FractalAreaHGeometryList {
 
     protected int level;
-    protected Geometry basePolygon;
+    protected HGeometry basePolygon;
 
-    public DefaultFractalGeometryList(int level, Geometry basePolygon) {
+    public DefaultFractalHGeometryList(int level, HGeometry basePolygon) {
         super(basePolygon.getDomain());
         this.level = level;
         this.basePolygon = basePolygon;
@@ -36,14 +36,14 @@ public abstract class DefaultFractalGeometryList extends DefaultGeometryList imp
 //                );
 //            }
         } else if (level == 0) {
-            Polygon[] motif = getMotif();
-            for (Polygon aMotif : motif) {
+            HPolygon[] motif = getMotif();
+            for (HPolygon aMotif : motif) {
                 add(aMotif);
             }
         } else {
-            Geometry[] transform = getTransform();
-            for (Geometry r : transform) {
-                FractalAreaGeometryList polygon = newInstance(
+            HGeometry[] transform = getTransform();
+            for (HGeometry r : transform) {
+                FractalAreaHGeometryList polygon = newInstance(
                         level - 1,
                         r
                 );
@@ -64,9 +64,9 @@ public abstract class DefaultFractalGeometryList extends DefaultGeometryList imp
 //        return h;
 //    }
 
-    public abstract Polygon[] getMotif();
+    public abstract HPolygon[] getMotif();
 
-    public abstract DefaultFractalGeometryList newInstance(int level, Geometry domain);
+    public abstract DefaultFractalHGeometryList newInstance(int level, HGeometry domain);
 
     @Override
     public NElement toElement() {
@@ -77,8 +77,8 @@ public abstract class DefaultFractalGeometryList extends DefaultGeometryList imp
     }
 
     @Override
-    public FractalAreaGeometryList clone() {
-        return (FractalAreaGeometryList) super.clone();
+    public FractalAreaHGeometryList clone() {
+        return (FractalAreaHGeometryList) super.clone();
     }
 
     public int getLevel() {
@@ -90,7 +90,7 @@ public abstract class DefaultFractalGeometryList extends DefaultGeometryList imp
         rebuild();
     }
 
-    public Geometry getBasePolygon() {
+    public HGeometry getBasePolygon() {
         return basePolygon;
     }
 

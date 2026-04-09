@@ -6,7 +6,7 @@ import net.thevpc.nuts.elem.NElement;
 
 import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.geom.GeomUtils;
-import net.thevpc.scholar.hadrumaths.geom.Triangle;
+import net.thevpc.scholar.hadrumaths.geom.HTriangle;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.util.List;
@@ -20,8 +20,8 @@ public class ConsDesSurfacePrecision implements ConsDesPrecision {
         airmax = air;
     }
 
-    public boolean isMeshAllowed(List<Triangle> t, int iteration) {
-        return GeomUtils.smallest(t).getSurface() > airmax;
+    public boolean isMeshAllowed(List<HTriangle> t, int iteration) {
+        return GeomUtils.smallestArea(t).area() > airmax;
     }
 
     @Override

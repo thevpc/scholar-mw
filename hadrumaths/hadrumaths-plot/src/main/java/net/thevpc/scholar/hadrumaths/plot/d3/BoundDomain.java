@@ -8,7 +8,7 @@ package net.thevpc.scholar.hadrumaths.plot.d3;
 import net.thevpc.nuts.math.NDoubleRange;
 import net.thevpc.scholar.hadrumaths.BoundValue;
 import net.thevpc.scholar.hadrumaths.Domain;
-import net.thevpc.scholar.hadrumaths.geom.Point;
+import net.thevpc.scholar.hadrumaths.geom.HPoint;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.elements.Element3D;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.elements.Element3DPolygon;
 import net.thevpc.scholar.hadruplot.libraries.calc3d.math.Vector3D;
@@ -63,8 +63,8 @@ public class BoundDomain {
         }
     }
 
-    public void include(Point... points) {
-        for (Point point : points) {
+    public void include(HPoint... points) {
+        for (HPoint point : points) {
             include(point);
         }
     }
@@ -87,7 +87,7 @@ public class BoundDomain {
         zmax.max(p.getZ());
     }
 
-    public void include(Point p) {
+    public void include(HPoint p) {
         xmin.min(p.getX());
         xmax.max(p.getX());
         ymin.min(p.getY());

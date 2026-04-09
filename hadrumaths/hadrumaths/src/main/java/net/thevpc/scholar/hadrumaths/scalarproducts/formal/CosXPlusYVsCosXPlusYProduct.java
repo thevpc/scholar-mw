@@ -14,6 +14,7 @@ import static net.thevpc.scholar.hadrumaths.Maths.sin;
  * Time: 15:13:30
  */
 final class CosXPlusYVsCosXPlusYProduct implements FormalScalarProductHelper {
+    public static final CosXPlusYVsCosXPlusYProduct INSTANCE = new CosXPlusYVsCosXPlusYProduct();
 
     private static boolean tolerantEqual(double a, double b, double tolerance) {
         double diff = (a - b);

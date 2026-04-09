@@ -3,7 +3,7 @@ package net.thevpc.scholar.hadrumaths.meshalgo;
 
 import net.thevpc.nuts.elem.NElement;
 
-import net.thevpc.scholar.hadrumaths.geom.Triangle;
+import net.thevpc.scholar.hadrumaths.geom.HTriangle;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.util.List;
@@ -12,11 +12,11 @@ public class DefaultOption implements MeshOptions {
     private static final long serialVersionUID = 1L;
     protected EnhancedMeshPolygons enhancedMeshZone;
 
-    public boolean isMeshAllowed(List<Triangle> t, int iteration) {
+    public boolean isMeshAllowed(List<HTriangle> t, int iteration) {
         return false;
     }
 
-    public Triangle selectMeshTriangle(List<Triangle> t, int iteration) {
+    public HTriangle selectMeshTriangle(List<HTriangle> t, int iteration) {
         return null;
     }
 

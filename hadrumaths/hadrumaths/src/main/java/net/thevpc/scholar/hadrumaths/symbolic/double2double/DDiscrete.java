@@ -8,8 +8,8 @@ import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.thevpc.scholar.hadrumaths.format.impl.AbstractObjectFormat;
+import net.thevpc.scholar.hadrumaths.geom.HPoint;
 import net.thevpc.scholar.hadrumaths.geom.IntPoint;
-import net.thevpc.scholar.hadrumaths.geom.Point;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.thevpc.scholar.hadrumaths.symbolic.ExprType;
 import net.thevpc.scholar.hadrumaths.symbolic.Range;
@@ -299,18 +299,18 @@ public class DDiscrete extends AbstractDoubleToDouble {
         return new DDiscrete(domain, model, axis1, axis2, axis3);
     }
 
-    public Point getPointAt(IntPoint indices) {
+    public HPoint getPointAt(IntPoint indices) {
         return getPointAt(indices.x, indices.y, indices.z);
     }
 
-    public Point getPointAt(int xi, int yi, int zi) {
+    public HPoint getPointAt(int xi, int yi, int zi) {
         switch (domain.dimension()) {
             case 1: {
                 if (xi < 0 || xi >= x.length) {
                     return null;
                 }
                 double x = domain.xmin() + dx * xi;
-                return Point.create(x);
+                return HPoint.create(x);
             }
             case 2: {
                 if (xi < 0 || xi >= x.length) {
@@ -321,7 +321,7 @@ public class DDiscrete extends AbstractDoubleToDouble {
                     return null;
                 }
                 double y = domain.ymin() + dy * yi;
-                return Point.create(x, y);
+                return HPoint.create(x, y);
             }
         }
         if (xi < 0 || xi >= x.length) {
@@ -336,7 +336,7 @@ public class DDiscrete extends AbstractDoubleToDouble {
             return null;
         }
         double z = domain.zmin() + dz * zi;
-        return Point.create(x, y, z);
+        return HPoint.create(x, y, z);
     }
 
     public DDiscrete add(DoubleToDouble other) {

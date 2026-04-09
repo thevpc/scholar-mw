@@ -15,6 +15,8 @@ import static net.thevpc.scholar.hadrumaths.Maths.sin2;
  * Time: 15:15:16
  */
 final class CosCosVsDoubleXYScalarProduct implements FormalScalarProductHelper {
+    public static final CosCosVsDoubleXYScalarProduct INSTANCE = new CosCosVsDoubleXYScalarProduct();
+
     @Override
     public int hashCode() {
         return getClass().getName().hashCode();

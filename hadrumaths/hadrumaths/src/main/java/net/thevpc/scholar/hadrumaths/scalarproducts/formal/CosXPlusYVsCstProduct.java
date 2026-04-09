@@ -14,6 +14,7 @@ import static java.lang.Math.sin;
  * Time: 15:13:30
  */
 final class CosXPlusYVsCstProduct implements FormalScalarProductHelper {
+    public static final CosXPlusYVsCstProduct INSTANCE = new CosXPlusYVsCstProduct();
 
     private static boolean tolerantEqual(double a, double b, double tolerance) {
         double diff = (a - b);

@@ -1,6 +1,5 @@
 package net.thevpc.scholar.hadrumaths.geom;
 
-import net.thevpc.nuts.elem.NArrayElementBuilder;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.nuts.elem.NUpletElement;
@@ -13,12 +12,13 @@ import java.awt.geom.Path2D;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by vpc on 8/2/14.
  */
-public class EllipticPolygon extends AbstractGeometry implements PolygonBuilder, Cloneable, Serializable {
-    private Point center = new Point(0, 0);
+public class EllipticHPolygon extends AbstractHGeometry implements HPolygonBuilder, Cloneable, Serializable {
+    private HPoint center = new HPoint(0, 0);
     private double xradius = 1;
     private double yradius = 1;
     private int sides = 24;
@@ -41,40 +41,40 @@ public class EllipticPolygon extends AbstractGeometry implements PolygonBuilder,
         return b.build();
     }
 
-    private NUpletElement ue(Point p) {
+    private NUpletElement ue(HPoint p) {
         return NElement.ofUplet(
                 NElement.ofDouble(p.getX()),
                 NElement.ofDouble(p.getY())
         );
     }
 
-    public Point getCenter() {
+    public HPoint getCenter() {
         return center;
     }
 
-    public EllipticPolygon setCenter(Point center) {
+    public EllipticHPolygon setCenter(HPoint center) {
         this.center = center;
         return this;
     }
 
-    public EllipticPolygon setCenter(double x, double y) {
-        return setCenter(Point.create(x, y));
+    public EllipticHPolygon setCenter(double x, double y) {
+        return setCenter(HPoint.create(x, y));
     }
 
     public double getXRadius() {
         return xradius;
     }
 
-    public EllipticPolygon setXRadius(double xradius) {
+    public EllipticHPolygon setXRadius(double xradius) {
         this.xradius = xradius;
         return this;
     }
 
-    public EllipticPolygon setRadius(double xradius) {
+    public EllipticHPolygon setRadius(double xradius) {
         return setRadius(xradius, xradius);
     }
 
-    public EllipticPolygon setRadius(double xradius, double yradius) {
+    public EllipticHPolygon setRadius(double xradius, double yradius) {
         setXRadius(xradius);
         setYRadius(yradius);
         return this;
@@ -84,7 +84,7 @@ public class EllipticPolygon extends AbstractGeometry implements PolygonBuilder,
         return yradius;
     }
 
-    public EllipticPolygon setYRadius(double yradius) {
+    public EllipticHPolygon setYRadius(double yradius) {
         this.yradius = yradius;
         return this;
     }
@@ -93,7 +93,7 @@ public class EllipticPolygon extends AbstractGeometry implements PolygonBuilder,
         return sides;
     }
 
-    public EllipticPolygon setSides(int sides) {
+    public EllipticHPolygon setSides(int sides) {
         this.sides = sides;
         return this;
     }
@@ -102,7 +102,7 @@ public class EllipticPolygon extends AbstractGeometry implements PolygonBuilder,
         return arcRatio;
     }
 
-    public EllipticPolygon setArcRatio(double arcRatio) {
+    public EllipticHPolygon setArcRatio(double arcRatio) {
         this.arcRatio = arcRatio;
         return this;
     }
@@ -111,19 +111,14 @@ public class EllipticPolygon extends AbstractGeometry implements PolygonBuilder,
         return phase;
     }
 
-    public EllipticPolygon setPhase(double phase) {
+    public EllipticHPolygon setPhase(double phase) {
         this.phase = phase;
         return this;
     }
 
     @Override
-    public Geometry clone() {
+    public HGeometry clone() {
         return super.clone();
-    }
-
-    @Override
-    public Surface toSurface() {
-        return toPolygon().toSurface();
     }
 
     @Override
@@ -158,12 +153,12 @@ public class EllipticPolygon extends AbstractGeometry implements PolygonBuilder,
 
     @Override
     public boolean isEmpty() {
-        return toSurface().isEmpty();
+        return toPolygon().isEmpty();
     }
 
     @Override
-    public Geometry translateGeometry(double x, double y) {
-        EllipticPolygon ellipticPolygon = new EllipticPolygon();
+    public HGeometry translate(double x, double y) {
+        EllipticHPolygon ellipticPolygon = new EllipticHPolygon();
         ellipticPolygon.setCenter(center.translate(x, y));
         ellipticPolygon.setSides(sides);
         ellipticPolygon.setArcRatio(arcRatio);
@@ -179,7 +174,7 @@ public class EllipticPolygon extends AbstractGeometry implements PolygonBuilder,
     }
 
     @Override
-    public Polygon toPolygon() {
+    public HPolygon toPolygon() {
         if (center == null) {
             throw new IllegalArgumentException("Missing center");
         }
@@ -189,10 +184,10 @@ public class EllipticPolygon extends AbstractGeometry implements PolygonBuilder,
         if (xradius < 0 || Double.isInfinite(xradius) || Double.isNaN(xradius)) {
             throw new IllegalArgumentException("invalid xradius " + xradius);
         }
-        if (xradius < 0 || Double.isInfinite(xradius) || Double.isNaN(xradius)) {
-            throw new IllegalArgumentException("invalid xradius " + xradius);
+        if (yradius < 0 || Double.isInfinite(yradius) || Double.isNaN(yradius)) {
+            throw new IllegalArgumentException("invalid yradius " + yradius);
         }
-        List<Point> all = new ArrayList<Point>();
+        List<HPoint> all = new ArrayList<HPoint>();
         double arcRatio = getValidArcRatio();
         int max = (int) Maths.ceil(arcRatio * sides);
         if (max < 3) {
@@ -208,13 +203,26 @@ public class EllipticPolygon extends AbstractGeometry implements PolygonBuilder,
             }
             double x = center.x + xradius * Maths.cos2(i * dblpi / sides + phase);
             double y = center.y + yradius * Maths.sin2(i * dblpi / sides + phase);
-            all.add(Point.create(x, y));
+            all.add(HPoint.create(x, y));
         }
-        return GeometryFactory.createPolygon(all.toArray(new Point[0]));
+        return GeometryFactory.createPolygon(all.toArray(new HPoint[0]));
     }
 
     @Override
-    public Triangle toTriangle() {
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        EllipticHPolygon that = (EllipticHPolygon) o;
+        return Double.compare(xradius, that.xradius) == 0 && Double.compare(yradius, that.yradius) == 0 && sides == that.sides && Double.compare(arcRatio, that.arcRatio) == 0 && Double.compare(phase, that.phase) == 0 && Objects.equals(center, that.center);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), center, xradius, yradius, sides, arcRatio, phase);
+    }
+
+    @Override
+    public HTriangle toTriangle() {
         throw new IllegalArgumentException("Not Triangular");
     }
 
@@ -230,7 +238,7 @@ public class EllipticPolygon extends AbstractGeometry implements PolygonBuilder,
     }
 
     @Override
-    public Polygon[] toPolygons() {
-        return new Polygon[]{toPolygon()};
+    public HPolygon[] toPolygons() {
+        return new HPolygon[]{toPolygon()};
     }
 }

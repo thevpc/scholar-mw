@@ -12,6 +12,7 @@ import net.thevpc.scholar.hadrumaths.symbolic.double2double.UFunction;
  * Time: 15:15:16
  */
 final class CosCosVsUScalarProduct implements FormalScalarProductHelper {
+    public static final CosCosVsUScalarProduct INSTANCE = new CosCosVsUScalarProduct();
     @Override
     public int hashCode() {
         return getClass().getName().hashCode();

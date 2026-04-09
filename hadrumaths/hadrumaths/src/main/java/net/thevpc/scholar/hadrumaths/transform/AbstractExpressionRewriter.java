@@ -215,7 +215,7 @@ public abstract class AbstractExpressionRewriter implements ExpressionRewriter, 
             NChronometer c = Maths.chrono();
             RewriteResult r = rewriteImpl(e, targetExprType);
             c.stop();
-            NDuration duration = c.getDuration();
+            NDuration duration = c.duration();
             if (duration.getSeconds() > MAX_REWRITE_TIME_SECONDS) {
                 System.err.println("Expression Rewrite Took too long : " + duration.toSeconds() + "s ; " + e + " ==> " +
                         (r.isUnmodified() ? "?unmodified?" : r.getValue())

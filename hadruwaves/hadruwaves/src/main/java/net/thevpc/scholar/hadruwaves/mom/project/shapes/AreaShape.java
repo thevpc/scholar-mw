@@ -5,7 +5,7 @@
 package net.thevpc.scholar.hadruwaves.mom.project.shapes;
 
 import net.thevpc.scholar.hadrumaths.Domain;
-import net.thevpc.scholar.hadrumaths.geom.GeometryList;
+import net.thevpc.scholar.hadrumaths.geom.HGeometryList;
 import net.thevpc.scholar.hadruwaves.mom.project.MomProjectItem;
 
 /**
@@ -15,7 +15,7 @@ public interface AreaShape extends MomProjectItem {
 
     public Domain getDomain();
 
-    public GeometryList getPolygons(Domain globalDomain);
+    public HGeometryList getPolygons(Domain globalDomain);
 
     public void setWidth(double d);
 

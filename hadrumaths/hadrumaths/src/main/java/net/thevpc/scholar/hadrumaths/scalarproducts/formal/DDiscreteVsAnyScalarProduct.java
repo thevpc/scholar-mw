@@ -12,6 +12,8 @@ import net.thevpc.scholar.hadrumaths.symbolic.double2double.DDiscrete;
  * Time: 15:15:16
  */
 final class DDiscreteVsAnyScalarProduct implements FormalScalarProductHelper {
+    public static final DDiscreteVsAnyScalarProduct INSTANCE = new DDiscreteVsAnyScalarProduct();
+
     @Override
     public int hashCode() {
         return getClass().getName().hashCode();

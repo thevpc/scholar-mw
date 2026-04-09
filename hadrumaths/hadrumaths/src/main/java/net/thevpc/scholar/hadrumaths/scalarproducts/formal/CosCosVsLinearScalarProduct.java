@@ -15,6 +15,7 @@ import static net.thevpc.scholar.hadrumaths.Maths.sin2;
  * Time: 15:15:16
  */
 final class CosCosVsLinearScalarProduct implements FormalScalarProductHelper {
+    public static final CosCosVsLinearScalarProduct INSTANCE = new CosCosVsLinearScalarProduct();
     //STARTING---------------------------------------
     // THIS FILE WAS GENERATED AUTOMATICALLY.
     // DO NOT EDIT MANUALLY.

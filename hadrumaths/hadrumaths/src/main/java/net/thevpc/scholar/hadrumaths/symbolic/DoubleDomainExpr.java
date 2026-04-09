@@ -12,7 +12,6 @@ import net.thevpc.scholar.hadrumaths.Expr;
  */
 public interface DoubleDomainExpr extends Expr {
 
-
     default boolean contains(double x) {
         return getDomain().contains(x);
     }

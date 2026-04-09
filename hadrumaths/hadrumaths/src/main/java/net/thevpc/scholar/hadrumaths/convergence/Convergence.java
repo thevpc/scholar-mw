@@ -56,7 +56,7 @@ public class Convergence {
                     lastRes = evalConverged(li, eps);
                 } while (!lastRes.isEquals());
                 ch.stop();
-                return new ConvergenceResult<T>(li.last(), conf, k - 1, lastRes, ch.getDuration());
+                return new ConvergenceResult<T>(li.last(), conf, k - 1, lastRes, ch.duration());
             } else {
                 long k = start;
                 EqualatorResult lastRes;
@@ -67,9 +67,9 @@ public class Convergence {
                     lastRes = evalConverged(li, eps);
                 } while ((maxIterations0 <= 0 || remainingIterations > 0)
                         && !lastRes.isEquals()
-                        && (maxTimeMs <= 0 || ch.getDurationNanos() < maxTimeMs));
+                        && (maxTimeMs <= 0 || ch.durationNanos() < maxTimeMs));
                 ch.stop();
-                return new ConvergenceResult<T>(li.last(), conf, k - 1, lastRes, ch.getDuration());
+                return new ConvergenceResult<T>(li.last(), conf, k - 1, lastRes, ch.duration());
             }
         } else {
             ConvergencePartialResultImpl<T> cc = new ConvergencePartialResultImpl<>();
@@ -84,9 +84,9 @@ public class Convergence {
                 listener.next(cc);
             } while ((maxIterations0 <= 0 || remainingIterations > 0)
                     && !lastRes.isEquals()
-                    && (maxTimeMs <= 0 || ch.getDurationNanos() < maxTimeMs));
+                    && (maxTimeMs <= 0 || ch.durationNanos() < maxTimeMs));
             ch.stop();
-            return new ConvergenceResult<T>(li.last(), conf, cc.iter - 1, lastRes, ch.getDuration());
+            return new ConvergenceResult<T>(li.last(), conf, cc.iter - 1, lastRes, ch.duration());
         }
     }
 

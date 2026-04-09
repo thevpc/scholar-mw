@@ -11,6 +11,7 @@ import net.thevpc.scholar.hadrumaths.symbolic.DoubleValue;
  * Time: 15:15:16
  */
 final class DoubleDoubleValueVsDoubleDoubleValueScalarProduct implements FormalScalarProductHelper {
+    public static final DoubleDoubleValueVsDoubleDoubleValueScalarProduct INSTANCE = new DoubleDoubleValueVsDoubleDoubleValueScalarProduct();
     @Override
     public int hashCode() {
         return getClass().getName().hashCode();

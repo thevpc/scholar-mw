@@ -5,6 +5,7 @@ import net.thevpc.scholar.hadrumaths.geom.*;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
 import net.thevpc.scholar.hadrumaths.symbolic.double2complex.DefaultComplexValue;
 import net.thevpc.scholar.hadrumaths.util.ArrayUtils;
+import org.locationtech.jts.geom.Geometry;
 
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
@@ -1547,7 +1548,7 @@ public abstract class Domain implements DoubleValue, DoubleToDouble, DoubleToDou
     }
 
     //    @Override
-    public Polygon toPolygon() {
+    public HPolygon toPolygon() {
         return GeometryFactory.createPolygon(this);
     }
 
@@ -1782,7 +1783,7 @@ public abstract class Domain implements DoubleValue, DoubleToDouble, DoubleToDou
     }
 
     //    @Override
-    public Geometry translateGeometry(double x, double y) {
+    public HGeometry translateGeometry(double x, double y) {
         switch (dimension()) {
             case 1: {
                 if (y == 0) {
@@ -1803,7 +1804,7 @@ public abstract class Domain implements DoubleValue, DoubleToDouble, DoubleToDou
     }
 
     //    @Override
-    public Triangle toTriangle() {
+    public HTriangle toTriangle() {
         throw new IllegalArgumentException("Not Triangular");
     }
 
@@ -2232,11 +2233,11 @@ public abstract class Domain implements DoubleValue, DoubleToDouble, DoubleToDou
         return this.intersect(other);
     }
 
-    public Expr multiply(Geometry geometry) {
+    public Expr multiply(HGeometry geometry) {
         return mul(geometry);
     }
 
-    public Expr mul(Geometry domain) {
+    public Expr mul(HGeometry domain) {
         return mul(Maths.expr(domain));
     }
 
@@ -2352,29 +2353,26 @@ public abstract class Domain implements DoubleValue, DoubleToDouble, DoubleToDou
         return 1;
     }
 
-    public Geometry scale(Domain newDomain) {
+    public HGeometry scale(Domain newDomain) {
         return DomainScaleTool.create(getDomain(), newDomain).rescale(toGeometry());
     }
 
-    public Geometry toGeometry() {
-        return new DomainGeometry(this);
+    public HGeometry toGeometry() {
+        return new DomainHGeometry(this);
     }
 
-    public Geometry scale(int width, int height) {
+    public HGeometry scale(int width, int height) {
         return DomainScaleTool.create(getDomain(), Domain.ofBounds(0, width, 0, height)).rescale(toGeometry());
     }
 
-    public Geometry addGeometry(Domain geometry) {
+    public HGeometry addGeometry(Domain geometry) {
         return addGeometry(geometry.toGeometry());
     }
 
-    public Geometry addGeometry(Geometry geometry) {
-        return toSurface().addGeometry(geometry);
+    public HGeometry addGeometry(HGeometry geometry) {
+        return toPolygon().addGeometry(geometry);
     }
 
-    public Surface toSurface() {
-        return new Surface(getPath());
-    }
 
     //    @Override
     public Path2D.Double getPath() {
@@ -2387,24 +2385,24 @@ public abstract class Domain implements DoubleValue, DoubleToDouble, DoubleToDou
         return p;
     }
 
-    public Geometry subtractGeometry(Domain geometry) {
+    public HGeometry subtractGeometry(Domain geometry) {
         return subtractGeometry(geometry.toGeometry());
     }
 
-    public Geometry subtractGeometry(Geometry geometry) {
-        return toSurface().subtractGeometry(geometry);
+    public HGeometry subtractGeometry(HGeometry geometry) {
+        return toPolygon().subtractGeometry(geometry);
     }
 
-    public Geometry intersectGeometry(Domain geometry) {
+    public HGeometry intersectGeometry(Domain geometry) {
         return intersectGeometry(geometry.toGeometry());
     }
 
-    public Geometry intersectGeometry(Geometry geometry) {
-        return toSurface().intersectGeometry(geometry);
+    public HGeometry intersectGeometry(HGeometry geometry) {
+        return toPolygon().intersectGeometry(geometry);
     }
 
-    public Geometry exclusiveOrGeometry(Geometry geometry) {
-        return toSurface().exclusiveOrGeometry(geometry);
+    public HGeometry exclusiveOrGeometry(HGeometry geometry) {
+        return toPolygon().exclusiveOrGeometry(geometry);
     }
 
     public Domain replaceXmin(double newValue) {

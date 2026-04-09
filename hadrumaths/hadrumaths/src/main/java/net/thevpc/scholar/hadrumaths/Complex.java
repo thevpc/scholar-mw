@@ -2,7 +2,7 @@ package net.thevpc.scholar.hadrumaths;
 
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.math.NDoubleComplex;
-import net.thevpc.scholar.hadrumaths.geom.Geometry;
+import net.thevpc.scholar.hadrumaths.geom.HGeometry;
 import net.thevpc.scholar.hadrumaths.symbolic.*;
 import net.thevpc.scholar.hadrumaths.symbolic.double2complex.DefaultComplexValue;
 import net.thevpc.scholar.hadrumaths.symbolic.double2matrix.DefaultDoubleToMatrix;
@@ -854,11 +854,11 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
         return new DefaultComplexValue(this, domain);
     }
 
-    public Expr multiply(Geometry geometry) {
+    public Expr multiply(HGeometry geometry) {
         return mul(geometry);
     }
 
-    public Expr mul(Geometry domain) {
+    public Expr mul(HGeometry domain) {
         return mul(Maths.expr(domain));
     }
 
