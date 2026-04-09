@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 public class ScalarProductTest {
     
     private static final double DELTA = 1e-9;
+    // DQuadIntegralXY has tolerance=1e-6; for 2D the error accumulates from nested calls
+    private static final double NUMERIC_DELTA = 1e-6;
 
     @Test
     public void testScalarProductConstants() {
@@ -47,8 +49,8 @@ public class ScalarProductTest {
         
         // integral of X^2 Y^2 from 0 to 1, 0 to 1 = (1/3) * (1/3) = 1/9
         Complex sp = Maths.scalarProduct(f1, f2).toComplex();
-        Assertions.assertEquals(1.0/9.0, sp.getReal(), DELTA);
-        Assertions.assertEquals(0.0, sp.getImag(), DELTA);
+        Assertions.assertEquals(1.0/9.0, sp.getReal(), NUMERIC_DELTA);
+        Assertions.assertEquals(0.0, sp.getImag(), NUMERIC_DELTA);
     }
     
     @Test

@@ -2,7 +2,6 @@ package net.thevpc.scholar.hadrumaths.integration;
 
 
 import net.thevpc.nuts.elem.NElement;
-
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToDouble;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.DDyIntegralX;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.DDzIntegralXY;
@@ -20,7 +19,7 @@ public class DQuadIntegralXY implements DIntegralXY {
     private static final int ERR_MAX_STEP_REACHED = 1;
     private static final int ERR_MAX_FCT_COUNT = 2;
     private static final int ERR_NAN_OR_INFINITE = 3;
-    private double tolerance = 1E-6;
+    private double tolerance = 1E-12;
     private double hminCoeff = 1E-52 / 1024.0;
     private double hmaxCoeff = 1.0 / 32.0;
     private int maxfcnt = 10000;
