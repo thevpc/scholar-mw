@@ -117,8 +117,8 @@ public abstract class NonPeriodicBoxModes extends BoxModes {
                 double nx;
                 double ny;
 
-                nx = -m_aAmp;
-                ny = -n_bAmp;
+                nx = m_aAmp;
+                ny = n_bAmp;
                 fx = nx == 0 ? Maths.DZEROXY : getFctX(domain, m, n, a, b, nx, ny);
                 fy = ny == 0 ? Maths.DZEROXY : getFctY(domain, m, n, a, b, nx, ny);
                 break;

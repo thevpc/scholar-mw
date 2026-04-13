@@ -12,7 +12,6 @@ import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.CellBoun
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.UserSinePattern;
 import net.thevpc.scholar.hadrumaths.cache.CacheMode;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import net.thevpc.nuts.Nuts;
@@ -65,13 +64,13 @@ public class SimpleLineAntennaTest {
         str.setSources(createPlanarSource(1, Complex.of(50), Axis.X, sourceBox));
 
         // Set Test Functions (Basis functions)
-        UserSinePattern p = new UserSinePattern(5, CellBoundaries.DDxDDy, null);
+        UserSinePattern p = new UserSinePattern(5, 0, CellBoundaries.DDxDDy, null);
         GpAdaptiveMesh am = new GpAdaptiveMesh(GeometryFactory.createPolygonList(lineBox.toGeometry()), p, null, new MeshAlgoRect());
 
         str.setTestFunctions(am);
 
         ModeInfo[] boxModes = str.modes();
-        DoubleToVector[] basisFunctions = str.testFunctions().arr();
+        DoubleToVector[] basisFunctions = str.testFunctions().toArray();
 
         int index = 0;
         for (ModeInfo mode : boxModes) {

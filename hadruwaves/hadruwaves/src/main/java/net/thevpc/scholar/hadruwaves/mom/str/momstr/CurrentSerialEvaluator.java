@@ -34,7 +34,7 @@ public class CurrentSerialEvaluator implements CurrentEvaluator {
                 ProgressMonitor[] mon = monitor.split(0.3, 0.2, 0.5);
                 final ComplexMatrix sp = str.getTestModeScalarProducts(mon[0]);
                 ComplexMatrix Testcoeff = str.matrixX().monitor(mon[1]).evalMatrix();
-                final DoubleToVector[] _g = str.testFunctions().arr();
+                final DoubleToVector[] _g = str.testFunctions().toArray();
 
                 final Complex[] J = Testcoeff.getColumn(0).toArray();
                 final ModeInfo[] indexes = str.getModes();

@@ -10,6 +10,7 @@ import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZoneType;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZoneTypeFilter;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
+import net.thevpc.scholar.hadruwaves.mom.HintAxisType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,14 +23,29 @@ public abstract class RectMeshAttachGpPattern extends AbstractGpPattern implemen
 
     private MeshZoneTypeFilter filter;
 
-    public RectMeshAttachGpPattern(boolean attachX, boolean attachY) {
-        this(
+    public RectMeshAttachGpPattern(HintAxisType axisType,boolean attachX, boolean attachY) {
+        this(axisType,
                 (attachX && attachY) ? MeshZoneType.FILTER_ALL :
                         (!attachX && !attachY) ? MeshZoneType.FILTER_M :
                                 (attachX && !attachY) ? MeshZoneType.FILTER_MXEW :
                                         /*(!attachX&&attachY)?*/MeshZoneType.FILTER_MYNS
         );
     }
+
+    public RectMeshAttachGpPattern(HintAxisType axisType,MeshZoneTypeFilter filter) {
+        super(axisType);
+        this.filter = filter == null ? MeshZoneType.FILTER_ALL : filter;
+    }
+
+    public RectMeshAttachGpPattern(HintAxisType axisType) {
+        this(axisType,MeshZoneType.FILTER_ALL);
+    }
+
+    public RectMeshAttachGpPattern(HintAxisType axisType,boolean attach) {
+        this(axisType,attach, attach);
+    }
+
+
 
     @Override
     public RectMeshAttachGpPattern copy() {
@@ -52,18 +68,6 @@ public abstract class RectMeshAttachGpPattern extends AbstractGpPattern implemen
         return h.build();
     }
 
-
-    public RectMeshAttachGpPattern(MeshZoneTypeFilter filter) {
-        this.filter = filter == null ? MeshZoneType.FILTER_ALL : filter;
-    }
-
-    public RectMeshAttachGpPattern() {
-        this(MeshZoneType.FILTER_ALL);
-    }
-
-    public RectMeshAttachGpPattern(boolean attach) {
-        this(attach, attach);
-    }
 
     /**
      * @param one

@@ -11,6 +11,8 @@ import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.*;
+import net.thevpc.scholar.hadrumaths.geom.DefaultHGeometryList;
+import net.thevpc.scholar.hadrumaths.geom.DefaultHPolygon;
 import net.thevpc.scholar.hadrumaths.geom.HGeometry;
 import net.thevpc.scholar.hadrumaths.geom.HGeometryList;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshAlgo;
@@ -25,8 +27,10 @@ import net.thevpc.scholar.hadruwaves.mom.sources.PlanarSource;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import static net.thevpc.scholar.hadrumaths.Maths.*;
 
 /**
@@ -35,10 +39,24 @@ import static net.thevpc.scholar.hadrumaths.Maths.*;
 public class CstPlanarSource implements PlanarSource, Cloneable {
 
     private HGeometryList geometryList;
-    private Complex characteristicImpedance;
-    private double xvalue;
-    private double yvalue;
-    private Axis polarization;
+    private final Complex characteristicImpedance;
+    private final double xvalue;
+    private final double yvalue;
+    private final Axis polarization;
+
+    public static CstPlanarSource ofVoltage(double targetVoltage, Domain domain, Axis axis, Complex characteristicImpedance) {
+        double gap = (axis == Axis.X) ? domain.xwidth() : domain.ywidth();
+
+        double fieldStrength = targetVoltage / gap;
+
+        return new CstPlanarSource(
+                (axis == Axis.X) ? fieldStrength : 0,
+                (axis == Axis.Y) ? fieldStrength : 0,
+                characteristicImpedance,
+                axis,
+                new DefaultHGeometryList(domain, new DefaultHPolygon(domain))
+        );
+    }
 
     public CstPlanarSource(double xvalue, double yvalue, Complex characteristicImpedance, Axis polarization, HGeometryList geometryList) {
         this.geometryList = geometryList;
@@ -99,8 +117,8 @@ public class CstPlanarSource implements PlanarSource, Cloneable {
                 ally.add(yf);
             }
         }
-        DoubleToComplex fx = allx.isEmpty()?Maths.CZEROXY: allx.size()==1? allx.get(0): (Maths.sum(allx.toArray(new Expr[0])).toDC());
-        DoubleToComplex fy = ally.isEmpty()?Maths.CZEROXY: ally.size()==1? ally.get(0): (Maths.sum(ally.toArray(new Expr[0])).toDC());
+        DoubleToComplex fx = allx.isEmpty() ? Maths.CZEROXY : allx.size() == 1 ? allx.get(0) : (Maths.sum(allx.toArray(new Expr[0])).toDC());
+        DoubleToComplex fy = ally.isEmpty() ? Maths.CZEROXY : ally.size() == 1 ? ally.get(0) : (Maths.sum(ally.toArray(new Expr[0])).toDC());
         return Maths.vector(fx, fy).toDV();
     }
 
@@ -153,15 +171,15 @@ public class CstPlanarSource implements PlanarSource, Cloneable {
 
         if (Double.compare(that.xvalue, xvalue) != 0) return false;
         if (Double.compare(that.yvalue, yvalue) != 0) return false;
-        if (geometryList != null ? !geometryList.equals(that.geometryList) : that.geometryList != null) return false;
-        if (characteristicImpedance != null ? !characteristicImpedance.equals(that.characteristicImpedance) : that.characteristicImpedance != null)
+        if (!Objects.equals(geometryList, that.geometryList)) return false;
+        if (!Objects.equals(characteristicImpedance, that.characteristicImpedance))
             return false;
         return polarization == that.polarization;
     }
 
     @Override
     public int hashCode() {
-        int result=getClass().getName().hashCode();
+        int result = getClass().getName().hashCode();
         result = geometryList != null ? geometryList.hashCode() : 0;
         result = 31 * result + (characteristicImpedance != null ? characteristicImpedance.hashCode() : 0);
         result = 31 * result + Double.hashCode(xvalue);

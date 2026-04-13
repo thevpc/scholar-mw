@@ -197,7 +197,9 @@ public class MeshAlgoRect implements MeshAlgo, Cloneable {
         res = autoFusion(polygon, res);
         ArrayList<MeshZone> zones = new ArrayList<MeshZone>();
         for (HGeometry re : res) {
-            zones.add(new MeshZone(re, MeshZoneShape.RECTANGLE, MeshZoneType.MAIN));
+            MeshZone g = new MeshZone(re, MeshZoneShape.RECTANGLE, MeshZoneType.MAIN);
+            g.setDomain(re.getDomain());
+            zones.add(g);
         }
         return zones;
     }

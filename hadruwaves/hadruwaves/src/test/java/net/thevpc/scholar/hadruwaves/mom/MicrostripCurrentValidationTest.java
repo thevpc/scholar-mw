@@ -51,7 +51,7 @@ public class MicrostripCurrentValidationTest {
         Domain stripDomain = Domain.ofBounds(2.5 * Maths.MM, 7.5 * Maths.MM, -w/2, w/2);
         
         // Test functions on the strip (Basis functions)
-        UserSinePattern p = new UserSinePattern(5, CellBoundaries.DDxUUy, null);
+        UserSinePattern p = new UserSinePattern(3,0, CellBoundaries.DDxUUy, null);
         GpAdaptiveMesh am = new GpAdaptiveMesh(GeometryFactory.createPolygonList(stripDomain.toGeometry()), p, null, new MeshAlgoRect());
         str.setTestFunctions(am);
 

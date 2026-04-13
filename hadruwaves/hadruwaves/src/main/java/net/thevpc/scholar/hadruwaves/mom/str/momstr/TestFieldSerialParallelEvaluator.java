@@ -27,7 +27,7 @@ public class TestFieldSerialParallelEvaluator implements TestFieldEvaluator {
             @Override
             public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 ComplexMatrix Testcoeff = str.matrixX().monitor(monitor).evalMatrix();
-                DoubleToVector[] _g = str.testFunctions().arr();
+                DoubleToVector[] _g = str.testFunctions().toArray();
 
                 Complex[] J = Testcoeff.getColumn(0).toArray();
                 Complex[][] xCube = ArrayUtils.fill(new Complex[y.length][x.length], Maths.CZERO);

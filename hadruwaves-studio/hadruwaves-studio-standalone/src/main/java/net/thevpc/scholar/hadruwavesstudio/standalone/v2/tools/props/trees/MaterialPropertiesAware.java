@@ -38,9 +38,9 @@ public class MaterialPropertiesAware extends DefaultHWPropertiesTree {
         folder.add(new PValueViewProperty("property", outer.getStudio().app(), Props.of("description").valueOf(String.class, "").readOnly()));
 
         folder = root.addFolder("folder", "Values");
-        folder.add(new PValueViewProperty("property", outer.getStudio().app(), Props.of("permittivity").valueOf(Double.class, wp.getPermittivity()).readOnly()));
+        folder.add(new PValueViewProperty("property", outer.getStudio().app(), Props.of("permittivity").valueOf(Double.class, wp.permittivity()).readOnly()));
         folder.add(new PValueViewProperty("property", outer.getStudio().app(), Props.of("permeability").valueOf(Double.class, wp.getPermeability()).readOnly()));
-        folder.add(new PValueViewProperty("property", outer.getStudio().app(), Props.of("electricConductivity").valueOf(Double.class, wp.getElectricConductivity()).readOnly()));
+        folder.add(new PValueViewProperty("property", outer.getStudio().app(), Props.of("electricConductivity").valueOf(Double.class, wp.electricConductivity()).readOnly()));
     }
 
 }

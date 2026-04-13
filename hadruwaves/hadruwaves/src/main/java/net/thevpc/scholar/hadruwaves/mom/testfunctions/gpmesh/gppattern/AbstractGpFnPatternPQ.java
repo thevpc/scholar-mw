@@ -8,6 +8,7 @@ import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.ModeType;
+import net.thevpc.scholar.hadruwaves.mom.HintAxisType;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 
@@ -21,8 +22,8 @@ public abstract class AbstractGpFnPatternPQ extends RectMeshAttachGpPattern impl
     private int max;
     private ModeType[] modes;
 
-    protected AbstractGpFnPatternPQ(int complexity, ModeType[] modes) {
-        super(false);
+    protected AbstractGpFnPatternPQ(HintAxisType axisType,int complexity, ModeType[] modes) {
+        super(axisType,false);
         this.max = complexity;
         this.modes = modes==null? ModeType.values():modes;
     }
@@ -47,7 +48,7 @@ public abstract class AbstractGpFnPatternPQ extends RectMeshAttachGpPattern impl
         return h.build();
     }
 
-    public final DoubleToVector createFunction(int index, Domain globalDomain, MeshZone zone, MomStructure str) {
+    public final DoubleToVector createFunction(int index, Domain globalDomain, MeshZone zone, MomStructure str, HintAxisType preferredAxisType) {
         int modeIndex = index % modes.length;
         ModeType mode = modes[modeIndex];
         int p = (index / modes.length) / max;

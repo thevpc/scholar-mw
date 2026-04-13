@@ -14,6 +14,7 @@ import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
+import net.thevpc.scholar.hadruwaves.mom.HintAxisType;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 /**
@@ -24,7 +25,7 @@ public final class SinN1S0Pattern extends RectMeshAttachGpPattern  implements Cl
 
 
     public SinN1S0Pattern(int complexity) {
-        super(false);
+        super(HintAxisType.XY_SEPARATED,false);
         this.max = complexity;
     }
 
@@ -35,7 +36,7 @@ public final class SinN1S0Pattern extends RectMeshAttachGpPattern  implements Cl
         return h.build();
     }
 
-    public DoubleToVector createFunction(int q0, Domain globalDomain, MeshZone zone, MomStructure str) {
+    public DoubleToVector createFunction(int q0, Domain globalDomain, MeshZone zone, MomStructure str, HintAxisType preferredAxisType) {
         int q=q0;
         int q_i=-1;
         int q_d= q0 /3;

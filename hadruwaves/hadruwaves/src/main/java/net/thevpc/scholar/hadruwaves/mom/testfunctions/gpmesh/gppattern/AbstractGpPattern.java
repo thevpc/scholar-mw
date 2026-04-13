@@ -1,6 +1,7 @@
 package net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 
 import java.util.ArrayList;
+
 import net.thevpc.common.mon.ProgressMonitor;
 
 import net.thevpc.nuts.elem.NElement;
@@ -12,8 +13,10 @@ import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.Domain;
 
 import java.util.List;
+
 import net.thevpc.nuts.text.NMsg;
 
+import net.thevpc.scholar.hadruwaves.mom.HintAxisType;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 /**
@@ -22,7 +25,10 @@ import net.thevpc.scholar.hadruwaves.mom.MomStructure;
  */
 public abstract class AbstractGpPattern implements GpPattern, Cloneable {
 
-    protected AbstractGpPattern() {
+    private final HintAxisType preferredAxisType;
+
+    protected AbstractGpPattern(HintAxisType preferredAxisType) {
+        this.preferredAxisType = preferredAxisType;
     }
 
     public List<MeshZone> transform(List<MeshZone> zones, Domain globalBounds) {
@@ -35,13 +41,17 @@ public abstract class AbstractGpPattern implements GpPattern, Cloneable {
         return h.build();
     }
 
-    public DoubleToVector[] createFunctions(Domain globalDomain, MeshZone zone, ProgressMonitor monitor, MomStructure str, NLogger logger) {
+    public HintAxisType getPreferredAxisType() {
+        return preferredAxisType;
+    }
+
+    public DoubleToVector[] createFunctions(Domain globalDomain, MeshZone zone, ProgressMonitor monitor, MomStructure str, NLogger logger, HintAxisType preferredAxisType) {
         List<DoubleToVector> all = new ArrayList<>();
         int c = getCount();
         for (int i = 0; i < c; i++) {
             DoubleToVector z;
             try {
-                z = createFunction(i, globalDomain, zone, str);
+                z = createFunction(i, globalDomain, zone, str, preferredAxisType);
             } catch (Exception ex) {
                 logger.log(NMsg.ofC("[%s] %s produced error function at %s : ex", getClass().getSimpleName(), i, ex));
                 continue;
@@ -55,6 +65,6 @@ public abstract class AbstractGpPattern implements GpPattern, Cloneable {
         return all.toArray(new DoubleToVector[0]);
     }
 
-    protected abstract DoubleToVector createFunction(int index, Domain globalDomain, MeshZone zone, MomStructure str);
+    protected abstract DoubleToVector createFunction(int index, Domain globalDomain, MeshZone zone, MomStructure str, HintAxisType preferredAxisType);
 
 }

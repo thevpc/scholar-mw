@@ -38,7 +38,7 @@ public class PlotTestModeFunctionsYScalarProducts extends PlotAxisSeries impleme
         ProgressMonitor monitor = ProgressMonitors.nonnull(cmonitor);
         ModeFunctions fnModeFunctions = structure.modeFunctions();
         TestFunctions gpTestFunctions = structure.testFunctions();
-        DoubleToVector[] cache_essai = gpTestFunctions.arr();
+        DoubleToVector[] cache_essai = gpTestFunctions.toArray();
 //        monitor.startm(getClass().getSimpleName());
         Complex[][] gfps = new Complex[cache_essai.length][fnModeFunctions.count()];
         ModeInfo[] indexes= structure.getModes();

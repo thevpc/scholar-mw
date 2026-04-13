@@ -29,7 +29,7 @@ public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
 
     public ComplexMatrix evaluate(MomStructure str, ProgressMonitor monitor1) {
         TestFunctions gpTestFunctions = str.testFunctions();
-        final DoubleToVector[] _g = gpTestFunctions.arr();
+        final DoubleToVector[] _g = gpTestFunctions.toArray();
         final Complex[][] b = new Complex[_g.length][_g.length];
         ProgressMonitor[] mons=monitor1.split(2,2,6);
 

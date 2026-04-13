@@ -7,6 +7,7 @@ import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.FunctionFactory;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.CosXCosY;
+import net.thevpc.scholar.hadruwaves.mom.HintAxisType;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 /**
@@ -16,10 +17,10 @@ public final class SicoCocoPattern extends AbstractGpPatternPQ  implements Clone
 
 
     public SicoCocoPattern(int complexity) {
-        super(complexity);
+        super(HintAxisType.XY_SEPARATED,complexity);
     }
 
-    public DoubleToVector createFunction(int index, int p, int q, Domain d, Domain globalDomain, MomStructure str) {
+    public DoubleToVector createFunction(int index, int p, int q, Domain d, Domain globalDomain, HintAxisType preferredAxisType, MomStructure str) {
         CosXCosY fx = FunctionFactory.sinXcosY(
                 1,// / Math.sqrt(d.width * d.height),
                 (p + 1) * Math.PI / d.xwidth(),

@@ -81,7 +81,7 @@ public class GpAdaptiveMultiMesh extends TestFunctionsBase implements Cloneable 
             gps = TestFunctionsSymmetry.NO_SYMMETRY;
         }
         for (MeshZone zone : allZones) {
-            DoubleToVector[] allGpFunctions = cell.getPattern().createFunctions(globalDomain, zone, monitor, getStructure(), log());
+            DoubleToVector[] allGpFunctions = cell.getPattern().createFunctions(globalDomain, zone, monitor, getStructure(), log(), getAxisType());
             int goodCount = allGpFunctions.length;
             partCounter++;
             switch (gps) {

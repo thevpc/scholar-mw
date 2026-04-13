@@ -84,7 +84,7 @@ public class DefaultMatrix<T> extends AbstractMatrix<T> implements Serializable 
      *
      * @return maximum elemet absdbl.
      */
-    public double norm3() {
+    public double normMax() {
         double f = 0;
         int columnDimension = getColumnCount();
         int rows = getRowCount();

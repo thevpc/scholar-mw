@@ -30,7 +30,7 @@ public class CurrentParallelEvaluator implements CurrentEvaluator {
         return Maths.invokeMonitoredAction(monitor, getClass().getSimpleName(), new MonitoredAction<VDiscrete>() {
             @Override
             public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
-                DoubleToVector[] _g = str.testFunctions().arr();
+                DoubleToVector[] _g = str.testFunctions().toArray();
 
                 ComplexMatrix Testcoeff = str.matrixX().monitor(monitor).evalMatrix();
 

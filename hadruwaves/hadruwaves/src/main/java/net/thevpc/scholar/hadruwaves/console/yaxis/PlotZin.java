@@ -29,7 +29,7 @@ public class PlotZin extends PlotAxisSeriesMatrixValue implements Cloneable {
 
         Complex z0 = Maths.CZERO;
         ModeFunctions fn = structure.modeFunctions();
-        DoubleToVector g = structure.testFunctions().arr()[0];
+        DoubleToVector g = structure.testFunctions().toArray()[0];
         ModeInfo[] evan = structure.getHintsManager().isHintRegularZnOperator() ? fn.getModes() : fn.getVanishingModes();
         ModeInfo f0 = fn.getPropagatingModes()[0];
         for (ModeInfo fi : evan) {
@@ -45,7 +45,7 @@ public class PlotZin extends PlotAxisSeriesMatrixValue implements Cloneable {
 
         MutableComplex z0 = new MutableComplex();
         ModeFunctions fn = structure.modeFunctions();
-        DoubleToVector g = structure.testFunctions().arr()[0];
+        DoubleToVector g = structure.testFunctions().toArray()[0];
         ModeInfo[] evan = structure.getHintsManager().isHintRegularZnOperator() ? fn.getModes() : fn.getVanishingModes();
         ModeInfo f0 = fn.getPropagatingModes()[0];
         for (ModeInfo fi : evan) {

@@ -27,6 +27,6 @@ class SrcGpScalarProductCacheStrCacheSupport extends StrCacheSupport<ComplexMatr
             throw new IllegalArgumentException();
         }
         DoubleToVector[] _g = ((PlanarSources) ss).getSourceFunctions();
-        return (ComplexMatrix) Maths.scalarProductCache(momStructure.testFunctions().arr(), _g, getMonitor()).to(Maths.$COMPLEX);
+        return (ComplexMatrix) Maths.scalarProductCache(momStructure.testFunctions().toArray(), _g, getMonitor()).to(Maths.$COMPLEX);
     }
 }

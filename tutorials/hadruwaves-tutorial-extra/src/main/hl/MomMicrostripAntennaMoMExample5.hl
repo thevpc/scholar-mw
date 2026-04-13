@@ -37,7 +37,7 @@ import package net.thevpc.scholar:hadruwaves#3.3.0;
           }
       }
     )
-    val arr = m.testFunctions.arr()
+    val arr = m.testFunctions.toArray()
     println(arr[0].toDM()[0.01,0.5])
     var c = Plot.console()
     c.run({structure:m, y: structureDefinitionAxis()})

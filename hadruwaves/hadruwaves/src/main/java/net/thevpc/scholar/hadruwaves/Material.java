@@ -16,12 +16,13 @@ import java.util.function.Function;
 
 public class Material implements NToElement {
 
-    public static final Material VACUUM = new Material("Vacuum", 1, 1, 0);
-    public static final Material PEC = new Material("PEC", 1, 1, Double.POSITIVE_INFINITY);
+    public static final Material VACUUM = new Material("Vacuum", 1, 1, 0,0);
+    public static final Material PEC = new Material("PEC", 1, 1, Double.POSITIVE_INFINITY,0);
     private final String name;
     private final double permittivity;
     private final double permeability;
     private final double electricConductivity;
+    private final double lossTangent;
 
     public static NOptional<Material> parse(NElement value, Function<NElement, NElement> resolver) {
         if (value == null || value.isNull()) {
@@ -53,6 +54,7 @@ public class Material implements NToElement {
             String name = value.isNamed() ? o.asNamed().get().name().orNull() : null;
             double permittivity = 1;
             double permeability = 1;
+            double lossTangent = 0;
             Complex electricConductivity = Complex.ZERO;
             for (NElement child : o.children()) {
                 if (child.isNamedPair()) {
@@ -170,7 +172,8 @@ public class Material implements NToElement {
             if (cm == null) {
                 cm = new Material(
                         NStringUtils.firstNonBlank(name, "CustomMaterial"), permittivity, permeability,
-                        electricConductivity.doubleValue() // actual implementation is always real, will handle that later!
+                        electricConductivity.doubleValue(), // actual implementation is always real, will handle that later!
+                        lossTangent
                 );
             }
 
@@ -191,11 +194,12 @@ public class Material implements NToElement {
         }
     }
 
-    public Material(String name, double permittivity, double permeability, double electricConductivity) {
+    public Material(String name, double permittivity, double permeability, double electricConductivity,double lossTangent) {
         this.name = name;
         this.permittivity = permittivity;
         this.permeability = permeability;
         this.electricConductivity = electricConductivity;
+        this.lossTangent = lossTangent;
     }
 
     public static Material substrate(double epsr) {
@@ -203,7 +207,10 @@ public class Material implements NToElement {
     }
 
     public static Material substrate(String name, double epsr) {
-        return new Material(name, epsr, 1, 0);
+        return new Material(name, epsr, 1, 0,0);
+    }
+    public static Material substrate(String name, double epsr, double lossTangent) {
+        return new Material(name, epsr, 1, 0,lossTangent);
     }
 
     public boolean isSubstrate() {
@@ -222,7 +229,7 @@ public class Material implements NToElement {
         return name;
     }
 
-    public double getPermittivity() {
+    public double permittivity() {
         return permittivity;
     }
 
@@ -230,13 +237,17 @@ public class Material implements NToElement {
         return permeability;
     }
 
-    public double getElectricConductivity() {
+    public double electricConductivity() {
         return electricConductivity;
+    }
+
+    public double lossTangent() {
+        return lossTangent;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, permittivity, permeability, electricConductivity);
+        return Objects.hash(name, permittivity, permeability, electricConductivity,lossTangent);
     }
 
     @Override
@@ -251,6 +262,7 @@ public class Material implements NToElement {
         return Double.compare(material.permittivity, permittivity) == 0
                 && Double.compare(material.permeability, permeability) == 0
                 && Double.compare(material.electricConductivity, electricConductivity) == 0
+                && Double.compare(material.lossTangent, lossTangent) == 0
                 && Objects.equals(name, material.name);
     }
 
@@ -265,11 +277,13 @@ public class Material implements NToElement {
         if(permeability==1 && electricConductivity==0){
             return NElement.ofObjectBuilder(name)
                     .add("permittivity", permittivity)
+                    .add("lossTangent", lossTangent)
                     .build();
         }
         if(permittivity==1 && electricConductivity==0){
             return NElement.ofObjectBuilder(name)
                     .add("permeability", permeability)
+                    .add("permeability", lossTangent)
                     .build();
         }
         if(permittivity==1 && permeability==1){
@@ -281,6 +295,7 @@ public class Material implements NToElement {
                 .add("permittivity", permittivity)
                 .add("permeability", permeability)
                 .add("electricConductivity", electricConductivity == Double.POSITIVE_INFINITY ? NElement.ofName("∞") : NElement.ofDouble(electricConductivity))
+                .add("lossTangent", lossTangent)
                 .build();
     }
 

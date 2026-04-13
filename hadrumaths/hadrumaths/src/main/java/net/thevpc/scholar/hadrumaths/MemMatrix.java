@@ -65,7 +65,7 @@ public class MemMatrix<T> extends AbstractMatrix<T> implements Serializable {
      *
      * @return maximum elemet absdbl.
      */
-    public double norm3() {
+    public double normMax() {
         double f = 0;
         for (int j = 0; j < elements[0].length; j++) {
             for (T[] element : elements) {

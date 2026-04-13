@@ -2,17 +2,12 @@ package net.thevpc.scholar.hadruplot.console;
 
 import net.thevpc.nuts.text.NTextFormat;
 import net.thevpc.scholar.hadruplot.console.extension.PlotConsoleCacheSupport;
+import net.thevpc.scholar.hadruplot.extension.*;
 import net.thevpc.scholar.hadruplot.extension.defaults.DefaultPlotNumbers;
-import net.thevpc.scholar.hadruplot.extension.PlotNumbers;
-import net.thevpc.scholar.hadruplot.extension.ClassResolvers;
 import net.thevpc.scholar.hadruplot.extension.defaults.DefaultPlotModelFactory;
-import net.thevpc.scholar.hadruplot.extension.PlotBuilderSupport;
-import net.thevpc.scholar.hadruplot.extension.PlotModelPopupFactory;
-import net.thevpc.scholar.hadruplot.extension.PlotModelPanelFactory;
 import net.thevpc.scholar.hadruplot.extension.defaults.PlotHyperCubePlotModelPanelFactory;
 import net.thevpc.scholar.hadruplot.extension.defaults.DefaultPlotValueFactory;
 import net.thevpc.scholar.hadruplot.model.value.PlotValueTypeFactory;
-import net.thevpc.scholar.hadruplot.extension.PlotValueFactory;
 import net.thevpc.scholar.hadruplot.*;
 
 import java.util.*;
@@ -40,6 +35,15 @@ public class PlotConfigManager {
         addPlotModelFactory(DefaultPlotModelFactory.INSTANCE);
         addPlotModelPopupFactory(new DefaultValuesPlotModelPopupFactory());
         addPlotModelPanelFactory(new PlotHyperCubePlotModelPanelFactory());
+        getPlotDomainResolvers().add(new ClassResolver<PlotDomain>() {
+            @Override
+            public PlotDomain resolve(Object o) {
+                if(o instanceof PlotDomain){
+                    return (PlotDomain) o;
+                }
+                return null;
+            }
+        }, PlotDomain.class);
     }
 
     public static ClassResolvers<PlotComplex> getPlotComplexResolvers() {

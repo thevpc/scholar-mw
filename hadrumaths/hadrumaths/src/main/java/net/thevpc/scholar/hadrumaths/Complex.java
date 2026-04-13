@@ -191,7 +191,7 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
                     break;
                 }
                 case '*': {
-                    if (chars[i + 1] == 'i' || chars[i + 1] == 'î') {
+                    if (i+1< chars.length && (chars[i + 1] == 'i' || chars[i + 1] == 'î')) {
                         if (STATUS == EXPECT_REAL) {
                             imag.append(real);
                             real.delete(0, real.length());
@@ -282,25 +282,19 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
     }
 
     public Complex npow(int n) {
-        if (equals(ONE)) {
-            return ONE;
-        } else if (equals(ZERO)) {
-            if (n == 0) {
-                return ONE;
-            } else if (n > 0) {
-                return ZERO;
-            } else {//if(n<0)
-                throw new ArithmeticException("Divide by zero");
-            }
-        } else if (n == 0) {
-            return ONE;
-        } else if (n == 1) {
-            return this;
-        } else if (n > 0) {
-            return npow(n - 1).mul(this);
-        } else {
-            return npow(n + 1).div(this);
+        if (n == 0) return ONE;
+        if (n == 1) return this;
+        if (n < 0) return inv().npow(-n);
+
+        Complex result = ONE;
+        Complex base = this;
+        int exp = n;
+        while (exp > 0) {
+            if ((exp & 1) == 1) result = result.mul(base);
+            base = base.mul(base);
+            exp >>= 1;
         }
+        return result;
     }
 
     public Complex mulAll(double... c) {
@@ -599,7 +593,7 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
             power = -power;
             double r = Math.pow(absdbl(), power);
             double theta = arg().toDouble() * power;
-            Complex c = Complex.of(r * Math.cos(theta), r * Maths.sin(theta));
+            Complex c = Complex.of(r * Math.cos(theta), r * Math.sin(theta));
             return c.inv();
         }
     }
@@ -626,14 +620,19 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
     }
 
     public Complex inv() {
-        if (getReal() == 0) {
-            return Complex.of(0, -1 / getImag());
-        } else if (getImag() == 0) {
-            return Complex.of(1 / getReal(), 0);
-        } else {
-            double d = getReal() * getReal() + getImag() * getImag();
-            return Complex.of(getReal() / d, -getImag() / d);
+        double a = getReal();
+        double b = getImag();
+
+        if (b == 0) {
+            return Complex.of(1.0 / a);
         }
+
+        if (a == 0) {
+            return Complex.of(0, -1.0 / b);
+        }
+
+        double denom = a * a + b * b;
+        return Complex.of(a / denom, -b / denom);
     }
 
     @Override
@@ -757,6 +756,9 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
 
     @Override
     public Expr normalize() {
+        if (isZero()) {
+            return ZERO;
+        }
         if (isNaN() || isInfinite() || isZero()) {
             return NaN;
         }
@@ -1342,7 +1344,7 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
 
     @Override
     public Complex[][][] evalComplex(double[] x, double[] y, double[] z, Domain d0) {
-        Complex[][][] complexes = new Complex[z.length][y.length][z.length];
+        Complex[][][] complexes = new Complex[z.length][y.length][x.length];
         ArrayUtils.fill(complexes, this);
         return complexes;
     }

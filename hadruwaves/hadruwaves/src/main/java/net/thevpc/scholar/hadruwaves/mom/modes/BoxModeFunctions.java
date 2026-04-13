@@ -477,16 +477,6 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
     }
 
     @Override
-    public int length() {
-        return count();
-    }
-
-    @Override
-    public int size() {
-        return count();
-    }
-
-    @Override
     public int count() {
         return getModes().length;
     }
@@ -546,27 +536,32 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
     //    }
     @Override
     public synchronized DoubleToVector apply(int index) {
-        return arr()[index];
+        return this.toArray()[index];
     }
 
     @Override
     public synchronized DoubleToVector get(int index) {
-        return arr()[index];
+        return this.toArray()[index];
     }
 
     @Override
     public synchronized Vector<Expr> list() {
-        return Maths.evector(arr());
+        return Maths.evector(this.toArray());
     }
 
     @Override
-    public synchronized Vector<Expr> toList() {
+    public synchronized Vector<Expr> toVector() {
         return list();
     }
 
     @Override
     public synchronized DoubleToVector[] toArray() {
-        return arr();
+        return this.toArray(null);
+    }
+
+    @Override
+    public List<DoubleToVector> toList() {
+        return Arrays.asList(toArray());
     }
 
     @Override
@@ -576,7 +571,7 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
 
     @Override
     public synchronized DoubleToVector[] fn(ProgressMonitor monitor) {
-        return arr(monitor);
+        return toArray(monitor);
     }
 
     @Override
@@ -594,13 +589,9 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
         return yn()[index];
     }
 
-    @Override
-    public synchronized DoubleToVector[] arr() {
-        return arr(null);
-    }
 
     @Override
-    public synchronized DoubleToVector[] arr(ProgressMonitor monitor) {
+    public synchronized DoubleToVector[] toArray(ProgressMonitor monitor) {
         if (cachedFn != null) {
             if (monitor != null) {
                 monitor.terminate("mode functions loaded");
@@ -1553,11 +1544,11 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
             }
         }
         if (!Maths.Config.isCacheEnabled()) {
-            return scalarProduct0(dd, testFunction, arr(), monitor);
+            return scalarProduct0(dd, testFunction, this.toArray(), monitor);
         }
         final ObjectCache objectCache = getSingleTestFunctionObjectCache(testFunction);
         if (objectCache == null) {
-            return scalarProduct0(dd, testFunction, arr(), monitor);
+            return scalarProduct0(dd, testFunction, this.toArray(), monitor);
         }
         ProgressMonitor[] mons = monitor.split(1, 9);
         final int currentCount = count(mons[0]);
@@ -1571,7 +1562,7 @@ public class BoxModeFunctions implements net.thevpc.scholar.hadruwaves.mom.ModeF
                 ComplexVector found = loadCacheScalarProduct(finalDd, testFunction, objectCache, currentCount, mons[0]);
                 if (found == null) {
                     ProgressMonitor[] mons2 = mons[1].split(1, 9);
-                    found = scalarProduct0(finalDd, testFunction, arr(mons2[0]), mons[1]);
+                    found = scalarProduct0(finalDd, testFunction, toArray(mons2[0]), mons[1]);
                 } else {
                     mons[1].terminate();
                 }

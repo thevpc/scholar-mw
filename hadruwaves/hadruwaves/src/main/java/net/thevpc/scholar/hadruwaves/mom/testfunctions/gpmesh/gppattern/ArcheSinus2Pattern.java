@@ -7,6 +7,7 @@ import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZoneType;
+import net.thevpc.scholar.hadruwaves.mom.HintAxisType;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 /**
@@ -16,14 +17,14 @@ import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 public final class ArcheSinus2Pattern extends RectMeshAttachGpPattern implements Cloneable {
 
     public ArcheSinus2Pattern(boolean attachX, boolean attachY) {
-        super(attachX, attachY);
+        super(HintAxisType.XY_SEPARATED,attachX, attachY);
     }
 
     public int getCount() {
         return 1;
     }
 
-    public DoubleToVector createFunction(int index, Domain globalDomain, MeshZone zone, MomStructure str) {
+    public DoubleToVector createFunction(int index, Domain globalDomain, MeshZone zone, MomStructure str, HintAxisType preferredAxisType) {
 //            type=Zone.Type.MAIN;
         switch (zone.getType().getValue()) {
             case MeshZoneType.ID_MAIN: {

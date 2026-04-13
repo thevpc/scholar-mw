@@ -38,7 +38,7 @@ public class TmwlibExample {
 //        Plot.plot(str.testFunctions().arr());
 //        Plot.plot(str.testFunctions().arr()[0].toDV().getComponent(Axis.X));
 //        Plot.plot(str.testFunctions().arr()[0].toDV());
-        Plot.plot(str.testFunctions().arr());
+        Plot.plot(str.testFunctions().toArray());
 //        ComplexMatrix JJ = str.current().monitor(ProgressMonitors.temporize(ProgressMonitors.logger(), 1000)).computeMatrix(Axis.X, Samples.relative(100));
 //        Plot.plot(JJ);
 //        Plot.console().createPlot().setStructure(str)

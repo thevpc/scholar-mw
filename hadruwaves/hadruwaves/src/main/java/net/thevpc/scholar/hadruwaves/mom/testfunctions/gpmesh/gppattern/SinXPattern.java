@@ -11,6 +11,7 @@ import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
+import net.thevpc.scholar.hadruwaves.mom.HintAxisType;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 import static java.lang.Math.PI;
@@ -24,6 +25,7 @@ public final class SinXPattern extends RectMeshAttachGpPattern implements Clonea
 
 
     public SinXPattern(int complexity) {
+        super(HintAxisType.XY_SEPARATED);
         this.max = complexity;
     }
 
@@ -35,7 +37,7 @@ public final class SinXPattern extends RectMeshAttachGpPattern implements Clonea
     }
 
 
-    public DoubleToVector createFunction(int p0, Domain globalDomain, MeshZone zone, MomStructure str) {
+    public DoubleToVector createFunction(int p0, Domain globalDomain, MeshZone zone, MomStructure str, HintAxisType preferredAxisType) {
         int p;
         int p_i;
         int p_d = p0 / 3;

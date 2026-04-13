@@ -24,6 +24,7 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
 
     /**
      * One norm
+     * max column sum
      *
      * @return maximum column sum.
      */
@@ -39,7 +40,11 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
         return f;
     }
 
-    public double norm2() {
+    /**
+     * normFrobenius
+     * @return
+     */
+    public double normF() {
         double f = 0;
         for (int j = 0; j < elements[0].length; j++) {
             for (Complex[] element : elements) {
@@ -50,11 +55,57 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
     }
 
     /**
+     * spectral norm (SVD)
+     * @return
+     */
+    public double norm2() {
+        // ||A||_2 = sqrt(largest eigenvalue of A^H * A)
+        int rows = getRowCount();
+        int cols = getColumnCount();
+        ComplexMatrix AhA = this.transposeHermitian().mul(this); // A^H * A
+
+        // Random starting vector
+        Complex[] v = new Complex[cols];
+        for (int i = 0; i < cols; i++) {
+            v[i] = Complex.of(1.0 / Math.sqrt(cols));
+        }
+
+        double lambda = 0;
+        for (int iter = 0; iter < 1000; iter++) {
+            // w = AhA * v
+            Complex[] w = new Complex[cols];
+            for (int i = 0; i < cols; i++) {
+                MutableComplex s = MutableComplex.Zero();
+                for (int j = 0; j < cols; j++) {
+                    s.add(AhA.get(i, j).mul(v[j]));
+                }
+                w[i] = s.toImmutable();
+            }
+
+            // lambda = ||w|| (Rayleigh quotient approximation)
+            double norm = 0;
+            for (Complex c : w) norm += c.absdblsqr();
+            norm = Math.sqrt(norm);
+
+            // convergence check
+            if (Math.abs(norm - lambda) < 1e-12 * norm) break;
+            lambda = norm;
+
+            // normalize: v = w / ||w||
+            for (int i = 0; i < cols; i++) {
+                v[i] = w[i].div(norm);
+            }
+        }
+
+        return Math.sqrt(lambda);
+    }
+
+    /**
      * One norm
      *
      * @return maximum elemet absdbl.
      */
-    public double norm3() {
+    public double normMax() {
         double f = 0;
         for (int j = 0; j < elements[0].length; j++) {
             for (Complex[] element : elements) {
@@ -108,7 +159,7 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
             throw new EmptyMatrixException();
         }
 
-        if (rows != getColumnCount() || rows != getRowCount()) {
+        if (rows != getRowCount() || rows != getColumnCount()) {
             throw new IllegalArgumentException("Columns or Rows count does not match");
         }
         int row = 0;
@@ -624,10 +675,10 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
             }
             default: {
                 int n2 = n / 2;
-                ComplexMatrix A = getMatrix(0, n2 - 1, 0, n2 - 1);
-                ComplexMatrix B = getMatrix(n2, n - 1, 0, n2 - 1);
-                ComplexMatrix C = getMatrix(0, n2 - 1, n2, n - 1);
-                ComplexMatrix D = getMatrix(n2, n - 1, n2, n - 1);
+                ComplexMatrix A = getMatrix(0, n2 - 1, 0, n2 - 1);   // top-left
+                ComplexMatrix B = getMatrix(0, n2 - 1, n2, n - 1);   // top-right
+                ComplexMatrix C = getMatrix(n2, n - 1, 0, n2 - 1);   // bottom-left
+                ComplexMatrix D = getMatrix(n2, n - 1, n2, n - 1);   // bottom-right
                 ComplexMatrix Ai = A.invBlock(delegate, precision);
                 ComplexMatrix CAi = C.mul(Ai);
                 ComplexMatrix AiB = Ai.mul(B);
@@ -1009,11 +1060,13 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
     @Override
     public double maxAbs() {
         double f = 0;
-        double f0 = elements[0][0].absdbl();
+        double f0;
         for (int i = 0; i < elements.length; i++) {
             for (int j = 0; j < elements[0].length; j++) {
                 f0 = elements[i][j].absdbl();
-                f = Math.max(f, f0);
+                if(f0>f){
+                    f=f0;
+                }
             }
         }
         return f;
@@ -1021,12 +1074,14 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
 
     @Override
     public double minAbs() {
-        double f = 0;
-        double f0 = elements[0][0].absdbl();
+        double f = Double.POSITIVE_INFINITY;
+        double f0;
         for (int i = 0; i < elements.length; i++) {
             for (int j = 0; j < elements[0].length; j++) {
                 f0 = elements[i][j].absdbl();
-                f = Math.min(f, f0);
+                if(f0<f){
+                    f=f0;
+                }
             }
         }
         return f;

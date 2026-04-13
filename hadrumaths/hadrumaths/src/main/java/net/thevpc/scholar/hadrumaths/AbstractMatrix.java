@@ -1,8 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
-import net.thevpc.nuts.reflect.NReflect;
 import net.thevpc.nuts.reflect.NTypeName;
-import net.thevpc.nuts.reflect.NTypeNameDomain;
 import net.thevpc.nuts.reflect.NTypeNamePlatformDomain;
 import net.thevpc.scholar.hadrumaths.util.ArrayUtils;
 import net.thevpc.scholar.hadrumaths.util.adapters.ComplexMatrixFromComplexMatrix;
@@ -81,7 +79,7 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
     }
 
     public DMatrix getErrorMatrix(Matrix<T> baseMatrix, double minErrorForZero) {
-        Matrix<T> m = baseMatrix.sub(this).div(baseMatrix.norm3());
+        Matrix<T> m = baseMatrix.sub(this).div(baseMatrix.normMax());
         T[][] mm = m.getArray();
         double[][] d = new double[mm.length][mm[0].length];
         for (int i = 0; i < mm.length; i++) {
@@ -103,14 +101,17 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
             case NORM2: {
                 return norm2();
             }
-            case NORM3: {
-                return norm3();
+            case NORM_MAX: {
+                return normMax();
             }
             case NORM1: {
                 return norm1();
             }
             case NORM_INF: {
                 return normInf();
+            }
+            case NORM_F: {
+                return normF();
             }
         }
         throw new UnsupportedOperationException();
@@ -136,23 +137,71 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
     }
 
     public double norm2() {
-        double f = 0;
-        int columnDimension = getColumnCount();
-        int rows = getRowCount();
-        for (int c = 0; c < columnDimension; c++) {
-            for (int r = 0; r < rows; r++) {
-                f += Maths.sqr(getComponentVectorSpace().absdbl(get(r, c)));
+        // spectral norm = sqrt(largest eigenvalue of A^H * A)
+        // computed via power iteration
+        int cols = getColumnCount();
+        VectorSpace<T> vs = getComponentVectorSpace();
+        Matrix<T> G = transposeHermitian().mul(this); // A^H * A, cols x cols
+
+        // uniform starting vector
+        T[] v = newT(cols);  // you already have this private helper
+        T init = vs.convert(1.0 / Math.sqrt(cols));
+        for (int i = 0; i < cols; i++) v[i] = init;
+
+        double lambda = 0;
+        for (int iter = 0; iter < 1000; iter++) {
+            // w = G * v
+            T[] w = newT(cols);
+            for (int i = 0; i < cols; i++) {
+                T sum = vs.zero();
+                for (int j = 0; j < cols; j++) {
+                    sum = vs.add(sum, vs.mul(G.get(i, j), v[j]));
+                }
+                w[i] = sum;
+            }
+
+            // norm of w
+            double norm = 0;
+            for (int i = 0; i < cols; i++) {
+                double a = vs.absdbl(w[i]);
+                norm += a * a;
+            }
+            norm = Math.sqrt(norm);
+
+            if (norm == 0) return 0;
+            if (Math.abs(norm - lambda) < 1e-12 * norm) break;
+            lambda = norm;
+
+            // normalize: v = w / ||w||
+            T normT = vs.convert(norm);
+            for (int i = 0; i < cols; i++) {
+                v[i] = vs.div(w[i], normT);
             }
         }
-        return Maths.sqrt(f);
+        return Math.sqrt(lambda);
     }
+
+    public double normF() {
+        double f = 0;
+        int rows = getRowCount();
+        int cols = getColumnCount();
+        VectorSpace<T> vs = getComponentVectorSpace();
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                double a = vs.absdbl(get(r, c));
+                f += a * a;
+            }
+        }
+        return Math.sqrt(f);
+    }
+
 
     /**
      * One norm
      *
      * @return maximum elemet absdbl.
      */
-    public double norm3() {
+    public double normMax() {
         double f = 0;
         int columnDimension = getColumnCount();
         int rows = getRowCount();
@@ -273,7 +322,7 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
 
     @Override
     public T prod() {
-        T f = getComponentVectorSpace().zero();
+        T f = getComponentVectorSpace().one();
         int rows = getRowCount();
         int columns = getColumnCount();
         for (int r = 0; r < rows; r++) {
@@ -308,7 +357,7 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
         if (rows == 0 || cols == 0) {
             throw new EmptyMatrixException();
         }
-        if (rows != getColumnCount() || rows != getRowCount()) {
+        if (rows != getRowCount() || rows != getColumnCount()) {
             throw new IllegalArgumentException("Columns or Rows count does not match");
         }
         int row = 0;
@@ -810,7 +859,7 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
 
     @Override
     public Vector<Vector<T>> getRows() {
-        return (Vector<Vector<T>>) Maths.columnVector(NTypeName.of(Vector.class, getComponentType()), new VectorModel<Vector<T>>() {
+        return Maths.columnVector(NTypeName.of(Vector.class, getComponentType()), new VectorModel<Vector<T>>() {
             @Override
             public int size() {
                 return getRowCount();
@@ -825,7 +874,7 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
 
     @Override
     public Vector<Vector<T>> getColumns() {
-        return (Vector<Vector<T>>) Maths.columnVector(NTypeName.of(Vector.class, getComponentType()), new VectorModel<Vector<T>>() {
+        return Maths.columnVector(NTypeName.of(Vector.class, getComponentType()), new VectorModel<Vector<T>>() {
             @Override
             public int size() {
                 return getColumnCount();
@@ -951,7 +1000,7 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
 ////                return OjalgoHelper.INSTANCE.inv(this);
 //            }
         }
-        throw new UnsupportedOperationException("[" + getClass().getName() + "]" + "strategy " + st.toString());
+        throw new UnsupportedOperationException("[" + getClass().getName() + "]" + "strategy " + st);
     }
 
     public Matrix<T> invSolve() {
@@ -969,10 +1018,11 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
         if (n != p || (n > 1 && n % 2 != 0) || (precision > 1 && n > 1 && n <= precision)) {
             return inv(delegate);
         }
+        VectorSpace<T> cs = getComponentVectorSpace();
         switch (n) {
             case 1: {
                 T[][] ts = newT(1, 1);
-                ts[0][0] = getComponentVectorSpace().inv(get(0, 0));
+                ts[0][0] = cs.inv(get(0, 0));
                 return getFactory().newMatrix(ts);
             }
             case 2: {
@@ -980,16 +1030,16 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
                 T B = get(0, 1);
                 T C = get(1, 0);
                 T D = get(1, 1);
-                T Ai = getComponentVectorSpace().inv(A);
-                T CAi = getComponentVectorSpace().mul(C, Ai);
-                T AiB = getComponentVectorSpace().mul(Ai, B);
-                T DCABi = getComponentVectorSpace().inv(getComponentVectorSpace().minus(D, getComponentVectorSpace().mul(getComponentVectorSpace().mul(C, Ai), B)));
-                T mDCABi = getComponentVectorSpace().mul(DCABi, minusOne());
-                T AiBmDCABi = getComponentVectorSpace().mul(AiB, mDCABi);
+                T Ai = cs.inv(A);
+                T CAi = cs.mul(C, Ai);
+                T AiB = cs.mul(Ai, B);
+                T DCABi = cs.inv(cs.minus(D, cs.mul(cs.mul(C, Ai), B)));
+                T mDCABi = cs.mul(DCABi, minusOne());
+                T AiBmDCABi = cs.mul(AiB, mDCABi);
                 T[][] t = newT(2, 2);
-                t[0][0] = getComponentVectorSpace().minus(Ai, (getComponentVectorSpace().mul(AiBmDCABi, CAi)));
+                t[0][0] = cs.minus(Ai, (cs.mul(AiBmDCABi, CAi)));
                 t[0][1] = AiBmDCABi;
-                t[1][0] = getComponentVectorSpace().mul(mDCABi, CAi);
+                t[1][0] = cs.mul(mDCABi, CAi);
                 t[1][1] = DCABi;
                 return getFactory().newMatrix(t);
             }
@@ -1146,7 +1196,7 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
             }
         }
 
-        return mm;
+        return getFactory().newMatrix(m);
     }
 
     public Matrix<T> coMatrix(int row, int col) {
@@ -1212,25 +1262,17 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
                 return inv();
             }
             default: {
-                if (exp > 0) {
-                    Matrix<T> m = this;
-                    while (exp > 1) {
-                        m = m.mul(this);
-                        exp--;
-                    }
-                    return m;
-                } else {
-                    Matrix<T> m = this;
-                    int t = -exp;
-                    while (t > 1) {
-                        m = m.mul(this);
-                        t--;
-                    }
-                    m = m.inv();
-                    return m;
-                }
+                Matrix<T> base = powPositive(exp > 0 ? exp : -exp);
+                return exp > 0 ? base : base.inv();
             }
         }
+    }
+
+    private Matrix<T> powPositive(int exp) {
+        if (exp == 1) return this;
+        Matrix<T> half = powPositive(exp / 2);
+        Matrix<T> result = half.mul(half);
+        return (exp % 2 == 0) ? result : result.mul(this);
     }
 
     public Matrix<T> adjoint() {
@@ -1284,12 +1326,12 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
                 v = 1;
 
                 outahere:
-                while (o.get(col, col).equals(Complex.ZERO)) // check if 0 in diagonal
+                while (cs.isZero(o.get(col, col))) // check if 0 in diagonal
                 {                                   // if so switch until not
                     if (col + v >= tms) // check if switched all rows
                     {
                         iDF = 0;
-                        break outahere;
+                        break;
                     } else {
                         for (int c = 0; c < tms; c++) {
                             temp = o.get(col, c);
@@ -1301,7 +1343,7 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
                     }
                 }
 
-                if (!o.get(col, col).equals(Complex.ZERO)) {
+                if (!cs.isZero(o.get(col, col))) {
 
                     f1 = cs.mul(cs.div(o.get(row, col), o.get(col, col)), minusOne());
                     for (int i = col; i < tms; i++) {
@@ -1363,7 +1405,7 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
                     x--;
                 }
                 //sbl.append(' ');
-                sb.append(sbl.toString());
+                sb.append(sbl);
             }
         }
         if (rows > 1) {
@@ -1417,7 +1459,8 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
 //                       CMatrix A, CMatrix B) {
 //        ZVector2 tmpVec1 = new ZVector2();
 //        ZVector2 tmpVec2 = new ZVector2();
-////        CMatrix tmpVec3 = null;
+
+    /// /        CMatrix tmpVec3 = null;
 //        T elt1 = T.ZERO;
 //        T elt2 = T.ZERO;
 //
@@ -1565,7 +1608,7 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
                     sbl.append(' ');
                     x--;
                 }
-                stream.print(sbl.toString());
+                stream.print(sbl);
             }
         }
         stream.println();
@@ -1872,24 +1915,30 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
         double f0 = 0;
         int rows = getRowCount();
         int cols = getColumnCount();
+        VectorSpace<T> cs = getComponentVectorSpace();
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
-                f0 = getComponentVectorSpace().absdbl(get(r, c));
-                f = Math.max(f, f0);
+                f0 = cs.absdbl(get(r, c));
+                if (f0 > f) {
+                    f = f0;
+                }
             }
         }
         return f;
     }
 
     public double minAbs() {
-        double f = 0;
+        double f = Double.POSITIVE_INFINITY;
         double f0 = 0;
         int rows = getRowCount();
         int cols = getColumnCount();
+        VectorSpace<T> cs = getComponentVectorSpace();
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
-                f0 = getComponentVectorSpace().absdbl(get(r, c));
-                f = Math.min(f, f0);
+                f0 = cs.absdbl(get(r, c));
+                if (f0 < f) {
+                    f = f0;
+                }
             }
         }
         return f;
@@ -2424,10 +2473,10 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
         ) {
             return true;
         }
-        if (NTypeNamePlatformDomain.of().isAssignableFrom(other,getComponentType())) {
+        if (NTypeNamePlatformDomain.of().isAssignableFrom(other, getComponentType())) {
             return true;
         }
-        VectorSpace<T> vs = Maths.getVectorSpace((NTypeName<T>) getComponentType());
+        VectorSpace<T> vs = Maths.getVectorSpace(getComponentType());
         for (Vector<T> ts : getRows()) {
             if (!ts.isConvertibleTo(other)) {
                 return false;
@@ -2576,6 +2625,8 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
     public Iterator<Vector<T>> iterator() {
         return getRows().toList().iterator();
     }
+
+
 
 
 }

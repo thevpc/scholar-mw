@@ -5,13 +5,13 @@ import net.thevpc.nuts.elem.NElement;
 
 import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Domain;
-import net.thevpc.scholar.hadrumaths.FunctionFactory;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.DDiscrete;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.Polyhedron;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
+import net.thevpc.scholar.hadruwaves.mom.HintAxisType;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 /**
@@ -25,6 +25,7 @@ public final class PolyhedronPattern extends AbstractGpPattern implements Clonea
     private int gridy = 100;
 
     public PolyhedronPattern(boolean x, boolean y, int gridx, int gridy) {
+        super(null);
         this.x = x;
         this.y = y;
         this.gridx = gridx;
@@ -38,6 +39,7 @@ public final class PolyhedronPattern extends AbstractGpPattern implements Clonea
     public PolyhedronPattern(boolean x, boolean y,int grid) {
         this(x,y,grid,grid);
     }
+
 
     @Override
     public Object copy() {
@@ -67,7 +69,7 @@ public final class PolyhedronPattern extends AbstractGpPattern implements Clonea
         return 1;
     }
 
-    public DoubleToVector createFunction(int index, Domain globalDomain, MeshZone zone, MomStructure str) {
+    public DoubleToVector createFunction(int index, Domain globalDomain, MeshZone zone, MomStructure str, HintAxisType preferredAxisType) {
         switch (zone.getShape()) {
             default: {
                 DoubleToVector f = Maths.vector(

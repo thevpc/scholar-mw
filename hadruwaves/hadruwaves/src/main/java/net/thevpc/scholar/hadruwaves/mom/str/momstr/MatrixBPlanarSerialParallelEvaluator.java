@@ -26,7 +26,7 @@ public class MatrixBPlanarSerialParallelEvaluator implements MatrixBEvaluator {
         if (planarSources1 == null) {
             throw new IllegalArgumentException("Missing Planar Sources");
         }
-        final DoubleToVector[] _g = gpTestFunctions.arr();
+        final DoubleToVector[] _g = gpTestFunctions.toArray();
         final DoubleToVector[] _src = planarSources1.getSourceFunctions();
         if (_src.length != 1) {
             throw new IllegalArgumentException("Unsupported Sources count " + _src.length);

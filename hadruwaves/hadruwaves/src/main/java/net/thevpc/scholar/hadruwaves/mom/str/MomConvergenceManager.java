@@ -41,7 +41,7 @@ public class MomConvergenceManager {
         ModeInfo[] n_pro = momStructure.modeFunctions().getPropagatingModes();
         ModeInfo[] n_eva = momStructure.getHintsManager().isHintRegularZnOperator() ? momStructure.getModes() : momStructure.modeFunctions().getVanishingModes();
 
-        DoubleToVector[] _g = gp.arr();
+        DoubleToVector[] _g = gp.toArray();
 
         Complex[][] b = new Complex[_g.length][n_pro.length];
         for (int n = 0; n < n_pro.length; n++) {

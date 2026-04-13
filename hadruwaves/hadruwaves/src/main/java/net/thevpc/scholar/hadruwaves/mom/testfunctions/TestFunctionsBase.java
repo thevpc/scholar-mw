@@ -9,6 +9,7 @@ import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.nuts.log.NLogger;
 import net.thevpc.scholar.hadrumaths.*;
+import net.thevpc.scholar.hadrumaths.Vector;
 import net.thevpc.scholar.hadrumaths.cache.ObjectCache;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.symbolic.ExprDefaults;
@@ -21,10 +22,7 @@ import net.thevpc.scholar.hadruwaves.mom.str.TestFunctionsComparator;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -44,7 +42,7 @@ public abstract class TestFunctionsBase implements net.thevpc.scholar.hadruwaves
 
     private transient MomStructure structure;
     private TestFunctionsComparator functionsComparator;
-    private PropertyChangeSupport pcs;
+    private final PropertyChangeSupport pcs;
     private Boolean complex = null;
     private NLogger log = NLogger.STDERR;
 
@@ -84,18 +82,14 @@ public abstract class TestFunctionsBase implements net.thevpc.scholar.hadruwaves
 
     @Override
     public DoubleToVector gp(int p) {
-        return arr()[p];
+        return toArray()[p];
     }
 
     @Override
     public DoubleToVector get(int p) {
-        return arr()[p];
+        return toArray()[p];
     }
 
-    @Override
-    public Vector<Expr> list() {
-        return Maths.evector(arr());
-    }
 
     @Override
     public DoubleToVector apply(int index) {
@@ -103,17 +97,32 @@ public abstract class TestFunctionsBase implements net.thevpc.scholar.hadruwaves
     }
 
     @Override
-    public DoubleToVector[] arr(ProgressMonitor monitor) {
-        return arr(monitor, null);
+    public DoubleToVector[] toArray(ProgressMonitor monitor) {
+        return toArray(monitor, null);
     }
 
     @Override
-    public DoubleToVector[] arr() {
-        return arr(null, null);
+    public DoubleToVector[] toArray() {
+        return toArray(null, null);
     }
 
     @Override
-    public DoubleToVector[] arr(ProgressMonitor monitor, ObjectCache objectCache) {
+    public List<DoubleToVector> toList(ProgressMonitor monitor) {
+        return toList(monitor, null);
+    }
+
+    @Override
+    public List<DoubleToVector> toList() {
+        return toList(null, null);
+    }
+
+    @Override
+    public List<DoubleToVector> toList(ProgressMonitor monitor, ObjectCache objectCache) {
+        return Arrays.asList(toArray(monitor, objectCache));
+    }
+
+    @Override
+    public DoubleToVector[] toArray(ProgressMonitor monitor, ObjectCache objectCache) {
         try {
             if (cachedFunctions == null) {
                 if (objectCache != null) {
@@ -151,8 +160,8 @@ public abstract class TestFunctionsBase implements net.thevpc.scholar.hadruwaves
                 throw new IllegalArgumentException("No Test Functions defined.");
             }
             return cachedFunctions;
-        }finally {
-            if(monitor!=null && monitor.isTerminated()){
+        } finally {
+            if (monitor != null && monitor.isTerminated()) {
                 monitor.terminate("Test functions rebuilt");
             }
         }
@@ -161,7 +170,7 @@ public abstract class TestFunctionsBase implements net.thevpc.scholar.hadruwaves
     @Override
     public Domain getDomain() {
         if (cachedDomain == null) {
-            cachedDomain= ExprDefaults.expandDomainForExpressions(arr());
+            cachedDomain = ExprDefaults.expandDomainForExpressions(toArray());
         }
         return cachedDomain;
     }
@@ -269,7 +278,7 @@ public abstract class TestFunctionsBase implements net.thevpc.scholar.hadruwaves
                 validGpImpl = gpImpl;
                 for (int i = 0; i < validGpImpl.length; i++) {
                     DoubleToVector cFunctionXY2D = validGpImpl[i];
-                    Map<String, Object> properties = PlatformUtils.<String, Object>merge(new HashMap<String, Object>(), cFunctionXY2D.getProperties());
+                    Map<String, Object> properties = PlatformUtils.<String,Object>merge(new HashMap<>(), cFunctionXY2D.getProperties());
                     properties.put("Axis", "XY");
                     properties.put("Index", i);
                     properties.put("AxisIndex", i + 1);
@@ -283,7 +292,7 @@ public abstract class TestFunctionsBase implements net.thevpc.scholar.hadruwaves
                 for (DoubleToVector cFunctionXY2D : gpImpl) {
                     if (!cFunctionXY2D.getComponent(Axis.X).isZero()) {
                         Expr cFunctionXY2D2 = Maths.vector(cFunctionXY2D.getComponent(Axis.X), Maths.DCZERO);
-                        Map<String, Object> properties = PlatformUtils.<String,Object>merge(new HashMap<String, Object>(), cFunctionXY2D2.getProperties());
+                        Map<String, Object> properties = PlatformUtils.merge(new HashMap<>(), cFunctionXY2D2.getProperties());
                         properties.put("Axis", "X");
                         properties.put("Index", index);
                         properties.put("AxisIndex", index);
@@ -300,7 +309,7 @@ public abstract class TestFunctionsBase implements net.thevpc.scholar.hadruwaves
                 for (DoubleToVector cFunctionXY2D : gpImpl) {
                     if (!cFunctionXY2D.getComponent(Axis.Y).isZero()) {
                         Expr cFunctionXY2D2 = Maths.vector(Maths.ZERO, cFunctionXY2D.getComponent(Axis.Y));
-                        Map<String, Object> properties = PlatformUtils.<String,Object>merge(new HashMap<>(), cFunctionXY2D2.getProperties());
+                        Map<String, Object> properties = PlatformUtils.merge(new HashMap<>(), cFunctionXY2D2.getProperties());
 
 //                        if (properties == null) {
 //                            properties = new LinkedHashMap<String, Object>();
@@ -367,18 +376,9 @@ public abstract class TestFunctionsBase implements net.thevpc.scholar.hadruwaves
 
     @Override
     public int count() {
-        return arr().length;
+        return toArray().length;
     }
 
-    @Override
-    public int length() {
-        return count();
-    }
-
-    @Override
-    public int size() {
-        return count();
-    }
 
     @Override
     public boolean isComplex() {
@@ -403,9 +403,13 @@ public abstract class TestFunctionsBase implements net.thevpc.scholar.hadruwaves
     @Override
     public NElement toElement() {
         NObjectElementBuilder h = NElement.ofObjectBuilder(getClass().getSimpleName());
-        h.add("axisType", NElementHelper.elem(axisType));
-        if (functionsComparator != null) {
-            h.add("functionsComparator", NElementHelper.elem(functionsComparator));
+        HintAxisType axisType1 = getAxisType();
+        if (axisType1 != null) {
+            h.add("axisType", NElementHelper.elem(axisType1));
+        }
+        TestFunctionsComparator functionsComparator1 = getFunctionsComparator();
+        if (functionsComparator1 != null) {
+            h.add("functionsComparator", NElementHelper.elem(functionsComparator1));
         }
         return h.build();
     }
@@ -449,8 +453,8 @@ public abstract class TestFunctionsBase implements net.thevpc.scholar.hadruwaves
 
 
     @Override
-    public synchronized Vector<Expr> toList() {
-        return list();
+    public synchronized Vector<Expr> toVector() {
+        return Maths.evector(toArray());
     }
 
 

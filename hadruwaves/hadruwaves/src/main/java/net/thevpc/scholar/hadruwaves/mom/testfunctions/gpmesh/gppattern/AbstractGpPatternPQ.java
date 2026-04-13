@@ -8,6 +8,7 @@ import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
+import net.thevpc.scholar.hadruwaves.mom.HintAxisType;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 /**
@@ -17,8 +18,8 @@ import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 public abstract class AbstractGpPatternPQ extends RectMeshAttachGpPattern implements Cloneable {
     private int max;
 
-    protected AbstractGpPatternPQ(int complexity) {
-        super(false);
+    protected AbstractGpPatternPQ(HintAxisType preferredAxisType,int complexity) {
+        super(preferredAxisType,false);
         this.max = complexity;
     }
 
@@ -29,13 +30,13 @@ public abstract class AbstractGpPatternPQ extends RectMeshAttachGpPattern implem
         return h.build();
     }
 
-    public final DoubleToVector createFunction(int index, Domain globalDomain, MeshZone zone, MomStructure str) {
+    public final DoubleToVector createFunction(int index, Domain globalDomain, MeshZone zone, MomStructure str, HintAxisType preferredAxisType) {
         int p=index/max;
         int q=index%max;
-        return createFunction(index, p, q,zone.getDomain(), globalDomain,str);
+        return createFunction(index, p, q,zone.getDomain(), globalDomain, preferredAxisType, str);
     }
 
-    public abstract DoubleToVector createFunction(int index, int p, int q, Domain d, Domain globalDomain, MomStructure str);
+    public abstract DoubleToVector createFunction(int index, int p, int q, Domain d, Domain globalDomain, HintAxisType preferredAxisType, MomStructure str);
 
     public int getCount() {
         return max*max;//max *max;

@@ -167,8 +167,8 @@ public class MutableComplex {
         double r2 = complex2.real;
         double i1 = complex1.getImag();
         double i2 = complex2.imag;
-        this.real = r1 * r2 - i1 * i2;
-        this.imag = r1 * i2 + i1 * r2;
+        this.real += r1 * r2 - i1 * i2;
+        this.imag += r1 * i2 + i1 * r2;
 //        return this;
         //DevUtils.run(this::debug_check);
     }
@@ -394,7 +394,7 @@ public class MutableComplex {
     }
 
     public boolean isImag() {
-        return real == 0;
+        return real == 0 && imag != 0;
     }
 
     public boolean isZero() {
@@ -527,6 +527,7 @@ public class MutableComplex {
     public void sqrt(int n) {
         if (n == 0) {
             set(1, 0);
+            return;
         }
         pow(1.0 / n);
     }
@@ -558,6 +559,10 @@ public class MutableComplex {
     }
 
     public void inv() {
+        if (real == 0 && imag == 0) {
+            setNaN();
+            return;
+        }
         if (real == 0) {
             this.real = 0;
             this.imag = -1 / imag;

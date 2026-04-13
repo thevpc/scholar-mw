@@ -697,7 +697,7 @@ public final class Physics {
 //        }
         WallBorders b = env.getBorders();
         final String ttl = fnModeFunctions.toString() + "=>E(x=" + b.getExDescription() + ",y=" + b.getEyDescription() + ") ; J(x=" + b.getJxDescription() + ",y=" + b.getJyDescription() + ")";
-        PlotComponent jFrame = Plot.title(ttl).plot(fnModeFunctions.arr());
+        PlotComponent jFrame = Plot.title(ttl).plot(fnModeFunctions.toArray());
 //        jFrame.display();
         //jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 

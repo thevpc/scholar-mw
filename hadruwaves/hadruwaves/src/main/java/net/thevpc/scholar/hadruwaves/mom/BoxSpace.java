@@ -275,19 +275,33 @@ public final class BoxSpace implements HSerializable {
     }
 
     public Complex getEpsrc(double freq) {
-        if (material.getElectricConductivity() == 0) {
-            return Complex.of(material.getPermittivity() * Maths.EPS0);
+//        if (material.electricConductivity() == 0) {
+//            return Complex.of(material.permittivity() * Maths.EPS0);
+//        } else {
+//            return Complex.of(material.permittivity() * Maths.EPS0, material.electricConductivity() / (2 * Math.PI * freq));
+//        }
+
+
+        double omega = 2 * Math.PI * freq;
+        double epsPrime = material.permittivity() * Maths.EPS0;
+
+        // Total equivalent conductivity = static sigma + (omega * eps' * tanDelta)
+        double totalSigma = material.electricConductivity() + (omega * epsPrime * material.lossTangent());
+
+        if (totalSigma == 0) {
+            return Complex.of(epsPrime);
         } else {
-            return Complex.of(material.getPermittivity() * Maths.EPS0, material.getElectricConductivity() / (2 * Math.PI * freq));
+            // imaginary part is -sigma/omega (using engineering sign convention)
+            return Complex.of(epsPrime, -totalSigma / omega);
         }
     }
 
     public double getEpsr() {
-        return material.getPermittivity();
+        return material.permittivity();
     }
 
     public double getElectricConductivity() {
-        return material.getElectricConductivity();
+        return material.electricConductivity();
     }
 
     @Override

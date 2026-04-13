@@ -20,7 +20,6 @@ public enum HintAxisType {
      *2D functions following X and Y
      * @Deprecated use GpTestFunctions.setFunctionsComparator(new GpXThenYComparator())
      */
-//    @Deprecated
     XY,
     /**
      * 2D functions [X,Y]  for Fn

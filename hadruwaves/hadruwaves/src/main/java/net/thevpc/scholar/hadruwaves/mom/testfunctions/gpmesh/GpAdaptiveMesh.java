@@ -16,15 +16,12 @@ import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
 import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
-import net.thevpc.scholar.hadruwaves.mom.CircuitType;
-import net.thevpc.scholar.hadruwaves.mom.TestFunctions;
-import net.thevpc.scholar.hadruwaves.mom.TestFunctionsSymmetry;
+import net.thevpc.scholar.hadruwaves.mom.*;
 import net.thevpc.scholar.hadruwaves.mom.sources.PlanarSource;
 import net.thevpc.scholar.hadruwaves.mom.sources.PlanarSources;
 import net.thevpc.scholar.hadruwaves.mom.sources.Sources;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.TestFunctionsBase;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.GpPattern;
-import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,7 +33,6 @@ import static net.thevpc.scholar.hadrumaths.Expressions.xtranslated;
 import static net.thevpc.scholar.hadrumaths.Expressions.ysymmetric;
 import static net.thevpc.scholar.hadrumaths.Expressions.ytranslated;
 
-import net.thevpc.scholar.hadruwaves.mom.GpPatternFactory;
 import net.thevpc.scholar.hadruwaves.mom.project.MomStructureAware;
 
 public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
@@ -119,13 +115,30 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
         List<MeshZone> allZonesInit1 = currentPattern.transform(meshZones, polygonDomain == null ? globalDomain : polygonDomain);
         ArrayList<MeshZone> allZones = new ArrayList<>();
         for (MeshZone zone : allZonesInit1) {
-            zone.setDomainRelative(polygonDomain == null ? globalDomain : polygonDomain, globalDomain);
+            //zone.setDomainRelative(polygonDomain == null ? globalDomain : polygonDomain, globalDomain);
             allZones.add(zone);
         }
         Collections.sort(allZones, MeshZone.ZONES_COMPARATOR);
         return allZones;
     }
 
+    @Override
+    public HintAxisType getAxisType() {
+        HintAxisType at = super.getAxisType();
+        HintAxisType pt = pattern == null ? null : pattern.getPreferredAxisType();
+        if (pt != null) {
+            if (pt == HintAxisType.XY_SEPARATED || pt == HintAxisType.XY) {
+                return pt;
+            }
+        }
+        if (at != null) {
+            return at;
+        }
+        if (pt != null) {
+            return pt;
+        }
+        return HintAxisType.XY;
+    }
 
     @Override
     public DoubleToVector[] gpImpl(ProgressMonitor monitor) {
@@ -136,7 +149,7 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
         int partCounter = 0;
         GpPattern currentPattern = getPattern();
         for (MeshZone zone : allZones) {
-            DoubleToVector[] allGpFunctions = currentPattern.createFunctions(globalDomain, zone, monitor, currentStructure, log());
+            DoubleToVector[] allGpFunctions = currentPattern.createFunctions(globalDomain, zone, monitor, currentStructure, log(), getAxisType());
             int goodCount = allGpFunctions.length;
             partCounter++;
             switch (getSymmetry()) {

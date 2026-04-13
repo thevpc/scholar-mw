@@ -127,7 +127,7 @@ public class ListTestFunctions extends TestFunctionsBase implements Cloneable {
             }
             return found;
         } else if (i instanceof net.thevpc.scholar.hadruwaves.mom.TestFunctions) {
-            return Arrays.asList(((TestFunctions) i).arr());
+            return Arrays.asList(((TestFunctions) i).toArray());
         } else if (i instanceof List) {
             List<DoubleToVector> found = new ArrayList<DoubleToVector>();
             for (Object expr : (List) i) {
@@ -228,7 +228,7 @@ public class ListTestFunctions extends TestFunctionsBase implements Cloneable {
     
     @Override
     protected DoubleToVector[] gpImpl(ProgressMonitor monitor) {
-        List<DoubleToVector> all = (List) toList().toList();
+        List<DoubleToVector> all = (List) this.toVector().toList();
         return all.toArray(new DoubleToVector[0]);
     }
 
@@ -266,7 +266,7 @@ public class ListTestFunctions extends TestFunctionsBase implements Cloneable {
         return h.build();
     }
 
-    public Vector<Expr> toList() {
+    public Vector<Expr> toVector() {
         Vector<Expr> found = Maths.evector();
         for (Object expr : list) {
             found.appendAll(linearizeFunctions(expr));

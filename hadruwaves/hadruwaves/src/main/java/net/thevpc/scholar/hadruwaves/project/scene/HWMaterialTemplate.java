@@ -24,6 +24,7 @@ public class HWMaterialTemplate implements HWProjectElement {
     private final WritablePExpression<Double> permittivity = Props2.of("permittivity").exprDoubleOf(1.0);
     private final WritablePExpression<Double> permeability = Props2.of("permeability").exprDoubleOf(1.0);
     private final WritablePExpression<Double> electricConductivity = Props2.of("electricConductivity").exprDoubleOf(0.0);
+    private final WritablePExpression<Double> lossTangent = Props2.of("lossTangent").exprDoubleOf(0.0);
 
     public HWMaterialTemplate(HWProject project) {
         this.project.set(project);
@@ -72,9 +73,10 @@ public class HWMaterialTemplate implements HWProjectElement {
             material = Material.VACUUM;
         }
         name.set(material.getName());
-        permittivity.set(String.valueOf(material.getPermittivity()));
+        permittivity.set(String.valueOf(material.permittivity()));
         permeability.set(String.valueOf(material.getPermeability()));
-        electricConductivity.set(String.valueOf(material.getElectricConductivity()));
+        electricConductivity.set(String.valueOf(material.electricConductivity()));
+        lossTangent.set(String.valueOf(material.lossTangent()));
     }
 
     public Material eval(HWConfigurationRun configuration) {
@@ -94,7 +96,8 @@ public class HWMaterialTemplate implements HWProjectElement {
                 n,
                 permittivity.eval(configuration),
                 permeability.eval(configuration),
-                electricConductivity.eval(configuration)
+                electricConductivity.eval(configuration),
+                lossTangent.eval(configuration)
         );
     }
 
@@ -111,7 +114,8 @@ public class HWMaterialTemplate implements HWProjectElement {
                 .add("description",description.get())
                 .add("permittivity", permittivity.get())
                 .add("permeability",permeability.get())
-                .add("Conductivity",electricConductivity.get())
+                .add("conductivity",electricConductivity.get())
+                .add("lossTangent",lossTangent.get())
                 .build();
     }
     

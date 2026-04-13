@@ -44,7 +44,7 @@ public class PlotStructureDefinition extends PlotAxisCustom implements Cloneable
                 PlanarSources ps = (PlanarSources) ss;
                 sf = ps.getSourceFunctions();
             }
-            all.add(new FunctionsXYPlotConsoleAction("Structure Definition", "Direct Structure Definition" + p.getSerieTitle().toString(), change(str1.getDomain(), str1.testFunctions().arr(), sf), str1.getDomain(), p.getPreferredPath(), new LibraryPlotType(getPlotType()), getLibraries()));
+            all.add(new FunctionsXYPlotConsoleAction("Structure Definition", "Direct Structure Definition" + p.getSerieTitle().toString(), change(str1.getDomain(), str1.testFunctions().toArray(), sf), str1.getDomain(), p.getPreferredPath(), new LibraryPlotType(getPlotType()), getLibraries()));
         }
         if (containsType(YType.MODELED)) {
             if (p.getStructure2() != null) {
@@ -54,7 +54,7 @@ public class PlotStructureDefinition extends PlotAxisCustom implements Cloneable
                     PlanarSources ps = (PlanarSources) ss;
                     sf = ps.getSourceFunctions();
                 }
-                all.add(new FunctionsXYPlotConsoleAction("Structure Definition", "Modeled Structure Definition" + p.getSerieTitle().toString(), change(str2.getDomain(), str2.testFunctions().arr(), sf), str2.getDomain(), p.getPreferredPath(), new LibraryPlotType(getPlotType()), getLibraries()));
+                all.add(new FunctionsXYPlotConsoleAction("Structure Definition", "Modeled Structure Definition" + p.getSerieTitle().toString(), change(str2.getDomain(), str2.testFunctions().toArray(), sf), str2.getDomain(), p.getPreferredPath(), new LibraryPlotType(getPlotType()), getLibraries()));
             }
         }
 //        mon.terminatem(getName());

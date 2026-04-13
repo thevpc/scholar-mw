@@ -71,7 +71,7 @@ public final class MemRawD1ComplexMatrix extends AbstractComplexMatrix implement
      *
      * @return maximum elemet absdbl.
      */
-    public double norm3() {
+    public double normMax() {
         double f = 0;
         for (int i = 0; i < reals.length; i++) {
             double ii = imags[i];

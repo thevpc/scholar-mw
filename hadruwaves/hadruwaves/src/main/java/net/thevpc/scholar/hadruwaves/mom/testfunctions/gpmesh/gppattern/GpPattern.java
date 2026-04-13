@@ -7,6 +7,7 @@ import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.HSerializable;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
+import net.thevpc.scholar.hadruwaves.mom.HintAxisType;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 import java.util.List;
@@ -18,7 +19,8 @@ import java.util.List;
 public interface GpPattern extends HSerializable, NCopiable {
      int getCount();
 
-     DoubleToVector[] createFunctions(Domain globalDomain, MeshZone zone, ProgressMonitor monitor, MomStructure str, NLogger logger);
+     HintAxisType getPreferredAxisType();
+     DoubleToVector[] createFunctions(Domain globalDomain, MeshZone zone, ProgressMonitor monitor, MomStructure str, NLogger logger, HintAxisType preferredAxisType);
 
      List<MeshZone> transform(List<MeshZone> zones, Domain globalBounds);
 }

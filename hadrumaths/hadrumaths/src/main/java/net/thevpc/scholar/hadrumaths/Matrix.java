@@ -36,7 +36,7 @@ public interface Matrix<T> extends Normalizable, Serializable, Iterable<Vector<T
      *
      * @return maximum elemet absdbl.
      */
-    double norm3();
+    double normMax();
 
     double getError(Matrix<T> baseMatrix);
 

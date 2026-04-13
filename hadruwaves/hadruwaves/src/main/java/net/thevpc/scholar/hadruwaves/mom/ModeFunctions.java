@@ -16,10 +16,6 @@ import java.util.List;
 public interface ModeFunctions extends Cloneable, HSerializable {
     ModeFunctions invalidateCache();
 
-    int length();
-
-    int size();
-
     int count();
 
     ModeInfo mode(ModeInfo index);
@@ -60,13 +56,12 @@ public interface ModeFunctions extends Cloneable, HSerializable {
 
     DoubleToVector apply(int index);
 
-    Vector<Expr> toList();
+    Vector<Expr> toVector();
 
+    List<DoubleToVector> toList();
     DoubleToVector[] toArray();
 
-    DoubleToVector[] arr();
-
-    DoubleToVector[] arr(ProgressMonitor monitor);
+    DoubleToVector[] toArray(ProgressMonitor monitor);
 
     DoubleToVector[] fn();
 

@@ -38,7 +38,7 @@ public class MoMTestFunctions extends AbstractHWSolverAction {
         context.app().runWorker(() -> {
             String icon="Chart";
             HWSolverMoM solver = (HWSolverMoM)context.studio().buildSolver(configuration);
-            Object result = solver.str().testFunctions().arr();
+            Object result = solver.str().testFunctions().toArray();
             PlotModel model = Plot.builder().createModel(result);
             model.setPlotType(new LibraryPlotType(PlotType.MATRIX));
             icon="Result1d";

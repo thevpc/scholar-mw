@@ -460,7 +460,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
 
     public ComplexMatrix createScalarProductCache(ProgressMonitor monitor) {
         build();
-        return modeFunctions.scalarProduct(Maths.evector(testFunctions.arr()), monitor);
+        return modeFunctions.scalarProduct(Maths.evector(testFunctions.toArray()), monitor);
     }
 
     public Impedance getSerialZs() {
@@ -496,13 +496,13 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
         setLayers(ll.toArray(StrLayer.NO_LAYERS));
         setFirstBoxSpace(new BoxSpace(
                         structureConfig.getLayers().getTopLimit(),
-                        new Material("first", structureConfig.getLayers().getTopEpsr(), 1, structureConfig.getLayers().getTopConductivity()),
+                        new Material("first", structureConfig.getLayers().getTopEpsr(), 1, structureConfig.getLayers().getTopConductivity(), structureConfig.getLayers().getTopLossTangent()),
                         structureConfig.getLayers().getTopThickness()
                 )
         );
         setSecondBoxSpace(new BoxSpace(
                         structureConfig.getLayers().getBottomLimit(),
-                        new Material("second", structureConfig.getLayers().getBottomEpsr(), 1, structureConfig.getLayers().getBottomConductivity()),
+                        new Material("second", structureConfig.getLayers().getBottomEpsr(), 1, structureConfig.getLayers().getBottomConductivity(), structureConfig.getLayers().getBottomLossTangent()),
                         structureConfig.getLayers().getBottomThickness()
                 )
         );
@@ -604,7 +604,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
     public void initComputation(ProgressMonitor computationMonitor) {
         ObjectCache objectCache = getObjectCache();
         if (objectCache != null) {
-            testFunctions.arr(computationMonitor, objectCache);
+            testFunctions.toArray(computationMonitor, objectCache);
             this.modeFunctions.getModes(computationMonitor);
         }
     }
@@ -845,7 +845,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
 
     public final ComplexMatrix getTestModeScalarProducts(ProgressMonitor monitor) {
         build();
-        return modeFunctions().scalarProduct(Maths.evector(testFunctions.arr()), monitorOf("TestModeScalarProducts", monitor));
+        return modeFunctions().scalarProduct(Maths.evector(testFunctions.toArray()), monitorOf("TestModeScalarProducts", monitor));
     }
 
 //    protected ProgressMonitor createDefaultMonitor(String name) {
@@ -1218,7 +1218,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
                 TestFunctions gp = testFunctions();
                 MomSolverTestTemplateList m = new MomSolverTestTemplateList();
                 int findex = 1;
-                for (DoubleToVector ex : gp.arr()) {
+                for (DoubleToVector ex : gp.toArray()) {
                     WritablePExpression<Expr> ees = Props2.of("fct_" + findex).exprOf(Maths.expr(0));
                     String fctExpr = ex.toString();
                     Expr pe = Maths.parseExpression(fctExpr);

@@ -7,7 +7,8 @@ public enum NormStrategy {
 
     NORM1,
     NORM2,
-    NORM3,
+    NORM_MAX,
     NORM_INF, //equivalent to BLOCK
+    NORM_F,
     DEFAULT, //equivalent to NORM2
 }

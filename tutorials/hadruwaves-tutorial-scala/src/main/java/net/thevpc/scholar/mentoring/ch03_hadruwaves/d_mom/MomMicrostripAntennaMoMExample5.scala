@@ -47,7 +47,7 @@ object MomMicrostripAntennaMoMExample5 {
       .buildBoxModes()
     )
 //    m.setTestFunctionsCount(4);
-    val arr: Array[DoubleToVector] = m.testFunctions.arr()
+    val arr: Array[DoubleToVector] = m.testFunctions.toArray()
     println(arr(0).toDM()(0.01,0.5))
     var c = Plot.console()
     c.run(

@@ -23,7 +23,7 @@ public class MatrixAPlanarParallelEvaluator implements MatrixAEvaluator {
 
     public ComplexMatrix evaluate(MomStructure str, ProgressMonitor monitor) {
         TestFunctions gpTestFunctions = str.testFunctions();
-        DoubleToVector[] _g = gpTestFunctions.arr();
+        DoubleToVector[] _g = gpTestFunctions.toArray();
         Complex[][] b = new Complex[_g.length][_g.length];
         ModeFunctions fn = str.modeFunctions();
         ModeInfo[] modes = str.getModes();

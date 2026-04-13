@@ -4,6 +4,7 @@ import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.FunctionFactory;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
+import net.thevpc.scholar.hadruwaves.mom.HintAxisType;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 import static java.lang.Math.PI;
@@ -15,10 +16,10 @@ import static java.lang.Math.sqrt;
 public final class SisiSisiPattern extends AbstractGpPatternPQ  implements Cloneable{
 
     public SisiSisiPattern(int complexity) {
-        super(complexity);
+        super(HintAxisType.XY_SEPARATED,complexity);
     }
 
-    public DoubleToVector createFunction(int index, int p0, int q0, Domain d, Domain globalDomain, MomStructure str) {
+    public DoubleToVector createFunction(int index, int p0, int q0, Domain d, Domain globalDomain, HintAxisType preferredAxisType, MomStructure str) {
         int q;
         int q_i;
         int q_d = q0 / 3;

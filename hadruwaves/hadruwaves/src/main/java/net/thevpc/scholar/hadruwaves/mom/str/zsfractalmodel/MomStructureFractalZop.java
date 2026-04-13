@@ -136,7 +136,7 @@ public class MomStructureFractalZop extends MomStructure {
 
     ComplexMatrix getAMatrix(ComplexMatrix ZopValue) {
         TestFunctions gpTestFunctions = testFunctions();
-        DoubleToVector[] g = gpTestFunctions.arr();
+        DoubleToVector[] g = gpTestFunctions.toArray();
         Complex[][] b = new Complex[g.length][g.length];
         ModeFunctions fn = modeFunctions();
         ModeInfo[] modes = this.getModes();
@@ -183,7 +183,7 @@ public class MomStructureFractalZop extends MomStructure {
 
     ComplexMatrix Bevan() {
         TestFunctions gpTestFunctions = testFunctions();
-        DoubleToVector[] g = gpTestFunctions.arr();
+        DoubleToVector[] g = gpTestFunctions.toArray();
         Complex[][] b = new Complex[g.length][g.length];
         ModeFunctions fn = modeFunctions();
         ModeInfo[] modes = this.getModes();

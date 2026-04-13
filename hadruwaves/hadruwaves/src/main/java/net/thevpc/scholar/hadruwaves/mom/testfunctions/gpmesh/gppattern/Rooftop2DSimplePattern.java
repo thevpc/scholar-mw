@@ -11,12 +11,11 @@ import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZoneType;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZoneTypeFilter;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
+import net.thevpc.scholar.hadruwaves.mom.HintAxisType;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.Rooftop2DFunctionXY;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.RooftopType;
-
-import java.util.Arrays;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -26,12 +25,12 @@ public final class Rooftop2DSimplePattern extends RectMeshAttachGpPattern implem
     private RooftopType type;
 
     public Rooftop2DSimplePattern(MeshZoneTypeFilter filter) {
-        super(filter);
+        super(HintAxisType.XY_SEPARATED,filter);
     }
 
 
     public Rooftop2DSimplePattern(RooftopType type) {
-        super(MeshZoneType.FILTER_M);
+        super(HintAxisType.XY_SEPARATED,MeshZoneType.FILTER_M);
         this.type = type;
     }
 
@@ -59,7 +58,7 @@ public final class Rooftop2DSimplePattern extends RectMeshAttachGpPattern implem
 
     @Override
     @SuppressWarnings("unchecked")
-    public DoubleToVector createFunction(int index, Domain globalDomain, MeshZone zone, MomStructure str) {
+    public DoubleToVector createFunction(int index, Domain globalDomain, MeshZone zone, MomStructure str, HintAxisType preferredAxisType) {
 //            type=Zone.Type.MAIN;
         switch (zone.getType().getValue()) {
             case MeshZoneType.ID_MAIN: {

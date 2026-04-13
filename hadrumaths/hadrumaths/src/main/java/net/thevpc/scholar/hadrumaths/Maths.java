@@ -1322,7 +1322,7 @@ public final class Maths {
     }
 
     public static double norm3(ComplexMatrix a) {
-        return a.norm3();
+        return a.normMax();
     }
 
     public static double normInf(ComplexMatrix a) {

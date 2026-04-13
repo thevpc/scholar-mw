@@ -2,7 +2,6 @@ package net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern;
 
 import java.util.Map;
 
-import jogamp.graph.font.typecast.ot.table.CmapFormat;
 import net.thevpc.nuts.elem.NElement;
 
 
@@ -14,10 +13,10 @@ import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZoneType;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZoneTypeFilter;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
+import net.thevpc.scholar.hadruwaves.mom.HintAxisType;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 import net.thevpc.scholar.hadrumaths.Axis;
-import net.thevpc.scholar.hadrumaths.FunctionFactory;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.AbstractDoubleToDouble;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.Rooftop2DFunctionXY;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.RooftopType;
@@ -53,12 +52,12 @@ public final class Rooftop2DPattern extends RectMeshAttachGpPattern implements C
 
 
     public Rooftop2DPattern(MeshZoneTypeFilter filter, Axis invariance) {
-        super(filter);
+        super(HintAxisType.XY_SEPARATED,filter);
         this.invariance = invariance;
     }
 
     public Rooftop2DPattern(boolean attachX, boolean attachY, Axis invariance) {
-        super(attachX, attachY);
+        super(HintAxisType.XY_SEPARATED,attachX, attachY);
         this.invariance = invariance;
     }
 
@@ -95,7 +94,7 @@ public final class Rooftop2DPattern extends RectMeshAttachGpPattern implements C
 
     @Override
     @SuppressWarnings("unchecked")
-    public DoubleToVector createFunction(int index, Domain globalDomain, MeshZone zone, MomStructure str) {
+    public DoubleToVector createFunction(int index, Domain globalDomain, MeshZone zone, MomStructure str, HintAxisType preferredAxisType) {
         Domain zoneDomain = zone.getDomain();
         Map zoneProperties = zone.getProperties();
         MeshZoneType zoneType = zone.getType();

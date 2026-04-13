@@ -102,30 +102,30 @@ public class MomSolverTestTemplateMesh extends AbstractMomSolverTestTemplate {
             case MODES: {
                 GpModes m = new GpModes(gl, symmetry.eval(configuration), complexity.eval(configuration));
                 m.setInvariance(invariance.eval(configuration));
-                return m.arr();
+                return m.toArray();
             }
             case RECT: {
                 //TODO fix me, shoud support rect!!
                 GpModes m = new GpModes(gl, symmetry.eval(configuration), complexity.eval(configuration));
                 m.setInvariance(invariance.eval(configuration));
-                return m.arr();
+                return m.toArray();
             }
             case ROOFTOP: {
                 GpRooftop m = new GpRooftop(gl, symmetry.eval(configuration), new GridPrecision(meshMinPrecision.eval(configuration), meshMaxPrecision.eval(configuration)));
                 m.setInvariance(invariance.eval(configuration));
-                return m.arr();
+                return m.toArray();
             }
             case RWG: {
                 MeshTriangulationOptions options = new MeshTriangulationOptions();
                 options.setMaxCount(complexity.eval(configuration));
                 GpRWG m = new GpRWG(gl, symmetry.eval(configuration), options);
                 m.setInvariance(invariance.eval(configuration));
-                return m.arr();
+                return m.toArray();
             }
             case POLYEDRON: {
                 GpPolyedron m = new GpPolyedron(gl, symmetry.eval(configuration), complexity.eval(configuration));
                 m.setInvariance(invariance.eval(configuration));
-                return m.arr();
+                return m.toArray();
             }
         }
         throw new IllegalArgumentException("Unsupported");

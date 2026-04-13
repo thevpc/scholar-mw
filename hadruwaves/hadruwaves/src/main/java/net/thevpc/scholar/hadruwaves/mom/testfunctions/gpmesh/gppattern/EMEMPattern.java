@@ -16,7 +16,7 @@ public final class EMEMPattern extends AbstractGpFnPatternPQ implements Cloneabl
 
 
     public EMEMPattern(int complexity, ModeType... modes) {
-        super(complexity, modes);
+        super(null,complexity, modes);
     }
 
     protected boolean doAcceptIndexes(ModeType mode, int m, int n) {

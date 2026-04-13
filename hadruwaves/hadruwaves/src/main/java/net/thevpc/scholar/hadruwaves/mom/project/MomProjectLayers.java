@@ -18,6 +18,8 @@ public class MomProjectLayers implements MomProjectItem,Serializable,Cloneable {
 
     public String bottomConductivityExpression;
     public String topConductivityExpression;
+    public String bottomLossTangentExpression;
+    public String topLossTangentExpression;
     public String bottomThicknessExpression;
     public String topThicknessExpression;
     public String bottomEpsrExpression;
@@ -35,6 +37,8 @@ public class MomProjectLayers implements MomProjectItem,Serializable,Cloneable {
         this.topThicknessExpression = "0";
         this.bottomEpsrExpression = "0";
         this.topEpsrExpression = "0";
+        this.bottomLossTangentExpression = "0";
+        this.topLossTangentExpression = "0";
         this.maxExpression = "1";
     }
 
@@ -48,12 +52,16 @@ public class MomProjectLayers implements MomProjectItem,Serializable,Cloneable {
         c.setString(key + ".bottomLimit", bottomLimit.toString());
         c.setString(key + ".topConductivity", topConductivityExpression);
         c.setString(key + ".bottomConductivity", bottomConductivityExpression);
+        c.setString(key + ".topLossTangent", topLossTangentExpression);
+        c.setString(key + ".bottomLossTangent", bottomLossTangentExpression);
         MomProjectFactory.INSTANCE.store(c, key + ".extraLayers", new MomProjectList(extraLayers));
     }
 
     public void load(Configuration c, String key) {
         bottomConductivityExpression = c.getString(key + ".bottomConductivity", "0");
         topConductivityExpression = c.getString(key + ".topConductivity", "0");
+        bottomLossTangentExpression = c.getString(key + ".bottomLossTangent", "0");
+        topLossTangentExpression = c.getString(key + ".topLossTangent", "0");
         bottomThicknessExpression = c.getString(key + ".bottomThickness", "1");
         topThicknessExpression = c.getString(key + ".topThickness", "1");
         bottomEpsrExpression = c.getString(key + ".bottomEpsr", "1");
@@ -84,6 +92,8 @@ public class MomProjectLayers implements MomProjectItem,Serializable,Cloneable {
         hash = 83 * hash + (this.bottomLimit != null ? this.bottomLimit.hashCode() : 0);
         hash = 83 * hash + (this.bottomConductivityExpression != null ? this.bottomConductivityExpression.hashCode() : 0);
         hash = 83 * hash + (this.topConductivityExpression != null ? this.topConductivityExpression.hashCode() : 0);
+        hash = 83 * hash + (this.bottomLossTangentExpression != null ? this.bottomLossTangentExpression.hashCode() : 0);
+        hash = 83 * hash + (this.topLossTangentExpression != null ? this.topLossTangentExpression.hashCode() : 0);
         return hash;
     }
 
@@ -115,6 +125,12 @@ public class MomProjectLayers implements MomProjectItem,Serializable,Cloneable {
             return false;
         }
         if (this.bottomConductivityExpression != other.bottomConductivityExpression && (this.bottomConductivityExpression == null || !this.bottomConductivityExpression.equals(other.bottomConductivityExpression))) {
+            return false;
+        }
+        if (this.topLossTangentExpression != other.topLossTangentExpression && (this.topLossTangentExpression == null || !this.topLossTangentExpression.equals(other.topLossTangentExpression))) {
+            return false;
+        }
+        if (this.bottomLossTangentExpression != other.bottomLossTangentExpression && (this.bottomLossTangentExpression == null || !this.bottomLossTangentExpression.equals(other.bottomLossTangentExpression))) {
             return false;
         }
         if (this.topLimit != other.topLimit) {
@@ -159,6 +175,13 @@ public class MomProjectLayers implements MomProjectItem,Serializable,Cloneable {
     public double getBottomConductivity() {
         return getContext().evaluateDimension(bottomConductivityExpression);
     }
+
+    public double getTopLossTangent() {
+        return getContext().evaluateDimension(topLossTangentExpression);
+    }
+    public double getBottomLossTangent() {
+        return getContext().evaluateDimension(bottomLossTangentExpression);
+    }
     public double getTopThickness() {
         return getContext().evaluateDimension(topThicknessExpression);
     }
@@ -179,7 +202,26 @@ public class MomProjectLayers implements MomProjectItem,Serializable,Cloneable {
         return bottomLimit;
     }
 
+    public String getBottomLossTangentExpression() {
+        return bottomLossTangentExpression;
+    }
+
+    public String getTopLossTangentExpression() {
+        return topLossTangentExpression;
+    }
+
     ///////////////
+
+    public void setTopLossTangentExpression(String topLossTangentExpression) {
+        this.topLossTangentExpression = topLossTangentExpression;
+        recompile();
+    }
+
+    public void setBottomLossTangentExpression(String bottomLossTangentExpression) {
+        this.bottomLossTangentExpression = bottomLossTangentExpression;
+        recompile();
+    }
+
     public void setBottomEpsrExpression(String bottomEpsrExpression) {
         this.bottomEpsrExpression = bottomEpsrExpression;
         recompile();

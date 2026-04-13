@@ -39,7 +39,7 @@ public class PlotTestModeFunctionsXScalarProducts extends PlotAxisSeries impleme
         ProgressMonitor emonitor = ProgressMonitors.nonnull(monitor);
         ModeFunctions fnModeFunctions = structure.modeFunctions();
         TestFunctions gpTestFunctions = structure.testFunctions();
-        DoubleToVector[] cache_essai = gpTestFunctions.arr();
+        DoubleToVector[] cache_essai = gpTestFunctions.toArray();
 //        emonitor.startm(getClass().getSimpleName());
         Complex[][] gfps = new Complex[cache_essai.length][fnModeFunctions.count()];
         ModeInfo[] indexes = structure.getModes();

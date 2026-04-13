@@ -8,16 +8,13 @@ import net.thevpc.scholar.hadrumaths.geom.*;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZoneShape;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZoneType;
-import net.thevpc.scholar.hadrumaths.meshalgo.tri.MeshRefinementHelper;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.RWG;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
-import net.thevpc.scholar.hadruplot.libraries.calc3d.geometry3d.Geometry;
 import net.thevpc.scholar.hadruwaves.mom.HintAxisType;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)
@@ -32,6 +29,7 @@ public final class RWGPattern extends AbstractGpPattern implements TriangularGpP
     }
 
     public RWGPattern(HintAxisType xy) {
+        super(HintAxisType.XY);
         this.xy = xy;
     }
 
@@ -68,7 +66,7 @@ public final class RWGPattern extends AbstractGpPattern implements TriangularGpP
         return 1;
     }
 
-    public DoubleToVector createFunction(int index, Domain globalDomain, MeshZone zone, MomStructure str) {
+    public DoubleToVector createFunction(int index, Domain globalDomain, MeshZone zone, MomStructure str, HintAxisType preferredAxisType) {
         HPolygon p = zone.getPolygon();
         switch (xy){
             case X_ONLY:{

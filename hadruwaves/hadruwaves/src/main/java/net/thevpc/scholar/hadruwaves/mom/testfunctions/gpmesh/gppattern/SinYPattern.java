@@ -13,6 +13,7 @@ import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
+import net.thevpc.scholar.hadruwaves.mom.HintAxisType;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 /**
@@ -23,6 +24,7 @@ public final class SinYPattern extends RectMeshAttachGpPattern implements Clonea
     private int max;
 
     public SinYPattern(int complexity) {
+        super(HintAxisType.XY_SEPARATED);
         this.max = complexity;
     }
 
@@ -33,7 +35,7 @@ public final class SinYPattern extends RectMeshAttachGpPattern implements Clonea
         return h.build();
     }
 
-    public DoubleToVector createFunction(int q0, Domain globalDomain, MeshZone zone, MomStructure str) {
+    public DoubleToVector createFunction(int q0, Domain globalDomain, MeshZone zone, MomStructure str, HintAxisType preferredAxisType) {
         int q;
         int q_i;
         int q_d = q0 / 3;

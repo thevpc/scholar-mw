@@ -1,7 +1,6 @@
 package net.thevpc.scholar.hadrumaths;
 
 
-import net.thevpc.nuts.reflect.NReflect;
 import net.thevpc.nuts.reflect.NTypeName;
 import net.thevpc.nuts.reflect.NTypeNamePlatformDomain;
 
@@ -69,7 +68,7 @@ public abstract class AbstractComplexMatrix extends AbstractMatrix<Complex> impl
     }
 
     public DMatrix getErrorMatrix(Matrix<Complex> baseMatrix, double minErrorForZero) {
-        Matrix<Complex> m = baseMatrix.sub(this).div(baseMatrix.norm3());
+        Matrix<Complex> m = baseMatrix.sub(this).div(baseMatrix.normMax());
         Complex[][] mm = m.getArray();
         double[][] d = new double[mm.length][mm[0].length];
         for (int i = 0; i < mm.length; i++) {
@@ -91,8 +90,8 @@ public abstract class AbstractComplexMatrix extends AbstractMatrix<Complex> impl
             case NORM2: {
                 return norm2();
             }
-            case NORM3: {
-                return norm3();
+            case NORM_MAX: {
+                return normMax();
             }
             case NORM1: {
                 return norm1();
@@ -140,7 +139,7 @@ public abstract class AbstractComplexMatrix extends AbstractMatrix<Complex> impl
      *
      * @return maximum elemet absdbl.
      */
-    public double norm3() {
+    public double normMax() {
         double f = 0;
         int columnDimension = getColumnCount();
         int rows = getRowCount();
@@ -296,7 +295,7 @@ public abstract class AbstractComplexMatrix extends AbstractMatrix<Complex> impl
         if (rows == 0 || cols == 0) {
             throw new EmptyMatrixException();
         }
-        if (rows != getColumnCount() || rows != getRowCount()) {
+        if (rows != getRowCount() || rows != getColumnCount()) {
             throw new IllegalArgumentException("Columns or Rows count does not match");
         }
         int row = 0;
@@ -1062,7 +1061,7 @@ public abstract class AbstractComplexMatrix extends AbstractMatrix<Complex> impl
             }
         }
 
-        return mm;
+        return getFactory().newMatrix(m);
     }
 
     public ComplexMatrix coMatrix(int row, int col) {
@@ -1725,21 +1724,25 @@ public abstract class AbstractComplexMatrix extends AbstractMatrix<Complex> impl
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 f0 = get(r, c).absdbl();
-                f = Math.max(f, f0);
+                if(f0>f){
+                    f=f0;
+                }
             }
         }
         return f;
     }
 
     public double minAbs() {
-        double f = 0;
+        double f = Double.POSITIVE_INFINITY;
         double f0 = 0;
         int rows = getRowCount();
         int cols = getColumnCount();
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 f0 = get(r, c).absdbl();
-                f = Math.min(f, f0);
+                if(f0<f){
+                    f=f0;
+                }
             }
         }
         return f;
@@ -2364,25 +2367,17 @@ public abstract class AbstractComplexMatrix extends AbstractMatrix<Complex> impl
                 return inv();
             }
             default: {
-                if (exp > 0) {
-                    ComplexMatrix m = this;
-                    while (exp > 1) {
-                        m = m.mul(this);
-                        exp--;
-                    }
-                    return m;
-                } else {
-                    ComplexMatrix m = this;
-                    int t = -exp;
-                    while (t > 1) {
-                        m = m.mul(this);
-                        t--;
-                    }
-                    m = m.inv();
-                    return m;
-                }
+                ComplexMatrix base = powPositive(exp > 0 ? exp : -exp);
+                return exp > 0 ? base : base.inv();
             }
         }
+    }
+
+    private ComplexMatrix powPositive(int exp) {
+        if (exp == 1) return this;
+        ComplexMatrix half = powPositive(exp / 2);
+        ComplexMatrix result = half.mul(half);
+        return (exp % 2 == 0) ? result : result.mul(this);
     }
 
     @Override
@@ -2501,7 +2496,7 @@ public abstract class AbstractComplexMatrix extends AbstractMatrix<Complex> impl
         double[][] X = new double[rows][columns];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                X[i][j] = get(i, j).getReal();
+                X[i][j] = get(i, j).getImag();
             }
         }
         return X;

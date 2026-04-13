@@ -185,7 +185,9 @@ public class TestFunctionsFactory extends AbstractFactory {
 //                }
                 case "sines":
                 case "sinus": {
-                    int count = 6;
+                    int count = -1;
+                    int xcount = -1;
+                    int ycount = -1;
                     HGeometry geometry = null;
                     TestFunctionsSymmetry symmetry = TestFunctionsSymmetry.NO_SYMMETRY;
                     GridPrecision grid = GridPrecision.LEAST_PRECISION;
@@ -199,6 +201,14 @@ public class TestFunctionsFactory extends AbstractFactory {
                                 case "count":
                                 case "complexity": {
                                     count = parsePositiveInt(pv, count);
+                                    break;
+                                }
+                                case "xcount": {
+                                    xcount = parsePositiveInt(pv, xcount);
+                                    break;
+                                }
+                                case "ycount": {
+                                    ycount = parsePositiveInt(pv, ycount);
                                     break;
                                 }
                                 case "x": {
@@ -248,7 +258,28 @@ public class TestFunctionsFactory extends AbstractFactory {
                         return NOptional.<TestFunctions>ofError(msg)
                                 .withDefault(TestFunctionsFactory.createList());
                     }
-                    UserSinePattern p = new UserSinePattern(count, xBoundaries, yBoundaries);
+                    if (xBoundaries == null) {
+                        xcount = 0;
+                    }
+                    if (yBoundaries == null) {
+                        ycount = 0;
+                    }
+                    boolean autoBoundaries=(xBoundaries == null && yBoundaries == null);
+
+                    if (xcount <= 0) {
+                        xcount = count;
+                        if ((xBoundaries != null || autoBoundaries) && xcount <= 0) {
+                            xcount = 6;
+                        }
+                    }
+                    if (ycount <= 0) {
+                        ycount = count;
+                        if ((yBoundaries != null || autoBoundaries) && ycount <= 0) {
+                            ycount = 6;
+                        }
+                    }
+
+                    UserSinePattern p = new UserSinePattern(xcount, ycount, xBoundaries, yBoundaries,autoBoundaries);
                     GpAdaptiveMesh am = new GpAdaptiveMesh(GeometryFactory.createPolygonList(geometry), p, symmetry, new MeshAlgoRect(grid));
                     return NOptional.of(am);
                 }
@@ -463,6 +494,7 @@ public class TestFunctionsFactory extends AbstractFactory {
                 }).orElse(defaultCount)
                 ;
     }
+
     private static double parsePositiveDouble(NElement value, double defaultCount) {
         return value.asDoubleValue()
                 .filter(i -> i > 0)

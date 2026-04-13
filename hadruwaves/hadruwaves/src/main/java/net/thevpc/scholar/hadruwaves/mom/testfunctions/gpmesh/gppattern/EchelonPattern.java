@@ -11,6 +11,7 @@ import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.DDiscrete;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
+import net.thevpc.scholar.hadruwaves.mom.HintAxisType;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 import static net.thevpc.scholar.hadrumaths.Maths.*;
@@ -27,11 +28,11 @@ public final class EchelonPattern extends RectMeshAttachGpPattern implements Clo
     private double value = Double.NaN;
 
     public EchelonPattern() {
-        super(false, false);
+        super(HintAxisType.XY_SEPARATED,false, false);
     }
 
     public EchelonPattern(int gridx, int gridy, Double value) {
-        super(false, false);
+        super(HintAxisType.XY_SEPARATED,false, false);
         this.gridx = gridx;
         this.gridy = gridy;
         this.value = value == null ? 1 : value.doubleValue();
@@ -62,7 +63,7 @@ public final class EchelonPattern extends RectMeshAttachGpPattern implements Clo
         return 1;
     }
 
-    public DoubleToVector createFunction(int index, Domain globalDomain, MeshZone zone, MomStructure str) {
+    public DoubleToVector createFunction(int index, Domain globalDomain, MeshZone zone, MomStructure str, HintAxisType preferredAxisType) {
         switch (zone.getShape()) {
             case RECTANGLE: {
                 DoubleToVector f = Maths.vector(

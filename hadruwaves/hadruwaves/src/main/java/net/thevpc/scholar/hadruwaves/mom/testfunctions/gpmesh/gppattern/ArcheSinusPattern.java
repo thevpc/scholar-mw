@@ -15,6 +15,7 @@ import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadruwaves.Boundary;
 import net.thevpc.scholar.hadruwaves.WallBorders;
+import net.thevpc.scholar.hadruwaves.mom.HintAxisType;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 /**
@@ -33,12 +34,12 @@ public final class ArcheSinusPattern extends RectMeshAttachGpPattern implements 
     }
 
     public ArcheSinusPattern(boolean attachX, boolean attachY, double factor) {
-        super(attachX, attachY);
+        super(HintAxisType.XY_SEPARATED,attachX, attachY);
         this.factor = factor;
     }
 
     public ArcheSinusPattern(MeshZoneTypeFilter filter, double factor) {
-        super(filter);
+        super(HintAxisType.XY_SEPARATED,filter);
         this.factor = factor;
     }
 
@@ -53,7 +54,7 @@ public final class ArcheSinusPattern extends RectMeshAttachGpPattern implements 
         return 1;
     }
 
-    public DoubleToVector createFunction(int index, Domain globalDomain, MeshZone zone, MomStructure str) {
+    public DoubleToVector createFunction(int index, Domain globalDomain, MeshZone zone, MomStructure str, HintAxisType preferredAxisType) {
         WallBorders walls = BoxModesPattern.getVirtualWalls(zone, globalDomain, str);
 //            type=Zone.Type.MAIN;
         switch (zone.getType().getValue()) {

@@ -24,7 +24,7 @@ public class NTxHwTestFunctionsSolver extends NTxHwNopNTxSolver {
     protected void nop() {
         MomStructure str = momStructure();
         TestFunctions testFunctions = str.testFunctions();
-        DoubleToVector[] testFunctionsArr = testFunctions.arr();
+        DoubleToVector[] testFunctionsArr = testFunctions.toArray();
         log(NMsg.ofC("------------------"));
         log(NMsg.ofC("[%s] TEST FUNCTIONS (%s) : ", outputName(),testFunctionsArr.length));
         log(NMsg.ofC("------------------"));

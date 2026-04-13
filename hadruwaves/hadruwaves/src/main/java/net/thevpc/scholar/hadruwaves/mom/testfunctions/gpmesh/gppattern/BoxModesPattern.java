@@ -93,6 +93,11 @@ public final class BoxModesPattern implements RectangularGpPattern, Cloneable {
     }
 
     @Override
+    public HintAxisType getPreferredAxisType() {
+        return HintAxisType.XY;
+    }
+
+    @Override
     public BoxModesPattern copy() {
         return clone();
     }
@@ -159,7 +164,7 @@ public final class BoxModesPattern implements RectangularGpPattern, Cloneable {
         return getClass().getSimpleName() + complexity + ((includedFunctions == null) ? "" : "+" + includedFunctions) + ((excludedFunctions == null) ? "" : "-" + excludedFunctions);
     }
 
-    public DoubleToVector[] createFunctions(Domain globalDomain, MeshZone zone, ProgressMonitor monitor, MomStructure str, NLogger logger) {
+    public DoubleToVector[] createFunctions(Domain globalDomain, MeshZone zone, ProgressMonitor monitor, MomStructure str, NLogger logger, HintAxisType preferredAxisType) {
         int max = getCount();
         ArrayList<DoubleToVector> all = new ArrayList<DoubleToVector>();
         Domain d = zone.getDomain();

@@ -11,6 +11,7 @@ import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZone;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
+import net.thevpc.scholar.hadruwaves.mom.HintAxisType;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 /**
@@ -21,7 +22,7 @@ public final class SinxCosxPattern extends RectMeshAttachGpPattern implements Cl
     private int max;
 
     public SinxCosxPattern(int complexity) {
-        super(false);
+        super(HintAxisType.XY_SEPARATED,false);
         this.max = complexity;
     }
 
@@ -37,7 +38,7 @@ public final class SinxCosxPattern extends RectMeshAttachGpPattern implements Cl
     }
 
 
-    public DoubleToVector createFunction(int index, Domain globalDomain, MeshZone zone, MomStructure str) {
+    public DoubleToVector createFunction(int index, Domain globalDomain, MeshZone zone, MomStructure str, HintAxisType preferredAxisType) {
         Domain domain2 = zone.getDomain();
         Expr f= Maths.vector(
                 (

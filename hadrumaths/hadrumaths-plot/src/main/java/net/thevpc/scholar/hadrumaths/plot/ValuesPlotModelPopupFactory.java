@@ -58,7 +58,7 @@ public class ValuesPlotModelPopupFactory implements PlotModelPopupFactory {
                         //
                     }
                     try {
-                        n3 = c.norm3();
+                        n3 = c.normMax();
                     } catch (Exception e1) {
                         //
                     }

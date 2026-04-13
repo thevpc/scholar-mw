@@ -32,17 +32,20 @@ public interface TestFunctions extends HSerializable {
 
     DoubleToVector gp(int p);
 
-    Vector<Expr> list();
-
     DoubleToVector apply(int index);
 
-    Vector<Expr> toList();
+    Vector<Expr> toVector();
 
-    DoubleToVector[] arr(ProgressMonitor monitor);
+    DoubleToVector[] toArray(ProgressMonitor monitor);
 
-    DoubleToVector[] arr();
+    DoubleToVector[] toArray();
 
-    DoubleToVector[] arr(ProgressMonitor monitor, ObjectCache objectCache);
+    DoubleToVector[] toArray(ProgressMonitor monitor, ObjectCache objectCache);
+
+    List<DoubleToVector> toList();
+
+    List<DoubleToVector> toList(ProgressMonitor monitor);
+    List<DoubleToVector> toList(ProgressMonitor monitor, ObjectCache objectCache);
 
     Domain getDomain();
 
@@ -52,10 +55,6 @@ public interface TestFunctions extends HSerializable {
     String toString();
 
     int count();
-
-    int length();
-
-    int size();
 
     boolean isComplex();
 

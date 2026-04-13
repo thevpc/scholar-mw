@@ -439,7 +439,7 @@ public class TestFunctionsBuilder {
             }
             ListTestFunctions t = (ListTestFunctions) f;
             ListTestFunctions t2 = new ListTestFunctions();
-            for (Expr cc : t.toList()) {
+            for (Expr cc : t.toVector()) {
                 t2.add(cc.normalize().toDC());
             }
             f = t2;

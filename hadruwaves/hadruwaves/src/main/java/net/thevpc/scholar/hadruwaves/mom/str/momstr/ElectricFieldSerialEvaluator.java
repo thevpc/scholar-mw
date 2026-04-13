@@ -34,7 +34,7 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
             public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 ProgressMonitor[] mons = monitor.split(.1, .2,.2,.5);
 //        this.invalidateCache();
-                final DoubleToVector[] _g = str.testFunctions().arr(mons[0]);
+                final DoubleToVector[] _g = str.testFunctions().toArray(mons[0]);
                 final ModeInfo[] indexes = str.getModes(mons[1]);
 
                 ComplexMatrix Testcoeff = str.matrixX().monitor(mons[2]).evalMatrix();
@@ -143,7 +143,7 @@ public class ElectricFieldSerialEvaluator implements ElectricFieldEvaluator {
             public VDiscrete process(ProgressMonitor monitor, String messagePrefix) throws Exception {
                 ProgressMonitor[] mon = monitor.split(.2, .8);
 //        this.invalidateCache();
-                final DoubleToVector[] _g = str.testFunctions().arr();
+                final DoubleToVector[] _g = str.testFunctions().toArray();
 
                 ComplexMatrix Testcoeff = str.matrixX().monitor(mon[0]).evalMatrix();
 

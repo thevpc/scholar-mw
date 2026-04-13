@@ -5,9 +5,7 @@
  */
 package net.thevpc.scholar.hadruwavesstudio.standalone.v2.tools.results.actions.mom;
 
-import net.thevpc.scholar.hadruplot.LibraryPlotType;
 import net.thevpc.scholar.hadruplot.Plot;
-import net.thevpc.scholar.hadruplot.PlotType;
 import net.thevpc.scholar.hadruplot.model.PlotModel;
 import net.thevpc.scholar.hadruwavesstudio.standalone.v2.components.PlotResult;
 import java.io.File;
@@ -38,7 +36,7 @@ public class MoMModeFunctions extends AbstractHWSolverAction {
         context.app().runWorker(() -> {
             String icon="Chart";
             HWSolverMoM solver = (HWSolverMoM)context.studio().buildSolver(configuration);
-            Object result = solver.str().modeFunctions().arr();
+            Object result = solver.str().modeFunctions().toArray();
             PlotModel model = Plot.builder().createModel(result);
             icon="Result1d";
             PlotResult plotResult = new PlotResult(id(), title, path(), model,icon);

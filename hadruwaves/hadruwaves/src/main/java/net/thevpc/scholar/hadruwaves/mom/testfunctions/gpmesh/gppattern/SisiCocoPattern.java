@@ -4,6 +4,7 @@ import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.FunctionFactory;
+import net.thevpc.scholar.hadruwaves.mom.HintAxisType;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 /**
@@ -13,10 +14,10 @@ import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 public final class SisiCocoPattern extends AbstractGpPatternPQ  implements Cloneable{
 
     public SisiCocoPattern(int complexity) {
-        super(complexity);
+        super(HintAxisType.XY_SEPARATED,complexity);
     }
 
-    public DoubleToVector createFunction(int index, int p, int q, Domain d, Domain globalDomain, MomStructure str) {
+    public DoubleToVector createFunction(int index, int p, int q, Domain d, Domain globalDomain, HintAxisType preferredAxisType, MomStructure str) {
         DoubleToVector f = Maths.vector(
                 (
                         FunctionFactory.sinXsinY(

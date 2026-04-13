@@ -50,7 +50,7 @@ object d_2018_07_10_EMPropertiesFreeSpaceCase {
   var dPatch = domain(l -> (l + L), -W / 2 -> W / 2)
   var s = 2.0 * MM;
   var dSource = domain(0.0 -> s, -d / 2 -> d / 2)
-  var myMaterial=new Material("myMaterial",epsr,1,0)
+  var myMaterial=new Material("myMaterial",epsr,1,0,0)
 
   var p = param("p")
   var q = param("q")

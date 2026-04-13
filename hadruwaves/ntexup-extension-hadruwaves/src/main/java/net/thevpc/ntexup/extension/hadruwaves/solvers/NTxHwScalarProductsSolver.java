@@ -21,7 +21,7 @@ public class NTxHwScalarProductsSolver extends NTxHwNopNTxSolver {
         MomStructure str = momStructure();
         ComplexMatrix testModeScalarProducts = str.getTestModeScalarProducts();
         ModeFunctions modes = str.modeFunctions();
-        DoubleToVector[] testFunctionsArr = str.testFunctions().arr();
+        DoubleToVector[] testFunctionsArr = str.testFunctions().toArray();
         ModeInfo[] modesArr = modes.getModes();
 
         log(NMsg.ofC("------------------"));

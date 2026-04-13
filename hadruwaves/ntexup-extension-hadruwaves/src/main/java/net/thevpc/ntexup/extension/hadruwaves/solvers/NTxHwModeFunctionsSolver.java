@@ -30,7 +30,7 @@ public class NTxHwModeFunctionsSolver extends NTxHwNopNTxSolver {
             log(NMsg.ofC("%s : %s", mode.mode, mode.fn));
         }
         if (plan().rendererContext().isAnimate()) {
-            Plot.cd(fullPath()).title(fullName()).plot(modes.arr());
+            Plot.cd(fullPath()).title(fullName()).plot(modes.toArray());
         }
     }
 

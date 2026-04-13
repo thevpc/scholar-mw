@@ -152,7 +152,7 @@ public class PlatformUtils {
         return freed;
     }
 
-    public static <K, V> Map<K, ? super V> merge(Map<K, ? super V> destination, Map<K, ? extends V>... sources) {
+    public static <K, V> Map<K, V> merge(Map<K, V> destination, Map<K, ? extends V>... sources) {
         if (destination == null) {
             destination = new HashMap<K, V>();
         }
