@@ -1,5 +1,7 @@
 package net.thevpc.scholar.hadruplot;
 
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.nuts.reflect.NReflectUtils;
 import net.thevpc.nuts.text.NText;
 import net.thevpc.nuts.text.NTextFormat;
@@ -832,7 +834,7 @@ public class PlotBuilder {
         return this;
     }
 
-    public static class ListDoubleFormat implements NTextFormat<Number> {
+    public static class ListDoubleFormat implements NTextFormat<Number>, NToElement {
 
         private final List<String> values;
 
@@ -841,6 +843,10 @@ public class PlotBuilder {
             for (Object o : values) {
                 this.values.add(String.valueOf(o));
             }
+        }
+        @Override
+        public NElement toElement() {
+            return NElement.ofUplet(getClass().getSimpleName());
         }
 
         @Override

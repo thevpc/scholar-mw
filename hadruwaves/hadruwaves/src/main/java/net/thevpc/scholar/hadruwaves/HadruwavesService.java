@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 public class HadruwavesService implements HadrumathsService {
     private static final Logger log = Logger.getLogger(HadruwavesService.class.getName());
     public static String getVersion() {
-        return NId.getForClass(HadruwavesService.class).map(x->x.getVersion().getValue()).orElse("DEV");
+        return NId.getForClass(HadruwavesService.class).map(x->x.version().value()).orElse("DEV");
     }
 
     @Override

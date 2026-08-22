@@ -216,7 +216,7 @@ public abstract class AbstractExpressionRewriter implements ExpressionRewriter, 
             RewriteResult r = rewriteImpl(e, targetExprType);
             c.stop();
             NDuration duration = c.duration();
-            if (duration.getSeconds() > MAX_REWRITE_TIME_SECONDS) {
+            if (duration.toSeconds() > MAX_REWRITE_TIME_SECONDS) {
                 System.err.println("Expression Rewrite Took too long : " + duration.toSeconds() + "s ; " + e + " ==> " +
                         (r.isUnmodified() ? "?unmodified?" : r.getValue())
                 );

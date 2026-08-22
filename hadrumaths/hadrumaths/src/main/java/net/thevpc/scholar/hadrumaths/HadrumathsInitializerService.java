@@ -11,7 +11,7 @@ public class HadrumathsInitializerService implements HadrumathsService {
     private static final Logger log = Logger.getLogger(HadrumathsInitializerService.class.getName());
 
     public static String getVersion() {
-        return NId.getForClass(HadrumathsInitializerService.class).map(x->x.getVersion().getValue()).orElse("DEV");
+        return NId.getForClass(HadrumathsInitializerService.class).map(x->x.version().value()).orElse("DEV");
     }
 
     @Override

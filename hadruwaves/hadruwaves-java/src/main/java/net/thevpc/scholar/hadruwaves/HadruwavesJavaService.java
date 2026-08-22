@@ -22,6 +22,6 @@ public class HadruwavesJavaService implements HadrumathsService {
   }
 
   private String getVersion() {
-    return NId.getForClass(HadruwavesJavaService.class).map(x->x.getVersion().getValue()).orElse("DEV");
+    return NId.getForClass(HadruwavesJavaService.class).map(x->x.version().value()).orElse("DEV");
   }
 }

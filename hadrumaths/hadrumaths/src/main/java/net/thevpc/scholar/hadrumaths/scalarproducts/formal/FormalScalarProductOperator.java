@@ -200,7 +200,7 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
     protected Class[] getExprClassHierarchy(Class c1) {
         Class[] found = cachedExprHierarchy.get(c1);
         if (found == null) {
-            found = Stream.of(NReflectUtils.findClassHierarchy(c1, null, NTypeNamePlatformDomain.of())).filter(x -> !excludedExprHierarchy.contains(x)
+            found = NReflectUtils.findClassHierarchy(c1, null).stream().filter(x -> !excludedExprHierarchy.contains(x)
                     && Expr.class.isAssignableFrom(x)).toArray(Class[]::new);
             cachedExprHierarchy.put(c1, found);
         }

@@ -70,7 +70,7 @@ public class MeshZone {
     private HGeometry geometry;
     private final MeshZoneType type;
     private Domain domain;
-    private HPolygon polygon;
+//    private HPolygon polygon;
     private Domain globalDomain;
     private Domain domain0;
     private Map<String, Object> userProperties;

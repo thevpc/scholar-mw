@@ -16,7 +16,7 @@ class HadruwavesScalaService extends HadrumathsService {
   private val log: Logger = Logger.getLogger(classOf[HadruwavesScalaService].getName())
 
   def getVersion: String =
-        NId.getForClass(classOf[HadruwavesService]).map(x=>x.getVersion().getValue()).orElse("DEV");
+        NId.getForClass(classOf[HadruwavesService]).map(x=>x.version().value()).orElse("DEV");
 
   //PomIdResolver.resolvePomId(classOf[HadruwavesService], new PomId("", "", "DEV")).getVersion
 

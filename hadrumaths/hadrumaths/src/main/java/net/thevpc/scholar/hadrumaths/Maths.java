@@ -4034,7 +4034,7 @@ public final class Maths {
             return new MatrixVectorSpace($EXPR, EXPR_VECTOR_SPACE);
         }
         if (Matrix.class.isAssignableFrom(NTypeNamePlatformDomain.of().getTypeClass(cls))) {
-            NTypeName ii = cls.getParameters()[0];
+            NTypeName ii = cls.parameters()[0];
             return new MatrixVectorSpace(ii, getVectorSpace(ii));
         }
         throw new NoSuchElementException("Vector space Not yet supported for " + cls);

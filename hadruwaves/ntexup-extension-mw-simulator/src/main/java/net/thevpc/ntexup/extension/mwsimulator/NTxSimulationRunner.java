@@ -38,7 +38,7 @@ public class NTxSimulationRunner {
                 return new MyNTxSimulationRunningProcess<T>(taskId, n, f);
             }
         }
-        )).setExpiry(NDuration.ofHours(1));
+        )).expiry(NDuration.ofHours(1));
         return cv.get();
     }
 

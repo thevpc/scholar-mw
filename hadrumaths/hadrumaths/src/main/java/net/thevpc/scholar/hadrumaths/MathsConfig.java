@@ -655,10 +655,10 @@ public final class MathsConfig {
         return elemsStore;
     }
 
-    private static class ClassNameNElementMapper<T> implements NElementMapper<T> {
-        @Override
-        public NElement createElement(T object, Type typeOfSrc, NElementFactoryContext context) {
-            return NElement.ofUplet(object.getClass().getSimpleName());
-        }
-    }
+//    private static class ClassNameNElementMapper<T> implements NElementSerializer<T> {
+//        @Override
+//        public NElement toElement(NElementSerializerContext<T> context) {
+//            return NElement.ofUplet(context.instance().getClass().getSimpleName());
+//        }
+//    }
 }

@@ -13,7 +13,8 @@ import java.util.List;
 import net.thevpc.nuts.artifact.NId;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NElementFactoryContext;
-import net.thevpc.nuts.elem.NElementMapper;
+import net.thevpc.nuts.elem.NElementSerializer;
+import net.thevpc.nuts.elem.NElementSerializerContext;
 import net.thevpc.scholar.hadruplot.*;
 
 
@@ -79,20 +80,6 @@ public class MathsPlot {
             old.add(DefaultPlotModelFactory.INSTANCE);
             old.addAll(Arrays.asList(PlotConfigManager.getPlotModelFactories()));
             PlotConfigManager.setPlotModelFactories(old.toArray(new PlotModelFactory[0]));
-            Maths.Config.getElements().mapperStore()
-                    .setMapper(SimpleDoubleFormat.class, new NElementMapper<SimpleDoubleFormat>() {
-                        @Override
-                        public NElement createElement(SimpleDoubleFormat object, Type typeOfSrc, NElementFactoryContext context) {
-                            return NElement.ofUplet(object.getClass().getSimpleName());
-                        }
-                    })
-                    .setMapper(PlotBuilder.ListDoubleFormat.class, new NElementMapper<PlotBuilder.ListDoubleFormat>() {
-                        @Override
-                        public NElement createElement(PlotBuilder.ListDoubleFormat object, Type typeOfSrc, NElementFactoryContext context) {
-                            return Maths.Config.getElements().toElement(object.getValues());
-                        }
-                    })
-            ;
 
             PlotConfigManager.getPlotHyperCubeResolvers()
                     .add(new ClassResolver<PlotHyperCube>() {
@@ -291,7 +278,7 @@ public class MathsPlot {
     }
 
     public static String getHadrumathsPlotVersion() {
-        return NId.getForClass(MathsPlot.class).map(x->x.getVersion().getValue()).orElse("DEV");
+        return NId.getForClass(MathsPlot.class).map(x->x.version().value()).orElse("DEV");
     }
 
 }

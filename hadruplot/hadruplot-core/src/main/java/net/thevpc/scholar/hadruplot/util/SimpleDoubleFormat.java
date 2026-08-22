@@ -1,12 +1,14 @@
 package net.thevpc.scholar.hadruplot.util;
 
+import net.thevpc.nuts.elem.NElement;
+import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.nuts.text.NText;
 import net.thevpc.nuts.text.NTextFormat;
 import net.thevpc.nuts.util.NLiteral;
 
 import java.text.DecimalFormat;
 
-public class SimpleDoubleFormat implements NTextFormat<Number> {
+public class SimpleDoubleFormat implements NTextFormat<Number> , NToElement {
     public static NTextFormat<Number> INSTANCE = new SimpleDoubleFormat();
 
     private DecimalFormat format;
@@ -16,6 +18,11 @@ public class SimpleDoubleFormat implements NTextFormat<Number> {
         format = new DecimalFormat("###0.000E0");
         format.setMaximumIntegerDigits(1);
         simpleFormat = new DecimalFormat("###0.000");
+    }
+
+    @Override
+    public NElement toElement() {
+        return NElement.ofUplet(getClass().getSimpleName());
     }
 
     @Override
