@@ -16,6 +16,7 @@ public class NTxOpenEMSBuilder implements NTxNodeBuilder {
     @Override
     public void build(NTxNodeBuilderContext builderContext) {
         builderContext.id("openems")
+                .alias("open-ems-solver", "openEMS")
                 .parseParam()
                 .matchesAny().end()
                 .processChildren(this::processChildren)
@@ -31,8 +32,10 @@ public class NTxOpenEMSBuilder implements NTxNodeBuilder {
         NTxMwSimulationUtils.doRender(rendererContext,
                 new NTxStrSimulationQueryFactory() {
                     @Override
-                    public NTxSimulationPlan newInstance(String id,String name, NTxFunctionCallContext args) {
-                        return new OpenEMSStrNTxSimulationPlan(id,name,rendererContext);
+                    public NTxSimulationPlan newInstance(String id, String name, NTxFunctionCallContext args) {
+                        OpenEMSStrNTxSimulationPlan plan = new OpenEMSStrNTxSimulationPlan(id, name, rendererContext);
+                        plan.modelInfo = OpenEMSParser.parse(args);
+                        return plan;
                     }
                 });
         ;

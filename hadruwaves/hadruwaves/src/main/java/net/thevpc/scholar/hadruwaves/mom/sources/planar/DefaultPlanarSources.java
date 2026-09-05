@@ -47,7 +47,7 @@ public final class DefaultPlanarSources implements PlanarSources, Cloneable {
 
     @Override
     public NElement toElement() {
-        return NElement.ofUplet("PlanarSources", NElementHelper.elem(all));
+        return NElementHelper.ofNamedTuple("PlanarSources", NElementHelper.elem(all));
     }
 
     @Override

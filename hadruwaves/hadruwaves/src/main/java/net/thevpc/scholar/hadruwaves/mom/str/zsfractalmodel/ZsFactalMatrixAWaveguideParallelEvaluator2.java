@@ -254,7 +254,7 @@ public class ZsFactalMatrixAWaveguideParallelEvaluator2 implements MatrixAEvalua
 
     @Override
     public NElement toElement() {
-        return NElement.ofUplet(getClass().getSimpleName());
+        return NElement.ofObjectBuilder(getClass().getSimpleName()).build();
     }
 
 }

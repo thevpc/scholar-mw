@@ -2,7 +2,7 @@ package net.thevpc.scholar.hadrumaths.plot.random;
 
 import net.thevpc.nuts.reflect.NClassMap;
 import net.thevpc.nuts.reflect.NClassMultiMap;
-import net.thevpc.nuts.time.NChronometer;
+import net.thevpc.nuts.mon.NChronometer;
 import net.thevpc.nuts.reflect.NClassDecisionFilter;
 import net.thevpc.nuts.util.NDecision;
 import net.thevpc.scholar.hadrumaths.util.internal.IntValidator;

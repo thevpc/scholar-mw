@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadruplot;
 
+import net.thevpc.nuts.collections.NDoubleList;
 import net.thevpc.nuts.reflect.NTypeReference;
 import net.thevpc.nuts.util.NArrays;
-import net.thevpc.nuts.util.NDoubleArrayList;
 import net.thevpc.scholar.hadruplot.console.PlotConfigManager;
 import net.thevpc.scholar.hadruplot.util.PlotUtils;
 
@@ -62,7 +62,7 @@ public class PlotLines {
     }
 
     public double[] xsamples() {
-        NDoubleArrayList d = new NDoubleArrayList(xvalues.size());
+        NDoubleList d = NDoubleList.of(xvalues.size());
         for (Double xvalue : xvalues) {
             d.add(xvalue == null ? Double.NaN : xvalue);
         }

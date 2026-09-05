@@ -55,7 +55,7 @@ public class DefaultHPolygon extends AbstractHGeometry implements Cloneable, HPo
         NArrayElementBuilder arr = NElement.ofArrayBuilder();
         for (int i = 0; i < points.size(); i++) {
             HPoint pi = points.get(i);
-            arr.add(NElement.ofUplet(
+            arr.add(NElementHelper.ofTuple(
                     NElement.ofDouble(pi.x),
                     NElement.ofDouble(pi.y)
             ));

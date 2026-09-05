@@ -84,7 +84,7 @@ public class CacheKey {
     }
 
     public static CacheKey fct(String name, Object... elements) {
-        return of(NElement.ofUplet(name, NElementHelper.elem(elements)));
+        return of(NElementHelper.ofNamedTuple(name, NElementHelper.elem(elements)));
     }
 
     public static CacheKey of(NElement element) {

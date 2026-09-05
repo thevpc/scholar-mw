@@ -4,7 +4,7 @@ import net.thevpc.common.mon.ProgressMonitors;
 import net.thevpc.common.swing.win.WindowPath;
 import net.thevpc.common.mon.MonitoredAction;
 import net.thevpc.common.mon.ProgressMonitor;
-import net.thevpc.nuts.time.NChronometer;
+import net.thevpc.nuts.mon.NChronometer;
 import net.thevpc.scholar.hadruplot.PlotMatrix;
 import net.thevpc.scholar.hadruplot.console.*;
 import net.thevpc.scholar.hadruplot.PlotType;

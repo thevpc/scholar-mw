@@ -2,7 +2,6 @@ package net.thevpc.scholar.hadrumaths.geom;
 
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NObjectElementBuilder;
-import net.thevpc.nuts.elem.NUpletElement;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.GeometryFactory;
 import net.thevpc.scholar.hadrumaths.Maths;
@@ -33,7 +32,7 @@ public class EllipticHPolygon extends AbstractHGeometry implements HPolygonBuild
         b.add("arcRatio", arcRatio);
         b.add("phase", phase);
         b.add("center", ue(center));
-        b.add("radius", NElement.ofUplet(
+        b.add("radius", NElementHelper.ofTuple(
                 NElement.ofDouble(xradius),
                 NElement.ofDouble(yradius)
         ));
@@ -41,8 +40,8 @@ public class EllipticHPolygon extends AbstractHGeometry implements HPolygonBuild
         return b.build();
     }
 
-    private NUpletElement ue(HPoint p) {
-        return NElement.ofUplet(
+    private NElement ue(HPoint p) {
+        return NElementHelper.ofTuple(
                 NElement.ofDouble(p.getX()),
                 NElement.ofDouble(p.getY())
         );

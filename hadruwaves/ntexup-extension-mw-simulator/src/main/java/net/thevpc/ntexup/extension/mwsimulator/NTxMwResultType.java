@@ -9,7 +9,7 @@ public enum NTxMwResultType {
     ;
 
     public static NOptional<NTxMwResultType> parse(String s) {
-        switch (NStringUtils.trim(s).toLowerCase()) {
+        switch ((s == null ? "" : s.trim()).toLowerCase()) {
                 case "s11":
                 case "sparameters":
                 case "s-parameters":

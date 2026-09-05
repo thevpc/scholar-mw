@@ -58,7 +58,7 @@ public final class ImpedanceValue implements Impedance {
 
     @Override
     public NElement toElement() {
-        return NElement.ofUplet("impedance", NElementHelper.elem(value));
+        return NElementHelper.ofNamedTuple("impedance", NElementHelper.elem(value));
     }
 
 //    public String dump() {

@@ -9,7 +9,7 @@ import net.thevpc.nuts.reflect.NTypeName;
 import net.thevpc.nuts.reflect.NTypeNamePlatformDomain;
 import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.text.NTextFormat;
-import net.thevpc.nuts.util.NUplet;
+import java.util.Objects;
 import net.thevpc.scholar.hadrumaths.cache.CacheEnabled;
 import net.thevpc.scholar.hadrumaths.cache.CacheMode;
 import net.thevpc.scholar.hadrumaths.derivation.FormalDifferentiation;
@@ -75,7 +75,7 @@ public final class MathsConfig {
     private ScalarProductOperator defaultScalarProductOperator = null;
     private IntegrationOperator defaultIntegrationOperator = null;
     private FunctionDifferentiatorManager functionDifferentiatorManager = new FormalDifferentiation();
-    private final Map<NUplet<Class>, Function> converters = new HashMap<>();
+    private final Map<ClassPair, Function> converters = new HashMap<>();
     private final Map<String, MatrixFactory> matrixFactories = new HashMap<>();
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(MathsConfig.class);
     private final NTextFormat<Number> defaultDblFormat = NTextFormat.ofNumber();
@@ -186,7 +186,7 @@ public final class MathsConfig {
     }
 
     public <A, B> void registerConverter(Class<A> a, Class<B> b, Function<A, B> c) {
-        NUplet<Class> k = NUplet.of(a, b);
+        ClassPair k = new ClassPair(a, b);
         if (c == null) {
             converters.remove(k);
         } else {
@@ -210,8 +210,31 @@ public final class MathsConfig {
     }
 
     public <A, B> Function<A, B> getRegisteredConverter(Class<A> a, Class<B> b) {
-        NUplet<Class> k = NUplet.of(a, b);
+        ClassPair k = new ClassPair(a, b);
         return converters.get(k);
+    }
+
+    private static class ClassPair {
+        private final Class a;
+        private final Class b;
+
+        public ClassPair(Class a, Class b) {
+            this.a = a;
+            this.b = b;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ClassPair classPair = (ClassPair) o;
+            return Objects.equals(a, classPair.a) && Objects.equals(b, classPair.b);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(a, b);
+        }
     }
 
     public boolean isDevelopmentMode() {

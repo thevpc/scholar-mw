@@ -1,7 +1,6 @@
 package net.thevpc.scholar.hadrumaths.plot.filetypes;
 
 import net.thevpc.nuts.text.NTextFormat;
-import net.thevpc.nuts.util.NDoubleFormat;
 import net.thevpc.scholar.hadruplot.extension.defaults.SimplePlotModelProvider;
 import net.thevpc.scholar.hadruplot.extension.PlotModelProvider;
 import net.thevpc.scholar.hadruplot.model.PlotModel;

@@ -2209,16 +2209,16 @@ public abstract class Domain implements DoubleValue, DoubleToDouble, DoubleToDou
     public NElement toElement() {
         switch (getDimension()) {
             case 1: {
-                return NElement.ofUplet("domain", NElement.ofDouble(xmin()), NElement.ofDouble(xmax()));
+                return net.thevpc.scholar.hadrumaths.util.NElementHelper.ofNamedTuple("domain", NElement.ofDouble(xmin()), NElement.ofDouble(xmax()));
             }
             case 2: {
-                return NElement.ofUplet("domain",
+                return net.thevpc.scholar.hadrumaths.util.NElementHelper.ofNamedTuple("domain",
                         NElement.ofDouble(xmin()), NElement.ofDouble(xmax()),
                         NElement.ofDouble(ymin()), NElement.ofDouble(ymax())
                 );
             }
         }
-        return NElement.ofUplet("domain",
+        return net.thevpc.scholar.hadrumaths.util.NElementHelper.ofNamedTuple("domain",
                 NElement.ofDouble(xmin()), NElement.ofDouble(xmax()),
                 NElement.ofDouble(ymin()), NElement.ofDouble(ymax()),
                 NElement.ofDouble(zmin()), NElement.ofDouble(zmax())

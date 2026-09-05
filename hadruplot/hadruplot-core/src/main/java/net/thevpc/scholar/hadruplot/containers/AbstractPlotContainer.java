@@ -70,7 +70,7 @@ public abstract class AbstractPlotContainer implements PlotContainer {
         for (int i = 0; i < count; i++) {
             PlotComponent c = getPlotComponent(i);
             if (c != null) {
-                if (NStringUtils.trim(c.getPlotTitle()).equals(NStringUtils.trim(pcn.getTitle()))) {
+                if (NStringUtils.strip(c.getPlotTitle()).equals(NStringUtils.strip(pcn.getTitle()))) {
                     return i;
                 }
             }

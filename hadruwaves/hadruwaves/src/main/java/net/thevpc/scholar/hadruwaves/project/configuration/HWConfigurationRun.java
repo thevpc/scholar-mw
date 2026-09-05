@@ -476,7 +476,7 @@ public class HWConfigurationRun extends AbstractHWConfigurationElement {
 
     public String discriminatorString() {
         List<HWParameterValue> all = new ArrayList<>(project().get().parameters().toMap().values());
-        all.sort(Comparator.comparing(a -> NStringUtils.trim(a.name().get())));
+        all.sort(Comparator.comparing(a -> NStringUtils.strip(a.name().get())));
         StringBuilder sb = new StringBuilder();
         for (HWParameterValue v : all) {
             String n = v.name().get();

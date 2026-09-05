@@ -26,18 +26,18 @@ public class NTxSweep implements NToElement {
 
     @Override
     public NElement toElement() {
-        NUpletElementBuilder sweep = NElement.ofUpletBuilder("sweep");
+        NObjectElementBuilder sweep = NElement.ofObjectBuilder().name("sweep");
         if (rangeFrom != null) {
-            sweep.add("from", NElement.ofNumber(rangeFrom));
+            sweep.set("from", NElement.ofNumber(rangeFrom));
         }
         if (rangeTo != null) {
-            sweep.add("to", NElement.ofNumber(rangeTo));
+            sweep.set("to", NElement.ofNumber(rangeTo));
         }
         if (step != null) {
-            sweep.add("step", NElement.ofNumber(step));
+            sweep.set("step", NElement.ofNumber(step));
         }
         if (count != null) {
-            sweep.add("count", NElement.ofNumber(count));
+            sweep.set("count", NElement.ofNumber(count));
         }
         return sweep.build();
     }

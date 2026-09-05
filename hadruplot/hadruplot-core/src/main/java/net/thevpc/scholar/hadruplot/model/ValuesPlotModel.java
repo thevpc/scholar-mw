@@ -4,7 +4,6 @@ import java.util.*;
 import java.util.function.ToDoubleFunction;
 
 import net.thevpc.nuts.text.NTextFormat;
-import net.thevpc.nuts.util.NDoubleFormat;
 import net.thevpc.scholar.hadruplot.LibraryPlotType;
 import net.thevpc.scholar.hadruplot.PlotDoubleConverter;
 import net.thevpc.scholar.hadruplot.PlotModelType;

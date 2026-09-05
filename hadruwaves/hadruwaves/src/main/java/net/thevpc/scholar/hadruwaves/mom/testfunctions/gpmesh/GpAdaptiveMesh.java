@@ -1,9 +1,9 @@
 package net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh;
 
+import net.thevpc.nuts.collections.NMaps;
 import net.thevpc.nuts.elem.NElement;
 
 import net.thevpc.nuts.elem.NObjectElementBuilder;
-import net.thevpc.nuts.util.NMaps;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.geom.*;
@@ -279,7 +279,7 @@ public class GpAdaptiveMesh extends TestFunctionsBase implements Cloneable {
             }
 
         }
-        return f.toArray(new DoubleToVector[f.size()]);
+        return f.toArray(new DoubleToVector[0]);
     }
 
     public void setSymmetry(TestFunctionsSymmetry aSymmetry) {

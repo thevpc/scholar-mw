@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NUpletElementBuilder;
+import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.HSerializable;
 import net.thevpc.scholar.hadrumaths.util.NElementHelper;
@@ -40,9 +40,9 @@ public class StrLayer implements HSerializable, Cloneable {
 
     @Override
     public NElement toElement() {
-        NUpletElementBuilder sb = NElement.ofUpletBuilder().name(getClass().getSimpleName());
-        sb.add(NElement.ofPair("width", NElementHelper.elem(width)));
-        sb.add(NElement.ofPair("impedance", NElementHelper.elem(impedance)));
+        NObjectElementBuilder sb = NElement.ofObjectBuilder(getClass().getSimpleName());
+        sb.add("width", NElementHelper.elem(width));
+        sb.add("impedance", NElementHelper.elem(impedance));
         return sb.build();
     }
 //    public String dump() {

@@ -2,10 +2,10 @@ package net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh;
 
 import net.thevpc.common.mon.MonitoredAction;
 import net.thevpc.common.mon.ProgressMonitor;
+import net.thevpc.nuts.collections.NMaps;
 import net.thevpc.nuts.elem.NElement;
 
 import net.thevpc.nuts.elem.NObjectElementBuilder;
-import net.thevpc.nuts.util.NMaps;
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Expressions;

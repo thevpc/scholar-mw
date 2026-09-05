@@ -31,7 +31,7 @@
 
     <dependencies>
         <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruplot</artifactId><version>${scholar-version}</version></dependency>
-        <dependency><groupId>net.thevpc.nuts</groupId><artifactId>nuts</artifactId><version>0.8.9</version></dependency>
+        <dependency><groupId>net.thevpc.nuts</groupId><artifactId>nuts</artifactId><version>1.0.0</version></dependency>
         <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadrumaths</artifactId><version>${scholar-version}</version></dependency>
         <dependency><groupId>org.junit.jupiter</groupId><artifactId>junit-jupiter-api</artifactId><version>5.5.0</version><scope>test</scope></dependency>
     </dependencies>

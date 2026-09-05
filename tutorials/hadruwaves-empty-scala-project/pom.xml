@@ -9,7 +9,7 @@
     <dependencies>
         <dependency><artifactId>hadruwaves-scala</artifactId><groupId>net.thevpc.scholar</groupId><version>${scholar-version}</version></dependency>
         <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruplot-laf</artifactId><version>3.3.0</version></dependency>
-        <dependency><groupId>net.thevpc.nuts</groupId><artifactId>nuts</artifactId><version>0.8.9</version></dependency>
+        <dependency><groupId>net.thevpc.nuts</groupId><artifactId>nuts</artifactId><version>1.0.0</version></dependency>
     </dependencies>
     <repositories>
         <repository><id>thevpc</id><url>https://thevpc.net/maven</url><snapshots>

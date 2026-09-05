@@ -2,7 +2,7 @@ package net.thevpc.scholar.hadrumaths.test.scalarproducts;
 
 import static net.thevpc.scholar.hadrumaths.io.HadrumathsIOUtils.*;
 
-import net.thevpc.nuts.time.NChronometer;
+import net.thevpc.nuts.mon.NChronometer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

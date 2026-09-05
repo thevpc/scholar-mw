@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadruplot.model;
 
+import net.thevpc.nuts.collections.NDoubleList;
 import net.thevpc.nuts.text.NTextFormat;
 import net.thevpc.nuts.util.NArrays;
-import net.thevpc.nuts.util.NDoubleArrayList;
 import net.thevpc.scholar.hadruplot.PlotDoubleConverter;
 import net.thevpc.scholar.hadruplot.PlotViewConfig;
 import net.thevpc.scholar.hadruplot.util.PlotModelUtils;
@@ -90,16 +90,16 @@ public class ValuesPlotXYDoubleModelFace {
             }
 
             title = model.getTitle();
-            NDoubleArrayList yl = new NDoubleArrayList(this.y.length);
+            NDoubleList yl = NDoubleList.of(this.y.length);
             List<String> ys = new ArrayList<>(this.y.length);
-            List<NDoubleArrayList> zl = new ArrayList<>(this.y.length);
+            List<NDoubleList> zl = new ArrayList<>(this.y.length);
             for (int i = 0; i < this.y.length; i++) {
                 double ymultiplier = plotViewConfig.getYMultiplierAt(i, 1);
                 double v = this.y[i] * ymultiplier;
                 if (model.getYVisible(i)) {
                     initialIndexesList.add(i);
                     yl.add(v);
-                    zl.add(i < this.z.length ? new NDoubleArrayList(this.z[i]) : new NDoubleArrayList(new double[]{0}));
+                    zl.add(i < this.z.length ? NDoubleList.of(this.z[i]) : NDoubleList.of(new double[]{0}));
                     ys.add(PlotModelUtils.resolveYTitle(model, i));
                 }
             }
@@ -129,13 +129,13 @@ public class ValuesPlotXYDoubleModelFace {
         }
 
         this.title = title;
-        NDoubleArrayList yl = new NDoubleArrayList(this.y.length);
+        NDoubleList yl = NDoubleList.of(this.y.length);
         List<String> ys = new ArrayList<>(this.y.length);
-        List<NDoubleArrayList> zl = new ArrayList<>(this.y.length);
+        List<NDoubleList> zl = new ArrayList<>(this.y.length);
         for (int i = 0; i < this.y.length; i++) {
             double v = this.y[i];
             yl.add(v);
-            zl.add(new NDoubleArrayList(this.z[i]));
+            zl.add(NDoubleList.of(this.z[i]));
             ys.add(PlotModelUtils.resolveYTitle(ytitles, i));
         }
         this.y = yl.toArray();

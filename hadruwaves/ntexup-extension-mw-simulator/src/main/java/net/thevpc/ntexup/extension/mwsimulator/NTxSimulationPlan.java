@@ -1,7 +1,6 @@
 package net.thevpc.ntexup.extension.mwsimulator;
 
 import net.thevpc.ntexup.api.renderer.NTxRendererContext;
-import net.thevpc.nuts.time.NChronometerView;
 
 import java.util.List;
 
@@ -17,7 +16,7 @@ public interface NTxSimulationPlan {
 
     String id();
 
-    NChronometerView chronometerView();
+    NTxChronometer chronometerView();
     String name();
 
     void addSolverListener(NTxSolverListener listener);

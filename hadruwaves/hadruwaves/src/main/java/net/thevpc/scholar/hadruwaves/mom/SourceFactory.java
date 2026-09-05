@@ -180,7 +180,7 @@ public class SourceFactory extends AbstractFactory {
                                     case "modes":
                                     {
                                         if(!p.value().isNamed() && p.value().isListContainer()) {
-                                            indices = p.value().asListContainer().get().children().stream().flatMap(x -> ModeIndex.parse(x).stream().stream()).collect(Collectors.toList());
+                                            indices = p.value().asListContainer().get().children().stream().flatMap(x -> ModeIndex.parse(x).stream().jstream()).collect(Collectors.toList());
                                         }
                                         break;
                                     }
@@ -207,7 +207,13 @@ public class SourceFactory extends AbstractFactory {
             Domain d = g == null ? null : g.getDomain();
             Expr r = Maths.expr(element);
             if (d != null) {
-                r = r.mul(d);
+                Axis axis = d.xwidth() > d.ywidth() ? Axis.Y : Axis.X;
+                try {
+                    double v = r.toDouble();
+                    return NOptional.of(CstPlanarSource.ofVoltage(v, d, axis, Complex.of(50)));
+                } catch (Exception ex) {
+                    // ignore
+                }
             }
             return NOptional.of(createPlanarSource(r, Complex.of(50)));
         }
@@ -216,9 +222,10 @@ public class SourceFactory extends AbstractFactory {
             NListContainerElement body = element.asListContainer().get();
             switch (NNameFormat.LOWER_KEBAB_CASE.format(name)) {
                 case "planar": {
-                    Complex impedance=Complex.of(50);
-                    Expr value=null;
-                    String sourceName=null;
+                    Complex impedance = Complex.of(50);
+                    Expr value = null;
+                    String sourceName = null;
+                    Axis axis = null;
                     for (NElement child : body.children()) {
                         if (child.isNamedPair()) {
                             NPairElement p = child.asPair().get();
@@ -228,7 +235,7 @@ public class SourceFactory extends AbstractFactory {
                                 {
                                     NDoubleComplex cc = p.value().asDoubleComplexValue().orNull();
                                     if (cc != null) {
-                                        impedance=Complex.of(cc.realValue(),cc.imagValue());
+                                        impedance = Complex.of(cc.realValue(), cc.imagValue());
                                     }
                                     break;
                                 }
@@ -242,19 +249,45 @@ public class SourceFactory extends AbstractFactory {
                                     sourceName = p.value().asStringValue().orElse(null);
                                     break;
                                 }
+                                case "axis":
+                                case "dir":
+                                case "polarization": {
+                                    String as = p.value().asStringValue().orElse("").toUpperCase();
+                                    if ("Y".equals(as)) {
+                                        axis = Axis.Y;
+                                    } else if ("X".equals(as)) {
+                                        axis = Axis.X;
+                                    }
+                                    break;
+                                }
                             }
                         }
                     }
-                    if(value==null){
-                        value=DoubleExpr.of(1);
+                    if (value == null) {
+                        value = DoubleExpr.of(1);
                     }
-                    HGeometry g = geometrySupplier.apply(NElement.ofString(NStringUtils.firstNonBlank(sourceName,"source")));
+                    HGeometry g = geometrySupplier.apply(NElement.ofString(NStringUtils.firstNonBlank(sourceName, "source")));
                     Domain d = g == null ? null : g.getDomain();
+                    if (impedance == null) {
+                        impedance = Complex.of(50);
+                    }
+                    if (d != null) {
+                        if (axis == null) {
+                            // If gap is along Y (width in X > height in Y), E-field points along Y!
+                            axis = d.xwidth() > d.ywidth() ? Axis.Y : Axis.X;
+                        }
+                        try {
+                            double v = value.toDouble();
+                            return NOptional.of(CstPlanarSource.ofVoltage(v, d, axis, impedance));
+                        } catch (Exception ex) {
+                            // ignore
+                        }
+                    }
+                    if (axis == Axis.Y) {
+                        value = Maths.vector(Maths.DZEROXY, value);
+                    }
                     if (d != null) {
                         value = value.mul(d);
-                    }
-                    if(impedance==null){
-                        impedance=Complex.of(50);
                     }
                     return NOptional.of(createPlanarSource(
                             value, impedance

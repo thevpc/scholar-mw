@@ -306,12 +306,12 @@ public class DQuadIntegralXY implements DIntegralXY {
 
     @Override
     public NElement toElement() {
-        return NElement.ofUplet(getClass().getSimpleName(),
-                NElement.ofPair("tolerance", NElement.ofDouble(tolerance)),
-                NElement.ofPair("hminCoeff", NElement.ofDouble(hminCoeff)),
-                NElement.ofPair("hmaxCoeff", NElement.ofDouble(hmaxCoeff)),
-                NElement.ofPair("maxfcnt", NElement.ofInt(maxfcnt))
-        );
+        return NElement.ofObjectBuilder(getClass().getSimpleName())
+                .add("tolerance", tolerance)
+                .add("hminCoeff", hminCoeff)
+                .add("hmaxCoeff", hmaxCoeff)
+                .add("maxfcnt", maxfcnt)
+                .build();
     }
 }
 

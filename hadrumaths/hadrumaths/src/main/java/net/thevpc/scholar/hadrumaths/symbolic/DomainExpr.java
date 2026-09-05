@@ -192,16 +192,16 @@ public class DomainExpr extends AbstractDoubleToDouble /*implements DoubleToDoub
     public NElement toElement() {
         switch (getDimension()) {
             case 1: {
-                return NElement.ofUplet("domain", NElementHelper.elem(xmin()), NElementHelper.elem(xmax()));
+                return NElementHelper.ofNamedTuple("domain", NElementHelper.elem(xmin()), NElementHelper.elem(xmax()));
             }
             case 2: {
-                return NElement.ofUplet("domain",
+                return NElementHelper.ofNamedTuple("domain",
                         NElementHelper.elem(xmin()), NElementHelper.elem(xmax()),
                         NElementHelper.elem(ymin()), NElementHelper.elem(ymax())
                 );
             }
         }
-        return NElement.ofUplet("domain",
+        return NElementHelper.ofNamedTuple("domain",
                 NElementHelper.elem(xmin()), NElementHelper.elem(xmax()),
                 NElementHelper.elem(ymin()), NElementHelper.elem(ymax()),
                 NElementHelper.elem(zmin()), NElementHelper.elem(zmax())

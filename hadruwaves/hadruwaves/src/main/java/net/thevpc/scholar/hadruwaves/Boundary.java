@@ -22,7 +22,7 @@ public enum Boundary {
     }
 
     public static NOptional<Boundary> parse(String any) {
-        switch (NNameFormat.LOWER_KEBAB_CASE.format(NStringUtils.trim(any))) {
+        switch (NNameFormat.LOWER_KEBAB_CASE.format(any == null ? "" : any.trim())) {
             case "magnetic":
             case "m": {
                 return NOptional.of(Boundary.MAGNETIC);

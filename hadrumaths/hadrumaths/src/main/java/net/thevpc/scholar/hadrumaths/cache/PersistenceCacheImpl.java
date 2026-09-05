@@ -5,7 +5,7 @@ import net.thevpc.common.mon.ProgressMonitor;
 import net.thevpc.common.mon.ProgressMonitorFactory;
 import net.thevpc.common.mon.ProgressMonitors;
 import net.thevpc.nuts.log.NLogger;
-import net.thevpc.nuts.time.NChronometer;
+import net.thevpc.nuts.mon.NChronometer;
 import net.thevpc.nuts.time.NDuration;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.concurrent.AppLockException;

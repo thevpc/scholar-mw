@@ -66,7 +66,7 @@ public class Mesh3DPlot extends JPanel implements PlotComponentPanel {
         double[][] z = model.getZ();
         Mesh3DObject p1 = new Mesh3DObject(null, model.getX().length * model.getY().length, (model.getX().length - 1) * (model.getY().length - 1));
 
-        titleLabel = new JLabel(NStringUtils.trim(model.getTitle()), SwingConstants.CENTER);
+        titleLabel = new JLabel(NStringUtils.strip(model.getTitle()), SwingConstants.CENTER);
 
         NDoubleRange minMax = NDoubleRange.of();
         NDoubleRange absVertZMinMax = NDoubleRange.of();

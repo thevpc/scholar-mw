@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadrumaths.transform;
 
-import net.thevpc.nuts.time.NChronometer;
+import net.thevpc.nuts.mon.NChronometer;
 import net.thevpc.nuts.time.NDuration;
-import net.thevpc.nuts.util.NLRUMap;
+import net.thevpc.scholar.hadrumaths.util.HLRUMap;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.cache.CacheEnabled;
@@ -21,7 +21,7 @@ import java.util.Objects;
  */
 public abstract class AbstractExpressionRewriter implements ExpressionRewriter, CacheEnabled {
     public static int MAX_REWRITE_TIME_SECONDS = 1;
-    private final NLRUMap<Expr, RewriteResult>[] cache = new NLRUMap[ExprType.values().length + 1];
+    private final HLRUMap<Expr, RewriteResult>[] cache = new HLRUMap[ExprType.values().length + 1];
     private final String name;
     public int maxIterations = 100;
     public int cacheSize = Maths.Config.getSimplifierCacheSize();
@@ -142,7 +142,7 @@ public abstract class AbstractExpressionRewriter implements ExpressionRewriter, 
                 PlatformUtils.requireEqualsAndHashCode(e.getClass());
             }
             int targetExprTypeOrdinal = targetExprType == null ? 0 : (targetExprType.ordinal() + 1);
-            NLRUMap<Expr, RewriteResult> cacheItem = cache[targetExprTypeOrdinal];
+            HLRUMap<Expr, RewriteResult> cacheItem = cache[targetExprTypeOrdinal];
             if (cacheItem != null) {
                 RewriteResult found = cacheItem.get(e);
                 if (found != null) {
@@ -151,7 +151,7 @@ public abstract class AbstractExpressionRewriter implements ExpressionRewriter, 
             }
             RewriteResult r = rewriteFull(e, targetExprType);
             if (cacheItem == null) {
-                cache[targetExprTypeOrdinal] = cacheItem = NLRUMap.of(cacheSize);
+                cache[targetExprTypeOrdinal] = cacheItem = HLRUMap.of(cacheSize);
             }
             cacheItem.put(e, r);
 

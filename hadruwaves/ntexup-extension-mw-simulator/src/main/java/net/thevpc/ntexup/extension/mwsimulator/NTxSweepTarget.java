@@ -6,7 +6,7 @@ import net.thevpc.nuts.util.NStringUtils;
 public enum NTxSweepTarget {
     FREQ;
     public static NOptional<NTxSweepTarget> parse(String s) {
-        switch (NStringUtils.trimToNull(s).toLowerCase()) {
+        switch ((s == null ? "" : s.trim()).toLowerCase()) {
             case "freq":
             case "frequency":
             case "frequencies":

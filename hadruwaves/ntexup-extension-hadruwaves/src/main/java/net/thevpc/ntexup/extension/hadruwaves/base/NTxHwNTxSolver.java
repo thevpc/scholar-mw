@@ -14,7 +14,7 @@ public abstract class NTxHwNTxSolver extends NTxSolverRunImpl {
 
     @Override
     public NElement toElement() {
-        return NElement.ofNamedUplet(outputName(),NElement.ofPair("solver",solverType()));
+        return net.thevpc.ntexup.extension.mwsimulator.NTxMwSimulationUtils.ofNamedTupleOrUplet(outputName(), NElement.ofPair("solver", solverType()));
     }
 
     protected void log(NMsg msg) {

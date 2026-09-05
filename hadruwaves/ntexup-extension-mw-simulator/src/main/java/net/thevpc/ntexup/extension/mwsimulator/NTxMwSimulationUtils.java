@@ -19,7 +19,6 @@ import net.thevpc.nuts.util.NStringUtils;
 
 import java.util.*;
 
-import net.thevpc.nuts.time.NChronometer;
 
 public class NTxMwSimulationUtils {
 
@@ -50,16 +49,94 @@ public class NTxMwSimulationUtils {
         return NOptional.of(sceneSize);
     }
 
+    public static boolean isNamedTupleOrUplet(NElement e) {
+        if (e == null) return false;
+        try {
+            java.lang.reflect.Method m = e.getClass().getMethod("isNamedTuple");
+            return (Boolean) m.invoke(e);
+        } catch (Throwable ex1) {
+            try {
+                java.lang.reflect.Method m = e.getClass().getMethod("isNamedUplet");
+                return (Boolean) m.invoke(e);
+            } catch (Throwable ex2) {
+                return false;
+            }
+        }
+    }
+
+    public static boolean isTuple(NElement e) {
+        if (e == null) return false;
+        try {
+            java.lang.reflect.Method m = e.getClass().getMethod("isTuple");
+            return (Boolean) m.invoke(e);
+        } catch (Throwable ex1) {
+            try {
+                java.lang.reflect.Method m = e.getClass().getMethod("isUplet");
+                return (Boolean) m.invoke(e);
+            } catch (Throwable ex2) {
+                return false;
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static List<NElement> getTupleChildren(NElement e) {
+        if (e == null) return Collections.emptyList();
+        try {
+            java.lang.reflect.Method m = e.getClass().getMethod("params");
+            return (List<NElement>) m.invoke(e);
+        } catch (Throwable ex1) {
+            try {
+                java.lang.reflect.Method m = e.getClass().getMethod("asTuple");
+                NOptional opt = (NOptional) m.invoke(e);
+                if (opt != null && opt.isPresent()) {
+                    Object t = opt.get();
+                    return (List<NElement>) t.getClass().getMethod("params").invoke(t);
+                }
+            } catch (Throwable ex2) {
+                try {
+                    java.lang.reflect.Method m = e.getClass().getMethod("asUplet");
+                    NOptional opt = (NOptional) m.invoke(e);
+                    if (opt != null && opt.isPresent()) {
+                        Object t = opt.get();
+                        return (List<NElement>) t.getClass().getMethod("params").invoke(t);
+                    }
+                } catch (Throwable ex3) {
+                    // ignore
+                }
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    public static NElement ofNamedTupleOrUplet(String name, NElement... items) {
+        try {
+            java.lang.reflect.Method m = NElement.class.getMethod("ofNamedTuple", String.class, NElement[].class);
+            return (NElement) m.invoke(null, name, items);
+        } catch (Throwable e) {
+            try {
+                java.lang.reflect.Method m = NElement.class.getMethod("ofNamedUplet", String.class, NElement[].class);
+                return (NElement) m.invoke(null, name, items);
+            } catch (Throwable ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    }
+
     public static NElement doRender(NTxRendererContext rendererContext, NTxStrSimulationQueryFactory ctx) {
         NElement raw = rendererContext.node().getRaw();
-        if (!raw.isNamedUplet()) {
+        List<NElement> paramsList = null;
+        if (raw != null) {
+            paramsList = getTupleChildren(raw);
+        }
+        if (paramsList == null || (paramsList.isEmpty() && !isNamedTupleOrUplet(raw))) {
             rendererContext.log(NMsg.ofC("unable to resolveQueries from node : %s", rendererContext.node()));
             return null;
         }
-        NUpletElement u = raw.asUplet().get();
+        String callName = rendererContext.node().name();
         NTxFunctionCallContext args = rendererContext.engine().createFunctionArgs(
-                u.name().get(),
-                u.params().toArray(new NElement[0]),
+                callName,
+                paramsList != null ? paramsList.toArray(new NElement[0]) : new NElement[0],
                 rendererContext
         );
         String planName = null;
@@ -144,7 +221,7 @@ public class NTxMwSimulationUtils {
         NTxSimulationRunner t = rendererContext.engine().computeIfAbsent(NTxSimulationRunner.class.getName(), s -> new NTxSimulationRunner()).get();
         plan.compile();
         NTxSimulationRunningProcess r = t.add(() -> {
-            NChronometer ch = NChronometer.of();
+            NTxChronometer ch = NTxChronometer.of();
             NMsg prefix0 = NMsg.ofC("[%s][%s]", plan.getClass().getSimpleName(), plan.id());
             rendererContext.log(NMsg.ofC("%s start simulation", prefix0));
             List<NTxSolverListener> solverListeners = plan.solverListeners();
@@ -158,10 +235,12 @@ public class NTxMwSimulationUtils {
                 item.beforeAll();
             }
             for (NTxSolverRun item : runs) {
-                NChronometer chi = NChronometer.of();
-                String actionName = NStringUtils.trim(NStringUtils.firstNonBlank(item.outputName(), item.solverName()));
-                if (!actionName.equals(item.solverName())) {
-                    actionName = item.solverName() + "/" + actionName;
+                NTxChronometer chi = NTxChronometer.of();
+                String itemOut = item.outputName() != null ? item.outputName().trim() : "";
+                String itemSolv = item.solverName() != null ? item.solverName().trim() : "";
+                String actionName = !itemOut.isEmpty() ? itemOut : itemSolv;
+                if (!actionName.equals(itemSolv)) {
+                    actionName = itemSolv + "/" + actionName;
                 }
                 NMsg prefix = NMsg.ofC("[%s][%s][%s]", plan.getClass().getSimpleName(), plan.id(), actionName);
                 rendererContext.log(NMsg.ofC("%s start", prefix));
@@ -173,10 +252,10 @@ public class NTxMwSimulationUtils {
                             processResult(result, rendererContext);
                         }
                     }
-                    rendererContext.log(NMsg.ofC("%s finished", prefix).withDuration(chi.stop().duration()));
+                    rendererContext.log(NMsg.ofC("%s finished", prefix).withDurationMillis(chi.stop().durationMs()));
                 } catch (Exception ex) {
                     anyError = true;
-                    rendererContext.log(NMsg.ofC("%s error : %s", prefix, ex).withDuration(chi.stop().duration()).asError());
+                    rendererContext.log(NMsg.ofC("%s error : %s", prefix, ex).withDurationMillis(chi.stop().durationMs()).asError());
                 }
             }
             for (NTxSolverRun item : runs) {
@@ -186,15 +265,19 @@ public class NTxMwSimulationUtils {
                 for (NTxSolverListener solverListener : solverListeners) {
                     solverListener.onFinish(rendererContext, plan, true, null);
                 }
-                rendererContext.log(NMsg.ofC("%s finished simulation with error", prefix0).withDuration(ch.stop().duration()).asError());
+                rendererContext.log(NMsg.ofC("%s finished simulation with error", prefix0).withDurationMillis(ch.stop().durationMs()).asError());
             } else {
                 for (NTxSolverListener solverListener : solverListeners) {
                     solverListener.onFinish(rendererContext, plan, false, null);
                 }
-                rendererContext.log(NMsg.ofC("%s finished simulation", prefix0).withDuration(ch.stop().duration()));
+                rendererContext.log(NMsg.ofC("%s finished simulation", prefix0).withDurationMillis(ch.stop().durationMs()));
             }
             return new NTxSimulationResultsImpl(allResults);
         }, plan);
+
+        if (!rendererContext.isAnimate()) {
+            r.getResult();
+        }
 
         return NElement.ofName("NTxSimulationRunningProcess")
                 .builder()
@@ -217,7 +300,7 @@ public class NTxMwSimulationUtils {
     }
 
     public static boolean hasName(NTxNode child, String name) {
-        String n = NStringUtils.trim(child.getName());
+        String n = child.getName() == null ? "" : child.getName().trim();
         return (n.equalsIgnoreCase(name)
                 || NNameFormat.equalsIgnoreFormat(n, name));
     }
@@ -242,9 +325,9 @@ public class NTxMwSimulationUtils {
             sweep.rangeTo = 0;
         }
         if (sweep.count != null) {
-            plot2d.addParam("x", NElement.ofNamedUplet("dtimes", NElement.ofNumber(sweep.rangeFrom), NElement.ofNumber(sweep.rangeTo), NElement.ofNumber(sweep.count)));
+            plot2d.addParam("x", ofNamedTupleOrUplet("dtimes", NElement.ofNumber(sweep.rangeFrom), NElement.ofNumber(sweep.rangeTo), NElement.ofNumber(sweep.count)));
         } else {
-            plot2d.addParam("x", NElement.ofNamedUplet("dsteps", NElement.ofNumber(sweep.rangeFrom), NElement.ofNumber(sweep.rangeTo), NElement.ofNumber(sweep.step)));
+            plot2d.addParam("x", ofNamedTupleOrUplet("dsteps", NElement.ofNumber(sweep.rangeFrom), NElement.ofNumber(sweep.rangeTo), NElement.ofNumber(sweep.step)));
         }
         if (numbers == null || numbers.isEmpty()) {
             numbers = new ArrayList<>(Collections.singletonList(0.0));
@@ -252,7 +335,15 @@ public class NTxMwSimulationUtils {
         plot2d.add(
                 NElement.ofObjectBuilder()
                         .name("curve")
-                        .add("y", NElement.ofArray(numbers.stream().map(x -> NElement.ofNumber(x)).toArray(NElement[]::new)))
+                        .add("y", NElement.ofArray(numbers.stream().map(x -> {
+                            double d = 0.0;
+                            if (x instanceof net.thevpc.nuts.math.NDoubleComplex) {
+                                d = ((net.thevpc.nuts.math.NDoubleComplex) x).absDouble();
+                            } else if (x != null) {
+                                d = x.doubleValue();
+                            }
+                            return NElement.ofDouble(d);
+                        }).toArray(NElement[]::new)))
                         .build()
         );
         return plot2d.build();
@@ -271,5 +362,21 @@ public class NTxMwSimulationUtils {
             }
         }
         return null;
+    }
+
+    public static void addDigestSource(Object digest, byte[] bytes) {
+        if (digest == null || bytes == null) {
+            return;
+        }
+        try {
+            java.lang.reflect.Method m = digest.getClass().getMethod("source", byte[].class);
+            m.invoke(digest, (Object) bytes);
+            return;
+        } catch (Throwable ignored) {}
+        try {
+            java.lang.reflect.Method m = digest.getClass().getMethod("addSource", byte[].class);
+            m.invoke(digest, (Object) bytes);
+            return;
+        } catch (Throwable ignored) {}
     }
 }

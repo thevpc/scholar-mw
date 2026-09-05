@@ -157,6 +157,6 @@ public class Antenna0ValidationTest {
                 ": MoM transmission-line physics " + (pass ? "verified" : "broken"));
         Plot.title("Jx").domain(box).plot(mom.current().evalMatrix(Axis.X, box.dtimes(500)));
         Plot.title("Jy").domain(box).plot(mom.current().evalMatrix(Axis.Y, box.dtimes(500)));
-        NConcurrent.of().sleep(NDuration.ofSeconds(300000));
+        NConcurrent.sleep(NDuration.ofSeconds(300000));
     }
 }

@@ -1,10 +1,10 @@
 package net.thevpc.ntexup.extension.hadruwaves.base;
 
 import net.thevpc.ntexup.extension.hadruwaves.MoMStrNTxSimulationPlan;
+import net.thevpc.ntexup.extension.mwsimulator.NTxChronometer;
 import net.thevpc.ntexup.extension.mwsimulator.NTxSimulationResult;
 import net.thevpc.ntexup.extension.mwsimulator.NTxSimulationResultFactory;
 import net.thevpc.nuts.text.NMsg;
-import net.thevpc.nuts.time.NChronometer;
 import net.thevpc.scholar.hadrumaths.ComplexMatrix;
 import net.thevpc.scholar.hadruplot.Plot;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
@@ -21,7 +21,7 @@ public abstract class NTxHwComplexMatrixNTxSolver extends NTxHwNTxSolver {
     @Override
     public List<NTxSimulationResult> execute() {
         MomStructure str = momStructure();
-        NChronometer chronometer = NChronometer.of();
+        NTxChronometer chronometer = NTxChronometer.of();
         log(NMsg.ofC("------------------"));
         log(NMsg.ofC("[%s] %s: ", outputName(), solverName()));
         log(NMsg.ofC("------------------"));

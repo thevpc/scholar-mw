@@ -61,7 +61,7 @@ public class Jzy3dMeshPlot extends JPanel implements PlotComponentPanel {
         double[] y = model.getY();
         double[][] z = model.getZ();
 
-        titleLabel = new JLabel(NStringUtils.trim(model.getTitle()), SwingConstants.CENTER);
+        titleLabel = new JLabel(NStringUtils.strip(model.getTitle()), SwingConstants.CENTER);
         JPopupMenu popup = new JPopupMenu();
         titleLabel.setComponentPopupMenu(popup);
         colorPalette=Plot.getColorPalette(plotModelProvider==null?null:plotModelProvider.getModel().getColorPalette());

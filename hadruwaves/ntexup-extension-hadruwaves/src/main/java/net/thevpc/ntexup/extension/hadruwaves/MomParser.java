@@ -216,7 +216,7 @@ public class MomParser {
         String t = node.type();
         NTxResolutionContext context = args.scopedContext();
 
-        switch (NTxUtils.uid(NStringUtils.trim(t))) {
+        switch (NTxUtils.uid(t == null ? "" : t.trim())) {
             case "box": {
                 NElement s = node.getPropertyValue("size").orNull();
                 NElement p = node.getPropertyValue("position").orNull();
@@ -408,11 +408,11 @@ public class MomParser {
         if (value == null || value.isNull()) {
             return NOptional.ofNamedEmpty("domain");
         }
-        if (value.isUplet()) {
-            NUpletElement g = value.asUplet().get();
-            if (g.params().size() == 2) {
-                NOptional<Double> a = NTxNumberUtils.toMeter(_compiler(args.scopedContext()).apply(g.get(0).get()));
-                NOptional<Double> b = NTxNumberUtils.toMeter(_compiler(args.scopedContext()).apply(g.get(1).get()));
+        if (NTxMwSimulationUtils.isTuple(value)) {
+            java.util.List<NElement> g = NTxMwSimulationUtils.getTupleChildren(value);
+            if (g.size() == 2) {
+                NOptional<Double> a = NTxNumberUtils.toMeter(_compiler(args.scopedContext()).apply(g.get(0)));
+                NOptional<Double> b = NTxNumberUtils.toMeter(_compiler(args.scopedContext()).apply(g.get(1)));
                 if (a.isPresent() && b.isPresent()) {
                     double aa = a.get();
                     double bb = b.get();

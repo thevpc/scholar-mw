@@ -2,7 +2,7 @@ package net.thevpc.scholar.hadrumaths.util;
 
 import net.thevpc.nuts.elem.NBinaryOperatorElement;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NUpletElement;
+import net.thevpc.nuts.elem.NTupleElement;
 import net.thevpc.nuts.math.NDoubleComplex;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.scholar.hadrumaths.Complex;
@@ -49,8 +49,8 @@ public class ExprElementParser {
                 }
                 return NOptional.of(Maths.param(value.asStringValue().get()));
             }
-            case NAMED_UPLET: {
-                NUpletElement u = value.asUplet().get();
+            case NAMED_TUPLE: {
+                NTupleElement u = value.asTuple().get();
                 int paramsSize = u.params().size();
                 if (paramsSize == 1) {
                     NElement p = u.params().get(0);

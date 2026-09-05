@@ -3,7 +3,7 @@ package net.thevpc.scholar.hadrumaths.meshalgo.rect;
 
 import net.thevpc.nuts.elem.NElement;
 
-import net.thevpc.nuts.elem.NUpletElement;
+import net.thevpc.nuts.elem.NTupleElement;
 import net.thevpc.nuts.log.NLog;
 import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.util.NNameFormat;
@@ -41,8 +41,8 @@ public final class GridPrecision implements Cloneable, HSerializable {
             }
             return NOptional.of(GridPrecision.LEAST_PRECISION);
         }
-        if (value.isNamedUplet()) {
-            NUpletElement u = value.asUplet().get();
+        if (value.isNamedTuple()) {
+            NTupleElement u = value.asTuple().get();
             switch (NNameFormat.LOWER_KEBAB_CASE.format(u.name().orElse(""))) {
                 case "x": {
                     if (u.children().size() == 1) {

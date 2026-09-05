@@ -49,4 +49,63 @@ public class NElementHelper {
         }
         return elemsStore.toElement(e);
     }
+
+    private static java.lang.reflect.Method OF_NAMED_TUPLE;
+    private static java.lang.reflect.Method OF_NAMED_UPLET;
+    private static java.lang.reflect.Method OF_UPLET_NAME;
+    private static java.lang.reflect.Method OF_TUPLE;
+    private static java.lang.reflect.Method OF_UPLET;
+
+    static {
+        try {
+            OF_NAMED_TUPLE = NElement.class.getMethod("ofNamedTuple", String.class, NElement[].class);
+        } catch (Throwable ignored) {}
+        try {
+            OF_NAMED_UPLET = NElement.class.getMethod("ofNamedUplet", String.class, NElement[].class);
+        } catch (Throwable ignored) {}
+        try {
+            OF_UPLET_NAME = NElement.class.getMethod("ofUplet", String.class, NElement[].class);
+        } catch (Throwable ignored) {}
+        try {
+            OF_TUPLE = NElement.class.getMethod("ofTuple", NElement[].class);
+        } catch (Throwable ignored) {}
+        try {
+            OF_UPLET = NElement.class.getMethod("ofUplet", NElement[].class);
+        } catch (Throwable ignored) {}
+    }
+
+    public static NElement ofNamedTuple(String name, NElement... elements) {
+        try {
+            if (OF_NAMED_TUPLE != null) {
+                return (NElement) OF_NAMED_TUPLE.invoke(null, name, elements);
+            }
+            if (OF_NAMED_UPLET != null) {
+                return (NElement) OF_NAMED_UPLET.invoke(null, name, elements);
+            }
+            if (OF_UPLET_NAME != null) {
+                return (NElement) OF_UPLET_NAME.invoke(null, name, elements);
+            }
+        } catch (Throwable ex) {
+            // fallback
+        }
+        net.thevpc.nuts.elem.NObjectElementBuilder b = NElement.ofObjectBuilder(name);
+        for (int i = 0; i < elements.length; i++) {
+            b.add(String.valueOf(i), elements[i]);
+        }
+        return b.build();
+    }
+
+    public static NElement ofTuple(NElement... elements) {
+        try {
+            if (OF_TUPLE != null) {
+                return (NElement) OF_TUPLE.invoke(null, (Object) elements);
+            }
+            if (OF_UPLET != null) {
+                return (NElement) OF_UPLET.invoke(null, (Object) elements);
+            }
+        } catch (Throwable ex) {
+            // fallback
+        }
+        return NElement.ofArray(elements);
+    }
 }

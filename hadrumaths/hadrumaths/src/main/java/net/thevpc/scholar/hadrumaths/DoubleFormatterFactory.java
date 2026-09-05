@@ -16,7 +16,7 @@
 //            type = a[0];
 //            subFormat = format.substring(type.length());
 //        }
-//        switch (NStringUtils.trim(format).toLowerCase()) {
+//        switch (NStringUtils.strip(format).toLowerCase()) {
 //            case "hz":
 //            case "freq":
 //            case "frequency": {

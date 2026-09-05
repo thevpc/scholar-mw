@@ -30,7 +30,7 @@ public class SimpleModeIterator implements ModeIterator {
 
     @Override
     public NElement toElement() {
-        return NElement.ofUplet(getClass().getSimpleName());
+        return NElement.ofObjectBuilder(getClass().getSimpleName()).build();
     }
 
     @Override

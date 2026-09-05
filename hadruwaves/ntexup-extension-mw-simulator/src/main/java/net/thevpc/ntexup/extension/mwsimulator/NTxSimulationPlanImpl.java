@@ -3,8 +3,6 @@ package net.thevpc.ntexup.extension.mwsimulator;
 import net.thevpc.ntexup.api.renderer.NTxRendererContext;
 import net.thevpc.nuts.log.NLogger;
 import net.thevpc.nuts.text.NMsg;
-import net.thevpc.nuts.time.NChronometer;
-import net.thevpc.nuts.time.NChronometerView;
 import net.thevpc.nuts.util.NAssert;
 
 import java.util.ArrayList;
@@ -19,8 +17,8 @@ public abstract class NTxSimulationPlanImpl implements NTxSimulationPlan {
     public NTxRendererContext rendererContext;
     public List<NTxSolverRun> items = new ArrayList<>();
     public List<NTxSolverListener> listeners = new ArrayList<>();
-    public NChronometer chronometer = NChronometer.ofUnstarted();
-    public NChronometerView nChronometerView = chronometer.asReadOnly();
+    public NTxChronometer chronometer = NTxChronometer.ofUnstarted();
+    public NTxChronometer nChronometerView = chronometer;
     public volatile boolean compiled;
 
     public NTxSimulationPlanImpl(String id, String name,NTxRendererContext rendererContext) {
@@ -41,11 +39,11 @@ public abstract class NTxSimulationPlanImpl implements NTxSimulationPlan {
 
     }
 
-    public NChronometer chronometer() {
+    public NTxChronometer chronometer() {
         return chronometer;
     }
 
-    public NChronometerView chronometerView() {
+    public NTxChronometer chronometerView() {
         return nChronometerView;
     }
     public String name() {

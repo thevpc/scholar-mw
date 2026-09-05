@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadrumaths.test.symbolic;
 
-import net.thevpc.nuts.time.NChronometer;
+import net.thevpc.nuts.collections.NListMultiValueMap;
+import net.thevpc.nuts.mon.NChronometer;
 import net.thevpc.nuts.time.NDuration;
-import net.thevpc.nuts.util.NListMultiValueMap;
 import net.thevpc.scholar.hadrumaths.transform.ExprRewriteCounter;
 import net.thevpc.scholar.hadrumaths.transform.ExprRewriteLogger;
 import net.thevpc.scholar.hadrumaths.transform.ExpressionRewriter;

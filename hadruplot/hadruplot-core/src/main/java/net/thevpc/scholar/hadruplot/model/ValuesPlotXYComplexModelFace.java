@@ -1,8 +1,8 @@
 package net.thevpc.scholar.hadruplot.model;
 
 
+import net.thevpc.nuts.collections.NDoubleList;
 import net.thevpc.nuts.util.NArrays;
-import net.thevpc.nuts.util.NDoubleArrayList;
 import net.thevpc.scholar.hadruplot.util.PlotModelUtils;
 import net.thevpc.scholar.hadruplot.util.PlotUtils;
 
@@ -38,7 +38,7 @@ public class ValuesPlotXYComplexModelFace {
         }
 
         title = model.getTitle();
-        NDoubleArrayList yl = new NDoubleArrayList(y.length);
+        NDoubleList yl = NDoubleList.of(y.length);
         List<String> ys = new ArrayList<>(y.length);
         List<Object[]> zl = new ArrayList<>(y.length);
         for (int i = 0; i < y.length; i++) {

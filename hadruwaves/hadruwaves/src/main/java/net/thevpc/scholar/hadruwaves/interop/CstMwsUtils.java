@@ -64,7 +64,7 @@ public final class CstMwsUtils {
 
     public static String[] parseTitles(String titles) {
         List<String> all = new ArrayList<>();
-        NStringBuilder sb = new NStringBuilder();
+        NStringBuilder sb = NStringBuilder.of();
         char[] cc = titles.toCharArray();
         int par = 0;
         int brak = 0;

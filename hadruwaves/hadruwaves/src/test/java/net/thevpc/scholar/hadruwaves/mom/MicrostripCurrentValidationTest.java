@@ -45,7 +45,7 @@ public class MicrostripCurrentValidationTest {
         str.setSecondBoxSpace(BoxSpace.matchedLoad(Material.VACUUM));
         
         str.setProjectType(ProjectType.PLANAR_STRUCTURE);
-        str.modeFunctions().setSize(5000);
+        str.modeFunctions().setSize(1000);
 
         // Strip geometry: from x=2.5 to x=7.5, centered in y
         Domain stripDomain = Domain.ofBounds(2.5 * Maths.MM, 7.5 * Maths.MM, -w/2, w/2);
@@ -95,16 +95,16 @@ public class MicrostripCurrentValidationTest {
         System.out.println("Validation Success: Current is concentrated and symmetric.");
 
         // Visual Validation
-        if (true ||Boolean.getBoolean("plot")) {
+        if (Boolean.getBoolean("plot")) {
             AbsoluteSamples samples = (AbsoluteSamples) str.getDomain().dtimes(100);
             Plot.title("Longitudinal Current 0").domain(str.getDomain()).plot(stripDomain);
             Plot.title("Longitudinal Current Jx").plot(str.current().evalMatrix(Axis.X, samples.getX(), samples.getY(), 0));
 
-            System.out.println("Plotting... closing in 10 seconds");
+            System.out.println("Plotting... closing in 5 seconds");
             Object lock = new Object();
             synchronized (lock) {
                 try {
-                    lock.wait(30000); // Wait 10s
+                    lock.wait(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

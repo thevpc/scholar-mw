@@ -57,7 +57,7 @@ public final class ModeInfoUtils {
 
         @Override
         public NElement toElement() {
-            return NElement.ofUplet("AllOf", NElementHelper.elem(all));
+            return NElementHelper.ofNamedTuple("AllOf", NElementHelper.elem(all));
         }
 
 //        public String dump() {
@@ -99,7 +99,7 @@ public final class ModeInfoUtils {
 
         @Override
         public NElement toElement() {
-            return NElement.ofUplet("invariance", NElementHelper.elem(axis));
+            return NElementHelper.ofNamedTuple("invariance", NElementHelper.elem(axis));
         }
 
 //        public String dump() {
@@ -131,7 +131,7 @@ public final class ModeInfoUtils {
 
         @Override
         public NElement toElement() {
-            return NElement.ofUplet("AnyOf",NElementHelper.elem(all));
+            return NElementHelper.ofNamedTuple("AnyOf",NElementHelper.elem(all));
         }
 
 //        public String dump() {

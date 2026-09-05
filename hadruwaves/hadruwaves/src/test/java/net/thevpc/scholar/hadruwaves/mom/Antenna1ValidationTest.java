@@ -96,7 +96,7 @@ public class Antenna1ValidationTest {
         // === SOLVER ===
         mom.setFrequency(f);
         mom.setCircuitType(CircuitType.SERIAL);
-        mom.modeFunctions().setSize(100000);
+        mom.modeFunctions().setSize(2000);
 
         System.out.println(mom.dump());
 
@@ -104,7 +104,9 @@ public class Antenna1ValidationTest {
             DoubleToVector gi = gp[i];
             System.out.println("g[" + i + "]=" + gi);
         }
-        Plot.title("gp").domain(box).plot(NArrays.append(gp,Maths.vector(source.toDD(),Maths.exp(source).toDD())));
+        if (Boolean.getBoolean("plot")) {
+            Plot.title("gp").domain(box).plot(NArrays.append(gp, Maths.vector(source.toDD(), Maths.exp(source).toDD())));
+        }
         ModeInfo[] modes = mom.modes();
         DoubleToVector[] fn = mom.modeFunctions().toArray();
         for (int i = 0; i < 10; i++) {
@@ -151,8 +153,12 @@ public class Antenna1ValidationTest {
         boolean pass = zin.absdbl() < 30;
         System.out.println("\n" + (pass ? "✅ PASS" : "❌ FAIL") +
                 ": MoM transmission-line physics " + (pass ? "verified" : "broken"));
-        Plot.title("Jx").domain(box).plot(mom.current().evalMatrix(Axis.X, box.dtimes(500)));
-        Plot.title("Jy").domain(box).plot(mom.current().evalMatrix(Axis.Y, box.dtimes(500)));
-        NConcurrent.of().sleep(NDuration.ofSeconds(300000));
+        org.junit.jupiter.api.Assertions.assertTrue(pass, "MoM transmission-line physics should yield |Zin| < 30");
+
+        if (Boolean.getBoolean("plot")) {
+            Plot.title("Jx").domain(box).plot(mom.current().evalMatrix(Axis.X, box.dtimes(100)));
+            Plot.title("Jy").domain(box).plot(mom.current().evalMatrix(Axis.Y, box.dtimes(100)));
+            NConcurrent.sleep(NDuration.ofSeconds(5));
+        }
     }
 }

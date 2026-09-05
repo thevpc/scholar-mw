@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.thevpc.ntexup</groupId>
     <artifactId>ntexup-extension-hadruwaves</artifactId>
-    <version>0.8.9.0</version>
+    <version>1.0.0.0</version>
     <packaging>jar</packaging>
     <name>ntexup :: Extension Hadruwaves</name>
     <description>SVG</description>
@@ -52,7 +52,7 @@
     </licenses>
 
     <dependencies>
-        <dependency><groupId>net.thevpc.ntexup</groupId><artifactId>ntexup-extension-mw-simulator</artifactId><version>0.8.9.0</version></dependency>
+        <dependency><groupId>net.thevpc.ntexup</groupId><artifactId>ntexup-extension-mw-simulator</artifactId><version>1.0.0.0</version></dependency>
         <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruwaves-java</artifactId><version>3.3.0</version></dependency>
         <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruplot-laf</artifactId><version>3.3.0</version></dependency>
         <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruplot-jfreechart</artifactId><version>3.3.0</version></dependency>

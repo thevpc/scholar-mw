@@ -14,8 +14,8 @@ import net.thevpc.common.mon.{MonitoredAction, ProgressMonitor}
 import net.thevpc.nuts.math.NIndexSelectionStrategy
 import net.thevpc.nuts.reflect.NTypeName
 import net.thevpc.nuts.text.NTextFormat
-import net.thevpc.nuts.time.NChronometer
-import net.thevpc.nuts.util.{NMemoryMeter, NMemorySnapshot}
+import net.thevpc.nuts.mon.NChronometer
+import net.thevpc.nuts.mon.{NMemoryMeter, NMemorySnapshot}
 import net.thevpc.scholar.hadrumaths.cache.PersistenceCacheBuilder
 import net.thevpc.scholar.hadrumaths.geom.HPoint
 import net.thevpc.scholar.hadrumaths.scalarproducts.ScalarProductOperator

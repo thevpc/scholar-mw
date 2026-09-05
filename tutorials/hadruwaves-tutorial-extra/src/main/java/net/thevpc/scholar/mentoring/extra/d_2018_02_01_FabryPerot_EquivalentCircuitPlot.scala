@@ -1,9 +1,8 @@
 package net.thevpc.scholar.mentoring.extra
 
 import net.thevpc.nuts.elem.{NElement, NElementUtils}
-import net.thevpc.nuts.time.NChronometer
+import net.thevpc.nuts.mon.NChronometer
 import net.thevpc.scholar.hadrumaths.MathScala._
-import net.thevpc.scholar.hadruwaves.Physics._
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector
 import net.thevpc.scholar.hadrumaths._
 import net.thevpc.scholar.hadrumaths.util.NElementHelper

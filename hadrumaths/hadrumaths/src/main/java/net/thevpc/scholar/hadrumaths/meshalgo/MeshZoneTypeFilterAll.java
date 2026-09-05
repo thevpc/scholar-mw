@@ -23,8 +23,7 @@ final class MeshZoneTypeFilterAll implements MeshZoneTypeFilter {
 
     @Override
     public NElement toElement() {
-        return NElement.ofUplet(getClass().getSimpleName())
-                ;
+        return NElement.ofObjectBuilder(getClass().getSimpleName()).build();
     }
 //    public Dumper getDumpStringHelper() {
 //        Dumper h = new Dumper(this);

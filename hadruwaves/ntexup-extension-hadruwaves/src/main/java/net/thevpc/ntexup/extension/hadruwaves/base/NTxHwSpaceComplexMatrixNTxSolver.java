@@ -3,9 +3,7 @@ package net.thevpc.ntexup.extension.hadruwaves.base;
 import net.thevpc.ntexup.extension.hadruwaves.MoMStrNTxSimulationPlan;
 import net.thevpc.ntexup.extension.mwsimulator.*;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NUpletElementBuilder;
 import net.thevpc.nuts.text.NMsg;
-import net.thevpc.nuts.time.NChronometer;
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.ComplexMatrix;
 import net.thevpc.scholar.hadrumaths.Domain;
@@ -27,12 +25,14 @@ public abstract class NTxHwSpaceComplexMatrixNTxSolver extends NTxHwNTxSolver {
 
     @Override
     public NElement toElement() {
-        NUpletElementBuilder b = super.toElement().asUplet().get().builder();
+        net.thevpc.nuts.elem.NObjectElementBuilder b = net.thevpc.nuts.elem.NElement.ofObjectBuilder()
+                .name(outputName())
+                .set("solver", solverType());
         if (xSweep != null) {
-            b.add(NElement.ofPair("x-sweep", xSweep.toElement()));
+            b.set("x-sweep", xSweep.toElement());
         }
         if (ySweep != null) {
-            b.add(NElement.ofPair("y-sweep", ySweep.toElement()));
+            b.set("y-sweep", ySweep.toElement());
         }
         if (axis != null) {
             b.add(NElement.ofPair("axis", axis.name()));
@@ -66,7 +66,7 @@ public abstract class NTxHwSpaceComplexMatrixNTxSolver extends NTxHwNTxSolver {
     @Override
     public List<NTxSimulationResult> execute() {
         MomStructure str = momStructure();
-        NChronometer chronometer = NChronometer.of();
+        NTxChronometer chronometer = NTxChronometer.of();
         log(NMsg.ofC("------------------"));
         log(NMsg.ofC("[%s] %s: ", outputName(), solverName()));
         log(NMsg.ofC("------------------"));

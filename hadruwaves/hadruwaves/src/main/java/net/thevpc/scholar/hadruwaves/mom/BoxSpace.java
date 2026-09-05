@@ -135,7 +135,7 @@ public final class BoxSpace implements HSerializable {
                 }
                 material = u.orDefault();
             }
-            switch (NNameFormat.LOWER_KEBAB_CASE.format(NStringUtils.trim(name))) {
+            switch (NNameFormat.LOWER_KEBAB_CASE.format(name == null ? "" : name.trim())) {
                 case "matched-load":
                 case "matched": {
                     if (material == null) {
@@ -250,13 +250,13 @@ public final class BoxSpace implements HSerializable {
 
     @Override
     public NElement toElement() {
-        NUpletElementBuilder h = NElement.ofUpletBuilder().name(limit.name());
+        NObjectElementBuilder h = NElement.ofObjectBuilder(limit.name());
         if (!limit.equals(Boundary.NOTHING) && !limit.equals(Boundary.INFINITE)) {
-            h.add(NElement.ofPair("width", NElementHelper.elem(width)));
+            h.add("width", NElementHelper.elem(width));
         }
 
         if (!limit.equals(Boundary.NOTHING)) {
-            h.add(NElement.ofPair("material", NElementHelper.elem(material)));
+            h.add("material", NElementHelper.elem(material));
         }
         return h.build();
     }

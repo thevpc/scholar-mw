@@ -4,7 +4,7 @@
  */
 package net.thevpc.scholar.hadrumaths.convergence;
 
-import net.thevpc.nuts.time.NChronometer;
+import net.thevpc.nuts.mon.NChronometer;
 import net.thevpc.nuts.util.NAssert;
 import net.thevpc.scholar.hadrumaths.Equalator;
 import net.thevpc.scholar.hadrumaths.EqualatorResult;

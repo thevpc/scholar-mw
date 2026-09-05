@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadrumaths.plot.random;
 
 import net.thevpc.common.classpath.ClassPathUtils;
-import net.thevpc.nuts.time.NChronometer;
+import net.thevpc.nuts.mon.NChronometer;
 
 public class ExprProjectClasses {
     private static Class[] EXPR_CLASSES = null;

@@ -174,8 +174,11 @@ public class DRectMidIntegralXY implements DIntegralXY {
 
     @Override
     public NElement toElement() {
-        return NElement.ofUplet(getClass().getSimpleName(), NElement.ofInt(xprecision), NElement.ofInt(yprecision), NElement.ofInt(zprecision))
-                ;
+        return NElement.ofObjectBuilder(getClass().getSimpleName())
+                .add("xprecision", xprecision)
+                .add("yprecision", yprecision)
+                .add("zprecision", zprecision)
+                .build();
     }
 //    @Override
 //    public String dump() {

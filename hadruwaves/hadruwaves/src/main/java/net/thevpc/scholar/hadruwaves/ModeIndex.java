@@ -5,10 +5,11 @@ import net.thevpc.common.swing.util.LRUMap;
 import net.thevpc.nuts.elem.NElement;
 
 import net.thevpc.nuts.elem.NNumberElement;
-import net.thevpc.nuts.elem.NUpletElement;
+import net.thevpc.nuts.elem.NTupleElement;
 import net.thevpc.nuts.util.*;
 import net.thevpc.scholar.hadrumaths.HSerializable;
 import net.thevpc.scholar.hadrumaths.Maths;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import java.io.ObjectStreamException;
 import java.util.List;
@@ -20,22 +21,35 @@ public final class ModeIndex implements HSerializable {
     public final int n;
     private static boolean cacheEnabled =true;
     private static int cacheSize =10000;
-    private static final NLRUMap<ModeIndex, ModeIndex> cache = NLRUMap.of(cacheSize);
+    private static final net.thevpc.scholar.hadrumaths.util.HLRUMap<ModeIndex, ModeIndex> cache = net.thevpc.scholar.hadrumaths.util.HLRUMap.of(cacheSize);
 
+    @SuppressWarnings("unchecked")
     public static NOptional<ModeIndex> parse(NElement s) {
-        if(s==null){
+        if (s == null) {
             return NOptional.ofNamedEmpty("mode");
         }
-        if(s.isNamedUplet()){
-            NUpletElement u = s.asUplet().get();
-            NOptional<ModeType> mt=ModeType.parse(u.name().get());
-            if(mt.isPresent()){
-                if(u.params().size()==2){
-                    NOptional<Integer> m = u.params().get(0).asIntValue();
-                    NOptional<Integer> n = u.params().get(2).asIntValue();
-                    if(m.isPresent() && n.isPresent()){
-                        return NOptional.of(mode(mt.get(),m.get(),n.get()));
-                    }
+        List<NElement> params = null;
+        String name = null;
+        try {
+            java.lang.reflect.Method m = s.getClass().getMethod("params");
+            params = (List<NElement>) m.invoke(s);
+            java.lang.reflect.Method mName = s.getClass().getMethod("name");
+            Object no = mName.invoke(s);
+            if (no instanceof NOptional) {
+                name = (String) ((NOptional<?>) no).orNull();
+            } else if (no != null) {
+                name = no.toString();
+            }
+        } catch (Throwable ex) {
+            // ignore
+        }
+        if (params != null && name != null) {
+            NOptional<ModeType> mt = ModeType.parse(name);
+            if (mt.isPresent() && params.size() == 2) {
+                NOptional<Integer> m = params.get(0).asIntValue();
+                NOptional<Integer> n = params.get(1).asIntValue();
+                if (m.isPresent() && n.isPresent()) {
+                    return NOptional.of(mode(mt.get(), m.get(), n.get()));
                 }
             }
         }
@@ -183,7 +197,7 @@ public final class ModeIndex implements HSerializable {
 
     @Override
     public NElement toElement() {
-        return NElement.ofUplet(mtype.name(),NElement.ofInt(m),NElement.ofInt(n));
+        return NElementHelper.ofNamedTuple(mtype.name(),NElement.ofInt(m),NElement.ofInt(n));
     }
     public String toString() {
         return  mtype.toString()+m+"."+n;

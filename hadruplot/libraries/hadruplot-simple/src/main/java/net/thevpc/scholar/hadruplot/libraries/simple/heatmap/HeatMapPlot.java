@@ -107,7 +107,7 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel {
         });
         legend = new HeatMapPlotArea(false, -1, colorPalette, new Dimension(10, 400), null, null, null);
         legendUnits = new HeatMapPlotUnitsArea(false, area.getMinValue(), area.getMaxValue(), model.getZformat(), 5, new Dimension(50, 400));
-        titleLabel = new JLabel(NStringUtils.trim(model.getTitle()), SwingConstants.CENTER);
+        titleLabel = new JLabel(NStringUtils.strip(model.getTitle()), SwingConstants.CENTER);
         if (titleLabel.getText().length() == 0) {
             titleLabel.setVisible(false);
         }
@@ -167,7 +167,7 @@ public class HeatMapPlot extends JPanel implements PlotComponentPanel {
 
     private void updateAreaByModel() {
         area.setModel(new ValuesPlotXYDoubleModelFace(model, null, true), model.getPlotType().getType() == PlotType.HEATMAP);
-        titleLabel.setText(NStringUtils.trim(model.getTitle()));
+        titleLabel.setText(NStringUtils.strip(model.getTitle()));
         repaint();
     }
 

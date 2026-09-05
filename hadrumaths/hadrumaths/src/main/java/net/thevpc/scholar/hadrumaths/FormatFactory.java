@@ -3,7 +3,7 @@ package net.thevpc.scholar.hadrumaths;
 import net.thevpc.nuts.reflect.NClassMap;
 import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.util.NAssert;
-import net.thevpc.nuts.util.NLRUMap;
+import net.thevpc.scholar.hadrumaths.util.HLRUMap;
 import net.thevpc.scholar.hadrumaths.format.*;
 import net.thevpc.scholar.hadrumaths.format.impl.*;
 import net.thevpc.scholar.hadrumaths.format.params.*;
@@ -37,7 +37,7 @@ public class FormatFactory extends AbstractFactory {
     public static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     public static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     private static final NClassMap<Object,ObjectFormat> map = NClassMap.of(Object.class, ObjectFormat.class, 30);
-    private static final NLRUMap<String, SimpleDateFormat> dateFormats = NLRUMap.of(10);
+    private static final HLRUMap<String, SimpleDateFormat> dateFormats = HLRUMap.of(10);
     private static final PropertyChangeListener cacheEnabledListener = new PropertyChangeListener() {
         @Override
         public void propertyChange(PropertyChangeEvent evt) {

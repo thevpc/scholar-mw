@@ -17,7 +17,7 @@ import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.thevpc.nuts.util.NIndexedMap;
+import net.thevpc.nuts.collections.NIndexedMap;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.geom.DefaultHGeometryList;

@@ -22,7 +22,7 @@ public class SimpleDoubleFormat implements NTextFormat<Number> , NToElement {
 
     @Override
     public NElement toElement() {
-        return NElement.ofUplet(getClass().getSimpleName());
+        return NElement.ofObjectBuilder(getClass().getSimpleName()).build();
     }
 
     @Override

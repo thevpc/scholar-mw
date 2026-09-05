@@ -60,7 +60,7 @@ public final class AdmittanceValue implements Impedance {
 
     @Override
     public NElement toElement() {
-        return NElement.ofUplet("admittance", NElementHelper.elem(value));
+        return NElementHelper.ofNamedTuple("admittance", NElementHelper.elem(value));
     }
 
 //    public String dump() {

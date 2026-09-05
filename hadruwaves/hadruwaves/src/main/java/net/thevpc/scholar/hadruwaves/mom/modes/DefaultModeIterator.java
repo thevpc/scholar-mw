@@ -30,7 +30,7 @@ public class DefaultModeIterator implements ModeIterator {
 
     @Override
     public NElement toElement() {
-        return NElement.ofUplet(getClass().getSimpleName());
+        return NElement.ofObjectBuilder(getClass().getSimpleName()).build();
     }
     @Override
     public boolean equals(Object o) {

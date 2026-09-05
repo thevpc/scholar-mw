@@ -4,7 +4,6 @@ import net.thevpc.ntexup.extension.hadruwaves.MoMStrNTxSimulationPlan;
 import net.thevpc.ntexup.extension.mwsimulator.*;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.text.NMsg;
-import net.thevpc.nuts.time.NChronometer;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 
 import java.util.Arrays;
@@ -18,7 +17,7 @@ public abstract class NTxHwNopNTxSolver extends NTxHwNTxSolver {
 
     @Override
     public List<NTxSimulationResult> execute() {
-        NChronometer chronometer = NChronometer.of();
+        NTxChronometer chronometer = NTxChronometer.of();
         log(NMsg.ofC("------------------"));
         log(NMsg.ofC("[%s] %s : ", outputName(), solverName()));
         log(NMsg.ofC("------------------"));

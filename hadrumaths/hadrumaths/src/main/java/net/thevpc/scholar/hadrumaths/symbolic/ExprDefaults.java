@@ -2,6 +2,7 @@ package net.thevpc.scholar.hadrumaths.symbolic;
 
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.scholar.hadrumaths.*;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 import net.thevpc.scholar.hadrumaths.format.ObjectFormatContext;
 import net.thevpc.scholar.hadrumaths.format.ObjectFormatParamSet;
 import net.thevpc.scholar.hadrumaths.geom.HGeometry;
@@ -2465,9 +2466,9 @@ public class ExprDefaults {
     }
 
     public static NElement toElement(Expr me) {
-        return NElement.ofUpletBuilder().name("expr").add(
+        return NElementHelper.ofNamedTuple("expr",
                 NElement.ofString(me.toString())
-        ).build();
+        );
     }
 
     public static Integer getIntProperty(Expr me, String name) {

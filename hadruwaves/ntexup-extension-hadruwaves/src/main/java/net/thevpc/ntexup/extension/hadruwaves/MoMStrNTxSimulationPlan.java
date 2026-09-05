@@ -135,9 +135,9 @@ public class MoMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
     @Override
     public String computeHash() {
         NDigest d = NDigest.of();
-        d.addSource(str.toElement().toString().getBytes(StandardCharsets.UTF_8));
+        NTxMwSimulationUtils.addDigestSource(d, str.toElement().toString().getBytes(StandardCharsets.UTF_8));
         for (NTxSolverRun item : items) {
-            d.addSource(item.toElement().toString().getBytes(StandardCharsets.UTF_8));
+            NTxMwSimulationUtils.addDigestSource(d, item.toElement().toString().getBytes(StandardCharsets.UTF_8));
         }
         return d.computeString();
     }

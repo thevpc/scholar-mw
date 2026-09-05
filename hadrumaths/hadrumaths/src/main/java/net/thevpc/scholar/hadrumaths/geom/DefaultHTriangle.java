@@ -3,7 +3,6 @@ package net.thevpc.scholar.hadrumaths.geom;
 import net.thevpc.nuts.elem.NArrayElementBuilder;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NObjectElementBuilder;
-import net.thevpc.nuts.elem.NUpletElement;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.GeometryFactory;
 import net.thevpc.scholar.hadrumaths.Maths;
@@ -476,8 +475,8 @@ public class DefaultHTriangle extends AbstractHGeometry implements HTriangle {
         return toElement().toString();
     }
 
-    private NUpletElement ue(HPoint p) {
-        return NElement.ofUplet(
+    private NElement ue(HPoint p) {
+        return NElementHelper.ofTuple(
                 NElement.ofDouble(p.getX()),
                 NElement.ofDouble(p.getY())
         );

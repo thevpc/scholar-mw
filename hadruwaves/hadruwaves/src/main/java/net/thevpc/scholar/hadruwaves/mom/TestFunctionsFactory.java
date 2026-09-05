@@ -8,7 +8,7 @@ package net.thevpc.scholar.hadruwaves.mom;
 import net.thevpc.nuts.elem.NArrayElement;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NPairElement;
-import net.thevpc.nuts.elem.NUpletElement;
+import net.thevpc.nuts.elem.NTupleElement;
 import net.thevpc.nuts.log.NLog;
 import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.util.NNameFormat;
@@ -127,9 +127,25 @@ public class TestFunctionsFactory extends AbstractFactory {
 
 
     public static NOptional<TestFunctions> parseTestFunctions(NElement value, Function<NElement, NElement> evaluator, Function<NElement, HGeometry> geometryResolver) {
-        if (value.isNamedUplet()) {
-            NUpletElement u = value.asUplet().get();
-            switch (NNameFormat.LOWER_KEBAB_CASE.format(u.name().get())) {
+        java.util.List<NElement> uParams = null;
+        String uName = null;
+        if (value != null) {
+            try {
+                java.lang.reflect.Method m = value.getClass().getMethod("params");
+                uParams = (java.util.List<NElement>) m.invoke(value);
+                java.lang.reflect.Method mName = value.getClass().getMethod("name");
+                Object no = mName.invoke(value);
+                if (no instanceof NOptional) {
+                    uName = (String) ((NOptional<?>) no).orNull();
+                } else if (no != null) {
+                    uName = no.toString();
+                }
+            } catch (Throwable ex) {
+                // ignore
+            }
+        }
+        if (uParams != null && uName != null) {
+            switch (NNameFormat.LOWER_KEBAB_CASE.format(uName)) {
 //                case "sine-functions":
 //                case "sine":
 //                case "sinus": {
@@ -184,6 +200,8 @@ public class TestFunctionsFactory extends AbstractFactory {
 //                    return NOptional.of(TestFunctionsFactory.createSicoCoco(geometry, count, symmetry, grid));
 //                }
                 case "sines":
+                case "sine-functions":
+                case "sine":
                 case "sinus": {
                     int count = -1;
                     int xcount = -1;
@@ -193,7 +211,7 @@ public class TestFunctionsFactory extends AbstractFactory {
                     GridPrecision grid = GridPrecision.LEAST_PRECISION;
                     CellBoundaries xBoundaries = null;
                     CellBoundaries yBoundaries = null;
-                    for (NElement param : u.params()) {
+                    for (NElement param : uParams) {
                         if (param.isNamedPair()) {
                             NPairElement p = param.asPair().get();
                             NElement pv = evaluator.apply(p.value());
@@ -290,7 +308,7 @@ public class TestFunctionsFactory extends AbstractFactory {
                     Axis axis = Axis.X;
                     TestFunctionsSymmetry symmetry = TestFunctionsSymmetry.NO_SYMMETRY;
                     GridPrecision grid = GridPrecision.LEAST_PRECISION;
-                    for (NElement param : u.params()) {
+                    for (NElement param : uParams) {
                         if (param.isNamedPair()) {
                             NPairElement p = param.asPair().get();
                             NElement pv = evaluator.apply(p.value());
@@ -335,7 +353,7 @@ public class TestFunctionsFactory extends AbstractFactory {
                     int[] excludedModes = null;
                     TestFunctionsSymmetry symmetry = TestFunctionsSymmetry.NO_SYMMETRY;
                     GridPrecision grid = GridPrecision.LEAST_PRECISION;
-                    for (NElement param : u.params()) {
+                    for (NElement param : uParams) {
                         if (param.isNamedPair()) {
                             NPairElement p = param.asPair().get();
                             NElement pv = evaluator.apply(p.value());
@@ -397,7 +415,7 @@ public class TestFunctionsFactory extends AbstractFactory {
                     double width = 0;
                     double area = 0;
                     HGeometry geometry = null;
-                    for (NElement param : u.params()) {
+                    for (NElement param : uParams) {
                         if (param.isNamedPair()) {
                             NPairElement p = param.asPair().get();
                             NElement pv = evaluator.apply(p.value());

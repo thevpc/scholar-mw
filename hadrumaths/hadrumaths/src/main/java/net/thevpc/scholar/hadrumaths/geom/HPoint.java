@@ -2,6 +2,7 @@ package net.thevpc.scholar.hadrumaths.geom;
 
 
 import net.thevpc.nuts.elem.NElement;
+import net.thevpc.scholar.hadrumaths.util.NElementHelper;
 
 import net.thevpc.scholar.hadrumaths.HSerializable;
 import net.thevpc.scholar.hadrumaths.Maths;
@@ -163,12 +164,12 @@ public class HPoint implements HSerializable {
     public NElement toElement() {
         switch (dimension) {
             case 1: {
-                return NElement.ofUplet(NElement.ofDouble(x));
+                return NElementHelper.ofTuple(NElement.ofDouble(x));
             }
             case 2: {
-                return NElement.ofUplet(NElement.ofDouble(x), NElement.ofDouble(y));
+                return NElementHelper.ofTuple(NElement.ofDouble(x), NElement.ofDouble(y));
             }
         }
-        return NElement.ofUplet(NElement.ofDouble(x), NElement.ofDouble(y), NElement.ofDouble(z));
+        return NElementHelper.ofTuple(NElement.ofDouble(x), NElement.ofDouble(y), NElement.ofDouble(z));
     }
 }

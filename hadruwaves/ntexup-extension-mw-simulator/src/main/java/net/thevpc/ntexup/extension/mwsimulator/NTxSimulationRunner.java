@@ -3,7 +3,6 @@ package net.thevpc.ntexup.extension.mwsimulator;
 import net.thevpc.nuts.concurrent.NCachedValue;
 import net.thevpc.nuts.concurrent.NCallable;
 import net.thevpc.nuts.time.NDuration;
-import net.thevpc.nuts.util.NExceptions;
 import net.thevpc.nuts.util.NStringUtils;
 
 import java.util.Map;
@@ -108,7 +107,7 @@ public class NTxSimulationRunner {
                     T t = f.get();
                     return null;
                 } catch (Exception ex) {
-                    return NExceptions.getErrorMessage(ex);
+                    return ex.getMessage() == null ? ex.toString() : ex.getMessage();
                 }
             }
             return null;

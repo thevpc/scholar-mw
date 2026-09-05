@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadrumaths.symbolic.double2double;
 
+import net.thevpc.nuts.collections.NMaps;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.util.NMaps;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.Maths;

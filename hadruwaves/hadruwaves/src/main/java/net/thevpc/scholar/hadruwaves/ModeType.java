@@ -1,6 +1,6 @@
 package net.thevpc.scholar.hadruwaves;
 
-import net.thevpc.nuts.elem.NUpletElement;
+import net.thevpc.nuts.elem.NTupleElement;
 import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NOptional;
 

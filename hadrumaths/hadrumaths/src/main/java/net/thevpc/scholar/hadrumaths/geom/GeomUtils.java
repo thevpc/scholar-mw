@@ -163,7 +163,7 @@ public final class GeomUtils {
 //    }
 
     public static boolean is4Edges(HPolygon polygon) {
-        if (!polygon.isSingular()) {
+        if (polygon == null || !polygon.isSingular()) {
             return false;
         }
         List<HPoint> points = polygon.getPoints();

@@ -30,7 +30,7 @@ public class RegularHPolygon extends AbstractHGeometry implements HPolygonBuilde
     @Override
     public NElement toElement() {
         NObjectElementBuilder b = NElement.ofObjectBuilder("RegularPolygon");
-        b.add("center",NElement.ofUplet(
+        b.add("center",NElementHelper.ofTuple(
                 NElement.ofDouble(center.getX()),
                 NElement.ofDouble(center.getY())
         ));

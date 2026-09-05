@@ -9,9 +9,7 @@ import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.nuts.reflect.NReflectUtils;
 import net.thevpc.nuts.reflect.NTypeNamePlatformDomain;
-import net.thevpc.nuts.time.NChronometer;
-import net.thevpc.nuts.util.NIntUplet2;
-import net.thevpc.nuts.util.NIterator;
+import net.thevpc.nuts.mon.NChronometer;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.ExpressionRewriterFactory;
@@ -166,25 +164,28 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
             Class[] c1Values = getExprClassHierarchy(c0.getC1());
             Class[] c2Values = getExprClassHierarchy(c0.getC2());
 
-            NIterator<NIntUplet2> it = NIterator.ofInt2();
-            while (it.hasNext()) {
-                NIntUplet2 v = it.next();
-                int v1 = v.firstInt();
-                int v2 = v.secondInt();
-                if (v1 >= c1Values.length && v2 >= c2Values.length) {
-                    break;
+            int maxS = (c1Values.length - 1) + (c2Values.length - 1);
+            boolean found = false;
+            for (int s = 0; s <= maxS; s++) {
+                for (int v1 = 0; v1 <= s; v1++) {
+                    int v2 = s - v1;
+                    if (v1 < c1Values.length && v2 < c2Values.length) {
+                        c = new ClassClassKey(c1Values[v1], c2Values[v2], domainDimension);
+                        p = map.get(c);
+                        if (p != null) {
+                            found = true;
+                            break;
+                        }
+                        p = map.get(c.invert());
+                        if (p != null) {
+                            p = new ReverseFormalScalarProductHelper(p);
+                            found = true;
+                            break;
+                        }
+                    }
                 }
-                if (v1 < c1Values.length && v2 < c2Values.length) {
-                    c = new ClassClassKey(c1Values[v1], c2Values[v2], domainDimension);
-                    p = map.get(c);
-                    if (p != null) {
-                        break;
-                    }
-                    p = map.get(c.invert());
-                    if (p != null) {
-                        p = new ReverseFormalScalarProductHelper(p);
-                        break;
-                    }
+                if (found) {
+                    break;
                 }
             }
         }

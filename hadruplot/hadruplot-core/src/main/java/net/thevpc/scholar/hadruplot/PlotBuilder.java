@@ -1,13 +1,13 @@
 package net.thevpc.scholar.hadruplot;
 
+import net.thevpc.nuts.collections.NDoubleList;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NToElement;
 import net.thevpc.nuts.reflect.NReflectUtils;
 import net.thevpc.nuts.text.NText;
 import net.thevpc.nuts.text.NTextFormat;
-import net.thevpc.nuts.time.NChronometer;
-import net.thevpc.nuts.time.NChronometerView;
-import net.thevpc.nuts.util.NDoubleArrayList;
+import net.thevpc.nuts.mon.NChronometer;
+import net.thevpc.nuts.mon.NChronometerView;
 import net.thevpc.nuts.util.NStringUtils;
 import net.thevpc.scholar.hadruplot.extension.PlotWindowManagerFactory;
 import net.thevpc.scholar.hadruplot.extension.defaults.DefaultPlotBuilderSupport;
@@ -257,7 +257,7 @@ public class PlotBuilder {
                 || componentType.equals(Short.class)
                 || componentType.equals(Long.TYPE)
                 || componentType.equals(Long.class)) {
-            NDoubleArrayList to = new NDoubleArrayList(xvalue.size());
+            NDoubleList to = NDoubleList.of(xvalue.size());
             for (Object o : xvalue) {
                 to.add(((Number) o).doubleValue());
             }
@@ -846,7 +846,7 @@ public class PlotBuilder {
         }
         @Override
         public NElement toElement() {
-            return NElement.ofUplet(getClass().getSimpleName());
+            return NElement.ofObjectBuilder(getClass().getSimpleName()).build();
         }
 
         @Override

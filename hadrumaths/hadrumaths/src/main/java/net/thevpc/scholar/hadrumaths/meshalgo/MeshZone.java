@@ -70,7 +70,7 @@ public class MeshZone {
     private HGeometry geometry;
     private final MeshZoneType type;
     private Domain domain;
-//    private HPolygon polygon;
+    private HPolygon polygon;
     private Domain globalDomain;
     private Domain domain0;
     private Map<String, Object> userProperties;
@@ -110,10 +110,20 @@ public class MeshZone {
         this.geometry = geometry;
         this.shape = shape;
         this.type = type;
+        if (geometry instanceof HPolygon) {
+            this.polygon = (HPolygon) geometry;
+        } else if (geometry != null) {
+            this.polygon = geometry.toPolygon();
+        }
+        if (geometry != null) {
+            this.domain = geometry.getDomain();
+        }
         setProperty("MeshZoneType", type);
         setProperty("MeshZoneShape", shape);
-        Domain r = geometry.getDomain();
-        setProperty("Bounds", "[x=" + r.xmin() + ",y=" + r.ymin() + ",w=" + r.xwidth() + ",h=" + r.ywidth() + "]");
+        Domain r = geometry == null ? null : geometry.getDomain();
+        if (r != null) {
+            setProperty("Bounds", "[x=" + r.xmin() + ",y=" + r.ymin() + ",w=" + r.xwidth() + ",h=" + r.ywidth() + "]");
+        }
     }
 
     public void setProperty(String name, Object value) {
@@ -199,6 +209,13 @@ public class MeshZone {
     }
 
     public HPolygon getPolygon() {
+        if (polygon == null && geometry != null) {
+            if (geometry instanceof HPolygon) {
+                polygon = (HPolygon) geometry;
+            } else {
+                polygon = geometry.toPolygon();
+            }
+        }
         return polygon;
     }
 

@@ -8,7 +8,7 @@ import net.thevpc.nuts.elem.NObjectElementBuilder;
 import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.log.NLogger;
 import net.thevpc.nuts.text.NMsg;
-import net.thevpc.nuts.time.NChronometer;
+import net.thevpc.nuts.mon.NChronometer;
 import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.scholar.hadrumaths.*;

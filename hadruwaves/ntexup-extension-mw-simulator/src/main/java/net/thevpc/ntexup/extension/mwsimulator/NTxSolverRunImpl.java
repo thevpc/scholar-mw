@@ -53,9 +53,9 @@ public abstract class NTxSolverRunImpl implements NTxSolverRun {
         return "/"+plan().name()+"/"+fullName();
     }
     public String fullName() {
-        String on = NStringUtils.trim(outputName());
-        String sn = NStringUtils.trim(solverName());
-        if (!NBlankable.isBlank(outputName()) && !on.equals(sn)) {
+        String on = outputName() == null ? "" : outputName().trim();
+        String sn = solverName() == null ? "" : solverName().trim();
+        if (!on.isEmpty() && !on.equals(sn)) {
             return sn + ":" + on;
         }
         return sn;
@@ -75,7 +75,7 @@ public abstract class NTxSolverRunImpl implements NTxSolverRun {
 
     @Override
     public NElement toElement() {
-        return NElement.ofNamedUplet(outputName, NElement.ofPair("solver", solverName));
+        return NTxMwSimulationUtils.ofNamedTupleOrUplet(outputName, NElement.ofPair("solver", solverName));
     }
 
     public NTxSimulationPlan plan() {

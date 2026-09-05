@@ -4,8 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-import net.thevpc.nuts.time.NChronometer;
-import net.thevpc.nuts.time.NChronometerView;
+import net.thevpc.nuts.mon.NChronometer;
+import net.thevpc.nuts.mon.NChronometerView;
 import net.thevpc.scholar.hadruplot.component.BasePlotPanel;
 import net.thevpc.scholar.hadruplot.PlotPanel;
 import net.thevpc.scholar.hadruplot.extension.PlotPanelFactory;

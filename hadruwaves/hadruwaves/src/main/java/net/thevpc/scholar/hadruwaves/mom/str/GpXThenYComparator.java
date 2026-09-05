@@ -19,7 +19,7 @@ public class GpXThenYComparator implements TestFunctionsComparator, Serializable
 
     @Override
     public NElement toElement() {
-        return NElement.ofUplet(getClass().getSimpleName());
+        return NElement.ofObjectBuilder(getClass().getSimpleName()).build();
     }
 
     public int compare(DoubleToVector o1, DoubleToVector o2) {

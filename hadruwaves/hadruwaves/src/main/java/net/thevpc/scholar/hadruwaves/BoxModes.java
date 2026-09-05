@@ -2,7 +2,7 @@ package net.thevpc.scholar.hadruwaves;
 
 import net.thevpc.common.mon.ProgressMonitors;
 import net.thevpc.common.mon.VoidMonitoredAction;
-import net.thevpc.nuts.time.NChronometer;
+import net.thevpc.nuts.mon.NChronometer;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.common.mon.ProgressMonitor;
