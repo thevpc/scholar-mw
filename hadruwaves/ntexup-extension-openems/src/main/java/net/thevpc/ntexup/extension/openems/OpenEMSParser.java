@@ -14,10 +14,12 @@ import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.nuts.elem.NArrayElement;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NPairElement;
+import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NStringUtils;
 
+import java.io.IOException;
 import java.util.*;
 
 public class OpenEMSParser {
@@ -108,6 +110,18 @@ public class OpenEMSParser {
                         info.numThreads = pv.asIntValue().orElse(2);
                         break;
                     }
+                    case "epsilonr":
+                    case "permittivity": {
+                        info.epsilonR = pv.asDoubleValue().orElse(4.4);
+                        break;
+                    }
+                    case "losstangent":
+                    case "loss-tangent":
+                    case "tand":
+                    case "tan-delta": {
+                        info.lossTangent = pv.asDoubleValue().orElse(0.02);
+                        break;
+                    }
                     case "geometry": {
                         info.geometryId = pv.asStringValue().orNull();
                         break;
@@ -135,6 +149,19 @@ public class OpenEMSParser {
     private static void parseScene3D(NTxNode scene3D, NTxResolutionContext context, OpenEMSModelInfo info) {
         NTxNumberElement3 sceneSize = NTxMwSimulationUtils.findSceneSize(scene3D, context).orDefault();
         NTxNumberElement3 scenePosition = NTxMwSimulationUtils.findScenePosition(scene3D, context).orDefault();
+
+        boolean hasExplicitAntenna = false;
+        for (NTxNode child : scene3D.children()) {
+            if (NTxMwSimulationUtils.isSimulationNode(child, "antenna")
+                    || NTxMwSimulationUtils.isSimulationNode(child, "patch")
+                    || NTxMwSimulationUtils.isSimulationNode(child, "feed")
+                    || NTxMwSimulationUtils.isSimulationNode(child, "feedline")
+                    || NTxMwSimulationUtils.isSimulationNode(child, "left-flank")
+                    || NTxMwSimulationUtils.isSimulationNode(child, "right-flank")) {
+                hasExplicitAntenna = true;
+                break;
+            }
+        }
 
         for (NTxNode child : scene3D.children()) {
             String nodeType = child.type();
@@ -174,7 +201,7 @@ public class OpenEMSParser {
                             info.substrateBoxes.add(box);
                         } else if (isSource) {
                             info.sourceBoxes.add(box);
-                        } else if (isAntenna || (!isGround && !isSubstrate && z1 >= 0)) {
+                        } else if (isAntenna || (!hasExplicitAntenna && !isGround && !isSubstrate && z1 >= 0)) {
                             info.antennaBoxes.add(box);
                         }
                     }
@@ -210,7 +237,7 @@ public class OpenEMSParser {
                                 info.substrateBoxes.add(box);
                             } else if (isSource) {
                                 info.sourceBoxes.add(box);
-                            } else {
+                            } else if (isAntenna || (!hasExplicitAntenna && !isGround && !isSubstrate && minZ >= 0)) {
                                 info.antennaBoxes.add(box);
                             }
                         }
@@ -267,6 +294,27 @@ public class OpenEMSParser {
             zCoords.add(round3(b.z2));
         }
 
+        double antXmin = Double.MAX_VALUE, antXmax = -Double.MAX_VALUE;
+        double antYmin = Double.MAX_VALUE, antYmax = -Double.MAX_VALUE;
+        for (OpenEMSBox b : info.antennaBoxes) {
+            antXmin = Math.min(antXmin, b.xMin());
+            antXmax = Math.max(antXmax, b.xMax());
+            antYmin = Math.min(antYmin, b.yMin());
+            antYmax = Math.max(antYmax, b.yMax());
+        }
+        for (OpenEMSBox b : info.sourceBoxes) {
+            antXmin = Math.min(antXmin, b.xMin());
+            antXmax = Math.max(antXmax, b.xMax());
+            antYmin = Math.min(antYmin, b.yMin());
+            antYmax = Math.max(antYmax, b.yMax());
+        }
+        if (antXmin > antXmax) {
+            antXmin = -15;
+            antXmax = 15;
+            antYmin = -15;
+            antYmax = 15;
+        }
+
         if (xCoords.isEmpty()) {
             xCoords.addAll(Arrays.asList(-30.0, 0.0, 30.0));
         }
@@ -285,13 +333,14 @@ public class OpenEMSParser {
             subZmax = info.substrateBoxes.get(0).zMax();
         }
 
-        // Add intermediate Z lines inside substrate
-        double dzSub = (subZmax - subZmin) / 4.0;
-        for (int i = 1; i < 4; i++) {
+        // Add intermediate Z lines inside substrate (6 cells across substrate thickness)
+        int zSubSteps = 6;
+        double dzSub = (subZmax - subZmin) / (double) zSubSteps;
+        for (int i = 1; i < zSubSteps; i++) {
             zCoords.add(round3(subZmin + i * dzSub));
         }
 
-        // Margins for PML
+        // Margins for PML and air region
         double xmin = xCoords.first();
         double xmax = xCoords.last();
         double ymin = yCoords.first();
@@ -299,27 +348,36 @@ public class OpenEMSParser {
         double zmin = zCoords.first();
         double zmax = zCoords.last();
 
-        xCoords.add(round3(xmin - 6.0));
+        xCoords.add(round3(xmin - 5.0));
         xCoords.add(round3(xmin - 12.0));
-        xCoords.add(round3(xmax + 6.0));
+        xCoords.add(round3(xmin - 22.0));
+        xCoords.add(round3(xmin - 35.0));
+        xCoords.add(round3(xmax + 5.0));
         xCoords.add(round3(xmax + 12.0));
+        xCoords.add(round3(xmax + 22.0));
+        xCoords.add(round3(xmax + 35.0));
 
-        yCoords.add(round3(ymin - 6.0));
+        yCoords.add(round3(ymin - 5.0));
         yCoords.add(round3(ymin - 12.0));
-        yCoords.add(round3(ymax + 6.0));
+        yCoords.add(round3(ymin - 22.0));
+        yCoords.add(round3(ymin - 35.0));
+        yCoords.add(round3(ymax + 5.0));
         yCoords.add(round3(ymax + 12.0));
+        yCoords.add(round3(ymax + 22.0));
+        yCoords.add(round3(ymax + 35.0));
 
-        zCoords.add(round3(zmin - 8.0));
-        zCoords.add(round3(zmin - 16.0));
+        zCoords.add(round3(zmin - 5.0));
+        zCoords.add(round3(zmin - 12.0));
+        zCoords.add(round3(zmin - 22.0));
+        zCoords.add(round3(zmax + 3.0));
         zCoords.add(round3(zmax + 8.0));
         zCoords.add(round3(zmax + 16.0));
-        zCoords.add(round3(zmax + 25.0));
+        zCoords.add(round3(zmax + 28.0));
+        zCoords.add(round3(zmax + 42.0));
 
-        // Subdivide intervals larger than maxStep (e.g. 5mm)
-        double maxStep = 5.0;
-        List<Double> finalX = refineGrid(xCoords, maxStep);
-        List<Double> finalY = refineGrid(yCoords, maxStep);
-        List<Double> finalZ = refineGrid(zCoords, maxStep);
+        List<Double> finalX = refineGrid(xCoords, 0.20, 0.75, 3.0, antXmin - 0.5, antXmax + 0.5);
+        List<Double> finalY = refineGrid(yCoords, 0.20, 1.0, 3.0, antYmin - 0.5, antYmax + 0.5);
+        List<Double> finalZ = refineGrid(zCoords, 0.20, 3.0, 3.0, 0, 0);
 
         sb.append("    <RectilinearGrid DeltaUnit=\"1e-3\">\n");
         sb.append("      <XLines>").append(formatLines(finalX)).append("</XLines>\n");
@@ -409,16 +467,32 @@ public class OpenEMSParser {
         return sb.toString();
     }
 
-    private static List<Double> refineGrid(TreeSet<Double> sortedCoords, double maxStep) {
-        List<Double> input = new ArrayList<>(sortedCoords);
-        List<Double> output = new ArrayList<>();
-        if (input.isEmpty()) return output;
+    private static List<Double> refineGrid(TreeSet<Double> sortedCoords, double minAllowedStep, double maxStepInside, double maxStepOutside, double regionMin, double regionMax) {
+        List<Double> raw = new ArrayList<>(sortedCoords);
+        List<Double> clean = new ArrayList<>();
+        if (raw.isEmpty()) return clean;
 
-        for (int i = 0; i < input.size() - 1; i++) {
-            double c1 = input.get(i);
-            double c2 = input.get(i + 1);
+        // 1. Collapse/filter points that are closer than minAllowedStep to prevent Courant collapse
+        for (double c : raw) {
+            if (clean.isEmpty()) {
+                clean.add(c);
+            } else {
+                double prev = clean.get(clean.size() - 1);
+                if (c - prev >= minAllowedStep) {
+                    clean.add(c);
+                }
+            }
+        }
+
+        // 2. Refine intervals
+        List<Double> output = new ArrayList<>();
+        for (int i = 0; i < clean.size() - 1; i++) {
+            double c1 = clean.get(i);
+            double c2 = clean.get(i + 1);
             output.add(c1);
             double diff = c2 - c1;
+            boolean inside = (c1 < regionMax && c2 > regionMin);
+            double maxStep = inside ? maxStepInside : maxStepOutside;
             if (diff > maxStep) {
                 int segments = (int) Math.ceil(diff / maxStep);
                 double step = diff / segments;
@@ -427,7 +501,7 @@ public class OpenEMSParser {
                 }
             }
         }
-        output.add(input.get(input.size() - 1));
+        output.add(clean.get(clean.size() - 1));
         return output;
     }
 
@@ -447,5 +521,33 @@ public class OpenEMSParser {
 
     private static double round3(double v) {
         return Math.round(v * 1000.0) / 1000.0;
+    }
+
+    public static double[][] readProbeData(NPath file) throws IOException {
+        String content = file.readString();
+        String[] lines = content.split("\\R");
+        List<Double> tList = new ArrayList<>();
+        List<Double> vList = new ArrayList<>();
+        for (String line : lines) {
+            line = line.trim();
+            if (line.isEmpty() || line.startsWith("%")) {
+                continue;
+            }
+            String[] parts = line.split("\\s+");
+            if (parts.length >= 2) {
+                try {
+                    tList.add(Double.parseDouble(parts[0]));
+                    vList.add(Double.parseDouble(parts[1]));
+                } catch (NumberFormatException ignored) {
+                }
+            }
+        }
+        double[] t = new double[tList.size()];
+        double[] val = new double[vList.size()];
+        for (int i = 0; i < t.length; i++) {
+            t[i] = tList.get(i);
+            val[i] = vList.get(i);
+        }
+        return new double[][]{t, val};
     }
 }

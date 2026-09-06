@@ -251,6 +251,15 @@ public class TestFunctionsFactory extends AbstractFactory {
                                     }
                                     break;
                                 }
+                                case "boundaries":
+                                case "boundary": {
+                                    NOptional<CellBoundaries> uu = CellBoundaries.parse(pv);
+                                    if (uu.isPresent()) {
+                                        xBoundaries = uu.get();
+                                        yBoundaries = uu.get();
+                                    }
+                                    break;
+                                }
                                 case "geometry": {
                                     geometry = _resolveGeometry(pv, geometryResolver).orNull();
                                     break;
@@ -276,28 +285,28 @@ public class TestFunctionsFactory extends AbstractFactory {
                         return NOptional.<TestFunctions>ofError(msg)
                                 .withDefault(TestFunctionsFactory.createList());
                     }
-                    if (xBoundaries == null) {
-                        xcount = 0;
-                    }
-                    if (yBoundaries == null) {
-                        ycount = 0;
-                    }
-                    boolean autoBoundaries=(xBoundaries == null && yBoundaries == null);
-
-                    if (xcount <= 0) {
-                        xcount = count;
-                        if ((xBoundaries != null || autoBoundaries) && xcount <= 0) {
-                            xcount = 6;
+                    boolean autoBoundaries = (xBoundaries == null && yBoundaries == null);
+                    if (autoBoundaries) {
+                        if (xcount <= 0) {
+                            xcount = count > 0 ? count : 6;
+                        }
+                        if (ycount <= 0) {
+                            ycount = count > 0 ? count : 6;
+                        }
+                    } else {
+                        if (xBoundaries == null) {
+                            xcount = 0;
+                        } else if (xcount <= 0) {
+                            xcount = count > 0 ? count : 6;
+                        }
+                        if (yBoundaries == null) {
+                            ycount = 0;
+                        } else if (ycount <= 0) {
+                            ycount = count > 0 ? count : 6;
                         }
                     }
-                    if (ycount <= 0) {
-                        ycount = count;
-                        if ((yBoundaries != null || autoBoundaries) && ycount <= 0) {
-                            ycount = 6;
-                        }
-                    }
 
-                    UserSinePattern p = new UserSinePattern(xcount, ycount, xBoundaries, yBoundaries,autoBoundaries);
+                    UserSinePattern p = new UserSinePattern(xcount, ycount, xBoundaries, yBoundaries, autoBoundaries);
                     GpAdaptiveMesh am = new GpAdaptiveMesh(GeometryFactory.createPolygonList(geometry), p, symmetry, new MeshAlgoRect(grid));
                     return NOptional.of(am);
                 }

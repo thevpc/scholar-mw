@@ -13,10 +13,7 @@ import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.scholar.hadrumaths.Complex;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 
 public class OpenEMSStrNTxSimulationPlan extends NTxSimulationPlanImpl {
 
@@ -96,15 +93,10 @@ public class OpenEMSStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                 xmlFile.writeString(xmlContent);
             }
 
-            boolean hasDocker = false;
-            try {
-                hasDocker = NExec.ofSystem("docker").which() != null;
-            } catch (Exception ex) {
-                hasDocker = false;
-            }
+            String dockerImage = OpenEMSProvisioner.DEFAULT_DOCKER_IMAGE;
+            boolean useDocker = OpenEMSProvisioner.ensureDocker(dockerImage, rendererContext, id);
 
-            if (hasDocker) {
-                String dockerImage = "thevpc/openems:0.0.36";
+            if (useDocker) {
                 if (rendererContext != null) {
                     rendererContext.log(NMsg.ofC("[OpenEMS][%s] Running openEMS simulation in Docker (%s)", id, dockerImage));
                 }
@@ -118,10 +110,11 @@ public class OpenEMSStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                 ).directory(workDir);
                 cmd.run();
             } else {
+                NPath nativeBin = OpenEMSProvisioner.ensureNativeBinary(rendererContext, id);
                 if (rendererContext != null) {
-                    rendererContext.log(NMsg.ofC("[OpenEMS][%s] Running native openEMS simulation in %s", id, workDir));
+                    rendererContext.log(NMsg.ofC("[OpenEMS][%s] Running native openEMS simulation (%s) in %s", id, nativeBin, workDir));
                 }
-                NExec cmd = NExec.ofSystem("openEMS", xmlFile.name(), "--numThreads=" + modelInfo.numThreads, "--disable-dumps")
+                NExec cmd = NExec.ofSystem(nativeBin.toString(), xmlFile.name(), "--numThreads=" + modelInfo.numThreads, "--disable-dumps")
                         .directory(workDir);
                 cmd.run();
             }
@@ -132,8 +125,8 @@ public class OpenEMSStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                 throw new IllegalStateException("OpenEMS failed to generate probe files port1_V or port1_I in " + workDir);
             }
 
-            double[][] vData = readProbeData(vFile);
-            double[][] iData = readProbeData(iFile);
+            double[][] vData = OpenEMSParser.readProbeData(vFile);
+            double[][] iData = OpenEMSParser.readProbeData(iFile);
 
             runData = new OpenEMSRunData();
             runData.tv = vData[0];
@@ -147,60 +140,12 @@ public class OpenEMSStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         }
     }
 
-    private static double[][] readProbeData(NPath file) throws IOException {
-        List<String> lines = java.nio.file.Files.readAllLines(java.nio.file.Paths.get(file.toString()));
-        List<Double> tList = new ArrayList<>();
-        List<Double> vList = new ArrayList<>();
-        for (String line : lines) {
-            line = line.trim();
-            if (line.isEmpty() || line.startsWith("%")) {
-                continue;
-            }
-            String[] parts = line.split("\\s+");
-            if (parts.length >= 2) {
-                try {
-                    tList.add(Double.parseDouble(parts[0]));
-                    vList.add(Double.parseDouble(parts[1]));
-                } catch (NumberFormatException ignored) {
-                }
-            }
-        }
-        double[] t = new double[tList.size()];
-        double[] val = new double[vList.size()];
-        for (int i = 0; i < t.length; i++) {
-            t[i] = tList.get(i);
-            val[i] = vList.get(i);
-        }
-        return new double[][]{t, val};
-    }
-
     public Complex computeVf(double freq) {
-        OpenEMSRunData d = runSimulation();
-        double real = 0;
-        double imag = 0;
-        for (int k = 0; k < d.tv.length; k++) {
-            double angle = -2.0 * Math.PI * freq * d.tv[k];
-            double cos = Math.cos(angle);
-            double sin = Math.sin(angle);
-            real += d.v[k] * cos;
-            imag += d.v[k] * sin;
-        }
-        return Complex.of(real * d.dt * 2.0, imag * d.dt * 2.0);
+        return OpenEMSUtils.computeVf(runSimulation(), freq);
     }
 
     public Complex computeIf(double freq) {
-        OpenEMSRunData d = runSimulation();
-        double real = 0;
-        double imag = 0;
-        double dtI = d.ti.length > 1 ? d.ti[1] - d.ti[0] : d.dt;
-        for (int k = 0; k < d.ti.length; k++) {
-            double angle = -2.0 * Math.PI * freq * d.ti[k];
-            double cos = Math.cos(angle);
-            double sin = Math.sin(angle);
-            real += d.i[k] * cos;
-            imag += d.i[k] * sin;
-        }
-        return Complex.of(real * dtI * 2.0, imag * dtI * 2.0);
+        return OpenEMSUtils.computeIf(runSimulation(), freq);
     }
 
     public Complex computeZin(double freq) {

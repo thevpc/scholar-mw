@@ -151,6 +151,19 @@ public class Material implements NToElement {
                             }
                             break;
                         }
+                        case "losstangent":
+                        case "loss-tangent":
+                        case "tand":
+                        case "tan-delta":
+                        case "tangentdelta": {
+                            NOptional<Double> v = value2.asDoubleValue().filter(x -> x >= 0);
+                            if (!v.isPresent()) {
+                                err = true;
+                                NLog.ofScoped(Material.class).log(NMsg.ofC("invalid lossTangent %s", value2).asError());
+                            }
+                            lossTangent = v.orElse(0.0);
+                            break;
+                        }
                         default: {
                             err = true;
                             NLog.ofScoped(Material.class).log(NMsg.ofC("unknown property %s", value2).asError());

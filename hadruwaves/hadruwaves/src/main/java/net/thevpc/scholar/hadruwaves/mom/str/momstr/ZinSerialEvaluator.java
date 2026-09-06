@@ -42,19 +42,7 @@ public class ZinSerialEvaluator implements ZinEvaluator {
             cMatrix = B_.transposeHermitian().mul(aInv).mul(B_); // Bt.inv(A).B
 
 
-            // After A and B evaluation:
-            System.out.println("=== Scaling Debug ===");
-            System.out.println("A[0,0]: " + A_.get(0, 0) + " (|·|=" + A_.get(0,0).absdbl() + " Ω)");
-            System.out.println("B[0,0]: " + B_.get(0, 0) + " (|·|=" + B_.get(0,0).absdbl() + ")");
-            System.out.println("B max: " + B_.maxAbs() + ", min: " + B_.minAbs());
 
-// Check cMatrix before inversion:
-            System.out.println("cMatrix (admittance): " + cMatrix.get(0, 0));
-            System.out.println("cMatrix * 1e6 (area fix?): " + cMatrix.get(0,0).mul(1e6));
-            System.out.println("cMatrix * 1e10 (ω fix?): " + cMatrix.get(0,0).mul(1e10));
-
-// Expected admittance for 50 Ω:
-            System.out.println("Expected Y for 50 Ω: " + Complex.of(0.02));
             //la division
             ZinPaire = cMatrix.inv();
             if (str.getHintsManager().isHintRegularZnOperator()) {
