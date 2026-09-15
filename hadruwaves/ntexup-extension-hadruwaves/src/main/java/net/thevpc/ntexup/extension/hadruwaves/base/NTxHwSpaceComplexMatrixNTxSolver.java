@@ -47,12 +47,12 @@ public abstract class NTxHwSpaceComplexMatrixNTxSolver extends NTxHwNTxSolver {
             xSweep = new NTxSweep();
             xSweep.rangeFrom = d.xmin();
             xSweep.rangeTo = d.xmax();
-            xSweep.count = 200;
+            xSweep.count = 100;
 
             ySweep = new NTxSweep();
             ySweep.rangeFrom = d.ymin();
             ySweep.rangeTo = d.ymax();
-            ySweep.count = 200;
+            ySweep.count = 100;
         } else if (xSweep == null) {
             xSweep = ySweep;
         } else if (ySweep == null) {
@@ -80,9 +80,7 @@ public abstract class NTxHwSpaceComplexMatrixNTxSolver extends NTxHwNTxSolver {
         if (plan().rendererContext().isAnimate()) {
             Plot.cd(fullPath()).title(fullName()).plot(matrix);
         }
-        return Collections.singletonList(
-                NTxSimulationResultFactory.createPlot2dCurve(outputName(), null, Collections.singletonList(0.0))
-        );
+        return Collections.emptyList();
     }
 
     @Override

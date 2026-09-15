@@ -52,12 +52,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <dependencies>
-    <dependency>
-      <groupId>net.thevpc.nuts</groupId>
-      <artifactId>nuts</artifactId>
-      <version>1.0.0.0</version>
-      <scope>compile</scope>
-    </dependency>
+    <dependency><groupId>net.thevpc.nuts</groupId><artifactId>nuts</artifactId><version>1.0.0</version><scope>compile</scope></dependency>
   </dependencies>
   <repositories>
     <repository>

@@ -23,9 +23,7 @@ public abstract class NTxHwNopNTxSolver extends NTxHwNTxSolver {
         log(NMsg.ofC("------------------"));
         nop();
         log(NMsg.ofC("[%s] %s Finished in %s : ", outputName(), solverName(),chronometer.stop()));
-        return Arrays.asList(
-                NTxSimulationResultFactory.createPlot2dCurve(outputName(), null, Arrays.asList(0.0))
-        );
+        return java.util.Collections.emptyList();
     }
 
     protected abstract void nop();

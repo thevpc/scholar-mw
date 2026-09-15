@@ -6,6 +6,7 @@ import net.thevpc.ntexup.api.document.style.NTxProp;
 import net.thevpc.ntexup.api.eval.NTxFunctionArg;
 import net.thevpc.ntexup.api.eval.NTxFunctionCallContext;
 import net.thevpc.ntexup.api.eval.NTxResolutionContext;
+import net.thevpc.ntexup.api.eval.NTxValueByType;
 import net.thevpc.ntexup.api.renderer.NTxRendererContext;
 import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.ntexup.lib.geometry3d.NTxNumberElement3;
@@ -286,10 +287,16 @@ public class NTxMwSimulationUtils {
     }
 
     public static void processResult(NTxSimulationResult result, NTxRendererContext rendererContext) {
-        NElement element = result.toPlotElement();
-        if (element != null && !element.isNull()) {
-            if (rendererContext instanceof NTxRendererContext) {
-                rendererContext.renderDetachedNode(element, NTxBounds2D.ofFull());
+        if (result == null) {
+            return;
+        }
+        Boolean autoPlot = NTxValueByType.getBoolean(rendererContext, "auto-plot").orNull();
+        if (Boolean.TRUE.equals(autoPlot)) {
+            NElement element = result.toPlotElement();
+            if (element != null && !element.isNull()) {
+                if (rendererContext instanceof NTxRendererContext) {
+                    rendererContext.renderDetachedNode(element, NTxBounds2D.ofFull());
+                }
             }
         }
     }
