@@ -293,6 +293,11 @@ public class OpenEMSParser {
             zCoords.add(round3(b.z1));
             zCoords.add(round3(b.z2));
         }
+        if (!info.sourceBoxes.isEmpty()) {
+            OpenEMSBox src = info.sourceBoxes.get(0);
+            xCoords.add(round3((src.x1 + src.x2) / 2.0));
+            yCoords.add(round3((src.y1 + src.y2) / 2.0));
+        }
 
         double antXmin = Double.MAX_VALUE, antXmax = -Double.MAX_VALUE;
         double antYmin = Double.MAX_VALUE, antYmax = -Double.MAX_VALUE;
@@ -450,12 +455,11 @@ public class OpenEMSParser {
             sb.append("        </Primitives>\n");
             sb.append("      </ProbeBox>\n\n");
 
-            // Current probe (cross-section in X-Y along Z)
-            double zMid = (portZ1 + portZ2) / 2.0;
-            sb.append("      <ProbeBox Name=\"port1_I\" Type=\"1\" Weight=\"1\" NormDir=\"2\">\n");
+            // Current probe (surface in X-Z plane perpendicular to Y propagation)
+            sb.append("      <ProbeBox Name=\"port1_I\" Type=\"1\" Weight=\"1\">\n");
             sb.append("        <Primitives>\n");
             sb.append(String.format(Locale.US, "          <Box Priority=\"100\"><P1 X=\"%.3f\" Y=\"%.3f\" Z=\"%.3f\" /><P2 X=\"%.3f\" Y=\"%.3f\" Z=\"%.3f\" /></Box>\n",
-                    src.x1, src.y1, zMid, src.x2, src.y2, zMid));
+                    src.x1 - 1.0, portYmid, portZ1 - 0.5, src.x2 + 1.0, portYmid, portZ2 + 0.5));
             sb.append("        </Primitives>\n");
             sb.append("      </ProbeBox>\n\n");
         }

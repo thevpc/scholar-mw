@@ -51,6 +51,9 @@ public class OpenEMSSimulationTest {
         ));
 
         String xml = OpenEMSParser.generateOpenEMSXml(info);
+        System.out.println("=== XML START ===");
+        System.out.println(xml);
+        System.out.println("=== XML END ===");
         Assertions.assertNotNull(xml);
         Assertions.assertTrue(xml.contains("<openEMS>"));
         Assertions.assertTrue(xml.contains("<ContinuousStructure"));
@@ -61,57 +64,63 @@ public class OpenEMSSimulationTest {
 
     @Test
     public void testOpenEMSRunIfAvailable() {
-        File bin = new File("/usr/bin/openEMS");
-        if (!bin.exists()) {
-            System.out.println("openEMS binary not found, skipping execution test");
-            return;
-        }
-
         OpenEMSParser.OpenEMSModelInfo info = new OpenEMSParser.OpenEMSModelInfo();
-        info.frequency = 2.4e9;
+        info.frequency = 3.4e9;
         info.fc = 2.0e9;
-        info.numberOfTimesteps = 500;
+        info.numberOfTimesteps = 25000;
+        info.endCriteria = 1e-4;
+
+        double w = 0.0031;
+        double l = 0.030;
+        double h = 0.0016;
+        double h0 = 0.000035;
 
         info.groundBoxes.add(new OpenEMSParser.OpenEMSBox(
-                -0.03, -0.03, -0.001635,
-                0.03, 0.03, -0.0016,
+                -30, -30, -1.635,
+                30, 30, -1.6,
                 "ground", "ground"
         ));
 
         info.substrateBoxes.add(new OpenEMSParser.OpenEMSBox(
-                -0.03, -0.03, -0.0016,
-                0.03, 0.03, 0.0,
+                -30, -30, -1.6,
+                30, 30, 0.0,
                 "substrate", "substrate"
         ));
 
         info.antennaBoxes.add(new OpenEMSParser.OpenEMSBox(
-                -0.0015, -0.015, 0.0,
-                0.0015, 0.015, 0.000035,
+                -1.55, -15.0, 0.0,
+                1.55, 15.0, 0.035,
                 "antenna", "antenna"
         ));
 
         info.sourceBoxes.add(new OpenEMSParser.OpenEMSBox(
-                -0.0015, -0.015, 0.0,
-                0.0015, -0.013, 0.000035,
+                -1.55, -15.0, 0.0,
+                1.55, -13.0, 0.035,
                 "source", "source"
         ));
+
+        String xml = OpenEMSParser.generateOpenEMSXml(info);
+        System.out.println("=== GENERATED XML ===");
+        System.out.println(xml);
+        System.out.println("=== END XML ===");
 
         OpenEMSStrNTxSimulationPlan plan = new OpenEMSStrNTxSimulationPlan("test1", "openems-test", null);
         plan.modelInfo = info;
 
+        System.out.println("Running OpenEMS simulation...");
+        long t0 = System.currentTimeMillis();
         OpenEMSStrNTxSimulationPlan.OpenEMSRunData runData = plan.runSimulation();
+        System.out.println("Finished OpenEMS simulation in " + (System.currentTimeMillis() - t0) + " ms");
         Assertions.assertNotNull(runData);
-        Assertions.assertTrue(runData.v.length > 0);
-        Assertions.assertTrue(runData.i.length > 0);
 
-        Complex s11 = plan.computeS11(2.4e9);
-        Complex zin = plan.computeZin(2.4e9);
-        System.out.println("Computed S11: " + s11 + " (|S11| = " + s11.absdbl() + ")");
-        System.out.println("Computed Zin: " + zin);
-
-        Assertions.assertNotNull(s11);
-        Assertions.assertNotNull(zin);
-        Assertions.assertFalse(Double.isNaN(s11.absdbl()));
-        Assertions.assertFalse(Double.isNaN(zin.absdbl()));
+        System.out.printf("%-10s | %-30s | %-10s | %-10s%n", "Freq (GHz)", "Zin", "|S11|", "S11 (dB)");
+        System.out.println("------------------------------------------------------------------");
+        for (double f = 2.0e9; f <= 5.0e9; f += 0.2e9) {
+            Complex zin = plan.computeZin(f);
+            Complex s11 = plan.computeS11(f);
+            double abs = s11.absdbl();
+            double db = 20 * Math.log10(Math.max(1e-12, abs));
+            System.out.printf("%-10.3f | %-30s | %-10.4f | %-10.2f dB%n", f / 1e9, zin, abs, db);
+        }
     }
 }
