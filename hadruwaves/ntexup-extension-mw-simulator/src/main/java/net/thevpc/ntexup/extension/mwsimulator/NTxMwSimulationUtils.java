@@ -6,6 +6,8 @@ import net.thevpc.ntexup.api.document.style.NTxProp;
 import net.thevpc.ntexup.api.eval.NTxFunctionArg;
 import net.thevpc.ntexup.api.eval.NTxFunctionCallContext;
 import net.thevpc.ntexup.api.eval.NTxResolutionContext;
+import net.thevpc.ntexup.api.eval.NTxFutureObj;
+import net.thevpc.ntexup.api.eval.NTxObj;
 import net.thevpc.ntexup.api.eval.NTxValueByType;
 import net.thevpc.ntexup.api.renderer.NTxRendererContext;
 import net.thevpc.ntexup.api.util.NTxUtils;
@@ -221,6 +223,7 @@ public class NTxMwSimulationUtils {
         }
         NTxSimulationRunner t = rendererContext.engine().computeIfAbsent(NTxSimulationRunner.class.getName(), s -> new NTxSimulationRunner()).get();
         plan.compile();
+        final String effectivePlanName = planName;
         NTxSimulationRunningProcess r = t.add(() -> {
             NTxChronometer ch = NTxChronometer.of();
             NMsg prefix0 = NMsg.ofC("[%s][%s]", plan.getClass().getSimpleName(), plan.id());
@@ -273,8 +276,30 @@ public class NTxMwSimulationUtils {
                 }
                 rendererContext.log(NMsg.ofC("%s finished simulation", prefix0).withDurationMillis(ch.stop().durationMs()));
             }
+            if (effectivePlanName != null && !effectivePlanName.trim().isEmpty()) {
+                rendererContext.compiledDocument().dependencyGraph().notifyBindingUpdated(effectivePlanName.trim());
+            }
+            if (rendererContext.isAnimate()) {
+                rendererContext.repaint();
+            }
             return new NTxSimulationResultsImpl(allResults);
         }, plan);
+
+        System.out.println("DEBUG [NTxMwSimulationUtils] planName=" + planName + " doc@" + (rendererContext.compiledDocument() != null ? Integer.toHexString(System.identityHashCode(rendererContext.compiledDocument())) : "null"));
+        rendererContext.compiledDocument().registerFuture(r.future());
+        if (planName != null && !planName.trim().isEmpty()) {
+            String pName = planName.trim();
+            NTxFutureObj futureObj = new NTxFutureObj(pName, r.future(), () -> {
+                r.getResult();
+                NTxObj obj = rendererContext.compiledDocument().getGlobalObject(pName).orNull();
+                if (obj != null && !(obj instanceof NTxFutureObj)) {
+                    return obj;
+                }
+                return null;
+            });
+            rendererContext.compiledDocument().registerFuture(futureObj);
+            rendererContext.compiledDocument().setGlobalObject(pName, futureObj);
+        }
 
         if (!rendererContext.isAnimate()) {
             r.getResult();

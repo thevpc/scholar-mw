@@ -5,6 +5,7 @@ import net.thevpc.ntexup.api.engine.NTxNodeBuilderContext;
 import net.thevpc.ntexup.api.extension.NTxNodeBuilder;
 import net.thevpc.ntexup.api.parser.NTxAllArgumentReader;
 import net.thevpc.ntexup.api.renderer.NTxRendererContext;
+import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.extension.mwsimulator.*;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NElementFormatter;
@@ -19,6 +20,7 @@ public class NTxHadruwavesBuilder implements NTxNodeBuilder {
     @Override
     public void build(NTxNodeBuilderContext builderContext) {
         builderContext.id("hadruwaves-mom-solver")
+                .initializeNodeAction((node, ctx) -> node.setProperty(NTxPropName.LAYOUT, NElement.ofString("none")))
                 .parseParam()
                 .matchesAny().end()
                 .processChildren(this::processChildren)
@@ -35,6 +37,7 @@ public class NTxHadruwavesBuilder implements NTxNodeBuilder {
     }
 
     public void renderMain(NTxRendererContext rendererContext) {
+        System.out.println("DEBUG [NTxHadruwavesBuilder.renderMain] raw=" + rendererContext.node().getRaw());
         NTxMwSimulationUtils.doRender(rendererContext,
                 (id,name, args) -> {
                     MomStructure str = MomParser.createMomStructure(args);

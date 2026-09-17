@@ -21,4 +21,6 @@ public interface NTxSimulationRunningProcess {
     String getError();
 
     Object getResult();
+
+    java.util.concurrent.Future<?> future();
 }

@@ -123,5 +123,10 @@ public class NTxSimulationRunner {
                 throw new RuntimeException(e);
             }
         }
+
+        @Override
+        public Future<?> future() {
+            return f;
+        }
     }
 }
