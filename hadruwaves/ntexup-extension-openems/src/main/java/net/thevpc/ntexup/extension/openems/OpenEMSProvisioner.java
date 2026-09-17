@@ -11,6 +11,8 @@ import net.thevpc.nuts.platform.NEnv;
 import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.util.NOptional;
 
+import net.thevpc.ntexup.extension.mwsimulator.NTxDockerProvisioner;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,107 +45,23 @@ public class OpenEMSProvisioner {
             "CMD [\"openEMS\", \"--help\"]\n";
 
     public static boolean ensureDocker(String dockerImage, NTxRendererContext rendererContext, String logPrefix) {
-        boolean dockerCmdExists = false;
-        try {
-            dockerCmdExists = NExec.ofSystem("docker").which() != null;
-        } catch (Exception ignored) {
-        }
-        if (!dockerCmdExists) {
-            return false;
-        }
-
-        // Check if docker daemon is running
-        try {
-            int code = NExec.ofSystem("docker", "info").failFast(false).grabAll().run().exitCode();
-            if (code != 0) {
-                if (rendererContext != null) {
-                    rendererContext.log(NMsg.ofC("[OpenEMS][%s] Docker command is available, but Docker daemon is not running. Falling back to native openEMS.", logPrefix));
-                }
-                return false;
-            }
-        } catch (Exception ex) {
-            return false;
-        }
-
-        // Check if image exists locally
-        boolean imagePresent = false;
-        try {
-            int code = NExec.ofSystem("docker", "image", "inspect", dockerImage).failFast(false).grabAll().run().exitCode();
-            imagePresent = (code == 0);
-        } catch (Exception ignored) {
-        }
-
-        if (imagePresent) {
-            return true;
-        }
-
-        // Image not present locally: try pulling, or build from Dockerfile
-        if (rendererContext != null) {
-            rendererContext.log(NMsg.ofC("[OpenEMS][%s] Docker image '%s' not found locally. Attempting pull...", logPrefix, dockerImage));
-        }
-        try {
-            int pullCode = NExec.ofSystem("docker", "pull", dockerImage).failFast(false).run().exitCode();
-            if (pullCode == 0) {
-                if (rendererContext != null) {
-                    rendererContext.log(NMsg.ofC("[OpenEMS][%s] Docker image '%s' successfully pulled.", logPrefix, dockerImage));
-                }
-                return true;
-            }
-        } catch (Exception ex) {
-            if (rendererContext != null) {
-                rendererContext.log(NMsg.ofC("[OpenEMS][%s] Could not pull image '%s' (%s). Building locally...", logPrefix, dockerImage, ex.getMessage()));
-            }
-        }
-
-        // Pull failed or image not on registry: build locally from Dockerfile
-        if (rendererContext != null) {
-            rendererContext.log(NMsg.ofC("[OpenEMS][%s] Building Docker image '%s' from embedded Dockerfile...", logPrefix, dockerImage));
-        }
-        boolean built = buildDockerImage(dockerImage, rendererContext, logPrefix);
-        if (built) {
-            return true;
-        }
-        if (rendererContext != null) {
-            rendererContext.log(NMsg.ofC("[OpenEMS][%s] Failed to build docker image '%s'. Falling back to native openEMS.", logPrefix, dockerImage));
-        }
-        return false;
+        return NTxDockerProvisioner.ensureDockerImage(
+                dockerImage,
+                DEFAULT_DOCKERFILE,
+                OpenEMSProvisioner.class.getResource("Dockerfile"),
+                rendererContext,
+                "OpenEMS][" + logPrefix
+        );
     }
 
     public static boolean buildDockerImage(String dockerImage, NTxRendererContext rendererContext, String logPrefix) {
-        NPath buildDir = null;
-        try {
-            buildDir = NPath.ofTempFolder("openems-docker-build-");
-            NPath dockerfile = buildDir.resolve("Dockerfile");
-            URL res = OpenEMSProvisioner.class.getResource("Dockerfile");
-            if (res != null) {
-                NCp.of().from(res).to(dockerfile).run();
-            } else {
-                dockerfile.writeString(DEFAULT_DOCKERFILE);
-            }
-
-            NExec buildCmd = NExec.ofSystem("docker", "build", "-t", dockerImage, ".")
-                    .directory(buildDir)
-                    .failFast(false);
-            int buildCode = buildCmd.run().exitCode();
-            if (buildCode == 0) {
-                if (rendererContext != null) {
-                    rendererContext.log(NMsg.ofC("[OpenEMS][%s] Successfully built Docker image '%s'.", logPrefix, dockerImage));
-                }
-                return true;
-            }
-        } catch (Exception ex) {
-            if (rendererContext != null) {
-                rendererContext.log(NMsg.ofC("[OpenEMS][%s] Exception building Docker image '%s': %s", logPrefix, dockerImage, ex.getMessage()));
-            }
-        } finally {
-            if (buildDir != null) {
-                try {
-                    buildDir.deleteTree();
-                } catch (Exception ignored) {
-                }
-            }
-        }
-        return false;
+        return NTxDockerProvisioner.buildDockerImage(
+                dockerImage,
+                DEFAULT_DOCKERFILE,
+                OpenEMSProvisioner.class.getResource("Dockerfile"),
+                rendererContext,
+                "OpenEMS][" + logPrefix
+        );
     }
 
     public static NPath ensureNativeBinary(NTxRendererContext rendererContext, String logPrefix) {
