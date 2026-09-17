@@ -127,6 +127,17 @@ public class NTxMwSimulationUtils {
     }
 
     public static NElement doRender(NTxRendererContext rendererContext, NTxStrSimulationQueryFactory ctx) {
+        NTxNode node = rendererContext.node();
+        NTxSimulationRunningProcess existing = (NTxSimulationRunningProcess) node.getUserObject("mw-simulation-process").orNull();
+        if (existing != null) {
+            if (!rendererContext.isAnimate() && !existing.isDone()) {
+                existing.getResult();
+            }
+            return NElement.ofName("NTxSimulationRunningProcess")
+                    .builder()
+                    .addAnnotation("@reference", NElement.ofPair("scope", NElement.ofString("mw-simulation")), NElement.ofPair("id", existing.id()))
+                    .build();
+        }
         NElement raw = rendererContext.node().getRaw();
         List<NElement> paramsList = null;
         if (raw != null) {
@@ -285,7 +296,7 @@ public class NTxMwSimulationUtils {
             return new NTxSimulationResultsImpl(allResults);
         }, plan);
 
-        System.out.println("DEBUG [NTxMwSimulationUtils] planName=" + planName + " doc@" + (rendererContext.compiledDocument() != null ? Integer.toHexString(System.identityHashCode(rendererContext.compiledDocument())) : "null"));
+        node.setUserObject("mw-simulation-process", r);
         rendererContext.compiledDocument().registerFuture(r.future());
         if (planName != null && !planName.trim().isEmpty()) {
             String pName = planName.trim();
