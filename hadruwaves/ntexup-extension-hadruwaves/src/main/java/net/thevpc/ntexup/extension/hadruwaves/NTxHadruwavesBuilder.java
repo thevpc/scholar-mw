@@ -37,9 +37,9 @@ public class NTxHadruwavesBuilder implements NTxNodeBuilder {
     }
 
     public void renderMain(NTxRendererContext rendererContext) {
-        System.out.println("DEBUG [NTxHadruwavesBuilder.renderMain] raw=" + rendererContext.node().getRaw());
         NTxMwSimulationUtils.doRender(rendererContext,
                 (id,name, args) -> {
+//        System.out.println("DEBUG [NTxHadruwavesBuilder.renderMain] raw=" + rendererContext.node().getRaw());
                     MomStructure str = MomParser.createMomStructure(args);
                     if (str == null) {
                         return null;
