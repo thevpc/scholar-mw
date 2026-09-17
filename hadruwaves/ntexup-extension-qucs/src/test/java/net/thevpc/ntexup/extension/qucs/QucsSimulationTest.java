@@ -16,12 +16,17 @@ public class QucsSimulationTest {
     @Test
     public void testQucsSimulation() {
         QucsModelInfo info = new QucsModelInfo();
-        info.width = 3.1e-3;
-        info.length = 30e-3;
-        info.height = 1.6e-3;
-        info.stubLength = 30e-3;
         info.epsilonR = 4.4;
         info.lossTangent = 0.02;
+
+        // Substrate: 60mm x 60mm x 1.6mm
+        info.substrateBoxes.add(new QucsModelInfo.QucsBox(-30e-3, -30e-3, -1.6e-3, 30e-3, 30e-3, 0.0, "substrate", "substrate"));
+        // Ground
+        info.groundBoxes.add(new QucsModelInfo.QucsBox(-30e-3, -30e-3, -1.635e-3, 30e-3, 30e-3, -1.6e-3, "ground", "ground"));
+        // Line
+        info.antennaBoxes.add(new QucsModelInfo.QucsBox(-1.55e-3, -15e-3, 0.0, 1.55e-3, 15e-3, 0.035e-3, "line", "antenna"));
+        // Source
+        info.sourceBoxes.add(new QucsModelInfo.QucsBox(-1.55e-3, -15e-3, 0.0, 1.55e-3, -13e-3, 0.035e-3, "source", "source"));
 
         QucsStrNTxSimulationPlan plan = new QucsStrNTxSimulationPlan("test", "test", null);
         plan.modelInfo = info;

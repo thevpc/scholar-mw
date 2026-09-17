@@ -46,10 +46,4 @@ public class GetDPModelInfo {
     public List<GetDPBox> substrateBoxes = new ArrayList<>();
     public List<GetDPBox> antennaBoxes = new ArrayList<>();
     public List<GetDPBox> sourceBoxes = new ArrayList<>();
-
-    // Derived geometry bounds
-    public double width = 3.1e-3;
-    public double length = 30e-3;
-    public double height = 1.6e-3;
-    public double stubLength = 30e-3;
 }

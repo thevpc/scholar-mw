@@ -16,12 +16,17 @@ public class GetDPSimulationTest {
     @Test
     public void testGetDPSimulation() {
         GetDPModelInfo info = new GetDPModelInfo();
-        info.width = 3.1e-3;
-        info.length = 30e-3;
-        info.height = 1.6e-3;
-        info.stubLength = 30e-3;
         info.epsilonR = 4.4;
         info.meshResolution = 0.5;
+
+        // Substrate: 60mm x 60mm x 1.6mm
+        info.substrateBoxes.add(new GetDPModelInfo.GetDPBox(-30e-3, -30e-3, -1.6e-3, 30e-3, 30e-3, 0.0, "substrate", "substrate"));
+        // Ground
+        info.groundBoxes.add(new GetDPModelInfo.GetDPBox(-30e-3, -30e-3, -1.635e-3, 30e-3, 30e-3, -1.6e-3, "ground", "ground"));
+        // Antenna line: w=3.1mm, l=30mm
+        info.antennaBoxes.add(new GetDPModelInfo.GetDPBox(-1.55e-3, -15e-3, 0.0, 1.55e-3, 15e-3, 0.035e-3, "line", "antenna"));
+        // Source port at start
+        info.sourceBoxes.add(new GetDPModelInfo.GetDPBox(-1.55e-3, -15e-3, 0.0, 1.55e-3, -13e-3, 0.035e-3, "source", "source"));
 
         GetDPStrNTxSimulationPlan plan = new GetDPStrNTxSimulationPlan("test", "test", null);
         plan.modelInfo = info;
@@ -51,16 +56,24 @@ public class GetDPSimulationTest {
     @Test
     public void testGetDPPatchSimulation() {
         GetDPModelInfo info = new GetDPModelInfo();
-        info.isPatch = true;
-        info.patchWidth = 38.0e-3;
-        info.patchLength = 29.4e-3;
-        info.height = 1.6e-3;
-        info.feedWidth = 3.1e-3;
-        info.feedLength = 15.0e-3;
-        info.insetDepth = 10.3e-3;
-        info.insetGap = 1.5e-3;
         info.epsilonR = 4.4;
         info.meshResolution = 0.5;
+
+        // Substrate: 58mm x 59mm x 1.6mm
+        info.substrateBoxes.add(new GetDPModelInfo.GetDPBox(-29e-3, -20e-3, -1.6e-3, 29e-3, 39e-3, 0.0, "substrate", "substrate"));
+        // Ground
+        info.groundBoxes.add(new GetDPModelInfo.GetDPBox(-29e-3, -20e-3, -1.635e-3, 29e-3, 39e-3, -1.6e-3, "ground", "ground"));
+        // Patch boxes:
+        // Left flank
+        info.antennaBoxes.add(new GetDPModelInfo.GetDPBox(-19e-3, 0.0, 0.0, -3.05e-3, 10.3e-3, 0.035e-3, "left-flank", "antenna"));
+        // Right flank
+        info.antennaBoxes.add(new GetDPModelInfo.GetDPBox(3.05e-3, 0.0, 0.0, 19e-3, 10.3e-3, 0.035e-3, "right-flank", "antenna"));
+        // Main patch body
+        info.antennaBoxes.add(new GetDPModelInfo.GetDPBox(-19e-3, 10.3e-3, 0.0, 19e-3, 29.4e-3, 0.035e-3, "patch", "antenna"));
+        // Feedline
+        info.antennaBoxes.add(new GetDPModelInfo.GetDPBox(-1.55e-3, -15e-3, 0.0, 1.55e-3, 10.3e-3, 0.035e-3, "feedline", "antenna"));
+        // Source
+        info.sourceBoxes.add(new GetDPModelInfo.GetDPBox(-1.55e-3, -15e-3, 0.0, 1.55e-3, -14e-3, 0.035e-3, "source", "source"));
 
         GetDPStrNTxSimulationPlan plan = new GetDPStrNTxSimulationPlan("patch-test", "patch-test", null);
         plan.modelInfo = info;

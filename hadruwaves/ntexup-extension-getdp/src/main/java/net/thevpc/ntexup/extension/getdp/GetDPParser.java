@@ -94,29 +94,32 @@ public class GetDPParser {
     }
 
     private static void parseScene3D(NTxNode scene3D, NTxResolutionContext context, GetDPModelInfo info) {
-        double antYmin = Double.MAX_VALUE, antYmax = -Double.MAX_VALUE;
-        double antXmin = Double.MAX_VALUE, antXmax = -Double.MAX_VALUE;
-        double srcYmin = Double.MAX_VALUE, srcYmax = -Double.MAX_VALUE;
-        double subH = 1.6e-3;
-        boolean hasPatchSubNodes = false;
-        double feedW = 3.1e-3;
-        double insetY0 = 0.0;
-        double insetGap = 1.5e-3;
+        boolean hasExplicitAntenna = false;
+        for (NTxNode child : scene3D.children()) {
+            if (NTxMwSimulationUtils.isSimulationNode(child, "antenna")
+                    || NTxMwSimulationUtils.isSimulationNode(child, "patch")
+                    || NTxMwSimulationUtils.isSimulationNode(child, "feed")
+                    || NTxMwSimulationUtils.isSimulationNode(child, "feedline")
+                    || NTxMwSimulationUtils.isSimulationNode(child, "left-flank")
+                    || NTxMwSimulationUtils.isSimulationNode(child, "right-flank")) {
+                hasExplicitAntenna = true;
+                break;
+            }
+        }
 
         for (NTxNode child : scene3D.children()) {
             String nodeType = child.type();
-            boolean isSubstrate = NTxMwSimulationUtils.isSimulationNode(child, "substrate");
-            boolean isPatchBody = NTxMwSimulationUtils.isSimulationNode(child, "patch");
-            boolean isLeftFlank = NTxMwSimulationUtils.isSimulationNode(child, "left-flank");
-            boolean isRightFlank = NTxMwSimulationUtils.isSimulationNode(child, "right-flank");
-            boolean isFeedline = NTxMwSimulationUtils.isSimulationNode(child, "feedline");
-            boolean isAntenna = NTxMwSimulationUtils.isSimulationNode(child, "antenna")
-                    || isPatchBody || isLeftFlank || isRightFlank || isFeedline;
-            boolean isSource = NTxMwSimulationUtils.isSimulationNode(child, "source");
+            String name = child.getName() == null ? "" : child.getName().trim();
 
-            if (isPatchBody || isLeftFlank || isRightFlank) {
-                hasPatchSubNodes = true;
-            }
+            boolean isGround = NTxMwSimulationUtils.isSimulationNode(child, "ground");
+            boolean isSubstrate = NTxMwSimulationUtils.isSimulationNode(child, "substrate");
+            boolean isAntenna = NTxMwSimulationUtils.isSimulationNode(child, "antenna")
+                    || NTxMwSimulationUtils.isSimulationNode(child, "patch")
+                    || NTxMwSimulationUtils.isSimulationNode(child, "feed")
+                    || NTxMwSimulationUtils.isSimulationNode(child, "feedline")
+                    || NTxMwSimulationUtils.isSimulationNode(child, "left-flank")
+                    || NTxMwSimulationUtils.isSimulationNode(child, "right-flank");
+            boolean isSource = NTxMwSimulationUtils.isSimulationNode(child, "source");
 
             if ("box".equalsIgnoreCase(nodeType)) {
                 NElement s = child.getPropertyValue("size").orNull();
@@ -125,58 +128,41 @@ public class GetDPParser {
                     NTxNumberElement3 ss = NTx3DUtils.resolveSize3DSI(context.evalExpression(s).orNull(), context);
                     NTxNumberElement3 pp = NTx3DUtils.resolveSize3DSI(context.evalExpression(p).orNull(), context);
                     if (ss != null && pp != null) {
-                        double px = pp.x.asDoubleValue().orElse(0.0);
-                        double py = pp.y.asDoubleValue().orElse(0.0);
-                        double pz = pp.z.asDoubleValue().orElse(0.0);
-                        double sx = ss.x.asDoubleValue().orElse(0.0);
-                        double sy = ss.y.asDoubleValue().orElse(0.0);
-                        double sz = ss.z.asDoubleValue().orElse(0.0);
+                        double x1 = pp.x.asDoubleValue().orElse(0.0);
+                        double y1 = pp.y.asDoubleValue().orElse(0.0);
+                        double z1 = pp.z.asDoubleValue().orElse(0.0);
+                        double xw = ss.x.asDoubleValue().orElse(0.0);
+                        double yw = ss.y.asDoubleValue().orElse(0.0);
+                        double zw = ss.z.asDoubleValue().orElse(0.0);
+                        double x2 = x1 + xw;
+                        double y2 = y1 + yw;
+                        double z2 = z1 + zw;
 
-                        if (isSubstrate) {
-                            subH = Math.abs(sz);
-                        } else if (isAntenna) {
-                            antXmin = Math.min(antXmin, px);
-                            antXmax = Math.max(antXmax, px + sx);
-                            antYmin = Math.min(antYmin, py);
-                            antYmax = Math.max(antYmax, py + sy);
-                            if (isFeedline) {
-                                feedW = sx;
-                            }
-                            if (isLeftFlank || isRightFlank) {
-                                insetY0 = Math.max(insetY0, sy);
-                            }
+                        GetDPModelInfo.GetDPBox box = new GetDPModelInfo.GetDPBox(x1, y1, z1, x2, y2, z2, name, nodeType);
+                        if (isGround) {
+                            info.groundBoxes.add(box);
+                        } else if (isSubstrate || (!isAntenna && !isSource && z2 <= 0 && zw > 0.0001)) {
+                            info.substrateBoxes.add(box);
                         } else if (isSource) {
-                            srcYmin = Math.min(srcYmin, py);
-                            srcYmax = Math.max(srcYmax, py + sy);
+                            info.sourceBoxes.add(box);
+                        } else if (isAntenna || (!hasExplicitAntenna && !isGround && !isSubstrate && z1 >= -1e-6)) {
+                            info.antennaBoxes.add(box);
                         }
                     }
                 }
             }
         }
 
-        if (antXmax > antXmin && antYmax > antYmin) {
-            info.width = antXmax - antXmin;
-            info.length = antYmax - antYmin;
-            info.height = subH;
+        if (info.groundBoxes.isEmpty() && !info.substrateBoxes.isEmpty()) {
+            GetDPModelInfo.GetDPBox sub = info.substrateBoxes.get(0);
+            info.groundBoxes.add(new GetDPModelInfo.GetDPBox(sub.x1, sub.y1, sub.z1 - 0.035e-3, sub.x2, sub.y2, sub.z1, "ground", "ground"));
+        }
 
-            if (hasPatchSubNodes) {
-                info.isPatch = true;
-                info.patchWidth = antXmax - antXmin;
-                info.patchLength = antYmax > 0 ? antYmax : 29.4e-3;
-                info.feedWidth = feedW > 0 ? feedW : 3.1e-3;
-                info.insetDepth = insetY0 > 0 ? insetY0 : 10.3e-3;
-                info.insetGap = insetGap;
-                info.feedLength = srcYmin < 0 ? Math.abs(srcYmin) : 15e-3;
-            } else {
-                if (srcYmin <= antYmin + 1e-6) {
-                    info.stubLength = antYmax - antYmin;
-                } else if (srcYmax > srcYmin) {
-                    double portYmid = (srcYmin + srcYmax) / 2.0;
-                    info.stubLength = antYmax - portYmid;
-                } else {
-                    info.stubLength = antYmax - antYmin;
-                }
-            }
+        if (info.sourceBoxes.isEmpty() && !info.antennaBoxes.isEmpty()) {
+            GetDPModelInfo.GetDPBox ant = info.antennaBoxes.get(0);
+            double portYlen = Math.min(2e-3, (ant.y2 - ant.y1) * 0.1);
+            if (portYlen <= 0) portYlen = 2e-3;
+            info.sourceBoxes.add(new GetDPModelInfo.GetDPBox(ant.x1, ant.y1, ant.z1, ant.x2, ant.y1 + portYlen, ant.z2, "source", "source"));
         }
     }
 }

@@ -48,6 +48,101 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         return null;
     }
 
+    public static class RebuiltGeometry {
+        public double h = 1.6e-3;
+        public double feedW = 3.1e-3;
+        public double portY = 0.0;
+        public double lineLength = 30e-3;
+        public boolean isResonator = false;
+        public double resW = 38e-3;
+        public double resL = 29.4e-3;
+        public double feedLength = 15e-3;
+        public double insetDepth = 0.0;
+    }
+
+    public RebuiltGeometry rebuildGeometry() {
+        RebuiltGeometry geom = new RebuiltGeometry();
+        if (modelInfo == null) {
+            return geom;
+        }
+        for (GetDPModelInfo.GetDPBox sb : modelInfo.substrateBoxes) {
+            double sh = sb.height();
+            if (sh > 0.0001) {
+                geom.h = sh;
+            }
+        }
+
+        GetDPModelInfo.GetDPBox src = modelInfo.sourceBoxes.isEmpty() ? null : modelInfo.sourceBoxes.get(0);
+        if (src != null) {
+            geom.feedW = src.width();
+            geom.portY = src.yMin();
+        }
+
+        GetDPModelInfo.GetDPBox feedBox = null;
+        double antXmin = Double.MAX_VALUE, antXmax = -Double.MAX_VALUE;
+        double antYmin = Double.MAX_VALUE, antYmax = -Double.MAX_VALUE;
+
+        for (GetDPModelInfo.GetDPBox b : modelInfo.antennaBoxes) {
+            antXmin = Math.min(antXmin, b.xMin());
+            antXmax = Math.max(antXmax, b.xMax());
+            antYmin = Math.min(antYmin, b.yMin());
+            antYmax = Math.max(antYmax, b.yMax());
+
+            if (src != null && b.xMax() >= src.xMin() - 1e-6 && b.xMin() <= src.xMax() + 1e-6
+                    && b.yMax() >= src.yMin() - 1e-6 && b.yMin() <= src.yMax() + 1e-6) {
+                if (feedBox == null || b.length() > feedBox.length()) {
+                    feedBox = b;
+                }
+            }
+        }
+
+        if (feedBox != null) {
+            geom.feedW = feedBox.width();
+            geom.portY = src != null ? src.yMin() : feedBox.yMin();
+        } else if (geom.feedW <= 0) {
+            geom.feedW = 3.1e-3;
+        }
+
+        double totalLength = antYmax > antYmin ? (antYmax - geom.portY) : 30e-3;
+        geom.lineLength = totalLength;
+
+        double widthThreshold = 1.25 * geom.feedW;
+        double wideXmin = Double.MAX_VALUE, wideXmax = -Double.MAX_VALUE;
+        double wideYmin = Double.MAX_VALUE, wideYmax = -Double.MAX_VALUE;
+        boolean hasWideSection = false;
+
+        for (GetDPModelInfo.GetDPBox b : modelInfo.antennaBoxes) {
+            if (b.width() > widthThreshold) {
+                hasWideSection = true;
+                wideXmin = Math.min(wideXmin, b.xMin());
+                wideXmax = Math.max(wideXmax, b.xMax());
+                wideYmin = Math.min(wideYmin, b.yMin());
+                wideYmax = Math.max(wideYmax, b.yMax());
+            }
+        }
+
+        if (hasWideSection) {
+            geom.isResonator = true;
+            geom.resW = wideXmax - wideXmin;
+            geom.resL = wideYmax - wideYmin;
+            geom.feedLength = Math.max(0.0, wideYmin - geom.portY);
+
+            if (feedBox != null && feedBox.yMax() > wideYmin) {
+                geom.insetDepth = Math.min(geom.resL, feedBox.yMax() - wideYmin);
+            } else {
+                for (GetDPModelInfo.GetDPBox b : modelInfo.antennaBoxes) {
+                    if (b != feedBox && b.width() < (geom.resW * 0.45) && b.yMin() <= wideYmin + 1e-6) {
+                        geom.insetDepth = Math.max(geom.insetDepth, b.length());
+                    }
+                }
+            }
+        } else {
+            geom.isResonator = false;
+        }
+
+        return geom;
+    }
+
     @Override
     public String computeHash() {
         NDigest d = NDigest.of();
@@ -56,12 +151,15 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.frequency).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.epsilonR).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.lossTangent).getBytes(StandardCharsets.UTF_8));
-            NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.width).getBytes(StandardCharsets.UTF_8));
-            NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.stubLength).getBytes(StandardCharsets.UTF_8));
-            NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.height).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.meshResolution).getBytes(StandardCharsets.UTF_8));
             if (modelInfo.geometryId != null) {
                 NTxMwSimulationUtils.addDigestSource(d, modelInfo.geometryId.getBytes(StandardCharsets.UTF_8));
+            }
+            for (GetDPModelInfo.GetDPBox b : modelInfo.antennaBoxes) {
+                NTxMwSimulationUtils.addDigestSource(d, (b.x1 + "," + b.y1 + "," + b.x2 + "," + b.y2).getBytes(StandardCharsets.UTF_8));
+            }
+            for (GetDPModelInfo.GetDPBox b : modelInfo.sourceBoxes) {
+                NTxMwSimulationUtils.addDigestSource(d, (b.x1 + "," + b.y1 + "," + b.x2 + "," + b.y2).getBytes(StandardCharsets.UTF_8));
             }
         }
         for (NTxSolverRun item : items) {
@@ -78,6 +176,7 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         if (modelInfo == null) {
             modelInfo = new GetDPModelInfo();
         }
+        RebuiltGeometry geom = rebuildGeometry();
         String hash = computeHash();
         NPath workDir = NPath.ofTempFolder("getdp-sim-");
         workDir.mkdirs();
@@ -91,12 +190,12 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                 if (rendererContext() != null) {
                     rendererContext().log(NMsg.ofC("[GetDP][%s] Docker is not available. Using analytical FEM approximation.", hash));
                 }
-                computeApproximation();
+                computeApproximation(geom);
                 return;
             }
 
             NPath geoFile = workDir.resolve("mesh.geo");
-            geoFile.writeString(generateGmshGeo());
+            geoFile.writeString(generateGmshGeo(geom));
 
             NPath proFile = workDir.resolve("fem.pro");
             proFile.writeString(generateGetDPPro(modelInfo.epsilonR));
@@ -153,28 +252,30 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                 z0Fem = 1.0 / (c * Math.sqrt(C * C0));
                 vpFem = c / Math.sqrt(epsEffFem);
 
-                double geomW = modelInfo.isPatch ? modelInfo.patchWidth : modelInfo.width;
-                double u = geomW / modelInfo.height;
-                double dL = 0.412 * modelInfo.height * ((epsEffFem + 0.3) / (epsEffFem - 0.258)) * ((u + 0.264) / (u + 0.8));
-                lTot = (modelInfo.isPatch ? modelInfo.patchLength : modelInfo.stubLength) + dL;
+                double u = geom.feedW / geom.h;
+                double dL = 0.412 * geom.h * ((epsEffFem + 0.3) / (epsEffFem - 0.258)) * ((u + 0.264) / (u + 0.8));
+                lTot = geom.lineLength + dL;
 
-                if (modelInfo.isPatch) {
-                    double leff = modelInfo.patchLength + 2.0 * dL;
-                    patchFr = c / (2.0 * leff * Math.sqrt(epsEffFem));
+                if (geom.isResonator) {
+                    double uRes = geom.resW / geom.h;
+                    double epsEffRes = (modelInfo.epsilonR + 1.0) / 2.0 + ((modelInfo.epsilonR - 1.0) / 2.0) / Math.sqrt(1.0 + 12.0 / uRes);
+                    double dLRes = 0.412 * geom.h * ((epsEffRes + 0.3) / (epsEffRes - 0.258)) * ((uRes + 0.264) / (uRes + 0.8));
+                    double leff = geom.resL + 2.0 * dLRes;
+                    patchFr = c / (2.0 * leff * Math.sqrt(epsEffRes));
                     double k0 = 2.0 * Math.PI * patchFr / c;
                     double lam0 = c / patchFr;
-                    double grad = (modelInfo.patchWidth / (120.0 * lam0)) * (1.0 - Math.pow(k0 * modelInfo.height, 2.0) / 24.0);
+                    double grad = (geom.resW / (120.0 * lam0)) * (1.0 - Math.pow(k0 * geom.h, 2.0) / 24.0);
                     double redge = 1.0 / (2.0 * Math.max(1e-6, grad));
-                    double cosVal = Math.cos(Math.PI * modelInfo.insetDepth / modelInfo.patchLength);
-                    patchRin = redge * Math.pow(cosVal, 4.0);
-                    if (patchRin < 15.0 || patchRin > 200.0) {
+                    double cosVal = Math.cos(Math.PI * geom.insetDepth / geom.resL);
+                    patchRin = redge * Math.pow(cosVal, 2.0);
+                    if (patchRin < 15.0 || patchRin > 300.0) {
                         patchRin = 50.0;
                     }
                     patchQ = 35.0;
                 }
 
                 if (rendererContext() != null) {
-                    if (modelInfo.isPatch) {
+                    if (geom.isResonator) {
                         rendererContext().log(NMsg.ofC("[GetDP][%s] Patch FEM Parameters: fr=%.4f GHz, eps_eff=%.4f, dL=%.3f mm, Rin=%.2f Ohm",
                                 hash, patchFr / 1e9, epsEffFem, dL * 1e3, patchRin));
                     } else {
@@ -186,10 +287,10 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                 if (rendererContext() != null) {
                     rendererContext().log(NMsg.ofC("[GetDP][%s] Error parsing FEM energy results: %s. Using approximation.", hash, ex.getMessage()));
                 }
-                computeApproximation();
+                computeApproximation(geom);
             }
         } else {
-            computeApproximation();
+            computeApproximation(geom);
         }
     }
 
@@ -197,18 +298,20 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
     private double patchRin = 50.0;
     private double patchQ = 35.0;
 
-    private void computeApproximation() {
-        double geomW = modelInfo.isPatch ? modelInfo.patchWidth : modelInfo.width;
-        double u = geomW / modelInfo.height;
+    private void computeApproximation(RebuiltGeometry geom) {
+        double u = geom.feedW / geom.h;
         epsEffFem = (modelInfo.epsilonR + 1.0) / 2.0 + ((modelInfo.epsilonR - 1.0) / 2.0) / Math.sqrt(1.0 + 12.0 / u);
         z0Fem = 48.20;
         vpFem = Maths.C / Math.sqrt(epsEffFem);
-        double dL = 0.412 * modelInfo.height * ((epsEffFem + 0.3) / (epsEffFem - 0.258)) * ((u + 0.264) / (u + 0.8));
-        lTot = (modelInfo.isPatch ? modelInfo.patchLength : modelInfo.stubLength) + dL;
+        double dL = 0.412 * geom.h * ((epsEffFem + 0.3) / (epsEffFem - 0.258)) * ((u + 0.264) / (u + 0.8));
+        lTot = geom.lineLength + dL;
 
-        if (modelInfo.isPatch) {
-            double leff = modelInfo.patchLength + 2.0 * dL;
-            patchFr = Maths.C / (2.0 * leff * Math.sqrt(epsEffFem));
+        if (geom.isResonator) {
+            double uRes = geom.resW / geom.h;
+            double epsEffRes = (modelInfo.epsilonR + 1.0) / 2.0 + ((modelInfo.epsilonR - 1.0) / 2.0) / Math.sqrt(1.0 + 12.0 / uRes);
+            double dLRes = 0.412 * geom.h * ((epsEffRes + 0.3) / (epsEffRes - 0.258)) * ((uRes + 0.264) / (uRes + 0.8));
+            double leff = geom.resL + 2.0 * dLRes;
+            patchFr = Maths.C / (2.0 * leff * Math.sqrt(epsEffRes));
             patchRin = 50.0;
             patchQ = 35.0;
         }
@@ -216,20 +319,21 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
 
     public Complex computeZin(double freq) {
         ensureFemSolved();
-        if (modelInfo != null && modelInfo.isPatch) {
+        RebuiltGeometry geom = rebuildGeometry();
+        if (geom.isResonator) {
             double deltaF = (freq - patchFr) / patchFr;
             Complex zPatch = Complex.of(patchRin).div(Complex.of(1.0, 2.0 * patchQ * deltaF));
-            if (modelInfo.feedLength > 0) {
-                double uFeed = modelInfo.feedWidth / modelInfo.height;
+            if (geom.feedLength > 0) {
+                double uFeed = geom.feedW / geom.h;
                 double epsFeed = (modelInfo.epsilonR + 1.0) / 2.0 + ((modelInfo.epsilonR - 1.0) / 2.0) / Math.sqrt(1.0 + 12.0 / uFeed);
                 double vpFeed = Maths.C / Math.sqrt(epsFeed);
                 double beta = 2.0 * Math.PI * freq / vpFeed;
-                double bl = beta * modelInfo.feedLength;
+                double bl = beta * geom.feedLength;
                 double tanBl = Math.tan(bl);
-                double z0F = 50.0;
+                double z0F = z0Fem;
                 Complex num = zPatch.plus(Complex.of(0, z0F * tanBl));
                 Complex den = Complex.of(1.0).plus(Complex.of(0, tanBl / z0F).mul(zPatch));
-                return Complex.of(z0F).mul(num.div(den));
+                return num.div(den);
             }
             return zPatch;
         }
@@ -246,9 +350,9 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         return zin.minus(z0).div(zin.plus(z0));
     }
 
-    private String generateGmshGeo() {
-        double w = (modelInfo.isPatch ? modelInfo.patchWidth : modelInfo.width) * 1e3;
-        double h = modelInfo.height * 1e3;
+    private String generateGmshGeo(RebuiltGeometry geom) {
+        double w = geom.feedW * 1e3;
+        double h = geom.h * 1e3;
         double boxW = Math.max(40.0, w * 4.0);
         double airH = Math.max(10.0, h * 6.0);
         double cl = modelInfo.meshResolution;
