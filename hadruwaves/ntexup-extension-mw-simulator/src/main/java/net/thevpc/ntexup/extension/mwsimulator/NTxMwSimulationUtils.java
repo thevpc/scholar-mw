@@ -299,6 +299,7 @@ public class NTxMwSimulationUtils {
             });
             rendererContext.compiledDocument().registerFuture(futureObj);
             rendererContext.compiledDocument().setGlobalObject(pName, futureObj);
+            rendererContext.compiledDocument().registerProgressBinding(pName, futureObj);
         }
 
         if (!rendererContext.isAnimate()) {
