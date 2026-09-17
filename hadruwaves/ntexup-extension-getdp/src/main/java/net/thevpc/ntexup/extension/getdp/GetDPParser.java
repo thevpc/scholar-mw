@@ -65,6 +65,10 @@ public class GetDPParser {
                         info.dockerImage = pv.asStringValue().orElse(GetDPProvisioner.DEFAULT_DOCKER_IMAGE);
                         break;
                     }
+                    case "mode": {
+                        info.mode = pv.asStringValue().orElse("auto").toLowerCase();
+                        break;
+                    }
                     case "geometry": {
                         info.geometryId = pv.asStringValue().orNull();
                         break;
@@ -94,13 +98,25 @@ public class GetDPParser {
         double antXmin = Double.MAX_VALUE, antXmax = -Double.MAX_VALUE;
         double srcYmin = Double.MAX_VALUE, srcYmax = -Double.MAX_VALUE;
         double subH = 1.6e-3;
+        boolean hasPatchSubNodes = false;
+        double feedW = 3.1e-3;
+        double insetY0 = 0.0;
+        double insetGap = 1.5e-3;
 
         for (NTxNode child : scene3D.children()) {
             String nodeType = child.type();
             boolean isSubstrate = NTxMwSimulationUtils.isSimulationNode(child, "substrate");
+            boolean isPatchBody = NTxMwSimulationUtils.isSimulationNode(child, "patch");
+            boolean isLeftFlank = NTxMwSimulationUtils.isSimulationNode(child, "left-flank");
+            boolean isRightFlank = NTxMwSimulationUtils.isSimulationNode(child, "right-flank");
+            boolean isFeedline = NTxMwSimulationUtils.isSimulationNode(child, "feedline");
             boolean isAntenna = NTxMwSimulationUtils.isSimulationNode(child, "antenna")
-                    || NTxMwSimulationUtils.isSimulationNode(child, "patch");
+                    || isPatchBody || isLeftFlank || isRightFlank || isFeedline;
             boolean isSource = NTxMwSimulationUtils.isSimulationNode(child, "source");
+
+            if (isPatchBody || isLeftFlank || isRightFlank) {
+                hasPatchSubNodes = true;
+            }
 
             if ("box".equalsIgnoreCase(nodeType)) {
                 NElement s = child.getPropertyValue("size").orNull();
@@ -123,6 +139,12 @@ public class GetDPParser {
                             antXmax = Math.max(antXmax, px + sx);
                             antYmin = Math.min(antYmin, py);
                             antYmax = Math.max(antYmax, py + sy);
+                            if (isFeedline) {
+                                feedW = sx;
+                            }
+                            if (isLeftFlank || isRightFlank) {
+                                insetY0 = Math.max(insetY0, sy);
+                            }
                         } else if (isSource) {
                             srcYmin = Math.min(srcYmin, py);
                             srcYmax = Math.max(srcYmax, py + sy);
@@ -137,13 +159,23 @@ public class GetDPParser {
             info.length = antYmax - antYmin;
             info.height = subH;
 
-            if (srcYmin <= antYmin + 1e-6) {
-                info.stubLength = antYmax - antYmin;
-            } else if (srcYmax > srcYmin) {
-                double portYmid = (srcYmin + srcYmax) / 2.0;
-                info.stubLength = antYmax - portYmid;
+            if (hasPatchSubNodes) {
+                info.isPatch = true;
+                info.patchWidth = antXmax - antXmin;
+                info.patchLength = antYmax > 0 ? antYmax : 29.4e-3;
+                info.feedWidth = feedW > 0 ? feedW : 3.1e-3;
+                info.insetDepth = insetY0 > 0 ? insetY0 : 10.3e-3;
+                info.insetGap = insetGap;
+                info.feedLength = srcYmin < 0 ? Math.abs(srcYmin) : 15e-3;
             } else {
-                info.stubLength = antYmax - antYmin;
+                if (srcYmin <= antYmin + 1e-6) {
+                    info.stubLength = antYmax - antYmin;
+                } else if (srcYmax > srcYmin) {
+                    double portYmid = (srcYmin + srcYmax) / 2.0;
+                    info.stubLength = antYmax - portYmid;
+                } else {
+                    info.stubLength = antYmax - antYmin;
+                }
             }
         }
     }

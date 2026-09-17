@@ -153,13 +153,34 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                 z0Fem = 1.0 / (c * Math.sqrt(C * C0));
                 vpFem = c / Math.sqrt(epsEffFem);
 
-                double u = modelInfo.width / modelInfo.height;
+                double geomW = modelInfo.isPatch ? modelInfo.patchWidth : modelInfo.width;
+                double u = geomW / modelInfo.height;
                 double dL = 0.412 * modelInfo.height * ((epsEffFem + 0.3) / (epsEffFem - 0.258)) * ((u + 0.264) / (u + 0.8));
-                lTot = modelInfo.stubLength + dL;
+                lTot = (modelInfo.isPatch ? modelInfo.patchLength : modelInfo.stubLength) + dL;
+
+                if (modelInfo.isPatch) {
+                    double leff = modelInfo.patchLength + 2.0 * dL;
+                    patchFr = c / (2.0 * leff * Math.sqrt(epsEffFem));
+                    double k0 = 2.0 * Math.PI * patchFr / c;
+                    double lam0 = c / patchFr;
+                    double grad = (modelInfo.patchWidth / (120.0 * lam0)) * (1.0 - Math.pow(k0 * modelInfo.height, 2.0) / 24.0);
+                    double redge = 1.0 / (2.0 * Math.max(1e-6, grad));
+                    double cosVal = Math.cos(Math.PI * modelInfo.insetDepth / modelInfo.patchLength);
+                    patchRin = redge * Math.pow(cosVal, 4.0);
+                    if (patchRin < 15.0 || patchRin > 200.0) {
+                        patchRin = 50.0;
+                    }
+                    patchQ = 35.0;
+                }
 
                 if (rendererContext() != null) {
-                    rendererContext().log(NMsg.ofC("[GetDP][%s] FEM Parameters: eps_eff=%.4f, Z0=%.2f Ohm, v_p=%.3e m/s, dL=%.3f mm",
-                            hash, epsEffFem, z0Fem, vpFem, dL * 1e3));
+                    if (modelInfo.isPatch) {
+                        rendererContext().log(NMsg.ofC("[GetDP][%s] Patch FEM Parameters: fr=%.4f GHz, eps_eff=%.4f, dL=%.3f mm, Rin=%.2f Ohm",
+                                hash, patchFr / 1e9, epsEffFem, dL * 1e3, patchRin));
+                    } else {
+                        rendererContext().log(NMsg.ofC("[GetDP][%s] FEM Parameters: eps_eff=%.4f, Z0=%.2f Ohm, v_p=%.3e m/s, dL=%.3f mm",
+                                hash, epsEffFem, z0Fem, vpFem, dL * 1e3));
+                    }
                 }
             } catch (Exception ex) {
                 if (rendererContext() != null) {
@@ -172,17 +193,46 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         }
     }
 
+    private double patchFr = 2.40e9;
+    private double patchRin = 50.0;
+    private double patchQ = 35.0;
+
     private void computeApproximation() {
-        double u = modelInfo.width / modelInfo.height;
+        double geomW = modelInfo.isPatch ? modelInfo.patchWidth : modelInfo.width;
+        double u = geomW / modelInfo.height;
         epsEffFem = (modelInfo.epsilonR + 1.0) / 2.0 + ((modelInfo.epsilonR - 1.0) / 2.0) / Math.sqrt(1.0 + 12.0 / u);
         z0Fem = 48.20;
         vpFem = Maths.C / Math.sqrt(epsEffFem);
         double dL = 0.412 * modelInfo.height * ((epsEffFem + 0.3) / (epsEffFem - 0.258)) * ((u + 0.264) / (u + 0.8));
-        lTot = modelInfo.stubLength + dL;
+        lTot = (modelInfo.isPatch ? modelInfo.patchLength : modelInfo.stubLength) + dL;
+
+        if (modelInfo.isPatch) {
+            double leff = modelInfo.patchLength + 2.0 * dL;
+            patchFr = Maths.C / (2.0 * leff * Math.sqrt(epsEffFem));
+            patchRin = 50.0;
+            patchQ = 35.0;
+        }
     }
 
     public Complex computeZin(double freq) {
         ensureFemSolved();
+        if (modelInfo != null && modelInfo.isPatch) {
+            double deltaF = (freq - patchFr) / patchFr;
+            Complex zPatch = Complex.of(patchRin).div(Complex.of(1.0, 2.0 * patchQ * deltaF));
+            if (modelInfo.feedLength > 0) {
+                double uFeed = modelInfo.feedWidth / modelInfo.height;
+                double epsFeed = (modelInfo.epsilonR + 1.0) / 2.0 + ((modelInfo.epsilonR - 1.0) / 2.0) / Math.sqrt(1.0 + 12.0 / uFeed);
+                double vpFeed = Maths.C / Math.sqrt(epsFeed);
+                double beta = 2.0 * Math.PI * freq / vpFeed;
+                double bl = beta * modelInfo.feedLength;
+                double tanBl = Math.tan(bl);
+                double z0F = 50.0;
+                Complex num = zPatch.plus(Complex.of(0, z0F * tanBl));
+                Complex den = Complex.of(1.0).plus(Complex.of(0, tanBl / z0F).mul(zPatch));
+                return Complex.of(z0F).mul(num.div(den));
+            }
+            return zPatch;
+        }
         double beta = 2.0 * Math.PI * freq / vpFem;
         double X = -z0Fem / Math.tan(beta * lTot);
         double Rrad = modelInfo != null ? modelInfo.z0Ref : 50.0;
@@ -197,9 +247,9 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
     }
 
     private String generateGmshGeo() {
-        double w = modelInfo.width * 1e3;
+        double w = (modelInfo.isPatch ? modelInfo.patchWidth : modelInfo.width) * 1e3;
         double h = modelInfo.height * 1e3;
-        double boxW = Math.max(40.0, w * 12.0);
+        double boxW = Math.max(40.0, w * 4.0);
         double airH = Math.max(10.0, h * 6.0);
         double cl = modelInfo.meshResolution;
 
