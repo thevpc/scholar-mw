@@ -97,6 +97,14 @@ public class MomParser {
         }
         str.setDomain(domain);
         str.setSources(moMSolverQueryInfo.sources);
+        if (moMSolverQueryInfo.projectType != null) {
+            str.setProjectType(moMSolverQueryInfo.projectType);
+        } else if (moMSolverQueryInfo.sources instanceof net.thevpc.scholar.hadruwaves.mom.sources.PlanarSources) {
+            str.setProjectType(ProjectType.PLANAR_STRUCTURE);
+        }
+        if (moMSolverQueryInfo.circuitType != null) {
+            str.setCircuitType(moMSolverQueryInfo.circuitType);
+        }
         boolean t = !isEmptyTestFunctions(moMSolverQueryInfo.testFunctions);
         boolean b = !isEmptyTestFunctions(moMSolverQueryInfo.basisFunctions);
         if (t && b) {
@@ -177,6 +185,26 @@ public class MomParser {
                             context.log(NMsg.ofC("missing 'sources'").asError());
                         } else {
                             query.sources = s.get();
+                        }
+                        break;
+                    }
+                    case "project-type":
+                    case "structure-type":
+                    case "type": {
+                        String s = pv.asStringValue().orElse("").toUpperCase();
+                        if (s.contains("PLANAR")) {
+                            query.projectType = ProjectType.PLANAR_STRUCTURE;
+                        } else if (s.contains("WAVE") || s.contains("GUIDE")) {
+                            query.projectType = ProjectType.WAVE_GUIDE;
+                        }
+                        break;
+                    }
+                    case "circuit-type": {
+                        String s = pv.asStringValue().orElse("").toUpperCase();
+                        if (s.contains("PARALLEL")) {
+                            query.circuitType = CircuitType.PARALLEL;
+                        } else if (s.contains("SERIAL")) {
+                            query.circuitType = CircuitType.SERIAL;
                         }
                         break;
                     }
@@ -546,5 +574,7 @@ public class MomParser {
         TestFunctions basisFunctions;
         Sources sources;
         Domain domainPadding;
+        ProjectType projectType;
+        CircuitType circuitType;
     }
 }
