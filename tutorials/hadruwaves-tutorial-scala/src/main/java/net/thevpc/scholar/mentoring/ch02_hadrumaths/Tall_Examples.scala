@@ -1,8 +1,6 @@
 package net.thevpc.scholar.mentoring.ch02_hadrumaths
 
-import com.jogamp.opengl.GLProfile
 import net.thevpc.scholar.hadrumaths.MathScala._
-import net.thevpc.scholar.hadrumaths._
 import net.thevpc.scholar.hadruplot.Plot
 
 object Tall_Examples {

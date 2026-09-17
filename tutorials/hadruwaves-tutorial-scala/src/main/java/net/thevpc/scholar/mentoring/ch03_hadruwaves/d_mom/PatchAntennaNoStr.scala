@@ -124,9 +124,9 @@ object PatchAntennaNoStr {
     Plot.title("zmn").asTable.plot(zmn)
     Plot.title("gp").domain(box).asCurve().plot(gp)
     Plot.title("Xp").asMatrix.plot(Xp)
-    Plot.title("Je").domain(box).asAbs.plot(Jt)
-    Plot.title("Jm").domain(box).asAbs.plot(Jm)
-    Plot.title("Em").domain(box).asAbs.plot(Em)
+    Plot.title("Je").domain(box).asAbs.plot(Jt*box)
+    Plot.title("Jm").domain(box).asAbs.plot(Jm*box)
+    Plot.title("Em").domain(box).asAbs.plot(Em*box)
     var frequencies = 1 * GHZ :: 1.0 / 10 * GHZ :: 10 * GHZ
     var zinlist = elist()
     frequencies.foreach(fr0 => {

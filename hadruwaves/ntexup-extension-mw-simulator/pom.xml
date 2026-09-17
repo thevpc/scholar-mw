@@ -52,7 +52,7 @@
     </licenses>
 
     <dependencies>
-        <dependency><groupId>net.thevpc.ntexup</groupId><artifactId>ntexup-api</artifactId><version>1.0.0</version></dependency>
+        <dependency><groupId>net.thevpc.ntexup</groupId><artifactId>ntexup-api</artifactId><version>1.0.0.0</version></dependency>
         <dependency><groupId>net.thevpc.ntexup</groupId><artifactId>ntexup-lib-geometry3d</artifactId><version>1.0.0.0</version></dependency>
     </dependencies>
     <build>
