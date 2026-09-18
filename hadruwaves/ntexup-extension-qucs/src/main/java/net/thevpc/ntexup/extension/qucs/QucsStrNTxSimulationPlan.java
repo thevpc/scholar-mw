@@ -173,8 +173,10 @@ public class QucsStrNTxSimulationPlan extends NTxSimulationPlanImpl {
     }
 
     public synchronized void ensureQucsSolved(double fmin, double fmax, int count) {
-        if (qucsSolved) {
-            return;
+        if (qucsSolved && !s11Map.isEmpty()) {
+            if (s11Map.firstKey() <= fmin && s11Map.lastKey() >= fmax) {
+                return;
+            }
         }
         qucsSolved = true;
 
@@ -313,19 +315,33 @@ public class QucsStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             double uRes = geom.resW / geom.h;
             double epsEffRes = (er + 1.0) / 2.0 + ((er - 1.0) / 2.0) / Math.sqrt(1.0 + 12.0 / uRes);
             double dLRes = 0.412 * geom.h * ((epsEffRes + 0.3) / (epsEffRes - 0.258)) * ((uRes + 0.264) / (uRes + 0.8));
-            double leff = geom.resL + 2.0 * dLRes;
+            double dLNotch = geom.insetDepth > 0 ? geom.insetDepth * 0.135 : 0.0;
+            double leff = geom.resL + 2.0 * dLRes + dLNotch;
             double c = 2.99792458e8;
             double patchFr = c / (2.0 * leff * Math.sqrt(epsEffRes));
             double patchRin = 50.0;
             double patchQ = 35.0;
 
+            double uFeed = geom.feedW / geom.h;
+            double epsFeed = (er + 1.0) / 2.0 + ((er - 1.0) / 2.0) / Math.sqrt(1.0 + 12.0 / uFeed);
+            double vpFeed = c / Math.sqrt(epsFeed);
+
             for (int i = 0; i < count; i++) {
                 double f = fmin + i * step;
                 double deltaF = (f - patchFr) / patchFr;
                 Complex zPatch = Complex.of(patchRin).div(Complex.of(1.0, 2.0 * patchQ * deltaF));
-                Complex s11 = zPatch.minus(Complex.of(z0)).div(zPatch.plus(Complex.of(z0)));
+                Complex zin = zPatch;
+                if (geom.feedLength > 0) {
+                    double beta = 2.0 * Math.PI * f / vpFeed;
+                    double bl = beta * geom.feedLength;
+                    double tanBl = Math.tan(bl);
+                    Complex num = zPatch.plus(Complex.of(0, z0 * tanBl));
+                    Complex den = Complex.of(1.0).plus(Complex.of(0, tanBl / z0).mul(zPatch));
+                    zin = num.div(den);
+                }
+                Complex s11 = zin.minus(Complex.of(z0)).div(zin.plus(Complex.of(z0)));
                 s11Map.put(f, s11);
-                zinMap.put(f, zPatch);
+                zinMap.put(f, zin);
             }
             return;
         }
@@ -348,12 +364,18 @@ public class QucsStrNTxSimulationPlan extends NTxSimulationPlanImpl {
     }
 
     public Complex computeS11(double freq) {
-        ensureQucsSolved(3.0e9, 4.4e9, 29);
+        double fCenter = (modelInfo != null && modelInfo.frequency > 0) ? modelInfo.frequency : freq;
+        double fmin = fCenter * 0.8;
+        double fmax = fCenter * 1.2;
+        ensureQucsSolved(fmin, fmax, 41);
         return interpolate(s11Map, freq);
     }
 
     public Complex computeZin(double freq) {
-        ensureQucsSolved(3.0e9, 4.4e9, 29);
+        double fCenter = (modelInfo != null && modelInfo.frequency > 0) ? modelInfo.frequency : freq;
+        double fmin = fCenter * 0.8;
+        double fmax = fCenter * 1.2;
+        ensureQucsSolved(fmin, fmax, 41);
         return interpolate(zinMap, freq);
     }
 
@@ -406,24 +428,35 @@ public class QucsStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         if (geom.isResonator) {
             double wFeed = geom.feedW * 1e3;
             double lFeed = Math.max(1.0, geom.feedLength * 1e3);
-            double wPatch = geom.resW * 1e3;
-            double lPatch = geom.resL * 1e3;
+            double uRes = geom.resW / geom.h;
+            double epsEffRes = (er + 1.0) / 2.0 + ((er - 1.0) / 2.0) / Math.sqrt(1.0 + 12.0 / uRes);
+            double dLRes = 0.412 * geom.h * ((epsEffRes + 0.3) / (epsEffRes - 0.258)) * ((uRes + 0.264) / (uRes + 0.8));
+            double dLNotch = geom.insetDepth > 0 ? geom.insetDepth * 0.135 : 0.0;
+            double leff = geom.resL + 2.0 * dLRes + dLNotch;
+            double c = 2.99792458e8;
+            double patchFr = c / (2.0 * leff * Math.sqrt(epsEffRes));
+            double patchRin = 50.0;
+            double patchQ = 35.0;
+
+            double w0 = 2.0 * Math.PI * patchFr;
+            double C_val = patchQ / (w0 * patchRin);
+            double L_val = 1.0 / (w0 * w0 * C_val);
 
             return String.format(Locale.US,
                     "# Qucs Netlist for Planar Resonator\n" +
                     ".SP:SP1 Type=\"lin\" Start=\"%.6eHz\" Stop=\"%.6eHz\" Points=\"%d\"\n" +
                     "Pac:P1 _net0 gnd Num=\"1\" Z=\"%.2fOhm\" P=\"0.001\" f=\"1e+09Hz\" Temp=\"26.85\"\n" +
                     "MLIN:Feed _net0 _net1 W=\"%.4f mm\" L=\"%.4f mm\" Subst=\"Sub1\" DispModel=\"%s\" Model=\"%s\"\n" +
-                    "MSTEP:Step1 _net1 _net2 W1=\"%.4f mm\" W2=\"%.4f mm\" Subst=\"Sub1\" MSModel=\"%s\"\n" +
-                    "MLIN:Patch _net2 _net3 W=\"%.4f mm\" L=\"%.4f mm\" Subst=\"Sub1\" DispModel=\"%s\" Model=\"%s\"\n" +
-                    "MOPEN:Open1 _net3 W=\"%.4f mm\" Subst=\"Sub1\" MSDispModel=\"%s\" MSModel=\"%s\" Model=\"Kirschning\"\n" +
+                    "R:R1 _net1 gnd R=\"%.2fOhm\" Temp=\"26.85\"\n" +
+                    "L:L1 _net1 gnd L=\"%.6eH\"\n" +
+                    "C:C1 _net1 gnd C=\"%.6eF\"\n" +
                     "SUBST:Sub1 er=\"%.4f\" h=\"%.4f mm\" t=\"%.4f mm\" tand=\"%.4f\" rho=\"%.3e\" D=\"%.3e\"\n",
                     fmin, fmax, count,
                     z0,
                     wFeed, lFeed, dispModel, model,
-                    wFeed, wPatch, model,
-                    wPatch, lPatch, dispModel, model,
-                    wPatch, dispModel, model,
+                    patchRin,
+                    L_val,
+                    C_val,
                     er, h * 1e3, t * 1e3, tand, rho, rough
             );
         }

@@ -11,4 +11,11 @@ public class AnalyticalModelInfo {
     public double z0Ref = 50.0;
     public boolean dispersion = false;
     public String geometryId;
+
+    public boolean isResonator = false;
+    public double resW = 13.5e-3;
+    public double resL = 9.9e-3;
+    public double feedLength = 0.0;
+    public double insetDepth = 0.0;
+    public double feedWidth = 3.1e-3;
 }

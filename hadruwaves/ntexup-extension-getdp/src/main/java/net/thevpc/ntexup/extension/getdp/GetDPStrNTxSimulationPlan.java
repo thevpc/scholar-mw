@@ -260,7 +260,8 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                     double uRes = geom.resW / geom.h;
                     double epsEffRes = (modelInfo.epsilonR + 1.0) / 2.0 + ((modelInfo.epsilonR - 1.0) / 2.0) / Math.sqrt(1.0 + 12.0 / uRes);
                     double dLRes = 0.412 * geom.h * ((epsEffRes + 0.3) / (epsEffRes - 0.258)) * ((uRes + 0.264) / (uRes + 0.8));
-                    double leff = geom.resL + 2.0 * dLRes;
+                    double dLNotch = geom.insetDepth > 0 ? geom.insetDepth * 0.135 : 0.0;
+                    double leff = geom.resL + 2.0 * dLRes + dLNotch;
                     patchFr = c / (2.0 * leff * Math.sqrt(epsEffRes));
                     double k0 = 2.0 * Math.PI * patchFr / c;
                     double lam0 = c / patchFr;
@@ -310,7 +311,8 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             double uRes = geom.resW / geom.h;
             double epsEffRes = (modelInfo.epsilonR + 1.0) / 2.0 + ((modelInfo.epsilonR - 1.0) / 2.0) / Math.sqrt(1.0 + 12.0 / uRes);
             double dLRes = 0.412 * geom.h * ((epsEffRes + 0.3) / (epsEffRes - 0.258)) * ((uRes + 0.264) / (uRes + 0.8));
-            double leff = geom.resL + 2.0 * dLRes;
+            double dLNotch = geom.insetDepth > 0 ? geom.insetDepth * 0.135 : 0.0;
+            double leff = geom.resL + 2.0 * dLRes + dLNotch;
             patchFr = Maths.C / (2.0 * leff * Math.sqrt(epsEffRes));
             patchRin = 50.0;
             patchQ = 35.0;

@@ -123,4 +123,67 @@ public class OpenEMSSimulationTest {
             System.out.printf("%-10.3f | %-30s | %-10.4f | %-10.2f dB%n", f / 1e9, zin, abs, db);
         }
     }
+
+    @Test
+    public void testUpper6GHzPatch() {
+        double er = 4.4;
+        double tand = 0.02;
+        double W = 13.5;
+        double wf = 3.1;
+        double gap = 0.8;
+        double h = 1.6;
+
+        for (double[] geom : new double[][]{
+                {9.4, 3.2, -8.0},
+                {9.4, 3.4, -8.0},
+                {9.45, 3.3, -8.0},
+        }) {
+            double L = geom[0];
+            double y0 = geom[1];
+            double feedYStart = geom[2];
+
+            OpenEMSParser.OpenEMSModelInfo info = new OpenEMSParser.OpenEMSModelInfo();
+            info.frequency = 6.775e9;
+            info.fc = 1.5e9;
+            info.numberOfTimesteps = 25000;
+            info.endCriteria = 1e-4;
+            info.epsilonR = er;
+            info.lossTangent = tand;
+
+            // Ground (-13 to 13, -11 to 15)
+            info.groundBoxes.add(new OpenEMSParser.OpenEMSBox(-13, -11, -1.635, 13, 15, -1.6, "ground", "ground"));
+            // Substrate
+            info.substrateBoxes.add(new OpenEMSParser.OpenEMSBox(-13, -11, -1.6, 13, 15, 0.0, "substrate", "substrate"));
+
+            // Patch - Left Flank
+            info.antennaBoxes.add(new OpenEMSParser.OpenEMSBox(-W / 2.0, 0.0, 0.0, -(wf / 2.0 + gap), y0, 0.035, "antenna", "antenna"));
+            // Patch - Right Flank
+            info.antennaBoxes.add(new OpenEMSParser.OpenEMSBox(wf / 2.0 + gap, 0.0, 0.0, W / 2.0, y0, 0.035, "antenna", "antenna"));
+            // Patch - Main Body
+            info.antennaBoxes.add(new OpenEMSParser.OpenEMSBox(-W / 2.0, y0, 0.0, W / 2.0, L, 0.035, "antenna", "antenna"));
+            // Feedline
+            info.antennaBoxes.add(new OpenEMSParser.OpenEMSBox(-wf / 2.0, feedYStart, 0.0, wf / 2.0, y0, 0.035, "antenna", "antenna"));
+            // Source
+            info.sourceBoxes.add(new OpenEMSParser.OpenEMSBox(-wf / 2.0, feedYStart, 0.0, wf / 2.0, feedYStart + 1.0, 0.035, "source", "source"));
+
+            OpenEMSStrNTxSimulationPlan plan = new OpenEMSStrNTxSimulationPlan("test-upper6g", "openems-upper6g", null);
+            plan.modelInfo = info;
+
+            System.out.printf("%n=== OPENEMS: L=%.2f mm, y0=%.2f mm ===%n", L, y0);
+            plan.runSimulation();
+
+            double minS11 = 0;
+            double minF = 0;
+            for (double f = 6.4e9; f <= 7.15e9; f += 0.025e9) {
+                Complex s11 = plan.computeS11(f);
+                double db = 20 * Math.log10(Math.max(1e-12, s11.absdbl()));
+                if (db < minS11) {
+                    minS11 = db;
+                    minF = f;
+                }
+                System.out.printf("  f=%.3f GHz | S11=%.2f dB%n", f / 1e9, db);
+            }
+            System.out.printf("--> MIN S11 = %.2f dB at %.3f GHz%n", minS11, minF / 1e9);
+        }
+    }
 }

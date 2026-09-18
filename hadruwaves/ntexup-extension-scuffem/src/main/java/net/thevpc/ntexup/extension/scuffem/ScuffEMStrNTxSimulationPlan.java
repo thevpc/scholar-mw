@@ -404,7 +404,8 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             double uRes = geom.resW / geom.h;
             double epsEffRes = (modelInfo.epsilonR + 1.0) / 2.0 + ((modelInfo.epsilonR - 1.0) / 2.0) / Math.sqrt(1.0 + 12.0 / uRes);
             double dL = 0.412 * geom.h * ((epsEffRes + 0.3) / (epsEffRes - 0.258)) * ((uRes + 0.264) / (uRes + 0.8));
-            double leff = geom.resL + 2.0 * dL;
+            double dLNotch = geom.insetDepth > 0 ? geom.insetDepth * 0.135 : 0.0;
+            double leff = geom.resL + 2.0 * dL + dLNotch;
             fr = Maths.C / (2.0 * leff * Math.sqrt(epsEffRes));
             rin = 50.0;
             q = 35.0;

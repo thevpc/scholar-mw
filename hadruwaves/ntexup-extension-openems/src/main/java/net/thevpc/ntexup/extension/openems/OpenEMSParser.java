@@ -428,7 +428,9 @@ public class OpenEMSParser {
             OpenEMSBox src = info.sourceBoxes.get(0);
             double portZ1 = subZmin;
             double portZ2 = subZmax;
-            double portYmid = (src.y1 + src.y2) / 2.0;
+            double xmid = (src.x1 + src.x2) / 2.0;
+            double ymid = (src.y1 + src.y2) / 2.0;
+            double zmid = (portZ1 + portZ2) / 2.0;
 
             // Excitation
             sb.append("      <Excitation Name=\"port1_exc\" Type=\"0\" Excite=\"0,0,-1\">\n");
@@ -446,20 +448,19 @@ public class OpenEMSParser {
             sb.append("        </Primitives>\n");
             sb.append("      </LumpedElement>\n\n");
 
-            // Voltage probe (line along Z)
-            double xmid = (src.x1 + src.x2) / 2.0;
+            // Voltage probe (line along Z through port center)
             sb.append("      <ProbeBox Name=\"port1_V\" Type=\"0\" Weight=\"-1\">\n");
             sb.append("        <Primitives>\n");
             sb.append(String.format(Locale.US, "          <Box Priority=\"100\"><P1 X=\"%.3f\" Y=\"%.3f\" Z=\"%.3f\" /><P2 X=\"%.3f\" Y=\"%.3f\" Z=\"%.3f\" /></Box>\n",
-                    xmid, portYmid, portZ1, xmid, portYmid, portZ2));
+                    xmid, ymid, portZ1, xmid, ymid, portZ2));
             sb.append("        </Primitives>\n");
             sb.append("      </ProbeBox>\n\n");
 
-            // Current probe (surface in X-Z plane perpendicular to Y propagation)
+            // Current probe (horizontal plane perpendicular to Z at zmid)
             sb.append("      <ProbeBox Name=\"port1_I\" Type=\"1\" Weight=\"1\">\n");
             sb.append("        <Primitives>\n");
             sb.append(String.format(Locale.US, "          <Box Priority=\"100\"><P1 X=\"%.3f\" Y=\"%.3f\" Z=\"%.3f\" /><P2 X=\"%.3f\" Y=\"%.3f\" Z=\"%.3f\" /></Box>\n",
-                    src.x1 - 1.0, portYmid, portZ1 - 0.5, src.x2 + 1.0, portYmid, portZ2 + 0.5));
+                    src.x1, src.y1, zmid, src.x2, src.y2, zmid));
             sb.append("        </Primitives>\n");
             sb.append("      </ProbeBox>\n\n");
         }

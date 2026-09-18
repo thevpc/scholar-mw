@@ -42,6 +42,33 @@ public class MicrostripAnalyticalModel {
     }
 
     public static Complex computeZin(AnalyticalModelInfo info, double f) {
+        if (info.isResonator) {
+            double uRes = info.resW / info.height;
+            double epsEffRes = epsEff0(uRes, info.epsilonR);
+            double dL = deltaLength(info.height, uRes, info.epsilonR, epsEffRes);
+            double dLNotch = info.insetDepth > 0 ? info.insetDepth * 0.135 : 0.0;
+            double leff = info.resL + 2.0 * dL + dLNotch;
+            double fr = C / (2.0 * leff * Math.sqrt(epsEffRes));
+            double rin = 50.0;
+            double q = 35.0;
+            double deltaF = (f - fr) / fr;
+            Complex zPatch = Complex.of(rin).div(Complex.of(1.0, 2.0 * q * deltaF));
+
+            if (info.feedLength > 0) {
+                double uFeed = info.feedWidth / info.height;
+                double epsFeed = epsEff0(uFeed, info.epsilonR);
+                double vpFeed = C / Math.sqrt(epsFeed);
+                double beta = 2.0 * Math.PI * f / vpFeed;
+                double bl = beta * info.feedLength;
+                double tanBl = Math.tan(bl);
+                double z0F = z0QuasiStatic(uFeed, epsFeed);
+                Complex num = zPatch.plus(Complex.of(0, z0F * tanBl));
+                Complex den = Complex.of(1.0).plus(Complex.of(0, tanBl / z0F).mul(zPatch));
+                return num.div(den);
+            }
+            return zPatch;
+        }
+
         double u = info.width / info.height;
         double eps0 = epsEff0(u, info.epsilonR);
         double epsF = info.dispersion ? epsEffDispersion(f, info.height, u, info.epsilonR, eps0) : eps0;
