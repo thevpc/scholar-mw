@@ -15,6 +15,7 @@
         <module>ntexup-extension-openems</module>
         <module>ntexup-extension-getdp</module>
         <module>ntexup-extension-qucs</module>
+        <module>ntexup-extension-scuffem</module>
     </modules>
 
 </project>
