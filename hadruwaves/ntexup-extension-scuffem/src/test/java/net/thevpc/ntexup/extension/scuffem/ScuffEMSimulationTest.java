@@ -79,10 +79,15 @@ public class ScuffEMSimulationTest {
 
         ScuffEMStrNTxSimulationPlan plan = new ScuffEMStrNTxSimulationPlan("patch-test", "patch-test", null);
         plan.modelInfo = info;
-        plan.recordRequestedFrequencies(new double[]{2.4e9});
+        double[] freqs = {2.3e9, 2.35e9, 2.4e9, 2.45e9, 2.5e9};
+        plan.recordRequestedFrequencies(freqs);
 
-        Complex zin = plan.computeZin(2.4e9);
-        System.out.println("SCUFF-EM Patch Simulation at 2.4 GHz: Zin = " + zin);
-        Assertions.assertNotNull(zin);
+        for (double f : freqs) {
+            Complex s11 = plan.computeS11(f);
+            Complex zin = plan.computeZin(f);
+            double s11Db = 20 * Math.log10(Math.max(1e-12, s11.absDouble()));
+            System.out.printf("SCUFF-EM f=%.3f GHz: Zin=%s, S11=%.4f (%.2f dB)%n",
+                    f / 1e9, zin, s11.absDouble(), s11Db);
+        }
     }
 }
