@@ -22,14 +22,10 @@ public class TestPatchNTxMom {
         Domain subDomain = Domain.ofPoints(-13 * Maths.MM, -11 * Maths.MM, 13 * Maths.MM, 15 * Maths.MM);
         Domain momDomain = subDomain.pad(20 * Maths.MM, 20 * Maths.MM);
 
-        for (double[] geom : new double[][]{
-                {9.40, 3.40, -8.5},
-                {9.45, 3.30, -8.5},
-                {9.45, 3.30, -8.0}
-        }) {
-            double L = geom[0] * Maths.MM;
-            double y0 = geom[1] * Maths.MM;
-            double feedStart = geom[2];
+        for (double y0_val : new double[]{2.8, 3.0, 3.2, 3.4}) {
+            double L = 9.75 * Maths.MM;
+            double y0 = y0_val * Maths.MM;
+            double feedStart = -8.5;
 
             Domain feedGeom = Domain.ofPoints(-wf / 2, feedStart * Maths.MM, wf / 2, y0);
             Domain sourceDomain = Domain.ofPoints(-wf / 2, feedStart * Maths.MM, wf / 2, (feedStart + 1.0) * Maths.MM);
@@ -54,8 +50,8 @@ public class TestPatchNTxMom {
                     TestFunctionsSymmetry.NO_SYMMETRY, new net.thevpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect(GridPrecision.LEAST_PRECISION)));
 
             mom.setTestFunctions(tf);
-            System.out.printf("%n=== MOM: L=%.2f mm, y0=%.2f mm, feedStart=%.1f mm ===%n", geom[0], geom[1], feedStart);
-            for (double f = 6.6e9; f <= 7.1e9; f += 0.05e9) {
+            System.out.printf("%n=== MOM: L=%.2f mm, y0=%.2f mm, feedStart=%.1f mm ===%n", L / Maths.MM, y0 / Maths.MM, feedStart);
+            for (double f = 6.75e9; f <= 6.90e9; f += 0.025e9) {
                 mom.setFrequency(f);
                 Complex zin = mom.inputImpedance().evalComplex();
                 Complex s11 = mom.sparameters().evalComplex();
