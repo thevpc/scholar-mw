@@ -211,6 +211,8 @@ public class TestFunctionsFactory extends AbstractFactory {
                     GridPrecision grid = GridPrecision.LEAST_PRECISION;
                     CellBoundaries xBoundaries = null;
                     CellBoundaries yBoundaries = null;
+                    double extraX = 0;
+                    double extraY = 0;
                     for (NElement param : uParams) {
                         if (param.isNamedPair()) {
                             NPairElement p = param.asPair().get();
@@ -273,11 +275,36 @@ public class TestFunctionsFactory extends AbstractFactory {
                                     grid = GridPrecision.parse(pv, evaluator).orDefault();
                                     break;
                                 }
+                                case "extra-length":
+                                case "extralength":
+                                case "delta-l":
+                                case "deltal":
+                                case "extra":
+                                case "extension": {
+                                    java.util.List<NElement> children = getChildren(pv);
+                                    if (children.size() >= 2) {
+                                        extraX = parseLength(children.get(0), 0.0);
+                                        extraY = parseLength(children.get(1), 0.0);
+                                    } else if (children.size() == 1) {
+                                        extraY = parseLength(children.get(0), 0.0);
+                                    } else {
+                                        extraY = parseLength(pv, 0.0);
+                                    }
+                                    break;
+                                }
                             }
                         }
                     }
                     if (geometry == null) {
                         geometry = _resolveGeometry(null, geometryResolver).orNull();
+                    }
+                    if (geometry != null && (extraX != 0 || extraY != 0)) {
+                        Domain d = geometry.getDomain();
+                        Domain extendedDomain = Domain.ofBounds(
+                                d.xmin() - extraX, d.xmax() + extraX,
+                                d.ymin() - extraY, d.ymax() + extraY
+                        );
+                        geometry = GeometryFactory.createPolygon(extendedDomain);
                     }
                     if (geometry == null) {
                         NMsg msg = NMsg.ofC("missing 'geometry'").asError();
@@ -547,6 +574,43 @@ public class TestFunctionsFactory extends AbstractFactory {
             return r;
         }
         NLog.ofScoped(TestFunctionsFactory.class).log(NMsg.ofC("invalid in array :  %s", value).asError());
+        return defaultValue;
+    }
+
+    private static java.util.List<NElement> getChildren(NElement e) {
+        if (e == null) return java.util.Collections.emptyList();
+        if (e.isArray()) {
+            return e.asArray().get().children();
+        }
+        try {
+            java.lang.reflect.Method m = e.getClass().getMethod("params");
+            return (java.util.List<NElement>) m.invoke(e);
+        } catch (Throwable ex) {
+            // ignore
+        }
+        return java.util.Collections.emptyList();
+    }
+
+    public static double parseLength(NElement value, double defaultValue) {
+        if (value == null || value.isNull()) {
+            return defaultValue;
+        }
+        if (value.isNumber()) {
+            net.thevpc.nuts.elem.NNumberElement n = value.asNumber().get();
+            double d = n.asDoubleValue().orElse(defaultValue);
+            String suffix = n.numberSuffix();
+            if (suffix != null) {
+                switch (suffix.toLowerCase().trim()) {
+                    case "mm": return d * 1e-3;
+                    case "um":
+                    case "µm": return d * 1e-6;
+                    case "cm": return d * 1e-2;
+                    case "m": return d;
+                    case "nm": return d * 1e-9;
+                }
+            }
+            return d;
+        }
         return defaultValue;
     }
 
