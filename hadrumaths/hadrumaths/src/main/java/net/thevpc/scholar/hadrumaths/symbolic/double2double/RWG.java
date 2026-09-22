@@ -32,10 +32,16 @@ public final class RWG extends AbstractDoubleToDouble {
             throw new IllegalArgumentException("Not an RWG polygon");
         }
         List<HPoint> points = polygon.getPoints();
-        FinalInfo i = init(max,
-                GeometryFactory.createPolygon(points.get(0), points.get(1), points.get(3)),
-                GeometryFactory.createPolygon(points.get(2), points.get(1), points.get(3))
-        );
+        HPolygon tri1 = GeometryFactory.createPolygon(points.get(0), points.get(1), points.get(3));
+        HPolygon tri2 = GeometryFactory.createPolygon(points.get(2), points.get(1), points.get(3));
+        // Guard: degenerate/near-degenerate triangles produce NaN area (Heron's formula cancellation)
+        // or area==0. Use !(> 0) rather than (<= 0) because NaN <= 0 is false in Java!
+        double a1 = tri1.toTriangle().area();
+        double a2 = tri2.toTriangle().area();
+        if (!(a1 > 0) || !(a2 > 0)) {
+            max = 0;
+        }
+        FinalInfo i = init(max, tri1, tri2);
         this.axis = axis;
         this.max = i.max;
         this.tr1 = i.tr1;
@@ -136,6 +142,13 @@ public final class RWG extends AbstractDoubleToDouble {
             DefaultHTriangle tmp = i.tr1;
             i.tr1 = i.tr2;
             i.tr2 = tmp;
+        }
+
+        double a1 = i.tr1.area();
+        double a2 = i.tr2.area();
+        if (!(a1 > 0) || !(a2 > 0) || Double.isNaN(a1) || Double.isNaN(a2)) {
+            i.max = 0;
+            i.domain = Domain.EMPTYXY;
         }
 
 //        double edgeLength = i.tr1.p2().distance(i.tr1.p3());
@@ -250,22 +263,30 @@ public final class RWG extends AbstractDoubleToDouble {
 
     public double evalX(double x, double y, BooleanMarker defined) {
         if (tr1.contains(x, y)) {
+            double a1 = tr1.area();
+            if (!(a1 > 0)) return 0;
             defined.set();
-            return max * (x - tr1.p1().x) * (edgeLength / (2.0 * tr1.area()));
+            return max * (x - tr1.p1().x) * (edgeLength / (2.0 * a1));
         } else if (tr2.contains(x, y)) {
+            double a2 = tr2.area();
+            if (!(a2 > 0)) return 0;
             defined.set();
-            return max * (tr2.p1().x - x) * (edgeLength / (2.0 * tr2.area()));
+            return max * (tr2.p1().x - x) * (edgeLength / (2.0 * a2));
         }
         return 0;
     }
 
     public double evalY(double x, double y, BooleanMarker defined) {
         if (tr1.contains(x, y)) {
+            double a1 = tr1.area();
+            if (!(a1 > 0)) return 0;
             defined.set();
-            return max * (y - tr1.p1().y) * (edgeLength / (2.0 * tr1.area()));
+            return max * (y - tr1.p1().y) * (edgeLength / (2.0 * a1));
         } else if (tr2.contains(x, y)) {
+            double a2 = tr2.area();
+            if (!(a2 > 0)) return 0;
             defined.set();
-            return max * (tr2.p1().y - y) * (edgeLength / (2.0 * tr2.area()));
+            return max * (tr2.p1().y - y) * (edgeLength / (2.0 * a2));
         }
         return 0;
     }

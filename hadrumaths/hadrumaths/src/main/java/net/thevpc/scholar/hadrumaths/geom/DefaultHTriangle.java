@@ -330,12 +330,19 @@ public class DefaultHTriangle extends AbstractHGeometry implements HTriangle {
 
     @Override
     public double area() {
-        double dp1p2, dp1p3, dp2p3, s;
-        dp1p2 = Maths.sqrt((p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y));
-        dp1p3 = Maths.sqrt((p3.x - p1.x) * (p3.x - p1.x) + (p3.y - p1.y) * (p3.y - p1.y));
-        dp2p3 = Maths.sqrt((p3.x - p2.x) * (p3.x - p2.x) + (p3.y - p2.y) * (p3.y - p2.y));
-        s = (1.0 / 2.0) * (dp1p2 + dp1p3 + dp2p3);
-        return (Maths.sqrt(s * (s - dp1p2) * (s - dp1p3) * (s - dp2p3)));
+        double v1x = p2.x - p1.x;
+        double v1y = p2.y - p1.y;
+        double v1z = p2.z - p1.z;
+
+        double v2x = p3.x - p1.x;
+        double v2y = p3.y - p1.y;
+        double v2z = p3.z - p1.z;
+
+        double cx = v1y * v2z - v1z * v2y;
+        double cy = v1z * v2x - v1x * v2z;
+        double cz = v1x * v2y - v1y * v2x;
+
+        return 0.5 * Maths.sqrt(cx * cx + cy * cy + cz * cz);
     }
 
     @Override

@@ -220,51 +220,10 @@ public final class RWGPattern extends AbstractGpPattern implements TriangularGpP
                 }
             }
         }
-        for (int i = 0; i < triangles.size(); i++) {
-            if (!visited.contains(i)) {
-                HTriangle t = triangles.get(i).getGeometry().toTriangle();
-
-                // Find longest edge
-                HPoint a = t.p1(), b = t.p2(), c = t.p3();
-                double d12 = a.distance(b);
-                double d23 = b.distance(c);
-                double d13 = a.distance(c);
-
-                HPoint tip, e1, e2;
-                if (d23 >= d12 && d23 >= d13) {
-                    // longest edge is b-c, tip is a
-                    tip = a; e1 = b; e2 = c;
-                } else if (d12 >= d23 && d12 >= d13) {
-                    // longest edge is a-b, tip is c
-                    tip = c; e1 = a; e2 = b;
-                } else {
-                    // longest edge is a-c, tip is b
-                    tip = b; e1 = a; e2 = c;
-                }
-
-                // Midpoint of longest edge
-                HPoint mid = HPoint.create((e1.x + e2.x) / 2.0, (e1.y + e2.y) / 2.0);
-
-                if (!GeomUtils.isValidTriangle(tip, e1, mid)) continue;
-                if (!GeomUtils.isValidTriangle(tip, e2, mid)) continue;
-
-                // Sort quad by angle around centroid for correct winding
-                List<HPoint> quad = new ArrayList<>(Arrays.asList(tip, e1, mid, e2));
-                final double cx = quad.stream().mapToDouble(p -> p.x).average().getAsDouble();
-                final double cy = quad.stream().mapToDouble(p -> p.y).average().getAsDouble();
-                quad.sort((a2, b2) -> Double.compare(
-                        Math.atan2(a2.y - cy, a2.x - cx),
-                        Math.atan2(b2.y - cy, b2.x - cx)
-                ));
-
-                HPolygon area = GeometryFactory.createPolygon(
-                        quad.get(0), quad.get(1), quad.get(2), quad.get(3)
-                );
-                if (!GeomUtils.is4Edges(area)) continue;
-
-                newZones.add(new MeshZone(area, MeshZoneShape.POLYGON, MeshZoneType.MAIN));
-            }
-        }
+        // Boundary triangles (no matched partner) are deliberately skipped.
+        // Creating a half-RWG from a single triangle by splitting its longest edge
+        // produces collinear sub-triangles with area=0, causing division-by-zero (NaN)
+        // in RWG.evalX/Y. Only fully-matched interior edge pairs produce valid RWG functions.
         return newZones;
     }
 
