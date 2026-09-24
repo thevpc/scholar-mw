@@ -5,6 +5,7 @@ import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.geom.HPoint;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.RWG;
+import net.thevpc.scholar.hadruwaves.mom.sources.PlanarSource;
 import net.thevpc.scholar.hadruwaves.mom.sources.planar.CstPlanarSource;
 
 import java.util.logging.Logger;
@@ -78,68 +79,79 @@ public class RWGDeltaGapBMatrix {
     }
 
     /**
-     * Builds the N x 1 excitation matrix B.
-     *
-     * <p>For RWG functions whose shared-edge midpoint is inside the source domain,
-     * uses delta-gap: B[n] = V0 * gamma_n.
-     * For all other functions, computes the scalar product with the spatial E_inc field.
-     *
-     * @param momStructure the MoM problem
-     * @param source       the planar source (provides voltage, domain, polarization)
-     * @param monitor      progress monitor
-     * @return ComplexMatrix of size N x 1
+     * Builds the N x 1 excitation matrix B for a single source.
      */
     public static ComplexMatrix buildB(MomStructure momStructure, CstPlanarSource source, ProgressMonitor monitor) {
+        return buildB(momStructure, new PlanarSource[]{source}, monitor);
+    }
+
+    /**
+     * Builds the N x P excitation matrix B for multiple planar sources (ports).
+     *
+     * <p>For each port p and each RWG basis function f[n]:
+     * If f[n] has its shared-edge midpoint inside port p's source domain,
+     * uses delta-gap: B[n, p] = V0_p * gamma_n.
+     * Otherwise computes spatial scalar product or sets 0.
+     *
+     * @param momStructure the MoM problem
+     * @param sources      the array of planar sources (P ports)
+     * @param monitor      progress monitor
+     * @return ComplexMatrix of size N x P
+     */
+    public static ComplexMatrix buildB(MomStructure momStructure, PlanarSource[] sources, ProgressMonitor monitor) {
         DoubleToVector[] tfs = momStructure.testFunctions().toArray();
         int N = tfs.length;
+        int P = sources.length;
+        Complex[][] b = new Complex[N][P];
 
-        Domain sourceDomain = source.getGeometryList().getDomain();
-        Axis polarization = source.getPolarization() != null ? source.getPolarization() : Axis.Y;
+        for (int p = 0; p < P; p++) {
+            PlanarSource src = sources[p];
+            if (src instanceof CstPlanarSource) {
+                CstPlanarSource csrc = (CstPlanarSource) src;
+                Domain sourceDomain = csrc.getGeometryList().getDomain();
+                Axis polarization = csrc.getPolarization() != null ? csrc.getPolarization() : Axis.Y;
 
-        // Reconstruct V0 from stored field strength x gap dimension
-        double V0;
-        if (polarization == Axis.X) {
-            V0 = source.getXvalue() * sourceDomain.xwidth();
-        } else {
-            V0 = source.getYvalue() * sourceDomain.ywidth();
-        }
-
-        // Lazy: only compute source function once if fallback is needed
-        DoubleToVector srcFn = null;
-
-        Complex[][] b = new Complex[N][1];
-        int portEdgeCount = 0;
-
-        for (int n = 0; n < N; n++) {
-            RWG rwg = tryUnwrapRWG(tfs[n]);
-            if (rwg != null) {
-                HPoint mid = rwg.getSharedEdgeMidpoint();
-                if (sourceDomain.contains(mid.x, mid.y)) {
-                    double gamma = rwg.deltaGapGamma(polarization);
-                    b[n][0] = Complex.of(V0 * gamma);
-                    portEdgeCount++;
+                // Reconstruct V0 from stored field strength x gap dimension
+                double V0;
+                if (polarization == Axis.X) {
+                    V0 = csrc.getXvalue() * sourceDomain.xwidth();
                 } else {
-                    b[n][0] = Complex.ZERO;
+                    V0 = csrc.getYvalue() * sourceDomain.ywidth();
                 }
-                continue;
-            }
-            // Fallback: standard spatial scalar product for non-RWG functions (e.g. mixed sinusoidal)
-            if (srcFn == null) {
-                srcFn = source.getFunction();
-            }
-            b[n][0] = Maths.scalarProduct(tfs[n], srcFn).toComplex();
-        }
 
-        // Diagnostics
-        if (portEdgeCount == 0) {
-            LOG.warning("RWGDeltaGapBMatrix: no port edges found inside source domain " + sourceDomain
-                    + ". The mesh may not have an edge within the feed region. "
-                    + "All entries computed via spatial integration (check mesh density).");
-        } else if (portEdgeCount == 1) {
-            LOG.info("RWGDeltaGapBMatrix: 1 port edge found -> standard single delta-gap. V0=" + V0);
-        } else {
-            LOG.info("RWGDeltaGapBMatrix: " + portEdgeCount + " port edges found."
-                    + " Distributed delta-gap across all matching edges. V0=" + V0);
+                DoubleToVector srcFn = null;
+                int portEdgeCount = 0;
+
+                for (int n = 0; n < N; n++) {
+                    RWG rwg = tryUnwrapRWG(tfs[n]);
+                    if (rwg != null) {
+                        HPoint mid = rwg.getSharedEdgeMidpoint();
+                        if (sourceDomain.contains(mid.x, mid.y)) {
+                            double gamma = rwg.deltaGapGamma(polarization);
+                            b[n][p] = Complex.of(V0 * gamma);
+                            portEdgeCount++;
+                        } else {
+                            b[n][p] = Complex.ZERO;
+                        }
+                        continue;
+                    }
+                    if (srcFn == null) {
+                        srcFn = csrc.getFunction();
+                    }
+                    b[n][p] = Maths.scalarProduct(tfs[n], srcFn).toComplex();
+                }
+
+                if (portEdgeCount == 0) {
+                    LOG.warning("RWGDeltaGapBMatrix: port " + p + ": no port edges found inside source domain " + sourceDomain);
+                } else {
+                    LOG.info("RWGDeltaGapBMatrix: port " + p + ": " + portEdgeCount + " port edges found. V0=" + V0);
+                }
+            } else {
+                DoubleToVector srcFn = src.getFunction();
+                for (int n = 0; n < N; n++) {
+                    b[n][p] = Maths.scalarProduct(tfs[n], srcFn).toComplex();
+                }
+            }
         }
 
         return Maths.matrix(b);
