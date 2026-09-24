@@ -847,6 +847,9 @@ public abstract class AbstractComplexMatrix extends AbstractMatrix<Complex> impl
             case DEFAULT: {
                 return inv(Maths.Config.getDefaultMatrixInverseStrategy());
             }
+            case REGULARIZED: {
+                return invRegularized();
+            }
             case BLOCK_SOLVE: {
                 return invBlock(InverseStrategy.SOLVE, Maths.Config.getMatrixBlockPrecision());
             }
@@ -873,6 +876,24 @@ public abstract class AbstractComplexMatrix extends AbstractMatrix<Complex> impl
 //            }
         }
         throw new UnsupportedOperationException("strategy " + st.toString());
+    }
+
+    @Override
+    public ComplexMatrix invRegularized() {
+        return invRegularized(1e-5);
+    }
+
+    @Override
+    public ComplexMatrix invRegularized(double alpha) {
+        int n = getRowCount();
+        ComplexMatrix Ah = transposeHermitian();
+        ComplexMatrix AhA = Ah.mul(this);
+        double maxDiag = 0;
+        for (int i = 0; i < n; i++) {
+            maxDiag = Math.max(maxDiag, AhA.get(i, i).absDouble());
+        }
+        ComplexMatrix regI = Maths.identityMatrix(n).mul(Complex.of(alpha * maxDiag));
+        return AhA.add(regI).inv(InverseStrategy.BLOCK_SOLVE).mul(Ah);
     }
 
     public ComplexMatrix invSolve() {

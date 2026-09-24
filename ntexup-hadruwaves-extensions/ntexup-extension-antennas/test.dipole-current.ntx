@@ -1,0 +1,7 @@
+import("ntexup-extension-antennas")
+
+page {
+    dipole-current(size: (400, 300), length: 0.5)
+    dipole-current(size: (400, 300), length: 1.0, animate-period: 2000, at: (450, 0))
+    dipole-current(size: (400, 300), length: 1.5, animate-period: 3000, at: (0, -350))
+}

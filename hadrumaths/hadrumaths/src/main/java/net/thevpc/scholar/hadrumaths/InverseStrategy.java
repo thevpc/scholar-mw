@@ -13,5 +13,6 @@ public enum InverseStrategy {
     BLOCK_SOLVE,
     BLOCK_GAUSS,
     //    OJALGO,
+    REGULARIZED,
     DEFAULT, //equivalent to BLOCK_OJALGO
 }

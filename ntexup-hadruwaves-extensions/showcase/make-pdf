@@ -1,0 +1,2 @@
+#!/bin/bash
+nuts -Ny ntexup pdf -o target/

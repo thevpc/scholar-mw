@@ -24,7 +24,21 @@ public class DefaultMatrixUnknownEvaluator implements MatrixUnknownEvaluator {
         ComplexMatrix Testcoeff;
 
         try {
-            Testcoeff = A_.solve(B_);
+            net.thevpc.scholar.hadrumaths.InverseStrategy strategy = str.getInvStrategy();
+            if (strategy == net.thevpc.scholar.hadrumaths.InverseStrategy.DEFAULT
+                    && net.thevpc.scholar.hadruwaves.mom.RWGDeltaGapBMatrix.hasRWG(str)) {
+                strategy = net.thevpc.scholar.hadrumaths.InverseStrategy.REGULARIZED;
+            }
+            if (strategy == net.thevpc.scholar.hadrumaths.InverseStrategy.REGULARIZED) {
+                Testcoeff = A_.invRegularized().mul(B_);
+            } else {
+                try {
+                    Testcoeff = A_.solve(B_);
+                } catch (Exception ex) {
+                    str.log().log(NMsg.ofC("Matrix A solve failed (%s), falling back to REGULARIZED: %s", ex.getMessage(), ex).asWarning());
+                    Testcoeff = A_.invRegularized().mul(B_);
+                }
+            }
         } catch (Exception e) {
             str.log().log(NMsg.ofC("Error DefaultMatrixUnknownEvaluator : " + e).asError(e));
 //            getLog().error("A=" + A_);

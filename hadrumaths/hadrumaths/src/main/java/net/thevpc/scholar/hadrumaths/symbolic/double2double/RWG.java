@@ -85,6 +85,45 @@ public final class RWG extends AbstractDoubleToDouble {
         return NElement.ofNamedObject("Rwg");
     }
 
+    /**
+     * Midpoint of the shared edge (p2–p3 of tr1 in canonical form).
+     * This is the geometric location of the delta-gap port.
+     */
+    public HPoint getSharedEdgeMidpoint() {
+        return HPoint.create(
+                (tr1.p2().x + tr1.p3().x) / 2.0,
+                (tr1.p2().y + tr1.p3().y) / 2.0
+        );
+    }
+
+    /**
+     * Geometric excitation factor γ for a delta-gap port excitation along the given axis.
+     * <p>
+     * For a unit voltage V0 applied across the shared edge, the B-vector entry is:
+     * <pre>  B[p] = V0 * deltaGapGamma(polarization)</pre>
+     * <p>
+     * Derivation from Rao-Wilton-Glisson (1982) eq. (4):
+     * <pre>  γ = (ℓ/2) * (ρ1/A1 + ρ2/A2)</pre>
+     * where ρ1 = |component of (M - tip1)| along polarization axis (T+ free vertex),
+     *       ρ2 = |component of (tip2 - M)| along polarization axis (T- free vertex),
+     *       M  = shared edge midpoint, A1/A2 = triangle areas.
+     *
+     * @param polarization Axis.X or Axis.Y polarization of the incident field
+     * @return gamma factor; 0 if this RWG is degenerate (area = 0)
+     */
+    public double deltaGapGamma(Axis polarization) {
+        if (!(max > 0)) return 0;
+        double a1 = tr1.area(), a2 = tr2.area();
+        if (!(a1 > 0) || !(a2 > 0)) return 0;
+        if (polarization == Axis.X) {
+            double sign = Math.signum(tr2.p1().x - tr1.p1().x);
+            return sign * Math.abs(tr1.p3().y - tr1.p2().y);
+        } else {
+            double sign = Math.signum(tr2.p1().y - tr1.p1().y);
+            return sign * Math.abs(tr1.p3().x - tr1.p2().x);
+        }
+    }
+
     private FinalInfo init(double max, HPolygon triangle1, HPolygon triangle2) {
         FinalInfo i = new FinalInfo();
         i.max = max;

@@ -30,13 +30,22 @@ public class ZinSerialEvaluator implements ZinEvaluator {
         ComplexMatrix ZinPaire = null;
         ComplexMatrix cMatrix = null;
         ComplexMatrix aInv = null;
-        double condA = A_.cond();  // or cond2() for spectral norm
-        str.log().log(NMsg.ofC("DEBUG: cond(A) = %s", condA));
-        if (condA > 1e12) {
-            str.log().log(NMsg.ofC("WARNING: Matrix A is ill-conditioned (cond=%.2e)", condA).asWarning());
-        }
         try {
-            aInv = A_.inv(str.getInvStrategy(), str.getCondStrategy(), str.getNormStrategy());
+            net.thevpc.scholar.hadrumaths.InverseStrategy strategy = str.getInvStrategy();
+            if (strategy == net.thevpc.scholar.hadrumaths.InverseStrategy.DEFAULT
+                    && net.thevpc.scholar.hadruwaves.mom.RWGDeltaGapBMatrix.hasRWG(str)) {
+                strategy = net.thevpc.scholar.hadrumaths.InverseStrategy.REGULARIZED;
+            }
+            if (strategy == net.thevpc.scholar.hadrumaths.InverseStrategy.REGULARIZED) {
+                aInv = A_.invRegularized();
+            } else {
+                try {
+                    aInv = A_.inv(strategy, str.getCondStrategy(), str.getNormStrategy());
+                } catch (Exception ex) {
+                    str.log().log(NMsg.ofC("Matrix A inversion failed (%s), falling back to REGULARIZED: %s", ex.getMessage(), ex).asWarning());
+                    aInv = A_.invRegularized();
+                }
+            }
             //should use conjugate transpose
 //            cMatrix = B_.transpose().multiply(aInv).multiply(B_); // Bt.inv(A).B
             cMatrix = B_.transposeHermitian().mul(aInv).mul(B_); // Bt.inv(A).B

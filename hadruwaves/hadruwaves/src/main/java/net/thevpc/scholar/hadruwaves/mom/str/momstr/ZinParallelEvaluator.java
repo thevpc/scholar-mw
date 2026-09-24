@@ -24,7 +24,22 @@ public class ZinParallelEvaluator implements ZinEvaluator {
         ComplexMatrix A_ = str.matrixA().monitor(mons[1]).evalMatrix();
         ComplexMatrix ZinCond;
         try {
-            ComplexMatrix aInv = A_.inv(str.getInvStrategy(),str.getCondStrategy(),str.getNormStrategy());
+            net.thevpc.scholar.hadrumaths.InverseStrategy strategy = str.getInvStrategy();
+            if (strategy == net.thevpc.scholar.hadrumaths.InverseStrategy.DEFAULT
+                    && net.thevpc.scholar.hadruwaves.mom.RWGDeltaGapBMatrix.hasRWG(str)) {
+                strategy = net.thevpc.scholar.hadrumaths.InverseStrategy.REGULARIZED;
+            }
+            ComplexMatrix aInv;
+            if (strategy == net.thevpc.scholar.hadrumaths.InverseStrategy.REGULARIZED) {
+                aInv = A_.invRegularized();
+            } else {
+                try {
+                    aInv = A_.inv(strategy, str.getCondStrategy(), str.getNormStrategy());
+                } catch (Exception ex) {
+                    str.log().log(NMsg.ofC("Matrix A inversion failed (%s), falling back to REGULARIZED: %s", ex.getMessage(), ex).asWarning());
+                    aInv = A_.invRegularized();
+                }
+            }
             //should use conjugate transpoe
             ComplexMatrix ZinPaire=B_.transposeHermitian().mul(aInv).mul(B_);
             ZinCond = ZinPaire.div(2);

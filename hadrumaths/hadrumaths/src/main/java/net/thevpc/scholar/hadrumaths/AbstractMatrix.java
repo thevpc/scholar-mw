@@ -974,6 +974,9 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
             case DEFAULT: {
                 return inv(Maths.Config.getDefaultMatrixInverseStrategy());
             }
+            case REGULARIZED: {
+                return invRegularized();
+            }
             case BLOCK_SOLVE: {
                 return invBlock(InverseStrategy.SOLVE, Maths.Config.getMatrixBlockPrecision());
             }
@@ -1001,6 +1004,25 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
 //            }
         }
         throw new UnsupportedOperationException("[" + getClass().getName() + "]" + "strategy " + st);
+    }
+
+    @Override
+    public Matrix<T> invRegularized() {
+        return invRegularized(1e-5);
+    }
+
+    @Override
+    public Matrix<T> invRegularized(double alpha) {
+        int n = getRowCount();
+        Matrix<T> Ah = transposeHermitian();
+        Matrix<T> AhA = Ah.mul(this);
+        VectorSpace<T> vs = Maths.getVectorSpace(getComponentType());
+        double maxDiag = 0;
+        for (int i = 0; i < n; i++) {
+            maxDiag = Math.max(maxDiag, vs.absdbl(AhA.get(i, i)));
+        }
+        Matrix<T> regI = getFactory().newIdentity(n).mul(vs.convert(alpha * maxDiag));
+        return AhA.add(regI).inv(InverseStrategy.BLOCK_SOLVE).mul(Ah);
     }
 
     public Matrix<T> invSolve() {

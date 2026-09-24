@@ -67,29 +67,43 @@ public final class RWGPattern extends AbstractGpPattern implements TriangularGpP
     }
 
     public DoubleToVector createFunction(int index, Domain globalDomain, MeshZone zone, MomStructure str, HintAxisType preferredAxisType) {
+        HPolygon tri1 = (HPolygon) zone.getProperty("tri1");
+        HPolygon tri2 = (HPolygon) zone.getProperty("tri2");
+        if (tri1 != null && tri2 != null) {
+            switch (xy) {
+                case X_ONLY:
+                    return _xf(index, tri1, tri2);
+                case Y_ONLY:
+                    return _yf(index, tri1, tri2);
+                case XY:
+                    return _xyf(index, tri1, tri2);
+                case XY_SEPARATED:
+                    return (index == 0) ? _xf(index, tri1, tri2) : _yf(index, tri1, tri2);
+            }
+        }
         HPolygon p = zone.getPolygon();
-        switch (xy){
-            case X_ONLY:{
+        switch (xy) {
+            case X_ONLY: {
                 return _xf(index, p);
             }
-            case Y_ONLY:{
+            case Y_ONLY: {
                 return _yf(index, p);
             }
-            case XY:{
+            case XY: {
                 return _xyf(index, p);
             }
-            case XY_SEPARATED:{
-                switch (index){
-                    case 0:{
+            case XY_SEPARATED: {
+                switch (index) {
+                    case 0: {
                         return _xf(index, p);
                     }
-                    case 1:{
+                    case 1: {
                         return _yf(index, p);
                     }
                 }
             }
         }
-        throw new IllegalArgumentException("xy="+xy);
+        throw new IllegalArgumentException("xy=" + xy);
     }
 
     private static DoubleToVector _yf(int index, HPolygon p) {
@@ -103,16 +117,44 @@ public final class RWGPattern extends AbstractGpPattern implements TriangularGpP
 
     private static DoubleToVector _xf(int index, HPolygon p) {
         return Maths.vector(
-                        (new RWG(Axis.X,1, p)),
+                        (new RWG(Axis.X, 1, p)),
                         (Maths.DZEROXY)
                 )
                 .setProperty("Type", "PolyedreX")
                 .setProperty("p", index).toDV();
     }
+
     private static DoubleToVector _xyf(int index, HPolygon p) {
         return Maths.vector(
                         new RWG(Axis.X, 1, p),
                         new RWG(Axis.Y, 1, p)
+                )
+                .setProperty("Type", "Polyedre")
+                .setProperty("p", index).toDV();
+    }
+
+    private static DoubleToVector _yf(int index, HPolygon tri1, HPolygon tri2) {
+        return Maths.vector(
+                        (Maths.DZEROXY),
+                        (new RWG(Axis.Y, 1, tri1, tri2))
+                )
+                .setProperty("Type", "PolyedreY")
+                .setProperty("p", index).toDV();
+    }
+
+    private static DoubleToVector _xf(int index, HPolygon tri1, HPolygon tri2) {
+        return Maths.vector(
+                        (new RWG(Axis.X, 1, tri1, tri2)),
+                        (Maths.DZEROXY)
+                )
+                .setProperty("Type", "PolyedreX")
+                .setProperty("p", index).toDV();
+    }
+
+    private static DoubleToVector _xyf(int index, HPolygon tri1, HPolygon tri2) {
+        return Maths.vector(
+                        new RWG(Axis.X, 1, tri1, tri2),
+                        new RWG(Axis.Y, 1, tri1, tri2)
                 )
                 .setProperty("Type", "Polyedre")
                 .setProperty("p", index).toDV();
@@ -182,39 +224,19 @@ public final class RWGPattern extends AbstractGpPattern implements TriangularGpP
                     if (tip1 == null || tip2 == null) {
                         throw new IllegalArgumentException("Problem");
                     }
-                    List<HPoint> quad = new ArrayList<>(Arrays.asList(tip1, inter.get(0), tip2, inter.get(1)));
-                    final double cx = quad.stream().mapToDouble(p -> p.x).average().getAsDouble();
-                    final double cy = quad.stream().mapToDouble(p -> p.y).average().getAsDouble();
+                    HPoint pEdge0 = inter.get(0);
+                    HPoint pEdge1 = inter.get(1);
+                    HPolygon tri1 = GeometryFactory.createPolygon(tip1, pEdge0, pEdge1);
+                    HPolygon tri2 = GeometryFactory.createPolygon(tip2, pEdge0, pEdge1);
+                    double a1 = tri1.toTriangle().area();
+                    double a2 = tri2.toTriangle().area();
+                    if (!(a1 > 1e-14) || !(a2 > 1e-14)) continue;
 
-                    quad.sort((a, b) -> Double.compare(
-                            Math.atan2(a.y - cy, a.x - cx),
-                            Math.atan2(b.y - cy, b.x - cx)
-                    ));
-                    HPolygon area = GeometryFactory.createPolygon(
-                            quad.get(0), quad.get(1), quad.get(2), quad.get(3)
-                    );
-                    if (!GeomUtils.is4Edges(area)) continue;
-                    double qarea = Math.abs(
-                            (quad.get(0).x - quad.get(2).x) * (quad.get(1).y - quad.get(3).y) -
-                                    (quad.get(1).x - quad.get(3).x) * (quad.get(0).y - quad.get(2).y)
-                    ) * 0.5;
-                    if (qarea < 1e-12) continue;
-
-                    {
-                        double ep3=1e-12;
-                        HGeometry u = area.subtractGeometry(gg);
-                        if(u.area()>ep3){
-                            continue;
-                        }
-                    }
-                    //final check
-                    if(!GeomUtils.isValidTriangle(quad.get(0), quad.get(1), quad.get(3))){
-                        continue;
-                    }
-                    if(!GeomUtils.isValidTriangle(quad.get(2), quad.get(1), quad.get(3))){
-                        continue;
-                    }
-                    newZones.add(new MeshZone(area, MeshZoneShape.POLYGON, MeshZoneType.MAIN));
+                    HGeometry unionGeom = tri1.addGeometry(tri2);
+                    MeshZone mz = new MeshZone(unionGeom, MeshZoneShape.POLYGON, MeshZoneType.MAIN);
+                    mz.setProperty("tri1", tri1);
+                    mz.setProperty("tri2", tri2);
+                    newZones.add(mz);
                     visited.add(i);
                     visited.add(j);
                 }

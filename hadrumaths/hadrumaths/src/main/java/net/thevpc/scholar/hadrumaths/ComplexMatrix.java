@@ -186,6 +186,10 @@ public interface ComplexMatrix extends Normalizable, Matrix<Complex> {
 
     ComplexMatrix inv(InverseStrategy st);
 
+    ComplexMatrix invRegularized();
+
+    ComplexMatrix invRegularized(double alpha);
+
     ComplexMatrix invSolve();
 
     /**

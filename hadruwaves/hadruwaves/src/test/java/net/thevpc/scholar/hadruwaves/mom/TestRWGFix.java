@@ -17,9 +17,9 @@ public class TestRWGFix {
         double er = 4.4;
         double h = 1.6 * Maths.MM;
         double W = 13.5 * Maths.MM;
-        double L = 9.4 * Maths.MM;
+        double L = 9.75 * Maths.MM;
         double wf = 3.1 * Maths.MM;
-        double g = 0.4 * Maths.MM;
+        double g = 0.8 * Maths.MM;
         double y0 = 3.4 * Maths.MM;
         double feedStart = -8.5 * Maths.MM;
 
@@ -37,8 +37,7 @@ public class TestRWGFix {
         double Esource = V0 / (1.0 * Maths.MM);
 
         MeshTriangulationOptions options = new MeshTriangulationOptions();
-        options.setMaxArea(4.0 * Maths.MM * Maths.MM);
-        options.setMaxCount(40);
+        options.setMaxArea(1.0 * Maths.MM * Maths.MM);
         GpRWG rwgTF = TestFunctionsFactory.createRWG(antenna, options);
 
         MomStructure mom = new MomStructure();
@@ -48,8 +47,8 @@ public class TestRWGFix {
         mom.setSecondBoxSpace(BoxSpace.matchedLoad(Material.VACUUM));
         mom.setProjectType(ProjectType.PLANAR_STRUCTURE);
         mom.setCircuitType(CircuitType.SERIAL);
-        mom.modeFunctions().setSize(1000);
-        mom.setSources(Maths.vector(Maths.expr(0), Maths.expr(Esource, sourceDomain)));
+        mom.modeFunctions().setSize(2000);
+        mom.setSources(CstPlanarSource.ofVoltage(1.0, sourceDomain, Axis.Y, Complex.of(50)));
         mom.setTestFunctions(rwgTF);
 
         long t0 = System.currentTimeMillis();
@@ -77,30 +76,30 @@ public class TestRWGFix {
                 (t3 - t2) / 1000.0, (double)(t3 - t2) / tfs.length);
         System.out.println("Total NaNs in scalar product: " + nanCount + " / " + tfs.length);
 
-        // Also evaluate input impedance at 6.0 GHz to verify matrix solver and condition number
+        // Also evaluate input impedance to verify matrix solver and condition number
+        mom.setFrequency(6.8 * Maths.GHZ);
         ComplexMatrix matA = mom.matrixA().evalMatrix();
         ComplexMatrix matB = mom.matrixB().evalMatrix();
         System.out.println("Matrix A size: " + matA.getRowCount() + "x" + matA.getColumnCount());
         System.out.println("Matrix B size: " + matB.getRowCount() + "x" + matB.getColumnCount());
         System.out.println("Matrix B norm: " + matB.norm1() + ", max: " + matB.maxAbs());
-
-        System.out.println("\n--- Frequency Sweep 5.5 to 7.5 GHz ---");
-        System.out.printf("%-10s %-25s %-12s%n", "Freq(GHz)", "Zin(Ohm)", "S11(dB)");
-        Complex z0 = Complex.of(50);
-        double minS11 = 0;
-        double fRes = 0;
-        for (double f = 5.5; f <= 7.5; f += 0.1) {
-            mom.setFrequency(f * Maths.GHZ);
-            ComplexMatrix zMat = mom.inputImpedance().evalMatrix();
-            Complex zin = zMat.get(0, 0);
-            Complex s11 = zin.minus(z0).div(zin.plus(z0));
-            double s11_db = 20 * Math.log10(s11.absDouble());
-            System.out.printf("%-10.2f %-25s %-12.2f%n", f, String.format("%.2f %+.2fj", zin.getReal(), zin.getImag()), s11_db);
-            if (s11_db < minS11) {
-                minS11 = s11_db;
-                fRes = f;
+        int nonZeroB = 0;
+        for (int i = 0; i < matB.getRowCount(); i++) {
+            Complex val = matB.get(i, 0);
+            if (!val.isZero()) {
+                nonZeroB++;
+                System.out.println("  B[" + i + "] = " + val);
             }
         }
-        System.out.printf("%nBest Resonance: %.2f GHz (S11 = %.2f dB)%n", fRes, minS11);
+        System.out.println("Non-zero entries in B: " + nonZeroB + " / " + matB.getRowCount());
+
+        System.out.println("\n--- Native Hadruwaves Zin Evaluation at 6.45 GHz ---");
+        mom.setFrequency(6.45 * Maths.GHZ);
+        ComplexMatrix zinNative = mom.inputImpedance().evalMatrix();
+        Complex zinVal = zinNative.get(0, 0);
+        Complex z0 = Complex.of(50);
+        Complex s11 = zinVal.minus(z0).div(zinVal.plus(z0));
+        System.out.println("  Native Zin at 6.45 GHz: " + zinVal);
+        System.out.printf("  Native S11 at 6.45 GHz: %.2f dB%n", 20 * Math.log10(s11.absDouble()));
     }
 }

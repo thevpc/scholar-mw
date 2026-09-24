@@ -229,6 +229,10 @@ public interface Matrix<T> extends Normalizable, Serializable, Iterable<Vector<T
 
     Matrix<T> inv(InverseStrategy st);
 
+    Matrix<T> invRegularized();
+
+    Matrix<T> invRegularized(double alpha);
+
     Matrix<T> invSolve();
 
     /**

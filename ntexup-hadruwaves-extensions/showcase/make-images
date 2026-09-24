@@ -1,0 +1,3 @@
+#!/bin/bash
+rm -Rf target/images
+nuts -Ny ntexup image -o target/images/
