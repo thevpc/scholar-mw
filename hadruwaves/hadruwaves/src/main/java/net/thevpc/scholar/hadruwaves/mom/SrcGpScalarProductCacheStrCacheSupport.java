@@ -32,9 +32,9 @@ class SrcGpScalarProductCacheStrCacheSupport extends StrCacheSupport<ComplexMatr
         // It checks each basis function: RWG edges inside source domain use delta-gap excitation;
         // all others fall back transparently to the standard spatial scalar product.
         // This handles pure GpRWG, mixed ListTestFunctions, and pure sinusoid sets correctly.
-        if (ps.getPlanarSources() != null && ps.getPlanarSources().length == 1
-                && ps.getPlanarSources()[0] instanceof CstPlanarSource) {
-            return RWGDeltaGapBMatrix.buildB(momStructure, (CstPlanarSource) ps.getPlanarSources()[0], getMonitor());
+        if (ps.getPlanarSources() != null && ps.getPlanarSources().length >= 1
+                && RWGDeltaGapBMatrix.hasRWG(momStructure)) {
+            return RWGDeltaGapBMatrix.buildB(momStructure, ps.getPlanarSources(), getMonitor());
         }
         // Legacy path: full spatial integral for all basis functions
         DoubleToVector[] _g = ps.getSourceFunctions();

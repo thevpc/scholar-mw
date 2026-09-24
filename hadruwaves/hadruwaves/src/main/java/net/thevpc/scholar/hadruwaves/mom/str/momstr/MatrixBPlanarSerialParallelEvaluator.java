@@ -28,8 +28,8 @@ public class MatrixBPlanarSerialParallelEvaluator implements MatrixBEvaluator {
         }
         final DoubleToVector[] _g = gpTestFunctions.toArray();
         final DoubleToVector[] _src = planarSources1.getSourceFunctions();
-        if (_src.length != 1) {
-            throw new IllegalArgumentException("Unsupported Sources count " + _src.length);
+        if (_src.length == 0) {
+            throw new IllegalArgumentException("No sources defined");
         }
         ProgressMonitor[] mon = ProgressMonitors.split(monitor, new double[]{2, 8});
         final ComplexMatrix sp = str.getTestSourceScalarProducts(mon[0]);
