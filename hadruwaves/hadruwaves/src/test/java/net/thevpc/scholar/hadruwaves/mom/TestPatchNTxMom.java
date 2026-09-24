@@ -51,14 +51,21 @@ public class TestPatchNTxMom {
 
             mom.setTestFunctions(tf);
             System.out.printf("%n=== MOM: L=%.2f mm, y0=%.2f mm, feedStart=%.1f mm ===%n", L / Maths.MM, y0 / Maths.MM, feedStart);
-            for (double f = 6.75e9; f <= 6.90e9; f += 0.025e9) {
-                mom.setFrequency(f);
-                Complex zin = mom.inputImpedance().evalComplex();
-                Complex s11 = mom.sparameters().evalComplex();
-                double s11db = 20 * Math.log10(Math.max(1e-9, s11.absdbl()));
-                System.out.printf("  f=%-6.3f GHz | Zin=%-25s | R=%-6.1f | X=%-6.1f | S11=%-6.2f dB%n",
-                        f / 1e9, zin, zin.realdbl(), zin.imagdbl(), s11db);
+            mom.setFrequency(6.8e9);
+            ComplexMatrix matA = mom.matrixA().evalMatrix();
+            ComplexMatrix matB = mom.matrixB().evalMatrix();
+            ComplexMatrix aInv = matA.inv();
+            ComplexMatrix cMat = matB.transposeHermitian().mul(aInv).mul(matB);
+            System.out.println("DEBUG Sinusoid at 6.8 GHz:");
+            System.out.println("  Matrix A size: " + matA.getRowCount() + "x" + matA.getColumnCount());
+            System.out.println("  Matrix A max abs: " + matA.maxAbs() + ", A[0,0]=" + matA.get(0, 0));
+            System.out.println("  Matrix B max abs: " + matB.maxAbs());
+            for (int bi = 0; bi < matB.getRowCount(); bi++) {
+                if (!matB.get(bi, 0).isZero()) System.out.println("    B[" + bi + "] = " + matB.get(bi, 0));
             }
+            System.out.println("  cMat (Bt * Ainv * B): " + cMat.get(0, 0));
+            System.out.println("  Zin = 1 / cMat: " + cMat.get(0, 0).inv());
+            break; // only 1 iteration
         }
     }
 }

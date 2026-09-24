@@ -42,23 +42,24 @@ public class DipoleCurrentBuilder implements NTxNodeBuilder {
                 .asPaint()
                 .orElse(Color.DARK_GRAY); // Sensible default for wire color
 
-        // Animation logic
+        // Animation logic - following the pattern from NTxPlot2DData.java
         double timeFactor = 1.0; // Default for print mode (cos(ωt) = 1)
         if (rendererContext.isAnimate()) {
             long pageStartTime = rendererContext.pageStartTime();
             long now = System.currentTimeMillis();
             long elapsed = now - pageStartTime;
             double phase = 2 * Math.PI * ((elapsed % animatePeriodMs) / (double) animatePeriodMs);
-            timeFactor = Math.cos(phase);
+            timeFactor = Math.cos(phase); // Oscillates between -1 and 1
         }
 
-        // Get bounds for positioning
+        // Get bounds for positioning - use selfBounds2D for the component's display area
         NTxBounds2D bounds = rendererContext.selfBounds2D();
         double centerX = bounds.minX() + bounds.widthX() / 2.0;
         double centerY = bounds.minY() + bounds.widthY() / 2.0;
 
-        // Scale factors - dipole length is in wavelengths, we'll map to component height
-        double wavelength = bounds.widthY(); // Use height as wavelength reference
+        // Scale factors - dipole length is in wavelengths
+        // Map wavelength to a reasonable fraction of the component's height to ensure visibility
+        double wavelength = bounds.widthY() * 0.6; // Use 60% of height for wavelength
         double dipoleLength = length * wavelength; // Actual length in pixel units
 
         // Half-length for symmetry
@@ -71,7 +72,7 @@ public class DipoleCurrentBuilder implements NTxNodeBuilder {
         // Number of samples for smooth curve
         int samples = 60;
 
-        // Build wire path (centered vertically)
+        // Build wire path (centered vertically in the component)
         wirePath.moveTo(centerX, centerY - halfLength);
         wirePath.lineTo(centerX, centerY + halfLength);
 
@@ -81,21 +82,21 @@ public class DipoleCurrentBuilder implements NTxNodeBuilder {
             // Position along dipole from -halfLength to +halfLength
             double z = -halfLength + (double) i * dipoleLength / samples;
 
-            // Normalized position from -0.5 to +0.5
-            double zNormalized = z / halfLength;
-
             // Calculate standing wave envelope I(z) = I0 * sin(k * (ℓ/2 - |z|))
             // where k = 2π/λ and ℓ is dipole length
             double k = 2 * Math.PI / wavelength; // wavenumber
             double envelope = Math.sin(k * (halfLength - Math.abs(z)));
 
             // Apply time oscillation: I(z,t) = I(z) * cos(ωt)
+            // timeFactor oscillates between -1 and 1, creating the breathing effect
             double current = envelope * timeFactor;
 
-            // Map to coordinates: x position varies with current, y position fixed along wire
-            double offset = current * bounds.widthX() * 0.35; // 35% of width for max bulge
+            // Map to coordinates:
+            // - y position varies along the wire (vertical position)
+            // - x position varies with current strength (horizontal displacement from wire center)
+            double y = centerY - z; // y increases downward in graphics, so subtract z to go up
+            double offset = current * bounds.widthX() * 0.25; // 25% of width for max bulge
             double x = centerX + offset;
-            double y = centerY - z; // Note: y increases downward in graphics, so we subtract z
 
             if (firstPoint) {
                 currentPath.moveTo(x, y);

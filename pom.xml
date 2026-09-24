@@ -9,6 +9,7 @@
         <module>hadruplot</module>
         <module>hadrumaths</module>
         <module>hadruwaves</module>
+        <module>ntexup-hadruwaves-extensions</module>
         <module>tutorials/hadruwaves-tutorial-scala</module>
         <module>tutorials/hadruwaves-tutorial-java</module>
         <module>tutorials/hadruwaves-tutorial-hl</module>

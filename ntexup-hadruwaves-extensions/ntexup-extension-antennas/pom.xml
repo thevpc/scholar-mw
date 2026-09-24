@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>net.thevpc.ntexup</groupId>
+    <artifactId>ntexup-extension-antennas</artifactId>
+    <version>1.0.0.0</version>
+    <packaging>jar</packaging>
+    <name>ntexup :: Extension :: Antennas</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.release>17</maven.compiler.release>
+        <maven.compiler.parameters>true</maven.compiler.parameters>
+        <github.global.server>github</github.global.server>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.thevpc.ntexup</groupId>
+            <artifactId>ntexup-api</artifactId>
+            <version>1.0.0.0</version>
+        </dependency>
+        <!-- For testing only -->
+        <dependency>
+            <groupId>net.thevpc.ntexup</groupId>
+            <artifactId>ntexup-engine</artifactId>
+            <version>1.0.0.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+        <repository>
+            <id>thevpc</id>
+            <url>https://maven.thevpc.net</url>
+        </repository>
+    </repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.2</version>
+            </plugin>
+        </plugins>
+    </build>
+</project>
