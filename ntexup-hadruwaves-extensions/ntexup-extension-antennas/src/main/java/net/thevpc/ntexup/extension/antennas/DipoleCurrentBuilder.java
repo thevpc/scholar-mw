@@ -10,6 +10,7 @@ import net.thevpc.ntexup.api.document.style.NTxPropName;
 import net.thevpc.ntexup.api.renderer.NTxGraphics;
 import net.thevpc.ntexup.api.renderer.NTxRendererContext;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.GeneralPath;
 
@@ -116,5 +117,16 @@ public class DipoleCurrentBuilder implements NTxNodeBuilder {
         g.draw(currentPath);
 
         rendererContext.drawContour();
+        if(rendererContext.isAnimate()) {
+            startRepaintTick(rendererContext);
+        }
+    }
+    private void startRepaintTick(NTxRendererContext rendererContext) {
+        Timer timer = new Timer(40, e -> {
+            rendererContext.repaint();
+//            System.out.println("repaint");
+        });
+        timer.setCoalesce(true);
+        timer.start();
     }
 }

@@ -1,0 +1,2 @@
+#!/bin/bash
+nuts-dev --java-debug -Nby ntexup show
