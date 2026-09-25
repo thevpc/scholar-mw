@@ -77,6 +77,10 @@ public class QucsParser {
             }
         }
 
+        if (info.geometryId == null) {
+            info.geometryId = NTxMwSimulationUtils.findSceneGeometryId(args);
+        }
+
         if (info.geometryId != null) {
             String finalGeometryId = info.geometryId;
             NTxNode scene3D = context.findNodeByProperty("name",
@@ -84,6 +88,8 @@ public class QucsParser {
             ).orNull();
 
             if (scene3D != null && Objects.equals(scene3D.type(), "scene3d")) {
+                info.sceneNode = scene3D;
+                info.resolutionContext = context;
                 parseScene3D(scene3D, context, info);
             } else {
                 context.log(NMsg.ofC("Qucs: 'geometry' %s could not be resolved in the current scope", finalGeometryId).asError());
@@ -139,6 +145,7 @@ public class QucsParser {
                         double z2 = z1 + zw;
 
                         QucsModelInfo.QucsBox box = new QucsModelInfo.QucsBox(x1, y1, z1, x2, y2, z2, name, nodeType);
+                        box.isPatch = NTxMwSimulationUtils.isSimulationNode(child, "patch");
                         if (isGround) {
                             info.groundBoxes.add(box);
                         } else if (isSubstrate || (!isAntenna && !isSource && z2 <= 0 && zw > 0.0001)) {

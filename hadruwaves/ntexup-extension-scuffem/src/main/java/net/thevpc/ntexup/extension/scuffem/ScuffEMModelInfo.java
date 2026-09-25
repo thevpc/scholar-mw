@@ -1,5 +1,8 @@
 package net.thevpc.ntexup.extension.scuffem;
 
+import net.thevpc.ntexup.api.document.node.NTxNode;
+import net.thevpc.ntexup.api.eval.NTxResolutionContext;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +13,7 @@ public class ScuffEMModelInfo {
         public double x2, y2, z2;
         public String name;
         public String type;
+        public boolean isPatch = false;
 
         public ScuffEMBox(double x1, double y1, double z1, double x2, double y2, double z2, String name, String type) {
             this.x1 = Math.min(x1, x2);
@@ -41,6 +45,8 @@ public class ScuffEMModelInfo {
     public double meshResolution = 2.5; // mm
     public String dockerImage = "thevpc/scuff-em:latest";
     public String mode = "auto";
+    public NTxNode sceneNode;
+    public NTxResolutionContext resolutionContext;
 
     public List<ScuffEMBox> groundBoxes = new ArrayList<>();
     public List<ScuffEMBox> substrateBoxes = new ArrayList<>();

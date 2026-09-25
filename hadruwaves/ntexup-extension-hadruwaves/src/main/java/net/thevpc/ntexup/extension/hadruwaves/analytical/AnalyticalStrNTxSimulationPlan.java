@@ -57,17 +57,45 @@ public class AnalyticalStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         return d.computeString();
     }
 
-    public Complex computeZin(double freq) {
-        if (modelInfo == null) {
-            modelInfo = new AnalyticalModelInfo();
+    private net.thevpc.ntexup.extension.mwsimulator.MicrostripCircuitModel circuitModel;
+
+    public synchronized net.thevpc.ntexup.extension.mwsimulator.MicrostripCircuitModel getCircuitModel() {
+        if (circuitModel == null) {
+            if (modelInfo == null) {
+                modelInfo = new AnalyticalModelInfo();
+            }
+            circuitModel = net.thevpc.ntexup.extension.mwsimulator.MicrostripCircuitModel.parse(
+                    modelInfo.sceneNode,
+                    modelInfo.resolutionContext,
+                    modelInfo.epsilonR,
+                    modelInfo.lossTangent,
+                    modelInfo.z0Ref
+            );
         }
-        return MicrostripAnalyticalModel.computeZin(modelInfo, freq);
+        return circuitModel;
+    }
+
+    public Complex computeZin(double freq) {
+        net.thevpc.ntexup.extension.mwsimulator.MicrostripCircuitModel model = getCircuitModel();
+        if (model.patches.isEmpty() && model.lines.isEmpty()) {
+            if (modelInfo == null) {
+                modelInfo = new AnalyticalModelInfo();
+            }
+            return MicrostripAnalyticalModel.computeZin(modelInfo, freq);
+        }
+        net.thevpc.ntexup.extension.mwsimulator.MicrostripCircuitModel.ComplexNum z = model.computeZin(freq);
+        return Complex.of(z.re, z.im);
     }
 
     public Complex computeS11(double freq) {
-        if (modelInfo == null) {
-            modelInfo = new AnalyticalModelInfo();
+        net.thevpc.ntexup.extension.mwsimulator.MicrostripCircuitModel model = getCircuitModel();
+        if (model.patches.isEmpty() && model.lines.isEmpty()) {
+            if (modelInfo == null) {
+                modelInfo = new AnalyticalModelInfo();
+            }
+            return MicrostripAnalyticalModel.computeS11(modelInfo, freq);
         }
-        return MicrostripAnalyticalModel.computeS11(modelInfo, freq);
+        net.thevpc.ntexup.extension.mwsimulator.MicrostripCircuitModel.ComplexNum s = model.computeS11(freq);
+        return Complex.of(s.re, s.im);
     }
 }

@@ -16,7 +16,9 @@ import net.thevpc.nuts.util.NOptional;
 import net.thevpc.scholar.hadrumaths.AbstractFactory;
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.Domain;
+import net.thevpc.scholar.hadrumaths.geom.DefaultHGeometryList;
 import net.thevpc.scholar.hadrumaths.geom.HGeometry;
+import net.thevpc.scholar.hadrumaths.geom.HGeometryList;
 import net.thevpc.scholar.hadrumaths.geom.HPoint;
 import net.thevpc.scholar.hadrumaths.GeometryFactory;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZoneTypeFilter;
@@ -299,12 +301,26 @@ public class TestFunctionsFactory extends AbstractFactory {
                         geometry = _resolveGeometry(null, geometryResolver).orNull();
                     }
                     if (geometry != null && (extraX != 0 || extraY != 0)) {
-                        Domain d = geometry.getDomain();
-                        Domain extendedDomain = Domain.ofBounds(
-                                d.xmin() - extraX, d.xmax() + extraX,
-                                d.ymin() - extraY, d.ymax() + extraY
-                        );
-                        geometry = GeometryFactory.createPolygon(extendedDomain);
+                        if (geometry instanceof HGeometryList) {
+                            HGeometryList oldList = (HGeometryList) geometry;
+                            HGeometryList newList = new DefaultHGeometryList();
+                            for (HGeometry g : oldList) {
+                                Domain d = g.getDomain();
+                                Domain extendedDomain = Domain.ofBounds(
+                                        d.xmin() - extraX, d.xmax() + extraX,
+                                        d.ymin() - extraY, d.ymax() + extraY
+                                );
+                                newList.add(GeometryFactory.createPolygon(extendedDomain));
+                            }
+                            geometry = newList;
+                        } else {
+                            Domain d = geometry.getDomain();
+                            Domain extendedDomain = Domain.ofBounds(
+                                    d.xmin() - extraX, d.xmax() + extraX,
+                                    d.ymin() - extraY, d.ymax() + extraY
+                            );
+                            geometry = GeometryFactory.createPolygon(extendedDomain);
+                        }
                     }
                     if (geometry == null) {
                         NMsg msg = NMsg.ofC("missing 'geometry'").asError();

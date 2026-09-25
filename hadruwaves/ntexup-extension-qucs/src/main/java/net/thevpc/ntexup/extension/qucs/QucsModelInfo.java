@@ -1,5 +1,8 @@
 package net.thevpc.ntexup.extension.qucs;
 
+import net.thevpc.ntexup.api.document.node.NTxNode;
+import net.thevpc.ntexup.api.eval.NTxResolutionContext;
+
 public class QucsModelInfo {
 
     public static class QucsBox {
@@ -7,6 +10,7 @@ public class QucsModelInfo {
         public double x2, y2, z2;
         public String name;
         public String type;
+        public boolean isPatch = false;
 
         public QucsBox(double x1, double y1, double z1, double x2, double y2, double z2, String name, String type) {
             this.x1 = Math.min(x1, x2);
@@ -41,6 +45,8 @@ public class QucsModelInfo {
     public String model = "Hammerstad";
     public String dockerImage = QucsProvisioner.DEFAULT_DOCKER_IMAGE;
     public String geometryId;
+    public NTxNode sceneNode;
+    public NTxResolutionContext resolutionContext;
 
     public java.util.List<QucsBox> groundBoxes = new java.util.ArrayList<>();
     public java.util.List<QucsBox> substrateBoxes = new java.util.ArrayList<>();

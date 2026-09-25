@@ -1,6 +1,7 @@
 package net.thevpc.ntexup.extension.scuffem;
 
 import net.thevpc.ntexup.api.renderer.NTxRendererContext;
+import net.thevpc.ntexup.extension.mwsimulator.MicrostripCircuitModel;
 import net.thevpc.ntexup.extension.mwsimulator.NTxMwSimulationUtils;
 import net.thevpc.ntexup.extension.mwsimulator.NTxSimulationPlanImpl;
 import net.thevpc.ntexup.extension.mwsimulator.NTxSolverRun;
@@ -20,25 +21,27 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
 
     public ScuffEMModelInfo modelInfo;
     private boolean solved = false;
+    private MicrostripCircuitModel circuitModel;
 
     private final TreeSet<Double> requestedFrequencies = new TreeSet<>();
     private final TreeMap<Double, Complex> s11Results = new TreeMap<>();
     private final TreeMap<Double, Complex> zinResults = new TreeMap<>();
 
     public static class RebuiltGeometry {
-        public double feedW = 3.0e-3;
+        public double feedW = 0.0;
         public double feedCenter = 0.0;
-        public double lineLength = 30.0e-3;
+        public double lineLength = 0.0;
         public double portY = 0.0;
-        public double portX1 = -1.5e-3;
-        public double portX2 = 1.5e-3;
-        public double h = 1.6e-3;
+        public double portX1 = 0.0;
+        public double portX2 = 0.0;
+        public double h = 0.0;
 
         public boolean isResonator = false;
         public double resW = 0.0;
         public double resL = 0.0;
         public double feedLength = 0.0;
         public double insetDepth = 0.0;
+        public int numElements = 1;
     }
 
     public ScuffEMStrNTxSimulationPlan(String id, String name, NTxRendererContext rendererContext) {
@@ -127,38 +130,58 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         double totalLength = antYmax > antYmin ? (antYmax - geom.portY) : 30e-3;
         geom.lineLength = totalLength;
 
-        double widthThreshold = 1.25 * geom.feedW;
-        double wideXmin = Double.MAX_VALUE, wideXmax = -Double.MAX_VALUE;
-        double wideYmin = Double.MAX_VALUE, wideYmax = -Double.MAX_VALUE;
-        boolean hasWideSection = false;
-
+        java.util.List<ScuffEMModelInfo.ScuffEMBox> candidateBoxes = new java.util.ArrayList<>();
         for (ScuffEMModelInfo.ScuffEMBox b : modelInfo.antennaBoxes) {
-            if (b.width() > widthThreshold) {
-                hasWideSection = true;
-                wideXmin = Math.min(wideXmin, b.xMin());
-                wideXmax = Math.max(wideXmax, b.xMax());
-                wideYmin = Math.min(wideYmin, b.yMin());
-                wideYmax = Math.max(wideYmax, b.yMax());
+            if (b.isPatch) {
+                candidateBoxes.add(b);
+            }
+        }
+        if (candidateBoxes.isEmpty()) {
+            double widthThreshold = 1.25 * geom.feedW;
+            for (ScuffEMModelInfo.ScuffEMBox b : modelInfo.antennaBoxes) {
+                if (b.width() > widthThreshold && b.length() > 1.5 * geom.feedW) {
+                    candidateBoxes.add(b);
+                }
             }
         }
 
-        if (hasWideSection) {
-            geom.isResonator = true;
-            geom.resW = wideXmax - wideXmin;
-            geom.resL = wideYmax - wideYmin;
-            geom.feedLength = Math.max(0.0, wideYmin - geom.portY);
+        if (!candidateBoxes.isEmpty()) {
+            candidateBoxes.sort(java.util.Comparator.comparingDouble(ScuffEMModelInfo.ScuffEMBox::xMin));
+            java.util.List<ScuffEMModelInfo.ScuffEMBox> clusters = new java.util.ArrayList<>();
+            for (ScuffEMModelInfo.ScuffEMBox b : candidateBoxes) {
+                if (clusters.isEmpty()) {
+                    clusters.add(new ScuffEMModelInfo.ScuffEMBox(b.x1, b.y1, b.z1, b.x2, b.y2, b.z2, b.name, b.type));
+                } else {
+                    ScuffEMModelInfo.ScuffEMBox last = clusters.get(clusters.size() - 1);
+                    if (b.xMin() <= last.xMax() + 4e-3) {
+                        last.x1 = Math.min(last.x1, b.xMin());
+                        last.x2 = Math.max(last.x2, b.xMax());
+                        last.y1 = Math.min(last.y1, b.yMin());
+                        last.y2 = Math.max(last.y2, b.yMax());
+                    } else {
+                        clusters.add(new ScuffEMModelInfo.ScuffEMBox(b.x1, b.y1, b.z1, b.x2, b.y2, b.z2, b.name, b.type));
+                    }
+                }
+            }
 
-            if (feedBox != null && feedBox.yMax() > wideYmin) {
-                geom.insetDepth = Math.min(geom.resL, feedBox.yMax() - wideYmin);
+            geom.isResonator = true;
+            geom.numElements = clusters.size();
+            geom.resW = clusters.get(0).width();
+            geom.resL = clusters.get(0).length();
+            geom.feedLength = Math.max(0.0, clusters.get(0).yMin() - geom.portY);
+
+            if (feedBox != null && feedBox.yMax() > clusters.get(0).yMin()) {
+                geom.insetDepth = Math.min(geom.resL, feedBox.yMax() - clusters.get(0).yMin());
             } else {
                 for (ScuffEMModelInfo.ScuffEMBox b : modelInfo.antennaBoxes) {
-                    if (b != feedBox && b.width() < (geom.resW * 0.45) && b.yMin() <= wideYmin + 1e-6) {
+                    if (b != feedBox && b.width() < (geom.resW * 0.45) && b.yMin() <= clusters.get(0).yMin() + 1e-6) {
                         geom.insetDepth = Math.max(geom.insetDepth, b.length());
                     }
                 }
             }
         } else {
             geom.isResonator = false;
+            geom.numElements = 1;
         }
 
         return geom;
@@ -390,49 +413,30 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         return list;
     }
 
-    private void populateAnalyticalFallback(RebuiltGeometry geom, List<Double> freqs) {
-        double u = geom.feedW / geom.h;
-        double epsEff = (modelInfo.epsilonR + 1.0) / 2.0 + ((modelInfo.epsilonR - 1.0) / 2.0) / Math.sqrt(1.0 + 12.0 / u);
-        double z0 = 50.0;
-        double vp = Maths.C / Math.sqrt(epsEff);
-
-        double fr = modelInfo.frequency;
-        double rin = 50.0;
-        double q = 35.0;
-
-        if (geom.isResonator) {
-            double uRes = geom.resW / geom.h;
-            double epsEffRes = (modelInfo.epsilonR + 1.0) / 2.0 + ((modelInfo.epsilonR - 1.0) / 2.0) / Math.sqrt(1.0 + 12.0 / uRes);
-            double dL = 0.412 * geom.h * ((epsEffRes + 0.3) / (epsEffRes - 0.258)) * ((uRes + 0.264) / (uRes + 0.8));
-            double dLNotch = geom.insetDepth > 0 ? geom.insetDepth * 0.135 : 0.0;
-            double leff = geom.resL + 2.0 * dL + dLNotch;
-            fr = Maths.C / (2.0 * leff * Math.sqrt(epsEffRes));
-            rin = 50.0;
-            q = 35.0;
-        }
-
-        for (double f : freqs) {
-            Complex zin;
-            if (geom.isResonator) {
-                double deltaF = (f - fr) / fr;
-                Complex zPatch = Complex.of(rin).div(Complex.of(1.0, 2.0 * q * deltaF));
-                if (geom.feedLength > 0) {
-                    double beta = 2.0 * Math.PI * f / vp;
-                    double bl = beta * geom.feedLength;
-                    double tanBl = Math.tan(bl);
-                    Complex num = zPatch.plus(Complex.of(0, z0 * tanBl));
-                    Complex den = Complex.of(1.0).plus(Complex.of(0, tanBl / z0).mul(zPatch));
-                    zin = num.div(den);
-                } else {
-                    zin = zPatch;
-                }
-            } else {
-                double beta = 2.0 * Math.PI * f / vp;
-                double bl = beta * geom.lineLength;
-                double tanBl = Math.tan(bl);
-                zin = Complex.of(0, -z0 / tanBl);
+    public synchronized MicrostripCircuitModel getCircuitModel() {
+        if (circuitModel == null) {
+            if (modelInfo == null) {
+                modelInfo = new ScuffEMModelInfo();
             }
-            Complex s11 = zin.minus(Complex.of(z0)).div(zin.plus(Complex.of(z0)));
+            circuitModel = MicrostripCircuitModel.parse(
+                    modelInfo.sceneNode,
+                    modelInfo.resolutionContext,
+                    modelInfo.epsilonR,
+                    modelInfo.lossTangent,
+                    modelInfo.z0Ref
+            );
+        }
+        return circuitModel;
+    }
+
+    private void populateAnalyticalFallback(RebuiltGeometry geom, List<Double> freqs) {
+        MicrostripCircuitModel model = getCircuitModel();
+        double z0Val = modelInfo != null ? modelInfo.z0Ref : 50.0;
+        Complex z0 = Complex.of(z0Val);
+        for (double f : freqs) {
+            MicrostripCircuitModel.ComplexNum z = model.computeZin(f);
+            Complex zin = Complex.of(z.re, z.im);
+            Complex s11 = zin.minus(z0).div(zin.plus(z0));
             s11Results.put(f, s11);
             zinResults.put(f, zin);
         }

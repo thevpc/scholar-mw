@@ -13,17 +13,19 @@ import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.Maths;
 
+import net.thevpc.ntexup.extension.mwsimulator.MicrostripCircuitModel;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Locale;
 
 public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
     public GetDPModelInfo modelInfo;
-    private double epsEffFem = 3.388;
-    private double z0Fem = 48.20;
-    private double vpFem = 1.629e8;
-    private double lTot = 30.625e-3;
+    private double epsEffFem = 1.0;
+    private double z0Fem = 50.0;
+    private double vpFem = Maths.C;
+    private double lTot = 0.0;
     private boolean femSolved = false;
+    private MicrostripCircuitModel circuitModel;
 
     public GetDPStrNTxSimulationPlan(String id, String name, NTxRendererContext rendererContext) {
         super(id, name, rendererContext);
@@ -49,15 +51,16 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
     }
 
     public static class RebuiltGeometry {
-        public double h = 1.6e-3;
-        public double feedW = 3.1e-3;
+        public double h = 0.0;
+        public double feedW = 0.0;
         public double portY = 0.0;
-        public double lineLength = 30e-3;
+        public double lineLength = 0.0;
         public boolean isResonator = false;
-        public double resW = 38e-3;
-        public double resL = 29.4e-3;
-        public double feedLength = 15e-3;
+        public double resW = 0.0;
+        public double resL = 0.0;
+        public double feedLength = 0.0;
         public double insetDepth = 0.0;
+        public int numElements = 1;
     }
 
     public RebuiltGeometry rebuildGeometry() {
@@ -106,38 +109,58 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         double totalLength = antYmax > antYmin ? (antYmax - geom.portY) : 30e-3;
         geom.lineLength = totalLength;
 
-        double widthThreshold = 1.25 * geom.feedW;
-        double wideXmin = Double.MAX_VALUE, wideXmax = -Double.MAX_VALUE;
-        double wideYmin = Double.MAX_VALUE, wideYmax = -Double.MAX_VALUE;
-        boolean hasWideSection = false;
-
+        java.util.List<GetDPModelInfo.GetDPBox> candidateBoxes = new java.util.ArrayList<>();
         for (GetDPModelInfo.GetDPBox b : modelInfo.antennaBoxes) {
-            if (b.width() > widthThreshold) {
-                hasWideSection = true;
-                wideXmin = Math.min(wideXmin, b.xMin());
-                wideXmax = Math.max(wideXmax, b.xMax());
-                wideYmin = Math.min(wideYmin, b.yMin());
-                wideYmax = Math.max(wideYmax, b.yMax());
+            if (b.isPatch) {
+                candidateBoxes.add(b);
+            }
+        }
+        if (candidateBoxes.isEmpty()) {
+            double widthThreshold = 1.25 * geom.feedW;
+            for (GetDPModelInfo.GetDPBox b : modelInfo.antennaBoxes) {
+                if (b.width() > widthThreshold && b.length() > 1.5 * geom.feedW) {
+                    candidateBoxes.add(b);
+                }
             }
         }
 
-        if (hasWideSection) {
-            geom.isResonator = true;
-            geom.resW = wideXmax - wideXmin;
-            geom.resL = wideYmax - wideYmin;
-            geom.feedLength = Math.max(0.0, wideYmin - geom.portY);
+        if (!candidateBoxes.isEmpty()) {
+            candidateBoxes.sort(java.util.Comparator.comparingDouble(GetDPModelInfo.GetDPBox::xMin));
+            java.util.List<GetDPModelInfo.GetDPBox> clusters = new java.util.ArrayList<>();
+            for (GetDPModelInfo.GetDPBox b : candidateBoxes) {
+                if (clusters.isEmpty()) {
+                    clusters.add(new GetDPModelInfo.GetDPBox(b.x1, b.y1, b.z1, b.x2, b.y2, b.z2, b.name, b.type));
+                } else {
+                    GetDPModelInfo.GetDPBox last = clusters.get(clusters.size() - 1);
+                    if (b.xMin() <= last.xMax() + 4e-3) {
+                        last.x1 = Math.min(last.x1, b.xMin());
+                        last.x2 = Math.max(last.x2, b.xMax());
+                        last.y1 = Math.min(last.y1, b.yMin());
+                        last.y2 = Math.max(last.y2, b.yMax());
+                    } else {
+                        clusters.add(new GetDPModelInfo.GetDPBox(b.x1, b.y1, b.z1, b.x2, b.y2, b.z2, b.name, b.type));
+                    }
+                }
+            }
 
-            if (feedBox != null && feedBox.yMax() > wideYmin) {
-                geom.insetDepth = Math.min(geom.resL, feedBox.yMax() - wideYmin);
+            geom.isResonator = true;
+            geom.numElements = clusters.size();
+            geom.resW = clusters.get(0).width();
+            geom.resL = clusters.get(0).length();
+            geom.feedLength = Math.max(0.0, clusters.get(0).yMin() - geom.portY);
+
+            if (feedBox != null && feedBox.yMax() > clusters.get(0).yMin()) {
+                geom.insetDepth = Math.min(geom.resL, feedBox.yMax() - clusters.get(0).yMin());
             } else {
                 for (GetDPModelInfo.GetDPBox b : modelInfo.antennaBoxes) {
-                    if (b != feedBox && b.width() < (geom.resW * 0.45) && b.yMin() <= wideYmin + 1e-6) {
+                    if (b != feedBox && b.width() < (geom.resW * 0.45) && b.yMin() <= clusters.get(0).yMin() + 1e-6) {
                         geom.insetDepth = Math.max(geom.insetDepth, b.length());
                     }
                 }
             }
         } else {
             geom.isResonator = false;
+            geom.numElements = 1;
         }
 
         return geom;
@@ -260,7 +283,8 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                     double uRes = geom.resW / geom.h;
                     double epsEffRes = (modelInfo.epsilonR + 1.0) / 2.0 + ((modelInfo.epsilonR - 1.0) / 2.0) / Math.sqrt(1.0 + 12.0 / uRes);
                     double dLRes = 0.412 * geom.h * ((epsEffRes + 0.3) / (epsEffRes - 0.258)) * ((uRes + 0.264) / (uRes + 0.8));
-                    double dLNotch = geom.insetDepth > 0 ? geom.insetDepth * 0.135 : 0.0;
+                    double notchFactor = geom.numElements > 1 ? 0.28 : 0.135;
+                    double dLNotch = geom.insetDepth > 0 ? geom.insetDepth * notchFactor : 0.0;
                     double leff = geom.resL + 2.0 * dLRes + dLNotch;
                     patchFr = c / (2.0 * leff * Math.sqrt(epsEffRes));
                     double k0 = 2.0 * Math.PI * patchFr / c;
@@ -272,7 +296,7 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                     if (patchRin < 15.0 || patchRin > 300.0) {
                         patchRin = 50.0;
                     }
-                    patchQ = 35.0;
+                    patchQ = geom.numElements > 1 ? 30.0 : 35.0;
                 }
 
                 if (rendererContext() != null) {
@@ -295,14 +319,15 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         }
     }
 
-    private double patchFr = 2.40e9;
+    private double patchFr = 0.0;
     private double patchRin = 50.0;
-    private double patchQ = 35.0;
+    private double patchQ = 30.0;
 
     private void computeApproximation(RebuiltGeometry geom) {
+        if (geom.h <= 0) return;
         double u = geom.feedW / geom.h;
         epsEffFem = (modelInfo.epsilonR + 1.0) / 2.0 + ((modelInfo.epsilonR - 1.0) / 2.0) / Math.sqrt(1.0 + 12.0 / u);
-        z0Fem = 48.20;
+        z0Fem = MicrostripCircuitModel.calcZ0(geom.feedW, geom.h, modelInfo.epsilonR);
         vpFem = Maths.C / Math.sqrt(epsEffFem);
         double dL = 0.412 * geom.h * ((epsEffFem + 0.3) / (epsEffFem - 0.258)) * ((u + 0.264) / (u + 0.8));
         lTot = geom.lineLength + dL;
@@ -311,38 +336,47 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             double uRes = geom.resW / geom.h;
             double epsEffRes = (modelInfo.epsilonR + 1.0) / 2.0 + ((modelInfo.epsilonR - 1.0) / 2.0) / Math.sqrt(1.0 + 12.0 / uRes);
             double dLRes = 0.412 * geom.h * ((epsEffRes + 0.3) / (epsEffRes - 0.258)) * ((uRes + 0.264) / (uRes + 0.8));
-            double dLNotch = geom.insetDepth > 0 ? geom.insetDepth * 0.135 : 0.0;
-            double leff = geom.resL + 2.0 * dLRes + dLNotch;
+            double notchFraction = geom.resL > 0 ? (geom.insetDepth / geom.resL) : 0.0;
+            double notchFactor = notchFraction * (1.0 - notchFraction);
+            double leff = geom.resL + 2.0 * dLRes + geom.insetDepth * notchFactor;
             patchFr = Maths.C / (2.0 * leff * Math.sqrt(epsEffRes));
-            patchRin = 50.0;
-            patchQ = 35.0;
+
+            double k0 = 2.0 * Math.PI * patchFr / Maths.C;
+            double lam0 = Maths.C / patchFr;
+            double grad = (geom.resW / (120.0 * lam0)) * (1.0 - Math.pow(k0 * geom.h, 2.0) / 24.0);
+            double redge = 1.0 / (2.0 * Math.max(1e-6, grad));
+            double cosVal = Math.cos(Math.PI * geom.insetDepth / geom.resL);
+            patchRin = redge * Math.pow(cosVal, 2.0);
+
+            double qDiel = 1.0 / Math.max(1e-6, modelInfo.lossTangent);
+            double qCond = geom.h * Math.sqrt(Math.PI * patchFr * 4.0 * Math.PI * 1e-7 * 5.8e7);
+            double cPatch = 8.854187817e-12 * modelInfo.epsilonR * geom.resW * geom.resL / (2.0 * geom.h);
+            double qRad = 2.0 * Math.PI * patchFr * cPatch * redge;
+            patchQ = 1.0 / ((1.0 / qRad) + (1.0 / qDiel) + (1.0 / qCond));
         }
+    }
+
+    public synchronized MicrostripCircuitModel getCircuitModel() {
+        if (circuitModel == null) {
+            if (modelInfo == null) {
+                modelInfo = new GetDPModelInfo();
+            }
+            circuitModel = MicrostripCircuitModel.parse(
+                    modelInfo.sceneNode,
+                    modelInfo.resolutionContext,
+                    modelInfo.epsilonR,
+                    modelInfo.lossTangent,
+                    modelInfo.z0Ref
+            );
+        }
+        return circuitModel;
     }
 
     public Complex computeZin(double freq) {
         ensureFemSolved();
-        RebuiltGeometry geom = rebuildGeometry();
-        if (geom.isResonator) {
-            double deltaF = (freq - patchFr) / patchFr;
-            Complex zPatch = Complex.of(patchRin).div(Complex.of(1.0, 2.0 * patchQ * deltaF));
-            if (geom.feedLength > 0) {
-                double uFeed = geom.feedW / geom.h;
-                double epsFeed = (modelInfo.epsilonR + 1.0) / 2.0 + ((modelInfo.epsilonR - 1.0) / 2.0) / Math.sqrt(1.0 + 12.0 / uFeed);
-                double vpFeed = Maths.C / Math.sqrt(epsFeed);
-                double beta = 2.0 * Math.PI * freq / vpFeed;
-                double bl = beta * geom.feedLength;
-                double tanBl = Math.tan(bl);
-                double z0F = z0Fem;
-                Complex num = zPatch.plus(Complex.of(0, z0F * tanBl));
-                Complex den = Complex.of(1.0).plus(Complex.of(0, tanBl / z0F).mul(zPatch));
-                return num.div(den);
-            }
-            return zPatch;
-        }
-        double beta = 2.0 * Math.PI * freq / vpFem;
-        double X = -z0Fem / Math.tan(beta * lTot);
-        double Rrad = modelInfo != null ? modelInfo.z0Ref : 50.0;
-        return Complex.of(Rrad, X);
+        MicrostripCircuitModel model = getCircuitModel();
+        MicrostripCircuitModel.ComplexNum z = model.computeZin(freq);
+        return Complex.of(z.re, z.im);
     }
 
     public Complex computeS11(double freq) {

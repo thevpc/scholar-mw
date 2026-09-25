@@ -18,4 +18,8 @@ public class AnalyticalModelInfo {
     public double feedLength = 0.0;
     public double insetDepth = 0.0;
     public double feedWidth = 3.1e-3;
+    public int numElements = 1;
+
+    public net.thevpc.ntexup.api.document.node.NTxNode sceneNode;
+    public net.thevpc.ntexup.api.eval.NTxResolutionContext resolutionContext;
 }

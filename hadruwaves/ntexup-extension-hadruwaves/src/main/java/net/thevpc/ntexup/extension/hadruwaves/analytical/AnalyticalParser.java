@@ -67,6 +67,10 @@ public class AnalyticalParser {
             }
         }
 
+        if (info.geometryId == null) {
+            info.geometryId = NTxMwSimulationUtils.findSceneGeometryId(args);
+        }
+
         if (info.geometryId != null) {
             String finalGeometryId = info.geometryId;
             NTxNode scene3D = context.findNodeByProperty("name",
@@ -74,6 +78,8 @@ public class AnalyticalParser {
             ).orNull();
 
             if (scene3D != null && Objects.equals(scene3D.type(), "scene3d")) {
+                info.sceneNode = scene3D;
+                info.resolutionContext = context;
                 parseScene3D(scene3D, context, info);
             } else {
                 context.log(NMsg.ofC("Analytical: 'geometry' %s could not be resolved in the current scope", finalGeometryId).asError());
@@ -85,6 +91,7 @@ public class AnalyticalParser {
 
     public static class BoxInfo {
         public double x1, y1, x2, y2;
+        public boolean isPatch = false;
         public BoxInfo(double x1, double y1, double x2, double y2) {
             this.x1 = Math.min(x1, x2);
             this.y1 = Math.min(y1, y2);
@@ -107,8 +114,9 @@ public class AnalyticalParser {
         for (NTxNode child : scene3D.children()) {
             String nodeType = child.type();
             boolean isSubstrate = NTxMwSimulationUtils.isSimulationNode(child, "substrate");
+            boolean isPatch = NTxMwSimulationUtils.isSimulationNode(child, "patch");
             boolean isAntenna = NTxMwSimulationUtils.isSimulationNode(child, "antenna")
-                    || NTxMwSimulationUtils.isSimulationNode(child, "patch")
+                    || isPatch
                     || NTxMwSimulationUtils.isSimulationNode(child, "feed")
                     || NTxMwSimulationUtils.isSimulationNode(child, "feedline")
                     || NTxMwSimulationUtils.isSimulationNode(child, "left-flank")
@@ -132,7 +140,9 @@ public class AnalyticalParser {
                         if (isSubstrate) {
                             subH = Math.abs(sz);
                         } else if (isAntenna) {
-                            antennaBoxes.add(new BoxInfo(px, py, px + sx, py + sy));
+                            BoxInfo bi = new BoxInfo(px, py, px + sx, py + sy);
+                            bi.isPatch = isPatch;
+                            antennaBoxes.add(bi);
                         } else if (isSource) {
                             sourceBoxes.add(new BoxInfo(px, py, px + sx, py + sy));
                         }
@@ -177,38 +187,58 @@ public class AnalyticalParser {
         info.length = antYmax - antYmin;
         info.stubLength = antYmax - portY;
 
-        double widthThreshold = 1.25 * feedW;
-        double wideXmin = Double.MAX_VALUE, wideXmax = -Double.MAX_VALUE;
-        double wideYmin = Double.MAX_VALUE, wideYmax = -Double.MAX_VALUE;
-        boolean hasWideSection = false;
-
+        java.util.List<BoxInfo> candidateBoxes = new java.util.ArrayList<>();
         for (BoxInfo b : antennaBoxes) {
-            if (b.width() > widthThreshold) {
-                hasWideSection = true;
-                wideXmin = Math.min(wideXmin, b.xMin());
-                wideXmax = Math.max(wideXmax, b.xMax());
-                wideYmin = Math.min(wideYmin, b.yMin());
-                wideYmax = Math.max(wideYmax, b.yMax());
+            if (b.isPatch) {
+                candidateBoxes.add(b);
+            }
+        }
+        if (candidateBoxes.isEmpty()) {
+            double widthThreshold = 1.25 * feedW;
+            for (BoxInfo b : antennaBoxes) {
+                if (b.width() > widthThreshold && b.length() > 1.5 * feedW) {
+                    candidateBoxes.add(b);
+                }
             }
         }
 
-        if (hasWideSection) {
-            info.isResonator = true;
-            info.resW = wideXmax - wideXmin;
-            info.resL = wideYmax - wideYmin;
-            info.feedLength = Math.max(0.0, wideYmin - portY);
+        if (!candidateBoxes.isEmpty()) {
+            candidateBoxes.sort(java.util.Comparator.comparingDouble(BoxInfo::xMin));
+            java.util.List<BoxInfo> clusters = new java.util.ArrayList<>();
+            for (BoxInfo b : candidateBoxes) {
+                if (clusters.isEmpty()) {
+                    clusters.add(new BoxInfo(b.x1, b.y1, b.x2, b.y2));
+                } else {
+                    BoxInfo last = clusters.get(clusters.size() - 1);
+                    if (b.xMin() <= last.xMax() + 4e-3) {
+                        last.x1 = Math.min(last.x1, b.xMin());
+                        last.x2 = Math.max(last.x2, b.xMax());
+                        last.y1 = Math.min(last.y1, b.yMin());
+                        last.y2 = Math.max(last.y2, b.yMax());
+                    } else {
+                        clusters.add(new BoxInfo(b.x1, b.y1, b.x2, b.y2));
+                    }
+                }
+            }
 
-            if (feedBox != null && feedBox.yMax() > wideYmin) {
-                info.insetDepth = Math.min(info.resL, feedBox.yMax() - wideYmin);
+            info.isResonator = true;
+            info.numElements = clusters.size();
+            info.resW = clusters.get(0).width();
+            info.resL = clusters.get(0).length();
+            info.feedLength = Math.max(0.0, clusters.get(0).yMin() - portY);
+
+            if (feedBox != null && feedBox.yMax() > clusters.get(0).yMin()) {
+                info.insetDepth = Math.min(info.resL, feedBox.yMax() - clusters.get(0).yMin());
             } else {
                 for (BoxInfo b : antennaBoxes) {
-                    if (b != feedBox && b.width() < (info.resW * 0.45) && b.yMin() <= wideYmin + 1e-6) {
+                    if (b != feedBox && b.width() < (info.resW * 0.45) && b.yMin() <= clusters.get(0).yMin() + 1e-6) {
                         info.insetDepth = Math.max(info.insetDepth, b.length());
                     }
                 }
             }
         } else {
             info.isResonator = false;
+            info.numElements = 1;
         }
     }
 }

@@ -130,6 +130,10 @@ public class OpenEMSParser {
             }
         }
 
+        if (info.xmlPath == null && info.geometryId == null) {
+            info.geometryId = NTxMwSimulationUtils.findSceneGeometryId(args);
+        }
+
         if (info.xmlPath == null && info.geometryId != null) {
             String finalGeometryId = info.geometryId;
             NTxNode scene3D = context.findNodeByProperty("name",
