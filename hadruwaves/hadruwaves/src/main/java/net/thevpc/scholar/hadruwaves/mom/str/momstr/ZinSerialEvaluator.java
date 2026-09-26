@@ -29,28 +29,46 @@ public class ZinSerialEvaluator implements ZinEvaluator {
         ComplexMatrix A_ = str.matrixA().monitor(mons[1]).evalMatrix();
         ComplexMatrix ZinPaire = null;
         ComplexMatrix cMatrix = null;
-        ComplexMatrix aInv = null;
         try {
             net.thevpc.scholar.hadrumaths.InverseStrategy strategy = str.getInvStrategy();
             if (strategy == net.thevpc.scholar.hadrumaths.InverseStrategy.DEFAULT
-                    && net.thevpc.scholar.hadruwaves.mom.RWGDeltaGapBMatrix.hasRWG(str)) {
+                    && net.thevpc.scholar.hadruwaves.mom.RWGDeltaGapBMatrix.hasRWG(str)
+                    && str.getSolverType() != net.thevpc.scholar.hadruwaves.mom.MomSolverType.SPATIAL_MPIE) {
                 strategy = net.thevpc.scholar.hadrumaths.InverseStrategy.REGULARIZED;
             }
             if (strategy == net.thevpc.scholar.hadrumaths.InverseStrategy.REGULARIZED) {
-                aInv = A_.invRegularized();
+                int n = A_.getRowCount();
+                ComplexMatrix Ah = A_.transposeHermitian();
+                ComplexMatrix AhB = Ah.mul(B_);
+                ComplexMatrix AhA = Ah.mul(A_);
+                double maxDiag = 0;
+                for (int i = 0; i < n; i++) {
+                    maxDiag = Math.max(maxDiag, AhA.get(i, i).absDouble());
+                }
+                ComplexMatrix regI = Maths.identityMatrix(n).mul(Complex.of(1e-5 * maxDiag));
+                ComplexMatrix H = AhA.add(regI);
+                ComplexMatrix X = H.solve(AhB);
+                cMatrix = B_.transposeHermitian().mul(X);
             } else {
                 try {
-                    aInv = A_.inv(strategy, str.getCondStrategy(), str.getNormStrategy());
+                    ComplexMatrix X = A_.solve(B_);
+                    cMatrix = B_.transposeHermitian().mul(X);
                 } catch (Exception ex) {
-                    str.log().log(NMsg.ofC("Matrix A inversion failed (%s), falling back to REGULARIZED: %s", ex.getMessage(), ex).asWarning());
-                    aInv = A_.invRegularized();
+                    str.log().log(NMsg.ofC("Matrix A solve failed (%s), falling back to REGULARIZED: %s", ex.getMessage(), ex).asWarning());
+                    int n = A_.getRowCount();
+                    ComplexMatrix Ah = A_.transposeHermitian();
+                    ComplexMatrix AhB = Ah.mul(B_);
+                    ComplexMatrix AhA = Ah.mul(A_);
+                    double maxDiag = 0;
+                    for (int i = 0; i < n; i++) {
+                        maxDiag = Math.max(maxDiag, AhA.get(i, i).absDouble());
+                    }
+                    ComplexMatrix regI = Maths.identityMatrix(n).mul(Complex.of(1e-5 * maxDiag));
+                    ComplexMatrix H = AhA.add(regI);
+                    ComplexMatrix X = H.solve(AhB);
+                    cMatrix = B_.transposeHermitian().mul(X);
                 }
             }
-            //should use conjugate transpose
-//            cMatrix = B_.transpose().multiply(aInv).multiply(B_); // Bt.inv(A).B
-            cMatrix = B_.transposeHermitian().mul(aInv).mul(B_); // Bt.inv(A).B
-
-
 
             //la division
             ZinPaire = cMatrix.inv();
@@ -62,7 +80,7 @@ public class ZinSerialEvaluator implements ZinEvaluator {
             }
         } catch (Exception e) {
             str.log().log(NMsg.ofC("Error Zin : " + e).asError(e));
-            if (aInv == null) {
+            if (cMatrix == null) {
                 str.wdebug("resolveZin : matrix A is singular ", e, A_);
             } else if (ZinPaire == null) {
                 str.wdebug("resolveZin : matrix Y is singular ", e, cMatrix);

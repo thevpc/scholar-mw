@@ -113,13 +113,15 @@ public class SimpleLineAntennaTest {
         Assertions.assertNotNull(zin);
         Assertions.assertFalse(zin.isNaN(), "Zin should not be NaN");
         Assertions.assertTrue(zin.absdbl() > 0, "Zin magnitude should be greater than zero");
-        Plot.title("Jx").plot(str.current().evalMatrix(Axis.X, box.dtimes(100)));
-        Object o=new Object();
-        synchronized (o){
-            try {
-                o.wait();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+        if (Boolean.getBoolean("plot")) {
+            Plot.title("Jx").plot(str.current().evalMatrix(Axis.X, box.dtimes(100)));
+            Object o=new Object();
+            synchronized (o){
+                try {
+                    o.wait(5000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }

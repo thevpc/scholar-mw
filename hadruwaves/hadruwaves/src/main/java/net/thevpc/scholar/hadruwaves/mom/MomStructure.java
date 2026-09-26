@@ -101,6 +101,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
      */
     private CircuitType circuitType = CircuitType.SERIAL;
     private ProjectType projectType = ProjectType.WAVE_GUIDE;
+    private MomSolverType solverType = MomSolverType.CAVITY_MODAL;
     /**
      * nombre de fonctions d'cache_essai sur chaque domaine metallique si 1, les
      * echelons selons choisis
@@ -119,6 +120,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
     private final PropertyChangeListener propertyDispatcher_modeFunctions = new DelegateModeFunctionsPropertyChangeListener();
     private final PropertyChangeListener propertyDispatcher_testFunctions = new DelegateTestFunctionsPropertyChangeListener();
     private final CacheResolverDelegate cacheResolver = new CacheResolverDelegate();
+    private ComplexMatrix cachedTestModeScalarProducts;
 
     public MomStructure(MomStructure other) {
         this();
@@ -301,6 +303,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
                 this.modeFunctions.setEnv(this);
                 this.modeFunctions.setLog(x-> log().log(x));
             }
+            invalidateTestModeScalarProducts();
             invalidateCache();
             firePropertyChange("modeFunctions", old, modeFunctions);
         }
@@ -774,6 +777,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
         this.testFunctions = testFunctions;
         _bindTestFunctions(this.testFunctions);
         firePropertyChange("testFunctions", old, testFunctions);
+        invalidateTestModeScalarProducts();
         invalidateCache();
         return this;
     }
@@ -845,7 +849,22 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
 
     public final ComplexMatrix getTestModeScalarProducts(ProgressMonitor monitor) {
         build();
-        return modeFunctions().scalarProduct(Maths.evector(testFunctions.toArray()), monitorOf("TestModeScalarProducts", monitor));
+        if (cachedTestModeScalarProducts != null) {
+            return cachedTestModeScalarProducts;
+        }
+        cachedTestModeScalarProducts = modeFunctions().scalarProduct(Maths.evector(testFunctions.toArray()), monitorOf("TestModeScalarProducts", monitor));
+        return cachedTestModeScalarProducts;
+    }
+
+    @Override
+    public MomStructure invalidateCache() {
+        super.invalidateCache();
+        return this;
+    }
+
+    public MomStructure invalidateTestModeScalarProducts() {
+        this.cachedTestModeScalarProducts = null;
+        return this;
     }
 
 //    protected ProgressMonitor createDefaultMonitor(String name) {
@@ -909,6 +928,20 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
 
     public MomStructure projectType(ProjectType projectType) {
         return setProjectType(projectType);
+    }
+
+    public MomSolverType getSolverType() {
+        return solverType;
+    }
+
+    public MomStructure setSolverType(MomSolverType solverType) {
+        this.solverType = solverType == null ? MomSolverType.CAVITY_MODAL : solverType;
+        invalidateCache();
+        return this;
+    }
+
+    public MomStructure solverType(MomSolverType solverType) {
+        return setSolverType(solverType);
     }
 
     public MomStructure firstBoxSpace(BoxSpace firstBoxSpace) {
@@ -1356,6 +1389,9 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
 
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
+            if (!"frequency".equals(evt.getPropertyName())) {
+                invalidateTestModeScalarProducts();
+            }
             firePropertyChange("modeFunctions." + evt.getPropertyName(), evt.getOldValue(), evt.getNewValue());
         }
     }
@@ -1364,6 +1400,7 @@ public class MomStructure extends AbstractMWStructure<MomStructure> implements C
 
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
+            invalidateTestModeScalarProducts();
             firePropertyChange("testFunctions." + evt.getPropertyName(), evt.getOldValue(), evt.getNewValue());
         }
     }

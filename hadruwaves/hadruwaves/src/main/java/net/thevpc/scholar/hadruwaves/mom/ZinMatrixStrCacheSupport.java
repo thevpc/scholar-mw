@@ -19,7 +19,9 @@ class ZinMatrixStrCacheSupport extends StrCacheSupport<ComplexMatrix> {
 
     protected void init(ProgressMonitor cacheMonitor) {
         mon = getMonitor().split(.2,.8);
-        momStructure.getTestModeScalarProducts(mon[0]);
+        if (momStructure.getSolverType() != MomSolverType.SPATIAL_MPIE) {
+            momStructure.getTestModeScalarProducts(mon[0]);
+        }
     }
 
     public ComplexMatrix eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {

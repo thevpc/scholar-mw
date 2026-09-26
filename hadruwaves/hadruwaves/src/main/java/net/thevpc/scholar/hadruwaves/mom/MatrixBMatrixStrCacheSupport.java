@@ -20,7 +20,9 @@ class MatrixBMatrixStrCacheSupport extends StrCacheSupport<ComplexMatrix> {
 
     protected void init(ProgressMonitor cacheMonitor) {
         MomStructure momStructure = defaultMomMatrixBBuilder.getStructure();
-        momStructure.getTestModeScalarProducts(mon[0]);
+        if (momStructure.getSolverType() != MomSolverType.SPATIAL_MPIE) {
+            momStructure.getTestModeScalarProducts(mon[0]);
+        }
     }
 
     public ComplexMatrix eval(ObjectCache momCache, ProgressMonitor cacheMonitor) {

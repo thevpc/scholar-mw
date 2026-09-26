@@ -105,6 +105,9 @@ public class MomParser {
         if (moMSolverQueryInfo.circuitType != null) {
             str.setCircuitType(moMSolverQueryInfo.circuitType);
         }
+        if (moMSolverQueryInfo.solverType != null) {
+            str.setSolverType(moMSolverQueryInfo.solverType);
+        }
         boolean t = !isEmptyTestFunctions(moMSolverQueryInfo.testFunctions);
         boolean b = !isEmptyTestFunctions(moMSolverQueryInfo.basisFunctions);
         if (t && b) {
@@ -123,6 +126,9 @@ public class MomParser {
             } else {
                 context.log(NMsg.ofC("missing 'geometry'").asError());
             }
+        }
+        if (moMSolverQueryInfo.solverType == null && RWGDeltaGapBMatrix.hasRWG(str)) {
+            str.setSolverType(MomSolverType.SPATIAL_MPIE);
         }
         return str;
     }
@@ -205,6 +211,16 @@ public class MomParser {
                             query.circuitType = CircuitType.PARALLEL;
                         } else if (s.contains("SERIAL")) {
                             query.circuitType = CircuitType.SERIAL;
+                        }
+                        break;
+                    }
+                    case "solver-type":
+                    case "solver": {
+                        String s = pv.asStringValue().orElse("").toUpperCase();
+                        if (s.contains("MPIE") || s.contains("SPATIAL")) {
+                            query.solverType = MomSolverType.SPATIAL_MPIE;
+                        } else if (s.contains("MODAL") || s.contains("CAVITY")) {
+                            query.solverType = MomSolverType.CAVITY_MODAL;
                         }
                         break;
                     }
@@ -576,5 +592,6 @@ public class MomParser {
         Domain domainPadding;
         ProjectType projectType;
         CircuitType circuitType;
+        MomSolverType solverType;
     }
 }

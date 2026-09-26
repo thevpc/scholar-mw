@@ -94,12 +94,27 @@ public class TestArrayRWGMom {
         System.out.println("Antenna geometry created.");
 
         MeshTriangulationOptions opts = new MeshTriangulationOptions()
-                .setMaxEdgeLength(2.0e-3)
-                .setAdaptive(true);
+                .setMaxEdgeLength(2.5e-3)
+                .setAdaptive(false);
 
+        System.out.println("Step 1a: initial JTS triangulation of antenna geometry...");
+        long t_mesh0 = System.currentTimeMillis();
+        List<HTriangle> rawTriangles = net.thevpc.scholar.hadrumaths.meshalgo.tri.MeshRefinementHelper.triangulate(antenna);
+        System.out.printf("Step 1a done in %d ms: %d initial triangles.%n", (System.currentTimeMillis() - t_mesh0), rawTriangles.size());
+
+        System.out.println("Step 1b: refineTriangles without adaptive...");
+        long t_ref0 = System.currentTimeMillis();
+        net.thevpc.scholar.hadrumaths.meshalgo.tri.MeshRefinement r = new net.thevpc.scholar.hadrumaths.meshalgo.tri.MeshRefinement()
+                .maxWidth(opts.getMaxEdgeLength())
+                .adaptive(false);
+        List<HTriangle> refined = net.thevpc.scholar.hadrumaths.meshalgo.tri.MeshRefinementHelper.refineTriangles(rawTriangles, r);
+        System.out.printf("Step 1b done in %d ms: %d refined triangles.%n", (System.currentTimeMillis() - t_ref0), refined.size());
+
+        System.out.println("Step 2: pairing RWG test functions...");
+        long t_rwg0 = System.currentTimeMillis();
         TestFunctions rwgTf = TestFunctionsFactory.createRWG(antenna, opts);
         DoubleToVector[] tfArr = rwgTf.toArray();
-        System.out.println("Number of RWG basis functions: " + tfArr.length);
+        System.out.printf("Step 2 done in %d ms: %d RWG basis functions generated.%n", (System.currentTimeMillis() - t_rwg0), tfArr.length);
 
         double sub_x_min = -45.0e-3;
         double sub_y_min = -30.0e-3;
@@ -114,8 +129,9 @@ public class TestArrayRWGMom {
         mom.setFirstBoxSpace(BoxSpace.shortCircuit(Material.substrate("FR4", 4.4, 0.02), 1.6e-3));
         mom.setSecondBoxSpace(BoxSpace.matchedLoad(Material.VACUUM));
         mom.setCircuitType(CircuitType.SERIAL);
+        mom.setSolverType(MomSolverType.SPATIAL_MPIE);
         mom.setFrequency(6.5e9);
-        mom.modeFunctions().setSize(2000);
+        mom.modeFunctions().setSize(500);
         mom.setTestFunctions(rwgTf);
 
         double wf = 3.1e-3;
@@ -123,12 +139,27 @@ public class TestArrayRWGMom {
         mom.setSources(new DefaultPlanarSources(CstPlanarSource.ofVoltage(1.0, srcDom, Axis.Y, Complex.of(50))));
 
         System.out.println("Starting MoM solve at 6.5 GHz...");
+        ComplexMatrix matB = mom.matrixB().evalMatrix();
+        DoubleToVector[] tfs = mom.testFunctions().toArray();
+        for (int i = 0; i < matB.getRowCount(); i++) {
+            Complex bval = matB.get(i, 0);
+            if (!bval.isZero()) {
+                net.thevpc.scholar.hadrumaths.symbolic.double2double.RWG rwg = RWGDeltaGapBMatrix.tryUnwrapRWG(tfs[i]);
+                HPoint mid = rwg.getSharedEdgeMidpoint();
+                HTriangle tri1 = rwg.getTriangle1();
+                System.out.printf("  Port edge [%4d]: B = %s, mid = (%.3f, %.3f)mm, edge=(%.3f,%.3f)->(%.3f,%.3f)%n",
+                        i, bval, mid.x / Maths.MM, mid.y / Maths.MM,
+                        tri1.p2().x / Maths.MM, tri1.p2().y / Maths.MM,
+                        tri1.p3().x / Maths.MM, tri1.p3().y / Maths.MM);
+            }
+        }
+        mom.setFrequency(6.64e9);
         long t0 = System.currentTimeMillis();
         Complex Zin = mom.inputImpedance().evalComplex();
         long dt = System.currentTimeMillis() - t0;
         Complex Z0 = Complex.of(50);
         Complex s11 = Zin.minus(Z0).div(Zin.plus(Z0));
         double s11db = 20 * Math.log10(s11.abs().toDouble());
-        System.out.printf("Solved in %d ms! Zin = %s, S11 = %s (%.2f dB)%n", dt, Zin, s11, s11db);
+        System.out.printf("f = 6.64 GHz: Solved in %d ms! Zin = %s, S11 = %s (%.2f dB)%n", dt, Zin, s11, s11db);
     }
 }

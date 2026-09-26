@@ -155,8 +155,10 @@ public class Antenna0ValidationTest {
         boolean pass = zin.absdbl() < 30;
         System.out.println("\n" + (pass ? "✅ PASS" : "❌ FAIL") +
                 ": MoM transmission-line physics " + (pass ? "verified" : "broken"));
-        Plot.title("Jx").domain(box).plot(mom.current().evalMatrix(Axis.X, box.dtimes(500)));
-        Plot.title("Jy").domain(box).plot(mom.current().evalMatrix(Axis.Y, box.dtimes(500)));
-        NConcurrent.sleep(NDuration.ofSeconds(300000));
+        if (Boolean.getBoolean("plot")) {
+            Plot.title("Jx").domain(box).plot(mom.current().evalMatrix(Axis.X, box.dtimes(500)));
+            Plot.title("Jy").domain(box).plot(mom.current().evalMatrix(Axis.Y, box.dtimes(500)));
+            NConcurrent.sleep(NDuration.ofSeconds(5));
+        }
     }
 }

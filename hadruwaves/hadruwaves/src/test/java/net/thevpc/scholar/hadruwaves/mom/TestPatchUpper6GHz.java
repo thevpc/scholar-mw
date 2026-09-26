@@ -52,14 +52,20 @@ public class TestPatchUpper6GHz {
 
             mom.setTestFunctions(tf);
             System.out.println("\n=== Testing feedExt=" + feedExt + "mm ===");
-            for (double f = 6.6e9; f <= 7.0e9; f += 0.025e9) {
-                mom.setFrequency(f);
-                Complex zin = mom.inputImpedance().evalComplex();
-                Complex s11 = mom.sparameters().evalComplex();
-                double s11db = 20 * Math.log10(Math.max(1e-9, s11.absdbl()));
-                System.out.printf("  f=%-6.3f GHz | Zin=%-25s | R=%-6.1f | X=%-6.1f | S11=%-6.2f dB%n",
-                        f / 1e9, zin, zin.realdbl(), zin.imagdbl(), s11db);
+            mom.setFrequency(6.6e9);
+            ComplexMatrix matA = mom.matrixA().evalMatrix();
+            ComplexMatrix matB = mom.matrixB().evalMatrix();
+            System.out.println("UserSinePattern matA max: " + matA.maxAbs() + ", A[0,0]=" + matA.get(0, 0));
+            System.out.println("UserSinePattern matB max: " + matB.maxAbs() + ", B norm1=" + matB.norm1());
+            for (int i = 0; i < matB.getRowCount(); i++) {
+                if (matB.get(i, 0).absDouble() > 1e-9) {
+                    System.out.println("  B[" + i + "] = " + matB.get(i, 0));
+                }
             }
+            ComplexMatrix X = matA.solve(matB);
+            Complex Y = matB.transposeHermitian().mul(X).get(0, 0);
+            System.out.println("UserSinePattern Y = " + Y + ", 1/Y = " + Y.inv());
+            break;
         }
     }
 }

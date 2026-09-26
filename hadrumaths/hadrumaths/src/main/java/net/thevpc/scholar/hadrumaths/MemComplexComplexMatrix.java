@@ -383,16 +383,27 @@ public final class MemComplexComplexMatrix extends AbstractComplexMatrix impleme
         }
         if (other instanceof MemComplexComplexMatrix) {
             MemComplexComplexMatrix mm = (MemComplexComplexMatrix) other;
-            MutableComplex sum = MutableComplex.Zero();
             int a_rows = elements.length;
             int b_cols = mm.elements[0].length;
             int b_rows = mm.elements.length;
             Complex[][] newElements = new Complex[a_rows][b_cols];
+
+            Complex[][] bT = new Complex[b_cols][b_rows];
+            for (int r = 0; r < b_rows; r++) {
+                Complex[] mmRow = mm.elements[r];
+                for (int c = 0; c < b_cols; c++) {
+                    bT[c][r] = mmRow[c];
+                }
+            }
+
+            MutableComplex sum = MutableComplex.Zero();
             for (int i = 0; i < a_rows; i++) {
+                Complex[] aRow = elements[i];
                 for (int j = 0; j < b_cols; j++) {
+                    Complex[] bRow = bT[j];
                     sum.setZero();
                     for (int k = 0; k < b_rows; k++) {
-                        sum.add(elements[i][k].mul(mm.elements[k][j]));
+                        sum.addProduct(aRow[k], bRow[k]);
                     }
                     newElements[i][j] = sum.toImmutable();
                 }

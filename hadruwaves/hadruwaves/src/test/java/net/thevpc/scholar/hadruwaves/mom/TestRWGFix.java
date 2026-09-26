@@ -3,7 +3,9 @@ package net.thevpc.scholar.hadruwaves.mom;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.geom.*;
 import net.thevpc.scholar.hadruwaves.*;
+import net.thevpc.scholar.hadruwaves.mom.sources.*;
 import net.thevpc.scholar.hadruwaves.mom.sources.planar.*;
+import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.*;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.*;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.*;
@@ -81,6 +83,7 @@ public class TestRWGFix {
         ComplexMatrix matA = mom.matrixA().evalMatrix();
         ComplexMatrix matB = mom.matrixB().evalMatrix();
         System.out.println("Matrix A size: " + matA.getRowCount() + "x" + matA.getColumnCount());
+        System.out.println("Matrix A max: " + matA.maxAbs() + ", A[0,0]=" + matA.get(0, 0) + ", minDiag=" + matA.get(0, 0).absDouble());
         System.out.println("Matrix B size: " + matB.getRowCount() + "x" + matB.getColumnCount());
         System.out.println("Matrix B norm: " + matB.norm1() + ", max: " + matB.maxAbs());
         int nonZeroB = 0;
@@ -88,7 +91,15 @@ public class TestRWGFix {
             Complex val = matB.get(i, 0);
             if (!val.isZero()) {
                 nonZeroB++;
-                System.out.println("  B[" + i + "] = " + val);
+                net.thevpc.scholar.hadrumaths.symbolic.double2double.RWG r = RWGDeltaGapBMatrix.tryUnwrapRWG(tfs[i]);
+                HPoint mid = r.getSharedEdgeMidpoint();
+                HTriangle tri1 = r.getTriangle1();
+                HTriangle tri2 = r.getTriangle2();
+                System.out.printf("  Port Edge [%3d]: B=%.4e, mid=(%.3f, %.3f)mm, edge=(%.3f,%.3f)->(%.3f,%.3f), len=%.3fmm%n",
+                        i, val.absDouble(), mid.x / Maths.MM, mid.y / Maths.MM,
+                        tri1.p2().x / Maths.MM, tri1.p2().y / Maths.MM,
+                        tri1.p3().x / Maths.MM, tri1.p3().y / Maths.MM,
+                        r.edgeLength / Maths.MM);
             }
         }
         System.out.println("Non-zero entries in B: " + nonZeroB + " / " + matB.getRowCount());
@@ -101,5 +112,59 @@ public class TestRWGFix {
         Complex s11 = zinVal.minus(z0).div(zinVal.plus(z0));
         System.out.println("  Native Zin at 6.45 GHz: " + zinVal);
         System.out.printf("  Native S11 at 6.45 GHz: %.2f dB%n", 20 * Math.log10(s11.absDouble()));
+
+        PlanarSources ps = (PlanarSources) mom.getSources();
+        DoubleToVector[] srcFns = ps.getSourceFunctions();
+        ComplexMatrix B_spatial = (ComplexMatrix) Maths.scalarProductCache(mom.testFunctions().toArray(), srcFns, null).to(Maths.$COMPLEX);
+        System.out.println("Spatial B norm: " + B_spatial.norm1() + ", max: " + B_spatial.maxAbs());
+        int nonZeroSpatial = 0;
+        for (int i = 0; i < B_spatial.getRowCount(); i++) {
+            Complex val = B_spatial.get(i, 0);
+            if (val.absDouble() > 1e-9) {
+                nonZeroSpatial++;
+                System.out.println("  B_spatial[" + i + "] = " + val);
+            }
+        }
+        System.out.println("Non-zero in B_spatial: " + nonZeroSpatial);
+        System.out.println("\n--- Condition Number and Singular Values of Matrix A ---");
+        ComplexMatrix matA645 = mom.matrixA().evalMatrix();
+        ComplexMatrix matB645 = mom.matrixB().evalMatrix();
+        int N = matA645.getRowCount();
+        ComplexMatrix Ah = matA645.transposeHermitian();
+        ComplexMatrix AhA = Ah.mul(matA645);
+        double maxDiagAhA = 0;
+        double minDiagAhA = Double.POSITIVE_INFINITY;
+        for (int i = 0; i < N; i++) {
+            double d = AhA.get(i, i).absDouble();
+            maxDiagAhA = Math.max(maxDiagAhA, d);
+            minDiagAhA = Math.min(minDiagAhA, d);
+        }
+        System.out.printf("AhA maxDiag = %.4e, minDiag = %.4e, ratio = %.4e%n",
+                maxDiagAhA, minDiagAhA, maxDiagAhA / minDiagAhA);
+
+        // Check scalar product matrix rank
+        ComplexMatrix spMat = mom.getTestModeScalarProducts();
+        System.out.println("Scalar products S matrix size: " + spMat.getRowCount() + "x" + spMat.getColumnCount());
+        double maxColNorm = 0, minColNorm = Double.POSITIVE_INFINITY;
+        for (int i = 0; i < spMat.getRowCount(); i++) {
+            double cnorm = spMat.getRow(i).norm();
+            maxColNorm = Math.max(maxColNorm, cnorm);
+            minColNorm = Math.min(minColNorm, cnorm);
+        }
+        System.out.printf("S row norm: max=%.4e, min=%.4e, ratio=%.4e%n",
+                maxColNorm, minColNorm, maxColNorm / minColNorm);
+
+        System.out.println("\n--- Regularized solve for Spatial B ---");
+        for (double reg : new double[]{1e-8, 1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 0.1}) {
+            ComplexMatrix regI = Maths.identityMatrix(N).mul(Complex.of(reg * maxDiagAhA));
+            ComplexMatrix H = AhA.add(regI);
+            ComplexMatrix AhB = Ah.mul(B_spatial);
+            ComplexMatrix Xreg = H.solve(AhB);
+            Complex Yreg = B_spatial.transposeHermitian().mul(Xreg).get(0, 0);
+            Complex Zreg = Yreg.inv();
+            Complex s11reg = Zreg.minus(z0).div(Zreg.plus(z0));
+            System.out.printf("Spatial reg=%.1e: Zin = %10.4f + %10.4fj | S11 = %6.2f dB | |X|max = %.2e%n",
+                    reg, Zreg.getReal(), Zreg.getImag(), 20 * Math.log10(s11reg.absDouble()), Xreg.maxAbs());
+        }
     }
 }

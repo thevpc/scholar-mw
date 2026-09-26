@@ -43,6 +43,14 @@ public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
         final String monMessage = getClass().getSimpleName();
         Impedance scalarSurfaceImpedance = str.getSerialZs()==null?Physics.impedance(Complex.ZERO):str.getSerialZs();
         ProgressMonitor monitor=mons[2];
+
+        final Complex[] zn_all = new Complex[n_eva.length];
+        for (int i = 0; i < n_eva.length; i++) {
+            ModeInfo n = n_eva[i];
+            AdmittanceValue yl = Physics.evalLayersAdmittance(str.getLayers(), n.firstBoxSpaceGamma, n.secondBoxSpaceGamma, n.impedance.impedanceValue());
+            zn_all[i] = n.impedance.parallel(yl).serial(scalarSurfaceImpedance).impedanceValue();
+        }
+
         if (symMatrix) {
             if (sp.isConvertibleTo(Maths.$DOUBLE)) {
                 final DoubleMatrix dsp = (DoubleMatrix) sp.to(Maths.$DOUBLE);
@@ -59,29 +67,28 @@ public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
                         ProgressMonitor cm = m;
                         String cmonMessage = monMessage;
                         ModeInfo[] cn_eva = n_eva;
+                        Complex[] czn = zn_all;
 
                         for (int p = 0; p < glength; p++) {
                             double[] psp = csp.getRowDouble(p);
                             for (int q = p; q < glength; q++) {
                                 double[] qsp = csp.getRowDouble(q);
                                 c.setZero();
-                                for (ModeInfo n : cn_eva) {
-                                    AdmittanceValue yl = Physics.evalLayersAdmittance(str.getLayers(), n.firstBoxSpaceGamma, n.secondBoxSpaceGamma, n.impedance.impedanceValue());
-                                    Complex zn = n.impedance.parallel(yl).serial(scalarSurfaceImpedance).impedanceValue();
-                                    int nindex = n.index;
+                                for (int i = 0; i < cn_eva.length; i++) {
+                                    int nindex = cn_eva[i].index;
                                     double sp1 = psp[nindex];
                                     double sp2 = qsp[nindex];
-                                    c.add(zn.mul(sp1 * sp2));
+                                    c.add(czn[i].mul(sp1 * sp2));
                                 }
                                 cb[p][q] = c.toComplex();
-                                cm.inc(cmonMessage);
                             }
+                            cm.inc(cmonMessage, glength - p);
                         }
                         for (int p = 0; p < glength; p++) {
                             for (int q = 0; q < p; q++) {
                                 cb[p][q] = cb[q][p];
-                                cm.inc(cmonMessage);
                             }
+                            cm.inc(cmonMessage, p);
                         }
                     }
                 });
@@ -99,31 +106,28 @@ public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
                         ProgressMonitor cm = m;
                         String cmonMessage = monMessage;
                         ModeInfo[] cn_eva = n_eva;
+                        Complex[] czn = zn_all;
 
                         for (int p = 0; p < glength; p++) {
                             ComplexVector psp = csp.getRow(p);
                             for (int q = p; q < glength; q++) {
                                 ComplexVector qsp = csp.getRow(q);
                                 c.setZero();
-                                for (ModeInfo n : cn_eva) {
-                                    AdmittanceValue yl = Physics.evalLayersAdmittance(str.getLayers(), n.firstBoxSpaceGamma, n.secondBoxSpaceGamma, n.impedance.impedanceValue());
-                                    Complex zn = n.impedance.parallel(yl).serial(scalarSurfaceImpedance).impedanceValue();
-//                            Complex sp1 = sp.gf(p, n.index);
-//                            Complex sp2 = sp.fg(n.index, q);
-                                    int nindex = n.index;
-                                    Complex sp1 = psp.get(nindex); //sp.gf(p, n.index);
-                                    Complex sp2 = qsp.get(nindex);//both are real, no complex//.conj();//sp.fg(n.index, q);
-                                    c.addProduct(zn, sp1, sp2);
+                                for (int i = 0; i < cn_eva.length; i++) {
+                                    int nindex = cn_eva[i].index;
+                                    Complex sp1 = psp.get(nindex);
+                                    Complex sp2 = qsp.get(nindex);
+                                    c.addProduct(czn[i], sp1, sp2);
                                 }
                                 cb[p][q] = c.toComplex();
-                                cm.inc(cmonMessage);
                             }
+                            cm.inc(cmonMessage, glength - p);
                         }
                         for (int p = 0; p < glength; p++) {
                             for (int q = 0; q < p; q++) {
                                 cb[p][q] = cb[q][p];
-                                cm.inc(cmonMessage);
                             }
+                            cm.inc(cmonMessage, p);
                         }
                     }
                 });
@@ -133,22 +137,93 @@ public class MatrixAPlanarSerialEvaluator implements MatrixAEvaluator {
             Maths.invokeMonitoredAction(m, monMessage, new VoidMonitoredAction() {
                 @Override
                 public void invoke(ProgressMonitor monitor, String messagePrefix) throws Exception {
-                    for (int p = 0; p < _g.length; p++) {
-                        ComplexVector psp = sp.getRow(p);
-                        for (int q = 0; q < _g.length; q++) {
-                            ComplexVector qsp = sp.getRow(q);
-                            MutableComplex c = MutableComplex.Zero();
-                            for (ModeInfo n : n_eva) {
-                                AdmittanceValue yl = Physics.evalLayersAdmittance(str.getLayers(), n.firstBoxSpaceGamma, n.secondBoxSpaceGamma, n.impedance.impedanceValue());
-                                Complex zn = n.impedance.parallel(yl).serial(scalarSurfaceImpedance).impedanceValue();
-                                //Complex sp1 = sp.gf(p, n.index);
-                                //Complex sp2 = sp.fg(n.index, q);
-                                Complex sp1 = psp.get(n.index); //sp.gf(p, n.index);
-                                Complex sp2 = qsp.get(n.index).conj();//sp.fg(n.index, q);
-                                c.addProduct(zn, sp1, sp2);
+                    int glength = _g.length;
+                    Complex[][] cb = b;
+                    ComplexMatrix csp = sp;
+                    ModeInfo[] cn_eva = n_eva;
+                    Complex[] czn = zn_all;
+                    int M = cn_eva.length;
+                    int[] modeIndices = new int[M];
+                    for (int i = 0; i < M; i++) {
+                        modeIndices[i] = cn_eva[i].index;
+                    }
+
+                    // Extract S into primitive arrays
+                    double[][] s_re = new double[glength][M];
+                    double[][] s_im = new double[glength][M];
+                    boolean anyImag = false;
+                    for (int p = 0; p < glength; p++) {
+                        ComplexVector pRow = csp.getRow(p);
+                        double[] pre = s_re[p];
+                        double[] pim = s_im[p];
+                        for (int i = 0; i < M; i++) {
+                            Complex c = pRow.get(modeIndices[i]);
+                            pre[i] = c.getReal();
+                            double im = c.getImag();
+                            pim[i] = im;
+                            if (im != 0.0) {
+                                anyImag = true;
                             }
-                            b[p][q] = c.toComplex();
-                            m.inc(monMessage);
+                        }
+                    }
+
+                    // Precompute T[p][i] = S[p][i] * czn[i]
+                    double[][] t_re = new double[glength][M];
+                    double[][] t_im = new double[glength][M];
+                    for (int p = 0; p < glength; p++) {
+                        double[] pre = s_re[p];
+                        double[] pim = s_im[p];
+                        double[] tre = t_re[p];
+                        double[] tim = t_im[p];
+                        for (int i = 0; i < M; i++) {
+                            double zr = czn[i].getReal();
+                            double zi = czn[i].getImag();
+                            double sr = pre[i];
+                            double si = pim[i];
+                            tre[i] = sr * zr - si * zi;
+                            tim[i] = sr * zi + si * zr;
+                        }
+                    }
+
+                    if (!anyImag) {
+                        for (int p = 0; p < glength; p++) {
+                            double[] tp_re = t_re[p];
+                            double[] tp_im = t_im[p];
+                            for (int q = p; q < glength; q++) {
+                                double[] sq_re = s_re[q];
+                                double re = 0;
+                                double im = 0;
+                                for (int i = 0; i < M; i++) {
+                                    double sr = sq_re[i];
+                                    re += tp_re[i] * sr;
+                                    im += tp_im[i] * sr;
+                                }
+                                Complex c = Complex.of(re, im);
+                                cb[p][q] = c;
+                                cb[q][p] = c;
+                            }
+                            m.inc(monMessage, glength);
+                        }
+                    } else {
+                        for (int p = 0; p < glength; p++) {
+                            double[] tp_re = t_re[p];
+                            double[] tp_im = t_im[p];
+                            for (int q = 0; q < glength; q++) {
+                                double[] sq_re = s_re[q];
+                                double[] sq_im = s_im[q];
+                                double re = 0;
+                                double im = 0;
+                                for (int i = 0; i < M; i++) {
+                                    double tr = tp_re[i];
+                                    double ti = tp_im[i];
+                                    double sr = sq_re[i];
+                                    double msi = -sq_im[i];
+                                    re += (tr * sr - ti * msi);
+                                    im += (tr * msi + ti * sr);
+                                }
+                                cb[p][q] = Complex.of(re, im);
+                            }
+                            m.inc(monMessage, glength);
                         }
                     }
                 }

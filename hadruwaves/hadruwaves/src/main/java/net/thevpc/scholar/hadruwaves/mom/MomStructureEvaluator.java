@@ -119,6 +119,9 @@ public class MomStructureEvaluator implements HSerializable {
         if (matrixBEvaluator != null) {
             return matrixBEvaluator;
         }
+        if (str.getSolverType() == MomSolverType.SPATIAL_MPIE) {
+            return net.thevpc.scholar.hadruwaves.mom.str.mpie.MatrixBPlanarMpieEvaluator.INSTANCE;
+        }
         switch (str.getProjectType()) {
             case WAVE_GUIDE: {
                 return new MatrixBWaveguideSerialParallelEvaluator();
@@ -140,6 +143,9 @@ public class MomStructureEvaluator implements HSerializable {
     public MatrixAEvaluator createMatrixAEvaluator() {
         if (matrixAEvaluator != null) {
             return matrixAEvaluator;
+        }
+        if (str.getSolverType() == MomSolverType.SPATIAL_MPIE) {
+            return net.thevpc.scholar.hadruwaves.mom.str.mpie.MatrixAPlanarMpieEvaluator.INSTANCE;
         }
         switch (str.getProjectType()) {
             case WAVE_GUIDE: {

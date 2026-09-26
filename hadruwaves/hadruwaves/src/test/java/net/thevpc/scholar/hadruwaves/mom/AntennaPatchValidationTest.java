@@ -122,14 +122,14 @@ public class AntennaPatchValidationTest {
         AbsoluteSamples samples = str.getDomain().dtimes(100);
         ComplexMatrix current = str.current().evalMatrix(Axis.X, samples);
         NOut.println(current);
-        if (true) {
+        if (Boolean.getBoolean("plot")) {
 //            Plot.title("Patch Current Vector Field J").plot(str.current().evalVDiscrete(samples.getX(), samples.getY()));
             Plot.title("Patch Longitudinal Current Jx").plot(current);
-            NOut.println("Plotting... closing in 30 seconds");
+            NOut.println("Plotting... closing in 5 seconds");
             Object lock = new Object();
             synchronized (lock) {
                 try {
-                    lock.wait(30000);
+                    lock.wait(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

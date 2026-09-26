@@ -57,18 +57,18 @@ public class MeshRefinementHelper {
         }
 
         int iterations = 0;
-        boolean _isSetMaxTriangles = isSet(r.maxTriangles);
-        boolean isSetMaxIterations = isSet(r.maxIterations);
+        int maxAllowedTriangles = isSet(r.maxTriangles) ? r.maxTriangles : 20000;
+        int maxAllowedIterations = isSet(r.maxIterations) ? r.maxIterations : 50000;
 
         while (!candidates.isEmpty()) {
             iterations++;
             int total = done.size() + candidates.size();
-            if (_isSetMaxTriangles && total >= r.maxTriangles) {
+            if (total >= maxAllowedTriangles) {
                 done.addAll(candidates);
                 candidates.clear();
                 break;
             }
-            if (isSetMaxIterations && iterations >= r.maxIterations) {
+            if (iterations >= maxAllowedIterations) {
                 done.addAll(candidates);
                 candidates.clear();
                 break;
@@ -361,7 +361,8 @@ public class MeshRefinementHelper {
         if (r.adaptive) {
             double longest = t.longestEdge();
             double h = 2.0 * t.area() / longest;
-            if (h > 1e-12 && (longest / h) > 2.5) {
+            double minEdge = isSet(r.maxWidth) ? (0.25 * r.maxWidth) : 1e-4;
+            if (h > 1e-12 && (longest / h) > 2.5 && longest > minEdge) {
                 return true;
             }
         }
