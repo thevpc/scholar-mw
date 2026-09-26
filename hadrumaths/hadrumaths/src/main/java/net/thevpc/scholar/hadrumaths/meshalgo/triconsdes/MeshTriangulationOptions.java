@@ -19,11 +19,41 @@ public class MeshTriangulationOptions extends DefaultOption {
     private int maxIterations;
     private double maxArea;
     private double maxEdgeLength;
+    private boolean adaptive;
     private List<HGeometry> locals=new ArrayList<>();
+    private List<SubMesh> subMeshes = new ArrayList<>();
 
     public MeshTriangulationOptions() {
         Polygon[] p = new Polygon[1];
         p[0] = new Polygon();
+    }
+
+    public boolean isAdaptive() {
+        return adaptive;
+    }
+
+    public MeshTriangulationOptions setAdaptive(boolean adaptive) {
+        this.adaptive = adaptive;
+        return this;
+    }
+
+    public List<SubMesh> getSubMeshes() {
+        return subMeshes;
+    }
+
+    public MeshTriangulationOptions setSubMeshes(List<SubMesh> subMeshes) {
+        this.subMeshes = subMeshes != null ? subMeshes : new ArrayList<>();
+        return this;
+    }
+
+    public MeshTriangulationOptions addSubMesh(SubMesh subMesh) {
+        if (subMesh != null) {
+            if (this.subMeshes == null) {
+                this.subMeshes = new ArrayList<>();
+            }
+            this.subMeshes.add(subMesh);
+        }
+        return this;
     }
 
     public List<HGeometry> getLocals() {
@@ -50,10 +80,16 @@ public class MeshTriangulationOptions extends DefaultOption {
             b.add("maxIterations", NElementHelper.elem(maxIterations));
         }
         if(maxArea >0){
-            b.add("maxSurface", NElementHelper.elem(maxArea));
+            b.add("maxArea", NElementHelper.elem(maxArea));
         }
         if(maxEdgeLength>0){
-            b.add("maxSurface", NElementHelper.elem(maxEdgeLength));
+            b.add("maxEdgeLength", NElementHelper.elem(maxEdgeLength));
+        }
+        if(adaptive){
+            b.add("adaptive", NElementHelper.elem(adaptive));
+        }
+        if(!subMeshes.isEmpty()){
+            b.add("subMeshes", NElementHelper.elem(subMeshes));
         }
         return b
                 .build();
@@ -139,6 +175,12 @@ public class MeshTriangulationOptions extends DefaultOption {
             return false;
         }
         if(maxEdgeLength>0){
+            return false;
+        }
+        if(adaptive){
+            return false;
+        }
+        if(subMeshes != null && !subMeshes.isEmpty()){
             return false;
         }
         return true;

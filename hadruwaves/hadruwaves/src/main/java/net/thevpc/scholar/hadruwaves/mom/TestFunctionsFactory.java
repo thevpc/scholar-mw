@@ -9,6 +9,7 @@ import net.thevpc.nuts.elem.NArrayElement;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.elem.NTupleElement;
+import net.thevpc.nuts.elem.NObjectElement;
 import net.thevpc.nuts.log.NLog;
 import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.util.NNameFormat;
@@ -17,20 +18,26 @@ import net.thevpc.scholar.hadrumaths.AbstractFactory;
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.geom.DefaultHGeometryList;
+import net.thevpc.scholar.hadrumaths.geom.DefaultHPolygonWithHoles;
 import net.thevpc.scholar.hadrumaths.geom.HGeometry;
 import net.thevpc.scholar.hadrumaths.geom.HGeometryList;
 import net.thevpc.scholar.hadrumaths.geom.HPoint;
+import net.thevpc.scholar.hadrumaths.geom.HPolygon;
 import net.thevpc.scholar.hadrumaths.GeometryFactory;
 import net.thevpc.scholar.hadrumaths.meshalgo.MeshZoneTypeFilter;
 import net.thevpc.scholar.hadrumaths.meshalgo.rect.GridPrecision;
 import net.thevpc.scholar.hadrumaths.meshalgo.rect.MeshAlgoRect;
 import net.thevpc.scholar.hadrumaths.meshalgo.triconsdes.MeshConsDesAlgo;
 import net.thevpc.scholar.hadrumaths.meshalgo.triconsdes.MeshTriangulationOptions;
+import net.thevpc.scholar.hadrumaths.meshalgo.triconsdes.SubMesh;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.ListTestFunctions;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.GpAdaptiveMesh;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.GpRWG;
 import net.thevpc.scholar.hadruwaves.mom.testfunctions.gpmesh.gppattern.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -466,26 +473,61 @@ public class TestFunctionsFactory extends AbstractFactory {
                     int iterations = 0;
                     double width = 0;
                     double area = 0;
+                    boolean adaptive = false;
+                    List<SubMesh> subMeshes = new ArrayList<>();
                     HGeometry geometry = null;
                     for (NElement param : uParams) {
                         if (param.isNamedPair()) {
                             NPairElement p = param.asPair().get();
                             NElement pv = evaluator.apply(p.value());
-                            switch (NNameFormat.LOWER_KEBAB_CASE.format(p.key().asStringValue().orElse(""))) {
-                                case "count": {
+                            String key = NNameFormat.LOWER_KEBAB_CASE.format(p.key().asStringValue().orElse(""));
+                            switch (key) {
+                                case "count":
+                                case "max-count": {
                                     count = parsePositiveInt(pv, count);
                                     break;
                                 }
-                                case "iterations": {
+                                case "iterations":
+                                case "max-iterations": {
                                     iterations = parsePositiveInt(pv, iterations);
                                     break;
                                 }
-                                case "length": {
-                                    width = parsePositiveDouble(pv, width);
+                                case "length":
+                                case "width":
+                                case "max-edge":
+                                case "max-edge-length":
+                                case "max-width": {
+                                    width = parseDimension(pv, width);
                                     break;
                                 }
-                                case "area": {
-                                    area = parsePositiveDouble(pv, area);
+                                case "area":
+                                case "max-area":
+                                case "surface":
+                                case "max-surface": {
+                                    area = parseDimension(pv, area);
+                                    break;
+                                }
+                                case "adaptive": {
+                                    adaptive = parseBoolean(pv, true);
+                                    break;
+                                }
+                                case "sub-meshes":
+                                case "submeshes":
+                                case "sub-mesh":
+                                case "submesh": {
+                                    if (pv.isArray()) {
+                                        for (NElement child : pv.asArray().get().children()) {
+                                            SubMesh sm = parseSubMesh(child, evaluator, geometryResolver);
+                                            if (sm != null) {
+                                                subMeshes.add(sm);
+                                            }
+                                        }
+                                    } else {
+                                        SubMesh sm = parseSubMesh(pv, evaluator, geometryResolver);
+                                        if (sm != null) {
+                                            subMeshes.add(sm);
+                                        }
+                                    }
                                     break;
                                 }
                                 case "geometry": {
@@ -510,6 +552,8 @@ public class TestFunctionsFactory extends AbstractFactory {
                                     .setMaxEdgeLength(width)
                                     .setMaxArea(area)
                                     .setMaxIterations(iterations)
+                                    .setAdaptive(adaptive)
+                                    .setSubMeshes(subMeshes)
                     ));
                 }
             }
@@ -636,6 +680,214 @@ public class TestFunctionsFactory extends AbstractFactory {
                     NLog.ofScoped(TestFunctionsFactory.class).log(NMsg.ofC("invalid boolean value(...) :  %s", value).asError());
                 })
                 .orElse(defaultValue);
+    }
+
+    private static SubMesh parseSubMesh(NElement elem, Function<NElement, NElement> evaluator, Function<NElement, HGeometry> geometryResolver) {
+        if (elem == null) return null;
+        NElement ev = evaluator.apply(elem);
+        HGeometry geom = null;
+        double maxEdge = 0;
+        double maxArea = 0;
+        int maxCount = 0;
+
+        List<NElement> pairs = new ArrayList<>();
+        if (ev.isObject()) {
+            NObjectElement obj = ev.asObject().get();
+            for (NElement child : obj.children()) {
+                if (child.isNamedPair()) {
+                    pairs.add(child);
+                }
+            }
+        } else {
+            try {
+                java.lang.reflect.Method m = ev.getClass().getMethod("params");
+                List<NElement> params = (List<NElement>) m.invoke(ev);
+                if (params != null) {
+                    for (NElement param : params) {
+                        if (param.isNamedPair()) {
+                            pairs.add(param);
+                        }
+                    }
+                }
+            } catch (Throwable ignored) {
+            }
+        }
+
+        for (NElement child : pairs) {
+            NPairElement p = child.asPair().get();
+            String key = NNameFormat.LOWER_KEBAB_CASE.format(p.key().asStringValue().orElse(""));
+            NElement pv = evaluator.apply(p.value());
+            switch (key) {
+                case "geometry": {
+                    geom = _resolveGeometry(pv, geometryResolver).orNull();
+                    break;
+                }
+                case "polygon":
+                case "points": {
+                    List<HPoint> pts = parsePointsList(pv, evaluator);
+                    if (pts.size() >= 3) {
+                        geom = GeometryFactory.createPolygon(pts);
+                    }
+                    break;
+                }
+                case "polygon-with-hole":
+                case "polygon-with-holes": {
+                    geom = parsePolygonWithHole(pv, evaluator);
+                    break;
+                }
+                case "length":
+                case "width":
+                case "max-edge":
+                case "max-edge-length":
+                case "max-width": {
+                    maxEdge = parseDimension(pv, maxEdge);
+                    break;
+                }
+                case "area":
+                case "max-area":
+                case "surface":
+                case "max-surface": {
+                    maxArea = parseDimension(pv, maxArea);
+                    break;
+                }
+                case "count":
+                case "max-count": {
+                    maxCount = parsePositiveInt(pv, maxCount);
+                    break;
+                }
+            }
+        }
+
+        if (geom != null) {
+            SubMesh sm = new SubMesh(geom, maxEdge, maxArea);
+            sm.setMaxCount(maxCount);
+            return sm;
+        }
+        return null;
+    }
+
+    private static List<HPoint> parsePointsList(NElement elem, Function<NElement, NElement> evaluator) {
+        if (elem == null) return Collections.emptyList();
+        NElement ev = evaluator.apply(elem);
+        List<NElement> children = null;
+        if (ev.isArray()) {
+            children = ev.asArray().get().children();
+        } else {
+            try {
+                java.lang.reflect.Method m = ev.getClass().getMethod("params");
+                children = (List<NElement>) m.invoke(ev);
+            } catch (Throwable ignored) {
+            }
+        }
+        if (children == null) return Collections.emptyList();
+        List<HPoint> points = new ArrayList<>();
+        for (NElement child : children) {
+            HPoint pt = parsePoint(child, evaluator);
+            if (pt != null) {
+                points.add(pt);
+            }
+        }
+        return points;
+    }
+
+    private static HPoint parsePoint(NElement ptElem, Function<NElement, NElement> evaluator) {
+        if (ptElem == null) return null;
+        NElement ev = evaluator.apply(ptElem);
+        if (ev.isArray()) {
+            List<NElement> ch = ev.asArray().get().children();
+            if (ch.size() >= 2) {
+                double x = parseDimension(evaluator.apply(ch.get(0)), 0.0);
+                double y = parseDimension(evaluator.apply(ch.get(1)), 0.0);
+                return new HPoint(x, y);
+            }
+        } else if (ev.isObject()) {
+            NObjectElement obj = ev.asObject().get();
+            NElement xEl = obj.get("x").orNull();
+            NElement yEl = obj.get("y").orNull();
+            if (xEl != null && yEl != null) {
+                double x = parseDimension(evaluator.apply(xEl), 0.0);
+                double y = parseDimension(evaluator.apply(yEl), 0.0);
+                return new HPoint(x, y);
+            }
+        }
+        try {
+            java.lang.reflect.Method m = ev.getClass().getMethod("params");
+            List<NElement> ch = (List<NElement>) m.invoke(ev);
+            if (ch != null && ch.size() >= 2) {
+                double x = parseDimension(evaluator.apply(ch.get(0)), 0.0);
+                double y = parseDimension(evaluator.apply(ch.get(1)), 0.0);
+                return new HPoint(x, y);
+            }
+        } catch (Throwable ignored) {
+        }
+        return null;
+    }
+
+    private static HGeometry parsePolygonWithHole(NElement elem, Function<NElement, NElement> evaluator) {
+        NElement ev = evaluator.apply(elem);
+        List<NElement> pairs = new ArrayList<>();
+        if (ev.isObject()) {
+            NObjectElement obj = ev.asObject().get();
+            for (NElement child : obj.children()) {
+                if (child.isNamedPair()) {
+                    pairs.add(child);
+                }
+            }
+        } else {
+            try {
+                java.lang.reflect.Method m = ev.getClass().getMethod("params");
+                List<NElement> params = (List<NElement>) m.invoke(ev);
+                if (params != null) {
+                    for (NElement param : params) {
+                        if (param.isNamedPair()) {
+                            pairs.add(param);
+                        }
+                    }
+                }
+            } catch (Throwable ignored) {
+            }
+        }
+
+        NElement extEl = null;
+        NElement holesEl = null;
+        for (NElement child : pairs) {
+            NPairElement p = child.asPair().get();
+            String key = NNameFormat.LOWER_KEBAB_CASE.format(p.key().asStringValue().orElse(""));
+            if ("exterior".equals(key) || "outer".equals(key) || "polygon".equals(key)) {
+                extEl = p.value();
+            } else if ("holes".equals(key) || "hole".equals(key) || "inner".equals(key)) {
+                holesEl = p.value();
+            }
+        }
+
+        if (extEl == null) return null;
+        List<HPoint> extPts = parsePointsList(extEl, evaluator);
+        if (extPts.size() < 3) return null;
+        HPolygon exterior = GeometryFactory.createPolygon(extPts);
+
+        List<HPolygon> holes = new ArrayList<>();
+        if (holesEl != null) {
+            NElement hev = evaluator.apply(holesEl);
+            if (hev.isArray()) {
+                for (NElement holeChild : hev.asArray().get().children()) {
+                    List<HPoint> hPts = parsePointsList(holeChild, evaluator);
+                    if (hPts.size() >= 3) {
+                        holes.add(GeometryFactory.createPolygon(hPts));
+                    }
+                }
+            }
+        }
+        if (holes.isEmpty()) {
+            return exterior;
+        }
+        return new DefaultHPolygonWithHoles(exterior, holes);
+    }
+
+    public static double parseDimension(NElement value, double defaultValue) {
+        if (value == null || value.isNull()) {
+            return defaultValue;
+        }
+        return parseLength(value, defaultValue);
     }
 
 }

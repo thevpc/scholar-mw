@@ -113,7 +113,8 @@ public class FormalScalarProductOperator extends AbstractScalarProductOperator {
 
         register(CosXCosY.class, CosXCosY.class, CosCosVsCosCosScalarProduct.INSTANCE, 2);
         register(CosXCosY.class, CosXCosY.class, Domain2To1ScalarProduct.INSTANCE, 1);
-        register(DoubleToDouble.class, RWG.class, RWGVsAnyScalarProduct.INSTANCE, 1,2);
+        register(CosXCosY.class, RWG.class, CosCosVsRWGScalarProduct.INSTANCE, 1, 2);
+        register(DoubleToDouble.class, RWG.class, RWGVsAnyScalarProduct.INSTANCE, 1, 2);
 
         register(CosXCosY.class, CosXCosY.class, CosCosVsCosCosScalarProduct.INSTANCE, 2);
         register(CosXCosY.class, CosXCosY.class, Domain2To1ScalarProduct.INSTANCE, 1);

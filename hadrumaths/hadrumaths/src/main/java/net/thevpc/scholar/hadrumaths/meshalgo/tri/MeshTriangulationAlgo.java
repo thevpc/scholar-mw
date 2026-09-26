@@ -47,12 +47,11 @@ public class MeshTriangulationAlgo implements MeshAlgo, Cloneable {
                 .maxSurface(option.getMaxArea())
                 .maxIterations(option.getMaxIterations())
                 .maxWidth(option.getMaxEdgeLength())
+                .adaptive(option.isAdaptive())
+                .subMeshes(option.getSubMeshes())
                 ;
         List<HTriangle> triangles = MeshRefinementHelper.triangulate(polygon);
-        for (HGeometry local : option.getLocals()) {
-            triangles=MeshRefinementHelper.refineLocal(local,triangles, r);
-        }
-        triangles = MeshRefinementHelper.refineTriangles(triangles,r);
+        triangles = MeshRefinementHelper.refineTriangles(triangles, r);
         return triangles.stream().map(x -> new MeshZone(x)).collect(Collectors.toList());
     }
 

@@ -4,6 +4,7 @@ import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.geom.HTriangle;
 import net.thevpc.scholar.hadrumaths.scalarproducts.ScalarProductHelper;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToDouble;
+import net.thevpc.scholar.hadrumaths.symbolic.double2double.CosXCosY;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.RWG;
 
 import static net.thevpc.scholar.hadrumaths.Maths.cos2;
@@ -19,6 +20,9 @@ final class RWGVsAnyScalarProduct implements FormalScalarProductHelper {
     public static final RWGVsAnyScalarProduct INSTANCE = new RWGVsAnyScalarProduct();
 
     public double eval(Domain domain, DoubleToDouble f1, DoubleToDouble f2, FormalScalarProductOperator sp) {
+        if (f1 instanceof CosXCosY) {
+            return CosCosVsRWGScalarProduct.INSTANCE.eval(domain, f1, f2, sp);
+        }
         RWG rwg = (RWG) f2;
         return integrateOverTriangle(rwg.tr1, f1, rwg)
                 + integrateOverTriangle(rwg.tr2, f1, rwg)

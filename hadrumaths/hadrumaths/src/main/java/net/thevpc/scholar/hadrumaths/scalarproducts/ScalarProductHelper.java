@@ -22,34 +22,34 @@ public class ScalarProductHelper {
         double a2 = 0.7974269853530873;
         double b2 = 0.1012865073234563;
 
-        // Define the 7 points in (xi, eta) space
+        // Define the 7 points in (xi, eta) space (xi = lambda2, eta = lambda3)
+        // Permutations of (a, b, b) where a + 2b = 1: (a, b), (b, a), (b, b)
         double[][] qPoints = {
                 {1.0 / 3.0, 1.0 / 3.0, w0}, // Point 1 (Centroid)
-                {a1, b1, w1}, {b1, a1, w1}, {1 - a1 - b1, a1, w1}, // Points 2,3,4
-                {a2, b2, w2}, {b2, a2, w2}, {1 - a2 - b2, a2, w2}  // Points 5,6,7
+                {a1, b1, w1}, {b1, a1, w1}, {b1, b1, w1}, // Points 2,3,4
+                {a2, b2, w2}, {b2, a2, w2}, {b2, b2, w2}  // Points 5,6,7
         };
 
         double integralSum = 0;
         BooleanRef defined = BooleanMarker.ref();
 
-        // The Jacobian for a triangle is 2 * Surface
-        // Since weights for unit triangle sum to 0.5, we multiply by (2 * Surface)
-        double jacobian = 2.0 * t.area();
+        // Weights w0 + 3*w1 + 3*w2 = 1.0, so the sum gives the average value of f*g over the triangle.
+        // The integral is simply Area * sum.
+        double jacobian = t.area();
 
         for (double[] qp : qPoints) {
             double xi = qp[0];
             double eta = qp[1];
             double weight = qp[2];
 
-            // 2. Map Unit Triangle (0,0)-(1,0)-(0,1) to your Triangle (p1, p2, p3)
-            // x = x1 + xi*(x2-x1) + eta*(x3-x1)
+            // 2. Map Unit Triangle (0,0)-(1,0)-(0,1) to Triangle (p1, p2, p3)
+            // x = p1 + xi*(p2-p1) + eta*(p3-p1)
             double x = t.p1().x + xi * (t.p2().x - t.p1().x) + eta * (t.p3().x - t.p1().x);
             double y = t.p1().y + xi * (t.p2().y - t.p1().y) + eta * (t.p3().y - t.p1().y);
 
             // 3. Evaluate the functions
-            // RWG evalDouble (you provided this earlier in the RWG class)
             defined.unset();
-            double fv = g.evalDouble(x, y,defined);
+            double fv = g.evalDouble(x, y, defined);
             if (!defined.get()) continue;
             defined.unset();
             double gv = f.evalDouble(x, y, defined);

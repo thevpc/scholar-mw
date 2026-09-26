@@ -337,15 +337,46 @@ public class MeshRefinementHelper {
     }
 
     private static boolean isCandidate(HTriangle t, MeshRefinement r) {
-        if (isSet(r.maxSurface) && t.area() > r.maxSurface) return true;
-        if (isSet(r.maxWidth) && t.longestEdge() > r.maxWidth) return true;
-        // no constraints active: everything is a candidate (maxTriangles drives it)
         if (r.predicate != null) {
             if (!r.predicate.test(t)) {
                 return false;
             }
         }
-        return !isSet(r.maxSurface) && !isSet(r.maxWidth);
+        if (isSet(r.maxSurface) && t.area() > r.maxSurface) return true;
+        if (isSet(r.maxWidth) && t.longestEdge() > r.maxWidth) return true;
+
+        if (r.subMeshes != null && !r.subMeshes.isEmpty()) {
+            HPoint c = t.getBarycenter();
+            for (net.thevpc.scholar.hadrumaths.meshalgo.triconsdes.SubMesh sm : r.subMeshes) {
+                if (sm != null && sm.getGeometry() != null) {
+                    HGeometry g = sm.getGeometry();
+                    if (g.contains(c.x, c.y) || g.contains(t.p1().x, t.p1().y) || g.contains(t.p2().x, t.p2().y) || g.contains(t.p3().x, t.p3().y)) {
+                        if (isSet(sm.getMaxArea()) && t.area() > sm.getMaxArea()) return true;
+                        if (isSet(sm.getMaxEdgeLength()) && t.longestEdge() > sm.getMaxEdgeLength()) return true;
+                    }
+                }
+            }
+        }
+
+        if (r.adaptive) {
+            double longest = t.longestEdge();
+            double h = 2.0 * t.area() / longest;
+            if (h > 1e-12 && (longest / h) > 2.5) {
+                return true;
+            }
+        }
+
+        boolean hasSubMeshConstraints = false;
+        if (r.subMeshes != null) {
+            for (net.thevpc.scholar.hadrumaths.meshalgo.triconsdes.SubMesh sm : r.subMeshes) {
+                if (sm != null && (isSet(sm.getMaxArea()) || isSet(sm.getMaxEdgeLength()))) {
+                    hasSubMeshConstraints = true;
+                    break;
+                }
+            }
+        }
+
+        return !isSet(r.maxSurface) && !isSet(r.maxWidth) && !hasSubMeshConstraints && !r.adaptive;
     }
 
 
