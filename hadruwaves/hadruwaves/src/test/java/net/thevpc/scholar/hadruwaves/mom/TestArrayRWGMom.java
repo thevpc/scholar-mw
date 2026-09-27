@@ -225,4 +225,131 @@ public class TestArrayRWGMom {
         System.out.printf("Single point 6.65 GHz: Zin = %s, S11 = %s (%.2f dB)%n",
                 Zin_eval, s11_eval, 20 * Math.log10(s11_eval.abs().toDouble()));
     }
+
+    @Test
+    public void testSinglePatch() {
+        Maths.Config.setCacheEnabled(false);
+        Maths.Config.setPersistenceCacheMode(CacheMode.DISABLED);
+
+        double W = 13.5e-3;
+        double L = 9.40e-3;
+        double wf = 3.1e-3;
+        double y0 = 3.4e-3;
+        double gap = 0.8e-3;
+        double notchs = (W / 2) - (wf / 2 + gap);
+
+        List<HGeometry> parts = new ArrayList<>();
+        parts.add(createBox(-W / 2, 0, notchs, y0));
+        parts.add(createBox(wf / 2 + gap, 0, notchs, y0));
+        parts.add(createBox(-W / 2, y0, W, L - y0));
+        parts.add(createBox(-wf / 2, 0, wf, y0));
+        parts.add(createBox(-wf / 2, -15e-3, wf, 15e-3));
+
+        HGeometry patchGeom = parts.get(0);
+        for (int i = 1; i < parts.size(); i++) {
+            patchGeom = patchGeom.addGeometry(parts.get(i));
+        }
+
+        MeshTriangulationOptions opts = new MeshTriangulationOptions()
+                .setMaxEdgeLength(2.0e-3)
+                .setAdaptive(false);
+
+        TestFunctions rwgTf = TestFunctionsFactory.createRWG(patchGeom, opts);
+        System.out.println("Single patch RWG count: " + rwgTf.toArray().length);
+
+        Domain box = Domain.ofBounds(-20e-3, 20e-3, -25e-3, 20e-3);
+        MomStructure mom = new MomStructure();
+        mom.setProjectType(ProjectType.PLANAR_STRUCTURE);
+        mom.setDomain(box);
+        mom.setBorders(WallBorders.EEEE);
+        mom.setFirstBoxSpace(BoxSpace.shortCircuit(Material.substrate("FR4", 4.4, 0.02), 1.6e-3));
+        mom.setSecondBoxSpace(BoxSpace.matchedLoad(Material.VACUUM));
+        mom.setCircuitType(CircuitType.SERIAL);
+        mom.setSolverType(MomSolverType.SPATIAL_MPIE);
+        mom.modeFunctions().setSize(500);
+        mom.setTestFunctions(rwgTf);
+
+        Domain srcDom = Domain.ofPoints(-wf / 2, -15e-3, wf / 2, -14e-3);
+        mom.setSources(new DefaultPlanarSources(CstPlanarSource.ofVoltage(1.0, srcDom, Axis.Y, Complex.of(50))));
+
+        // Inspect standing wave profile along feedline at 6.6 GHz
+        mom.setFrequency(6.60e9);
+        ComplexMatrix matA = mom.matrixA().evalMatrix();
+        ComplexMatrix vecB = mom.matrixB().evalMatrix();
+        ComplexMatrix vecX = matA.solve(vecB);
+        DoubleToVector[] tfs = mom.testFunctions().toArray();
+        System.out.println("=== FEEDLINE CURRENT PROFILE at 6.60 GHz ===");
+        for (double y = -14.0e-3; y <= -1.0e-3 + 1e-6; y += 1.0e-3) {
+            double curY = 0;
+            Complex cCurY = Complex.ZERO;
+            for (int i = 0; i < tfs.length; i++) {
+                net.thevpc.scholar.hadrumaths.symbolic.double2double.RWG rwg = RWGDeltaGapBMatrix.tryUnwrapRWG(tfs[i]);
+                if (rwg != null) {
+                    HPoint mid = rwg.getSharedEdgeMidpoint();
+                    if (Math.abs(mid.x) <= 1.6e-3 && Math.abs(mid.y - y) <= 0.6e-3) {
+                        double gam = rwg.deltaGapGamma(Axis.Y);
+                        cCurY = cCurY.plus(vecX.get(i, 0).mul(gam));
+                        curY += vecX.get(i, 0).absDouble() * Math.abs(gam);
+                    }
+                }
+            }
+            System.out.printf("  y = %6.2f mm: |I| = %.4e, I = %s%n", y / 1e-3, cCurY.absDouble(), cCurY);
+        }
+        System.out.println("=============================================");
+
+        System.out.println("=== RESONANCE SEARCH 5.5 - 7.5 GHz ===");
+        double minS11 = 0;
+        double bestF = 0;
+        for (double freq = 5.5e9; freq <= 7.5e9; freq += 0.1e9) {
+            mom.setFrequency(freq);
+            ComplexMatrix mA = mom.matrixA().evalMatrix();
+            ComplexMatrix vB = mom.matrixB().evalMatrix();
+            ComplexMatrix vX = mA.solve(vB);
+
+            // Sample feedline current at y = -8mm and y = -5mm
+            Complex I_8 = Complex.ZERO;
+            Complex I_5 = Complex.ZERO;
+            for (int i = 0; i < tfs.length; i++) {
+                net.thevpc.scholar.hadrumaths.symbolic.double2double.RWG rwg = RWGDeltaGapBMatrix.tryUnwrapRWG(tfs[i]);
+                if (rwg != null) {
+                    HPoint mid = rwg.getSharedEdgeMidpoint();
+                    double gam = rwg.deltaGapGamma(Axis.Y);
+                    if (Math.abs(mid.x) <= 1.6e-3) {
+                        if (Math.abs(mid.y - (-8.0e-3)) <= 0.6e-3) {
+                            I_8 = I_8.plus(vX.get(i, 0).mul(gam));
+                        }
+                        if (Math.abs(mid.y - (-5.0e-3)) <= 0.6e-3) {
+                            I_5 = I_5.plus(vX.get(i, 0).mul(gam));
+                        }
+                    }
+                }
+            }
+
+            double u = wf / 1.6e-3;
+            double epsEff = (4.4 + 1.0) / 2.0 + (4.4 - 1.0) / 2.0 / Math.sqrt(1.0 + 12.0 / u);
+            double beta = (2.0 * Math.PI * freq / Maths.C) * Math.sqrt(epsEff);
+            double s1 = -8.0e-3 - (-14.425e-3);
+            double s2 = -5.0e-3 - (-14.425e-3);
+
+            Complex e1p = Complex.of(Math.cos(-beta * s1), Math.sin(-beta * s1));
+            Complex e1m = Complex.of(Math.cos(beta * s1), Math.sin(beta * s1));
+            Complex e2p = Complex.of(Math.cos(-beta * s2), Math.sin(-beta * s2));
+            Complex e2m = Complex.of(Math.cos(beta * s2), Math.sin(beta * s2));
+            Complex det = e1p.mul(e2m).minus(e1m.mul(e2p));
+            Complex Ip = I_8.mul(e2m).minus(I_5.mul(e1m)).div(det);
+            Complex Im = e1p.mul(I_5).minus(e2p.mul(I_8)).div(det);
+            double s11 = 20 * Math.log10(Im.absDouble() / Ip.absDouble());
+            System.out.printf("  f = %.2f GHz: |I+| = %.3e, |I-| = %.3e, S11 = %6.2f dB%n",
+                    freq / 1e9, Ip.absDouble(), Im.absDouble(), s11);
+            if (s11 < minS11) {
+                minS11 = s11;
+                bestF = freq;
+            }
+        }
+        System.out.printf("BEST RESONANCE: f = %.3f GHz with S11 = %.2f dB%n", bestF / 1e9, minS11);
+    }
 }
+
+
+
+

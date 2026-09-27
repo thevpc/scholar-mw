@@ -121,16 +121,16 @@ public final class MpiePotentialHelper {
         boolean isNear = distCent < 1.5 * (sizeA + sizeB);
 
         if (isNear) {
-            return computeNearInteraction(ta, va, tb, vb, k, h, areaA, areaB);
+            return computeNearInteraction(ta, va, tb, vb, k, k0, h, areaA, areaB);
         } else {
-            return computeFarInteraction(ta, va, tb, vb, k, h, areaA, areaB);
+            return computeFarInteraction(ta, va, tb, vb, k, k0, h, areaA, areaB);
         }
     }
 
     private static InteractionResult computeNearInteraction(
             HTriangle ta, HPoint va,
             HTriangle tb, HPoint vb,
-            double k, double h,
+            double k, double k0, double h,
             double areaA, double areaB) {
 
         Complex totalPhi = Complex.ZERO;
@@ -146,7 +146,7 @@ public final class MpiePotentialHelper {
             double singPhi = WiltonPotentialIntegrals.integrateScalarPotential(rx, ry, tb);
             double[] singA = WiltonPotentialIntegrals.integrateLinearPotential(rx, ry, vb.x, vb.y, tb);
 
-            // 2. Smooth remainder: (e^{-jkR} - 1)/R - e^{-jkR_img}/R_img
+            // 2. Smooth remainder: (cos(kR) - 1)/R - cos(k R_img)/R_img - j sin(k0 R)/R
             // Integrated over Tb using 7-point Gauss quadrature
             Complex smoothPhi = Complex.ZERO;
             Complex smoothAx = Complex.ZERO;
@@ -161,7 +161,7 @@ public final class MpiePotentialHelper {
                 double dy = ry - py;
                 double R = Math.hypot(dx, dy);
 
-                Complex gSmooth = evalSmoothGreen(R, k, h);
+                Complex gSmooth = evalSmoothGreen(R, k, k0, h);
 
                 smoothPhi = smoothPhi.plus(gSmooth.mul(wb));
 
@@ -198,7 +198,7 @@ public final class MpiePotentialHelper {
     private static InteractionResult computeFarInteraction(
             HTriangle ta, HPoint va,
             HTriangle tb, HPoint vb,
-            double k, double h,
+            double k, double k0, double h,
             double areaA, double areaB) {
 
         Complex totalPhi = Complex.ZERO;
@@ -219,7 +219,7 @@ public final class MpiePotentialHelper {
                 double drb_y = py - vb.y;
 
                 double R = Math.hypot(rx - px, ry - py);
-                Complex G = evalFullGreen(R, k, h);
+                Complex G = evalFullGreen(R, k, k0, h);
                 double w = wa * wb;
 
                 totalPhi = totalPhi.plus(G.mul(w));
@@ -236,42 +236,50 @@ public final class MpiePotentialHelper {
         return new InteractionResult(totalPhi, totalA);
     }
 
-    private static Complex evalSmoothGreen(double R, double k, double h) {
-        // (e^{-jkR} - 1) / R
-        Complex term;
+    private static Complex evalSmoothGreen(double R, double k, double k0, double h) {
+        // (cos(kR) - 1) / R - cos(k R_img) / R_img for real part
+        // -sin(k0 R) / R for imaginary part (radiation damping into upper air half-space)
+        double realTerm;
         if (R < 1e-10) {
-            term = Complex.of(-0.5 * k * k * R, -k);
+            realTerm = -0.5 * k * k * R;
         } else {
             double kr = k * R;
-            term = Complex.of((Math.cos(kr) - 1.0) / R, -Math.sin(kr) / R);
+            realTerm = (Math.cos(kr) - 1.0) / R;
         }
 
-        // Subtract image: e^{-jkR_img} / R_img
         if (h > 0) {
             double rImg = Math.sqrt(R * R + 4.0 * h * h);
             double krImg = k * rImg;
-            Complex imgTerm = Complex.of(Math.cos(krImg) / rImg, -Math.sin(krImg) / rImg);
-            term = term.minus(imgTerm);
+            realTerm -= Math.cos(krImg) / rImg;
         }
 
-        return term;
+        double imagTerm;
+        if (R < 1e-10) {
+            imagTerm = -k0;
+        } else {
+            imagTerm = -Math.sin(k0 * R) / R;
+        }
+
+        return Complex.of(realTerm, imagTerm);
     }
 
-    private static Complex evalFullGreen(double R, double k, double h) {
+    private static Complex evalFullGreen(double R, double k, double k0, double h) {
         double inv4Pi = 1.0 / (4.0 * Math.PI);
         if (R < 1e-15) {
             R = 1e-15;
         }
         double kr = k * R;
-        Complex term = Complex.of(Math.cos(kr) / R, -Math.sin(kr) / R);
+        double realTerm = Math.cos(kr) / R;
 
         if (h > 0) {
             double rImg = Math.sqrt(R * R + 4.0 * h * h);
             double krImg = k * rImg;
-            Complex imgTerm = Complex.of(Math.cos(krImg) / rImg, -Math.sin(krImg) / rImg);
-            term = term.minus(imgTerm);
+            realTerm -= Math.cos(krImg) / rImg;
         }
 
-        return term.mul(inv4Pi);
+        double imagTerm = -Math.sin(k0 * R) / R;
+
+        return Complex.of(realTerm, imagTerm).mul(inv4Pi);
     }
 }
+

@@ -130,6 +130,12 @@ public class MomParser {
         if (moMSolverQueryInfo.solverType == null && RWGDeltaGapBMatrix.hasRWG(str)) {
             str.setSolverType(MomSolverType.SPATIAL_MPIE);
         }
+        if (moMSolverQueryInfo.charW != null) {
+            str.getHintsManager().setHint("charW", moMSolverQueryInfo.charW);
+        }
+        if (moMSolverQueryInfo.epsEff != null) {
+            str.getHintsManager().setHint("epsEff", moMSolverQueryInfo.epsEff);
+        }
         return str;
     }
 
@@ -222,6 +228,21 @@ public class MomParser {
                         } else if (s.contains("MODAL") || s.contains("CAVITY")) {
                             query.solverType = MomSolverType.CAVITY_MODAL;
                         }
+                        break;
+                    }
+                    case "characteristic-width":
+                    case "char-width":
+                    case "charw": {
+                        NNumberElement ne = context.evalExpression(pv).flatMap(NElement::asNumber).orNull();
+                        if (ne != null) {
+                            query.charW = NTxNumberUtils.toMeter(ne).orNull();
+                        }
+                        break;
+                    }
+                    case "effective-permittivity":
+                    case "eps-eff":
+                    case "epseff": {
+                        query.epsEff = pv.asNumberValue().map(Number::doubleValue).orNull();
                         break;
                     }
                 }
@@ -593,5 +614,7 @@ public class MomParser {
         ProjectType projectType;
         CircuitType circuitType;
         MomSolverType solverType;
+        Double charW;
+        Double epsEff;
     }
 }
