@@ -8,6 +8,7 @@ import net.thevpc.scholar.hadrumaths.ComplexMatrix;
 import net.thevpc.scholar.hadrumaths.Domain;
 import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.scholar.hadrumaths.geom.HPoint;
+import net.thevpc.scholar.hadrumaths.geom.HTriangle;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
 import net.thevpc.scholar.hadrumaths.symbolic.double2double.RWG;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
@@ -18,6 +19,8 @@ import net.thevpc.scholar.hadruwaves.mom.sources.planar.CstPlanarSource;
 import net.thevpc.scholar.hadruwaves.mom.str.MatrixBEvaluator;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -57,14 +60,6 @@ public class MatrixBPlanarMpieEvaluator implements MatrixBEvaluator {
                     V0 = csrc.getYvalue() * sourceDomain.ywidth();
                 }
 
-                class Candidate {
-                    int index;
-                    RWG rwg;
-                    HPoint mid;
-                    double gamma;
-                    double coord;
-                }
-
                 List<Candidate> candidates = new ArrayList<>();
                 for (int n = 0; n < N; n++) {
                     b[n][p] = Complex.ZERO;
@@ -79,7 +74,13 @@ public class MatrixBPlanarMpieEvaluator implements MatrixBEvaluator {
                                 c.rwg = rwg;
                                 c.mid = mid;
                                 c.gamma = gamma;
-                                c.coord = (polarization == Axis.X) ? mid.x : mid.y;
+                                c.longCoord = (polarization == Axis.X) ? mid.x : mid.y;
+                                HTriangle t1 = rwg.getTriangle1();
+                                double pA = (polarization == Axis.X) ? t1.p2().y : t1.p2().x;
+                                double pB = (polarization == Axis.X) ? t1.p3().y : t1.p3().x;
+                                c.tMin = Math.min(pA, pB);
+                                c.tMax = Math.max(pA, pB);
+                                c.weight = c.tMax - c.tMin;
                                 candidates.add(c);
                             }
                         }
@@ -90,37 +91,43 @@ public class MatrixBPlanarMpieEvaluator implements MatrixBEvaluator {
                 }
 
                 if (!candidates.isEmpty()) {
+                    for (Candidate c : candidates) {
+                        str.log().log(net.thevpc.nuts.text.NMsg.ofC("  [MPIE CANDIDATE] i=%d, gamma=%.4e, mid=(%.3f, %.3f)mm, span=[%.3f, %.3f]mm",
+                                c.index, c.gamma, c.mid.x * 1000, c.mid.y * 1000, c.tMin * 1000, c.tMax * 1000));
+                    }
                     // Find the cut that provides maximum width coverage across the port line
                     double bestCoverage = 0;
-                    double bestCoord = candidates.get(0).coord;
-                    double dominantSign = 1.0;
-                    double coordClusterTol = 0.5e-3; // 0.5mm cluster tolerance
+                    double bestCoord = candidates.get(0).longCoord;
+                    List<Candidate> bestSelected = Collections.emptyList();
+                    // Strict cluster tolerance so all port edges share the same transverse cut coordinate
+                    double coordClusterTol = 1e-4; // 0.1mm cluster tolerance
 
                     for (Candidate c : candidates) {
-                        double covPos = 0;
-                        double covNeg = 0;
+                        List<Candidate> cluster = new ArrayList<>();
                         for (Candidate o : candidates) {
-                            if (Math.abs(o.coord - c.coord) <= coordClusterTol) {
-                                if (o.gamma > 0) covPos += o.gamma;
-                                else covNeg += -o.gamma;
+                            if (Math.abs(o.longCoord - c.longCoord) <= coordClusterTol) {
+                                cluster.add(o);
                             }
                         }
-                        if (covPos > bestCoverage) {
-                            bestCoverage = covPos;
-                            bestCoord = c.coord;
-                            dominantSign = 1.0;
+                        List<Candidate> selected = selectBestNonOverlappingCover(cluster);
+                        double cov = 0;
+                        for (Candidate s : selected) {
+                            cov += s.weight;
                         }
-                        if (covNeg > bestCoverage) {
-                            bestCoverage = covNeg;
-                            bestCoord = c.coord;
-                            dominantSign = -1.0;
+                        if (cov > bestCoverage) {
+                            bestCoverage = cov;
+                            bestCoord = c.longCoord;
+                            bestSelected = selected;
                         }
                     }
 
-                    for (Candidate c : candidates) {
-                        if (Math.abs(c.coord - bestCoord) <= coordClusterTol && (c.gamma * dominantSign > 0)) {
-                            b[c.index][p] = Complex.of(V0 * c.gamma);
-                        }
+                    str.log().log(net.thevpc.nuts.text.NMsg.ofC("  [MPIE SELECTION] bestCoord=%.3fmm, bestCoverage=%.4e, selectedCount=%d",
+                            bestCoord * 1000, bestCoverage, bestSelected.size()));
+
+                    for (Candidate s : bestSelected) {
+                        b[s.index][p] = Complex.of(V0 * s.gamma);
+                        str.log().log(net.thevpc.nuts.text.NMsg.ofC("    -> SELECTED i=%d, span=[%.3f, %.3f]mm, gamma=%.4e, B=%s",
+                                s.index, s.tMin * 1000, s.tMax * 1000, s.gamma, b[s.index][p]));
                     }
                 }
             } else {
@@ -132,6 +139,63 @@ public class MatrixBPlanarMpieEvaluator implements MatrixBEvaluator {
         }
 
         return Maths.matrix(b);
+    }
+
+    private static class Candidate {
+        int index;
+        RWG rwg;
+        HPoint mid;
+        double gamma;
+        double longCoord;
+        double tMin;
+        double tMax;
+        double weight;
+    }
+
+    private static List<Candidate> selectBestNonOverlappingCover(List<Candidate> cluster) {
+        if (cluster.isEmpty()) {
+            return Collections.emptyList();
+        }
+        // Sort by tMax ascending, then tMin ascending
+        List<Candidate> sorted = new ArrayList<>(cluster);
+        sorted.sort(Comparator.comparingDouble((Candidate c) -> c.tMax).thenComparingDouble(c -> c.tMin));
+
+        int m = sorted.size();
+        double[] opt = new double[m];
+        int[] prev = new int[m];
+
+        for (int i = 0; i < m; i++) {
+            Candidate curr = sorted.get(i);
+            int p = -1;
+            for (int j = i - 1; j >= 0; j--) {
+                Candidate candJ = sorted.get(j);
+                double overlap = Math.max(0, candJ.tMax - curr.tMin);
+                if (overlap <= 0.05 * Math.min(candJ.weight, curr.weight) + 1e-6) {
+                    p = j;
+                    break;
+                }
+            }
+            prev[i] = p;
+            double takeWeight = curr.weight + (p >= 0 ? opt[p] : 0.0);
+            double skipWeight = (i > 0 ? opt[i - 1] : 0.0);
+            opt[i] = Math.max(takeWeight, skipWeight);
+        }
+
+        // Backtrack to find selected candidates
+        List<Candidate> selected = new ArrayList<>();
+        int currIdx = m - 1;
+        while (currIdx >= 0) {
+            double takeWeight = sorted.get(currIdx).weight + (prev[currIdx] >= 0 ? opt[prev[currIdx]] : 0.0);
+            double skipWeight = (currIdx > 0 ? opt[currIdx - 1] : 0.0);
+            if (takeWeight >= skipWeight) {
+                selected.add(sorted.get(currIdx));
+                currIdx = prev[currIdx];
+            } else {
+                currIdx--;
+            }
+        }
+        Collections.reverse(selected);
+        return selected;
     }
 
     @Override

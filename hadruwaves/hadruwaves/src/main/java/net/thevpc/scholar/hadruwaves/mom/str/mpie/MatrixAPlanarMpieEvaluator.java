@@ -39,6 +39,7 @@ public class MatrixAPlanarMpieEvaluator implements MatrixAEvaluator {
         // Substrate parameters
         double h0 = 0.0016; // default 1.6mm
         double epsr = 1.0;
+        double tand = 0.0;
         if (str.getFirstBoxSpace() != null) {
             if (str.getFirstBoxSpace().getWidth() > 0) {
                 h0 = str.getFirstBoxSpace().getWidth();
@@ -46,19 +47,35 @@ public class MatrixAPlanarMpieEvaluator implements MatrixAEvaluator {
             Material mat = str.getFirstBoxSpace().getMaterial();
             if (mat != null) {
                 epsr = mat.permittivity();
+                tand = mat.lossTangent();
             }
         }
 
-        // Effective permittivity for microstrip antenna structure
-        double epsEff = epsr > 1.0 ? 0.985 * epsr : 1.0;
+        // Microstrip effective permittivity (Wheeler/Hammerstad quasi-TEM formulation for microstrip on grounded substrate):
+        double charW = 2.0 * h0; // default characteristic conductor width
+        if (N > 0) {
+            double sumEdge = 0;
+            for (int i = 0; i < N; i++) {
+                RWG r = RWGDeltaGapBMatrix.tryUnwrapRWG(g[i]);
+                if (r != null) {
+                    sumEdge += r.edgeLength;
+                }
+            }
+            if (sumEdge > 0) {
+                charW = Math.max(h0, sumEdge / N);
+            }
+        }
+        double epsEff = epsr > 1.0 ? ((epsr + 1.0) / 2.0 + (epsr - 1.0) / 2.0 / Math.sqrt(1.0 + 12.0 * (h0 / charW))) : 1.0;
         double k0 = omega / Maths.C;
         final double k = k0 * Math.sqrt(epsEff);
         final double h = h0;
 
         // MPIE prefactors:
-        // Z_mn = j*omega*mu0 * <fm, An> + 1/(j*omega*eps0*epsEff) * <div fm, Phin>
+        // Z_mn = j*omega*mu0 * <fm, An> + 1/(j*omega*eps0*epsC) * <div fm, Phin>
+        // Complex permittivity with substrate loss tangent:
+        Complex epsC = tand > 0 ? Complex.of(epsEff, -epsEff * tand) : Complex.of(epsEff, 0);
         final Complex cA = Complex.I.mul(omega * Maths.U0);
-        final Complex cV = Complex.I.mul(-1.0 / (omega * Maths.EPS0 * epsEff));
+        final Complex cV = Complex.I.mul(omega * Maths.EPS0).mul(epsC).inv();
 
         final Complex Zs = str.getSerialZs() != null ? str.getSerialZs().impedanceValue() : Complex.ZERO;
 

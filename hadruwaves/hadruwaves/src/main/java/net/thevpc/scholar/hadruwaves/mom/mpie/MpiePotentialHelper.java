@@ -84,6 +84,26 @@ public final class MpiePotentialHelper {
             HTriangle ta, HPoint va,
             HTriangle tb, HPoint vb,
             double k, double h) {
+        return computeTriangleInteraction(ta, va, tb, vb, k, k, h);
+    }
+
+    /**
+     * Computes the scalar and vector potential interaction between triangle Ta
+     * (with free vertex va) and triangle Tb (with free vertex vb).
+     *
+     * @param ta observation triangle
+     * @param va free vertex associated with ta
+     * @param tb source triangle
+     * @param vb free vertex associated with tb
+     * @param k  wavenumber in dielectric/effective medium (reactive near fields)
+     * @param k0 free-space wavenumber in air (far-field radiation damping)
+     * @param h  substrate thickness (image theory at 2h; if &lt;= 0, free space)
+     * @return interaction result containing scalar and vector integrals
+     */
+    public static InteractionResult computeTriangleInteraction(
+            HTriangle ta, HPoint va,
+            HTriangle tb, HPoint vb,
+            double k, double k0, double h) {
 
         double areaA = ta.area();
         double areaB = tb.area();

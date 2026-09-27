@@ -93,8 +93,14 @@ public class TestArrayRWGMom {
         HGeometry antenna = buildAntennaGeometry();
         System.out.println("Antenna geometry created.");
 
+        List<net.thevpc.scholar.hadrumaths.meshalgo.triconsdes.SubMesh> subMeshes = new ArrayList<>();
+        subMeshes.add(new net.thevpc.scholar.hadrumaths.meshalgo.triconsdes.SubMesh(
+                new DefaultHPolygon(HPoint.create(-35e-3, -28e-3), HPoint.create(35e-3, -28e-3), HPoint.create(35e-3, 0), HPoint.create(-35e-3, 0)),
+                2.0e-3
+        ));
         MeshTriangulationOptions opts = new MeshTriangulationOptions()
-                .setMaxEdgeLength(2.5e-3)
+                .setMaxEdgeLength(3.0e-3)
+                .setSubMeshes(subMeshes)
                 .setAdaptive(false);
 
         System.out.println("Step 1a: initial JTS triangulation of antenna geometry...");
@@ -102,10 +108,11 @@ public class TestArrayRWGMom {
         List<HTriangle> rawTriangles = net.thevpc.scholar.hadrumaths.meshalgo.tri.MeshRefinementHelper.triangulate(antenna);
         System.out.printf("Step 1a done in %d ms: %d initial triangles.%n", (System.currentTimeMillis() - t_mesh0), rawTriangles.size());
 
-        System.out.println("Step 1b: refineTriangles without adaptive...");
+        System.out.println("Step 1b: refineTriangles with sub-meshes...");
         long t_ref0 = System.currentTimeMillis();
         net.thevpc.scholar.hadrumaths.meshalgo.tri.MeshRefinement r = new net.thevpc.scholar.hadrumaths.meshalgo.tri.MeshRefinement()
                 .maxWidth(opts.getMaxEdgeLength())
+                .subMeshes(opts.getSubMeshes())
                 .adaptive(false);
         List<HTriangle> refined = net.thevpc.scholar.hadrumaths.meshalgo.tri.MeshRefinementHelper.refineTriangles(rawTriangles, r);
         System.out.printf("Step 1b done in %d ms: %d refined triangles.%n", (System.currentTimeMillis() - t_ref0), refined.size());
@@ -135,7 +142,7 @@ public class TestArrayRWGMom {
         mom.setTestFunctions(rwgTf);
 
         double wf = 3.1e-3;
-        Domain srcDom = Domain.ofPoints(-wf / 2, -28e-3, wf / 2, -27e-3);
+        Domain srcDom = Domain.ofPoints(-wf / 2, -27e-3, wf / 2, -26e-3);
         mom.setSources(new DefaultPlanarSources(CstPlanarSource.ofVoltage(1.0, srcDom, Axis.Y, Complex.of(50))));
 
         System.out.println("Starting MoM solve at 6.5 GHz...");
@@ -153,13 +160,69 @@ public class TestArrayRWGMom {
                         tri1.p3().x / Maths.MM, tri1.p3().y / Maths.MM);
             }
         }
-        mom.setFrequency(6.64e9);
-        long t0 = System.currentTimeMillis();
-        Complex Zin = mom.inputImpedance().evalComplex();
-        long dt = System.currentTimeMillis() - t0;
         Complex Z0 = Complex.of(50);
-        Complex s11 = Zin.minus(Z0).div(Zin.plus(Z0));
-        double s11db = 20 * Math.log10(s11.abs().toDouble());
-        System.out.printf("f = 6.64 GHz: Solved in %d ms! Zin = %s, S11 = %s (%.2f dB)%n", dt, Zin, s11, s11db);
+        mom.setFrequency(6.65e9);
+        ComplexMatrix matA = mom.matrixA().evalMatrix();
+        ComplexMatrix vecB = mom.matrixB().evalMatrix();
+        System.out.println("=== ALL RWG EDGES NEAR FEED PORT (y < -26 mm) ===");
+        for (int i = 0; i < tfs.length; i++) {
+            net.thevpc.scholar.hadrumaths.symbolic.double2double.RWG rwg = RWGDeltaGapBMatrix.tryUnwrapRWG(tfs[i]);
+            if (rwg != null) {
+                HPoint mid = rwg.getSharedEdgeMidpoint();
+                if (mid.y < -26e-3 && Math.abs(mid.x) <= 1.6e-3) {
+                    HTriangle t1 = rwg.getTriangle1();
+                    System.out.printf("RWG[%4d]: mid=(%.3f, %.3f)mm, edge=(%.3f,%.3f)->(%.3f,%.3f), span=[%.3f,%.3f], gamma=%.4e%n",
+                            i, mid.x / Maths.MM, mid.y / Maths.MM,
+                            t1.p2().x / Maths.MM, t1.p2().y / Maths.MM,
+                            t1.p3().x / Maths.MM, t1.p3().y / Maths.MM,
+                            Math.min(t1.p2().x, t1.p3().x) / Maths.MM, Math.max(t1.p2().x, t1.p3().x) / Maths.MM,
+                            rwg.deltaGapGamma(Axis.Y));
+                }
+            }
+        }
+        System.out.println("==================================================");
+        ComplexMatrix vecX = matA.solve(vecB);
+        double curPatch1 = 0, curPatch2 = 0, curPatch3 = 0, curPatch4 = 0, curFeed = 0;
+        Complex sumBX = Complex.ZERO;
+        for (int i = 0; i < vecX.getRowCount(); i++) {
+            Complex bval = matB.get(i, 0);
+            if (!bval.isZero()) {
+                Complex xval = vecX.get(i, 0);
+                Complex contrib = bval.mul(xval);
+                sumBX = sumBX.plus(contrib);
+                System.out.printf("  Port edge [%4d]: B = %s, X = %s, B*X = %s%n", i, bval, xval, contrib);
+            }
+            net.thevpc.scholar.hadrumaths.symbolic.double2double.RWG rwg = RWGDeltaGapBMatrix.tryUnwrapRWG(tfs[i]);
+            HPoint mid = rwg.getSharedEdgeMidpoint();
+            double mag = vecX.get(i, 0).absDouble();
+            if (mid.y < -22e-3 && Math.abs(mid.x) < 2e-3) {
+                System.out.printf("  Feedline edge at y=%.2f mm: mid=(%.3f, %.3f), X = %s, gamma=%.4e%n",
+                        mid.y / Maths.MM, mid.x / Maths.MM, mid.y / Maths.MM, vecX.get(i, 0), rwg.deltaGapGamma(Axis.Y));
+            }
+            if (mid.y >= 0) {
+                if (mid.x < -22e-3) curPatch1 += mag;
+                else if (mid.x < 0) curPatch2 += mag;
+                else if (mid.x < 22e-3) curPatch3 += mag;
+                else curPatch4 += mag;
+            } else {
+                curFeed += mag;
+            }
+        }
+        System.out.printf("Sum(B*X) = %s, 1/Sum(B*X) = %s%n", sumBX, sumBX.inv());
+        System.out.printf("Current distribution at 6.65 GHz: Feed=%.4f, Patch1=%.4f, Patch2=%.4f, Patch3=%.4f, Patch4=%.4f%n",
+                curFeed, curPatch1, curPatch2, curPatch3, curPatch4);
+
+        double h_sub = 1.6e-3;
+        double er_sub = 4.4;
+        double u_sub = wf / h_sub;
+        double epsEff_sub = (er_sub + 1.0) / 2.0 + (er_sub - 1.0) / 2.0 / Math.sqrt(1.0 + 12.0 / u_sub);
+        System.out.printf("Microstrip epsEff = %.4f%n", epsEff_sub);
+
+        double f = 6.65e9;
+        mom.setFrequency(f);
+        Complex Zin_eval = mom.inputImpedance().evalComplex();
+        Complex s11_eval = mom.sparameters().evalComplex();
+        System.out.printf("Single point 6.65 GHz: Zin = %s, S11 = %s (%.2f dB)%n",
+                Zin_eval, s11_eval, 20 * Math.log10(s11_eval.abs().toDouble()));
     }
 }

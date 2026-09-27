@@ -29,6 +29,7 @@ public class ZinSerialEvaluator implements ZinEvaluator {
         ComplexMatrix A_ = str.matrixA().monitor(mons[1]).evalMatrix();
         ComplexMatrix ZinPaire = null;
         ComplexMatrix cMatrix = null;
+        ComplexMatrix X = null;
         try {
             net.thevpc.scholar.hadrumaths.InverseStrategy strategy = str.getInvStrategy();
             if (strategy == net.thevpc.scholar.hadrumaths.InverseStrategy.DEFAULT
@@ -47,11 +48,11 @@ public class ZinSerialEvaluator implements ZinEvaluator {
                 }
                 ComplexMatrix regI = Maths.identityMatrix(n).mul(Complex.of(1e-5 * maxDiag));
                 ComplexMatrix H = AhA.add(regI);
-                ComplexMatrix X = H.solve(AhB);
+                X = H.solve(AhB);
                 cMatrix = B_.transposeHermitian().mul(X);
             } else {
                 try {
-                    ComplexMatrix X = A_.solve(B_);
+                    X = A_.solve(B_);
                     cMatrix = B_.transposeHermitian().mul(X);
                 } catch (Exception ex) {
                     str.log().log(NMsg.ofC("Matrix A solve failed (%s), falling back to REGULARIZED: %s", ex.getMessage(), ex).asWarning());
@@ -65,8 +66,16 @@ public class ZinSerialEvaluator implements ZinEvaluator {
                     }
                     ComplexMatrix regI = Maths.identityMatrix(n).mul(Complex.of(1e-5 * maxDiag));
                     ComplexMatrix H = AhA.add(regI);
-                    ComplexMatrix X = H.solve(AhB);
+                    X = H.solve(AhB);
                     cMatrix = B_.transposeHermitian().mul(X);
+                }
+            }
+
+            if (str.getSolverType() == net.thevpc.scholar.hadruwaves.mom.MomSolverType.SPATIAL_MPIE
+                    && net.thevpc.scholar.hadruwaves.mom.RWGDeltaGapBMatrix.hasRWG(str)) {
+                ComplexMatrix zDeembed = net.thevpc.scholar.hadruwaves.mom.str.mpie.RWGTransmissionLineDeembedder.tryDeembed(str, A_, B_, X);
+                if (zDeembed != null) {
+                    return zDeembed;
                 }
             }
 
