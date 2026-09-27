@@ -25,6 +25,29 @@ import java.util.*;
 
 public class NTxMwSimulationUtils {
 
+    /**
+     * When enabled, a solver failure aborts the run instead of being rendered
+     * as an error node while the process still reports success. This makes a
+     * failed simulation observable to CI and to the {@code ntexup} exit code.
+     * <p>
+     * Enabled by system property {@code ntexup.simulation.fail-on-error=true}
+     * or environment variable {@code NTEXUP_SIMULATION_FAIL_ON_ERROR=true}.
+     */
+    public static final String FAIL_ON_ERROR_PROPERTY = "ntexup.simulation.fail-on-error";
+    public static final String FAIL_ON_ERROR_ENV = "NTEXUP_SIMULATION_FAIL_ON_ERROR";
+
+    public static boolean isFailOnSimulationError() {
+        String v = System.getProperty(FAIL_ON_ERROR_PROPERTY);
+        if (v == null) {
+            v = System.getenv(FAIL_ON_ERROR_ENV);
+        }
+        if (v == null) {
+            return false;
+        }
+        v = v.trim();
+        return v.isEmpty() || "true".equalsIgnoreCase(v) || "yes".equalsIgnoreCase(v) || "1".equals(v);
+    }
+
     public static NOptional<NTxNumberElement3> findSceneSize(NTxNode scene3D, NTxResolutionContext context) {
         NOptional<NTxProp> sceneRealSizeP = scene3D.getProperty("real-size");
         if (!sceneRealSizeP.isPresent()) {
@@ -245,6 +268,7 @@ public class NTxMwSimulationUtils {
             }
             List<NTxSimulationResult> allResults = new ArrayList<>();
             boolean anyError = false;
+            List<String> failedActions = new ArrayList<>();
             List<NTxSolverRun> runs = plan.runs();
             for (NTxSolverRun item : runs) {
                 item.beforeAll();
@@ -270,6 +294,7 @@ public class NTxMwSimulationUtils {
                     rendererContext.log(NMsg.ofC("%s finished", prefix).withDurationMillis(chi.stop().durationMs()));
                 } catch (Exception ex) {
                     anyError = true;
+                    failedActions.add(actionName + ": " + ex.getMessage());
                     rendererContext.log(NMsg.ofC("%s error : %s", prefix, ex).withDurationMillis(chi.stop().durationMs()).asError());
                 }
             }
@@ -281,6 +306,9 @@ public class NTxMwSimulationUtils {
                     solverListener.onFinish(rendererContext, plan, true, null);
                 }
                 rendererContext.log(NMsg.ofC("%s finished simulation with error", prefix0).withDurationMillis(ch.stop().durationMs()).asError());
+                if (isFailOnSimulationError()) {
+                    throw new IllegalStateException(prefix0 + " failed: " + String.join("; ", failedActions));
+                }
             } else {
                 for (NTxSolverListener solverListener : solverListeners) {
                     solverListener.onFinish(rendererContext, plan, false, null);

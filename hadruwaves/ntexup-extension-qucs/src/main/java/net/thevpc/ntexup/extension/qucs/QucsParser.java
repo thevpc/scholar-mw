@@ -7,6 +7,7 @@ import net.thevpc.ntexup.api.eval.NTxResolutionContext;
 import net.thevpc.ntexup.api.util.NTxNumberUtils;
 import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.ntexup.extension.mwsimulator.NTxMwSimulationUtils;
+import net.thevpc.ntexup.extension.mwsimulator.NTxSolverFallbackPolicy;
 import net.thevpc.ntexup.lib.geometry3d.NTxNumberElement3;
 import net.thevpc.ntexup.lib.geometry3d.impl.NTx3DUtils;
 import net.thevpc.nuts.elem.NElement;
@@ -71,6 +72,13 @@ public class QucsParser {
                     }
                     case "geometry": {
                         info.geometryId = pv.asStringValue().orNull();
+                        break;
+                    }
+                    case "simulationfallback":
+                    case "simulation-fallback":
+                    case "fallback": {
+                        info.fallbackPolicy = NTxSolverFallbackPolicy.parse(
+                                pv.asStringValue().orNull(), "Qucs");
                         break;
                     }
                 }

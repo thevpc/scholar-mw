@@ -2,6 +2,7 @@ package net.thevpc.ntexup.extension.qucs;
 
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.eval.NTxResolutionContext;
+import net.thevpc.ntexup.extension.mwsimulator.NTxSolverFallbackPolicy;
 
 public class QucsModelInfo {
 
@@ -44,6 +45,7 @@ public class QucsModelInfo {
     public String dispModel = "Kirschning";
     public String model = "Hammerstad";
     public String dockerImage = QucsProvisioner.DEFAULT_DOCKER_IMAGE;
+    public NTxSolverFallbackPolicy fallbackPolicy = NTxSolverFallbackPolicy.ERROR;
     public String geometryId;
     public NTxNode sceneNode;
     public NTxResolutionContext resolutionContext;

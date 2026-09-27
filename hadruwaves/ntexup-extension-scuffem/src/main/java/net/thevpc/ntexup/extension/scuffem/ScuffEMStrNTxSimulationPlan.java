@@ -4,6 +4,7 @@ import net.thevpc.ntexup.api.renderer.NTxRendererContext;
 import net.thevpc.ntexup.extension.mwsimulator.MicrostripCircuitModel;
 import net.thevpc.ntexup.extension.mwsimulator.NTxMwSimulationUtils;
 import net.thevpc.ntexup.extension.mwsimulator.NTxSimulationPlanImpl;
+import net.thevpc.ntexup.extension.mwsimulator.NTxSolverFallbackPolicy;
 import net.thevpc.ntexup.extension.mwsimulator.NTxSolverRun;
 import net.thevpc.ntexup.extension.scuffem.solvers.NTxScuffEMS11Solver;
 import net.thevpc.ntexup.extension.scuffem.solvers.NTxScuffEMZinSolver;
@@ -21,6 +22,7 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
 
     public ScuffEMModelInfo modelInfo;
     private boolean solved = false;
+    private boolean approximated = false;
     private MicrostripCircuitModel circuitModel;
 
     private final TreeSet<Double> requestedFrequencies = new TreeSet<>();
@@ -196,6 +198,7 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.epsilonR).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.lossTangent).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.meshResolution).getBytes(StandardCharsets.UTF_8));
+            NTxMwSimulationUtils.addDigestSource(d, (NTxSolverFallbackPolicy.OPTION + "=" + modelInfo.fallbackPolicy).getBytes(StandardCharsets.UTF_8));
             if (modelInfo.geometryId != null) {
                 NTxMwSimulationUtils.addDigestSource(d, modelInfo.geometryId.getBytes(StandardCharsets.UTF_8));
             }
@@ -303,6 +306,7 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
 
         RebuiltGeometry geom = rebuildGeometry();
         String hash = computeHash();
+        NTxSolverFallbackPolicy fallbackPolicy = modelInfo.fallbackPolicy;
 
         List<Double> simFreqs = selectSimulationFrequencies();
 
@@ -310,6 +314,10 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         workDir.mkdirs();
 
         boolean dockerOk = ScuffEMProvisioner.ensureDocker(modelInfo.dockerImage, rendererContext(), hash);
+        if (!dockerOk) {
+            fallbackPolicy.requireExplicitOptIn("SCUFF-EM",
+                    "Docker image '" + modelInfo.dockerImage + "' is not available");
+        }
         if (dockerOk) {
             try {
                 NPath geoFile = workDir.resolve("mesh.geo");
@@ -327,17 +335,21 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                         rendererContext(),
                         hash
                 );
+                if (gmshCode != 0) {
+                    throw new IllegalStateException("gmsh mesh generation failed with exit code " + gmshCode);
+                }
 
                 // 2. Run SCUFF-EM python solver
-                if (gmshCode == 0) {
-                    ScuffEMProvisioner.runInDocker(
-                            modelInfo.dockerImage,
-                            workDir,
-                            "/sim",
-                            Arrays.asList("python3", "/sim/simulate.py"),
-                            rendererContext(),
-                            hash
-                    );
+                int scuffCode = ScuffEMProvisioner.runInDocker(
+                        modelInfo.dockerImage,
+                        workDir,
+                        "/sim",
+                        Arrays.asList("python3", "/sim/simulate.py"),
+                        rendererContext(),
+                        hash
+                );
+                if (scuffCode != 0) {
+                    throw new IllegalStateException("SCUFF-EM solver failed with exit code " + scuffCode);
                 }
 
                 // 3. Parse results.dat
@@ -371,18 +383,37 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                     }
                 }
             } catch (Exception ex) {
+                s11Results.clear();
+                zinResults.clear();
+                fallbackPolicy.requireExplicitOptIn("SCUFF-EM",
+                        "SCUFF-EM simulation failed: " + ex.getMessage());
                 if (rendererContext() != null) {
-                    rendererContext().log(NMsg.ofC("[SCUFF-EM][%s] Exception during simulation: %s", hash, ex.getMessage()));
+                    rendererContext().log(NMsg.ofC("[SCUFF-EM][%s] Simulation failed: %s", hash, ex.getMessage()).asError());
                 }
             }
         }
 
         if (s11Results.isEmpty()) {
+            fallbackPolicy.requireExplicitOptIn("SCUFF-EM",
+                    "SCUFF-EM produced no results at " + simFreqs.size() + " requested frequency point(s)");
+            approximated = true;
             if (rendererContext() != null) {
-                rendererContext().log(NMsg.ofC("[SCUFF-EM][%s] Using analytical BEM/cavity approximation fallback.", hash));
+                rendererContext().log(NMsg.ofC(
+                        "[SCUFF-EM][%s] WARNING: no native result; substituting declared analytical approximation "
+                                + "because '%s'='analytical' was explicitly set. These values are NOT SCUFF-EM results.",
+                        hash, NTxSolverFallbackPolicy.OPTION).asWarning());
             }
             populateAnalyticalFallback(geom, simFreqs);
         }
+    }
+
+    /**
+     * True when the reported values come from the declared analytical
+     * approximation rather than from a native SCUFF-EM run.
+     */
+    public boolean isApproximated() {
+        ensureSolved();
+        return approximated;
     }
 
     private List<Double> selectSimulationFrequencies() {

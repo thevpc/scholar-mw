@@ -6,6 +6,7 @@ import net.thevpc.ntexup.extension.getdp.solvers.NTxGetDPZinSolver;
 import net.thevpc.ntexup.extension.mwsimulator.NTxMwSimulationUtils;
 import net.thevpc.ntexup.extension.mwsimulator.NTxSimulationPlanImpl;
 import net.thevpc.ntexup.extension.mwsimulator.NTxSolverRun;
+import net.thevpc.ntexup.extension.mwsimulator.NTxSolverFallbackPolicy;
 import net.thevpc.nuts.io.NDigest;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.text.NMsg;
@@ -25,6 +26,7 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
     private double vpFem = Maths.C;
     private double lTot = 0.0;
     private boolean femSolved = false;
+    private boolean approximated = false;
     private MicrostripCircuitModel circuitModel;
 
     public GetDPStrNTxSimulationPlan(String id, String name, NTxRendererContext rendererContext) {
@@ -175,6 +177,7 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.epsilonR).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.lossTangent).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.meshResolution).getBytes(StandardCharsets.UTF_8));
+            NTxMwSimulationUtils.addDigestSource(d, (NTxSolverFallbackPolicy.OPTION + "=" + modelInfo.fallbackPolicy).getBytes(StandardCharsets.UTF_8));
             if (modelInfo.geometryId != null) {
                 NTxMwSimulationUtils.addDigestSource(d, modelInfo.geometryId.getBytes(StandardCharsets.UTF_8));
             }
@@ -207,54 +210,68 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         NPath energyFile = workDir.resolve("energy.dat");
         NPath energyAirFile = workDir.resolve("energy_air.dat");
 
-        if (!energyFile.exists() || !energyAirFile.exists()) {
-            boolean dockerOk = GetDPProvisioner.ensureDocker(modelInfo.dockerImage, rendererContext(), hash);
-            if (!dockerOk) {
-                if (rendererContext() != null) {
-                    rendererContext().log(NMsg.ofC("[GetDP][%s] Docker is not available. Using analytical FEM approximation.", hash));
-                }
-                computeApproximation(geom);
-                return;
+        NTxSolverFallbackPolicy fallbackPolicy = modelInfo.fallbackPolicy;
+
+        boolean dockerOk = GetDPProvisioner.ensureDocker(modelInfo.dockerImage, rendererContext(), hash);
+        if (!dockerOk) {
+            fallbackPolicy.requireExplicitOptIn("GetDP",
+                    "Docker image '" + modelInfo.dockerImage + "' is not available");
+            approximated = true;
+            if (rendererContext() != null) {
+                rendererContext().log(NMsg.ofC("[GetDP][%s] WARNING: Docker unavailable; substituting analytical approximation "
+                        + "because '%s'='analytical' was explicitly set. These values are NOT GetDP FEM results.",
+                        hash, NTxSolverFallbackPolicy.OPTION).asWarning());
             }
+            computeApproximation(geom);
+            return;
+        }
 
-            NPath geoFile = workDir.resolve("mesh.geo");
-            geoFile.writeString(generateGmshGeo(geom));
+        NPath geoFile = workDir.resolve("mesh.geo");
+        geoFile.writeString(generateGmshGeo(geom));
 
-            NPath proFile = workDir.resolve("fem.pro");
-            proFile.writeString(generateGetDPPro(modelInfo.epsilonR));
+        NPath proFile = workDir.resolve("fem.pro");
+        proFile.writeString(generateGetDPPro(modelInfo.epsilonR));
 
-            NPath proAirFile = workDir.resolve("fem_air.pro");
-            proAirFile.writeString(generateGetDPPro(1.0));
+        NPath proAirFile = workDir.resolve("fem_air.pro");
+        proAirFile.writeString(generateGetDPPro(1.0));
 
-            // Run Gmsh
-            GetDPProvisioner.runInDocker(
-                    modelInfo.dockerImage,
-                    workDir,
-                    "/sim",
-                    Arrays.asList("gmsh", "-2", "-format", "msh2", "/sim/mesh.geo", "-o", "/sim/mesh.msh"),
-                    rendererContext(),
-                    hash
-            );
+        // Run Gmsh
+        int gmshCode = GetDPProvisioner.runInDocker(
+                modelInfo.dockerImage,
+                workDir,
+                "/sim",
+                Arrays.asList("gmsh", "-2", "-format", "msh2", "/sim/mesh.geo", "-o", "/sim/mesh.msh"),
+                rendererContext(),
+                hash
+        );
+        if (gmshCode != 0) {
+            throw new IllegalStateException("GetDP: gmsh mesh generation failed with exit code " + gmshCode);
+        }
 
-            // Run GetDP substrate
-            GetDPProvisioner.runInDocker(
-                    modelInfo.dockerImage,
-                    workDir,
-                    "/sim",
-                    Arrays.asList("getdp", "/sim/fem.pro", "-msh", "/sim/mesh.msh", "-solve", "Analysis", "-pos", "Map"),
-                    rendererContext(),
-                    hash
-            );
+        // Run GetDP substrate
+        int femCode = GetDPProvisioner.runInDocker(
+                modelInfo.dockerImage,
+                workDir,
+                "/sim",
+                Arrays.asList("getdp", "/sim/fem.pro", "-msh", "/sim/mesh.msh", "-solve", "Analysis", "-pos", "Map"),
+                rendererContext(),
+                hash
+        );
+        if (femCode != 0) {
+            throw new IllegalStateException("GetDP: substrate solve failed with exit code " + femCode);
+        }
 
-            // Run GetDP air
-            GetDPProvisioner.runInDocker(
-                    modelInfo.dockerImage,
-                    workDir,
-                    "/sim",
-                    Arrays.asList("getdp", "/sim/fem_air.pro", "-msh", "/sim/mesh.msh", "-solve", "Analysis", "-pos", "Map"),
-                    rendererContext(),
-                    hash
-            );
+        // Run GetDP air
+        int femAirCode = GetDPProvisioner.runInDocker(
+                modelInfo.dockerImage,
+                workDir,
+                "/sim",
+                Arrays.asList("getdp", "/sim/fem_air.pro", "-msh", "/sim/mesh.msh", "-solve", "Analysis", "-pos", "Map"),
+                rendererContext(),
+                hash
+        );
+        if (femAirCode != 0) {
+            throw new IllegalStateException("GetDP: air solve failed with exit code " + femAirCode);
         }
 
         if (energyFile.exists() && energyAirFile.exists()) {
@@ -309,14 +326,37 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                     }
                 }
             } catch (Exception ex) {
+                fallbackPolicy.requireExplicitOptIn("GetDP",
+                        "error parsing GetDP FEM energy results: " + ex.getMessage());
+                approximated = true;
                 if (rendererContext() != null) {
-                    rendererContext().log(NMsg.ofC("[GetDP][%s] Error parsing FEM energy results: %s. Using approximation.", hash, ex.getMessage()));
+                    rendererContext().log(NMsg.ofC("[GetDP][%s] WARNING: could not parse FEM energy results (%s); "
+                                    + "substituting analytical approximation because '%s'='analytical' was explicitly set. "
+                                    + "These values are NOT GetDP FEM results.",
+                            hash, ex.getMessage(), NTxSolverFallbackPolicy.OPTION).asWarning());
                 }
                 computeApproximation(geom);
             }
         } else {
+            fallbackPolicy.requireExplicitOptIn("GetDP",
+                    "GetDP did not produce energy.dat/energy_air.dat");
+            approximated = true;
+            if (rendererContext() != null) {
+                rendererContext().log(NMsg.ofC("[GetDP][%s] WARNING: no FEM energy output; substituting analytical approximation "
+                                + "because '%s'='analytical' was explicitly set. These values are NOT GetDP FEM results.",
+                        hash, NTxSolverFallbackPolicy.OPTION).asWarning());
+            }
             computeApproximation(geom);
         }
+    }
+
+    /**
+     * True when the reported parameters come from the declared analytical
+     * approximation rather than from a native GetDP FEM run.
+     */
+    public boolean isApproximated() {
+        ensureFemSolved();
+        return approximated;
     }
 
     private double patchFr = 0.0;
