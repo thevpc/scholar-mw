@@ -1,0 +1,11 @@
+content-slide(title:"Nomogramme — array-factor (thème clair, autre configuration)"){
+    body{
+        array-factor(
+            n:6, beta-d:180, alpha:90, psi:30,
+            animate:false,
+            theme:light,
+            show-projections, show-rays, show-visibility, show-probe, show-header,
+            size:(100,100)
+        )
+    }
+}

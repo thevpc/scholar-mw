@@ -1,0 +1,37 @@
+content-slide(title:"Antenna Array Components"){
+    body2a{
+        antennaSection(title:"Cinq composants réutilisables")
+        text("array-factor — nomogramme Fr(2γ) et balayage")
+        text("radiation-pattern — diagramme polaire pondéré")
+        text("wave-field — champ rayonné animé")
+        text("antenna-array — vue schématique du réseau")
+        text("field-colorbar — barre de couleur")
+        antennaSection(title:"Paramétrisation")
+        text("Chaque composant accepte N, d/λ, β (ou steering), la pondération, les amplitudes/phases explicites, le pattern d'élément, le thème clair/sombre et les couleurs.")
+    }
+    body2b{
+        grid((3,2)){
+            styles:{
+                "*": {margin:1.2}
+            }
+            miniPage{
+                array-factor(n:5, beta-d:216, alpha:124, psi:55, animate:false, size:(96,96), at:center)
+            }
+            miniPage{
+                radiation-pattern(n:8, d-lambda:0.5, size:(96,96), at:center)
+            }
+            miniPage{
+                wave-field(n:8, d-lambda:0.5, resolution:110, animate:false, show-colorbar, size:(96,96), at:center)
+            }
+            miniPage{
+                antenna-array(n:8, d-lambda:0.5, taper:chebyshev, chebyshev-sll:-30, size:(96,96), at:center)
+            }
+            miniPage{
+                field-colorbar(low-color:"#0a1226", high-color:"#ffe94e", size:(70,96), at:center)
+            }
+            miniPage{
+                dipole-current(length:0.1, size:(70,96), at:center)
+            }
+        }
+    }
+}

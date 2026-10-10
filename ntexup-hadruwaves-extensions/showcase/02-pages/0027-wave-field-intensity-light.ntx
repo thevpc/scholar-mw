@@ -1,0 +1,15 @@
+content-slide(title:"Champ rayonné — wave-field (intensité, thème clair)"){
+    body{
+        wave-field(
+            n:5, d-lambda:0.8, steering:20,
+            element-pattern:cardioid,
+            mode:intensity,
+            resolution:180,
+            x-range:(-4, 4), y-range:(-1, 5),
+            theme:light,
+            show-wavefronts, show-rays, show-axis, show-elements, show-colorbar, show-header,
+            size:(100,100)
+
+        )
+    }
+}

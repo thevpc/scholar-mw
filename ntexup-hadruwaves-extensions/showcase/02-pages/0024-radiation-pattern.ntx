@@ -1,0 +1,12 @@
+content-slide(title:"Diagramme polaire — radiation-pattern (thème sombre)"){
+    body{
+        radiation-pattern(
+            n:8, d-lambda:0.5, steering:0,
+            taper:uniform,
+            element-pattern:isotropic,
+            theme:dark,
+            show-steering, show-hpbw, show-nulls, show-header,
+            size:(100,100)
+        )
+    }
+}

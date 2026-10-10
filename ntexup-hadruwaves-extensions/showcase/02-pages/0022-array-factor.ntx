@@ -1,0 +1,11 @@
+content-slide(title:"Nomogramme — array-factor (thème sombre)"){
+    body{
+        array-factor(
+            n:5, beta-d:216, alpha:124, psi:55, psi-speed:26.7,
+            animate:false,
+            theme:dark,
+            show-projections, show-rays, show-visibility, show-probe, show-header,
+            size:(100,100)
+        )
+    }
+}

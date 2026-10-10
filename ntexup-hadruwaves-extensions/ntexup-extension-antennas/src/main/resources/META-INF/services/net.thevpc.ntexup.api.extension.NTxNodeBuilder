@@ -1,1 +1,6 @@
 net.thevpc.ntexup.extension.antennas.DipoleCurrentBuilder
+net.thevpc.ntexup.extension.antennas.ArrayFactorBuilder
+net.thevpc.ntexup.extension.antennas.RadiationPatternBuilder
+net.thevpc.ntexup.extension.antennas.WaveFieldBuilder
+net.thevpc.ntexup.extension.antennas.AntennaArrayBuilder
+net.thevpc.ntexup.extension.antennas.FieldColorBarBuilder

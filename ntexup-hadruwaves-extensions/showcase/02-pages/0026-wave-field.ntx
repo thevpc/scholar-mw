@@ -1,0 +1,14 @@
+content-slide(title:"Champ rayonné — wave-field (instantané, thème sombre)"){
+    body{
+        wave-field(
+            n:8, d-lambda:0.5, steering:0,
+            element-pattern:isotropic,
+            mode:instant,
+            resolution:220,
+            time:120, speed:120,
+            theme:dark,
+            show-wavefronts, show-rays, show-axis, show-elements, show-colorbar, show-header,
+            size:(100,100)
+        )
+    }
+}

@@ -1,0 +1,11 @@
+content-slide(title:"Schéma du réseau — antenna-array (pondération binomiale)"){
+    body{
+        antenna-array(
+            n:10, d-lambda:0.5, steering:0,
+            taper:binomial,
+            theme:dark,
+            show-axis, show-index, show-amplitude, show-phase, show-title,
+            size:(100,100)
+        )
+    }
+}

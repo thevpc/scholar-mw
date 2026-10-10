@@ -1,0 +1,15 @@
+content-slide(title:"Diagramme polaire — radiation-pattern (échelle dB, thème clair)"){
+    body{
+        radiation-pattern(
+            n:12, d-lambda:0.7, steering:30,
+//            taper:uniform,
+            taper:chebyshev, chebyshev-sll:-30,
+            element-pattern:dipole,
+            db-scale, db-floor:-30,
+            theme:light,
+            show-steering, show-hpbw, show-nulls, show-header,
+
+
+        )
+    }
+}

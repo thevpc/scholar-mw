@@ -1,0 +1,35 @@
+content-slide(title:"Field Colorbar"){
+    body3a{
+        antennaSection(title:"Instantaneous Field")
+        field-colorbar(
+            low-color:"#001f4a", high-color:"#00dcff",
+            orientation:vertical, gamma:1.0,
+            min-label:"0", max-label:"1",
+            show-ticks, show-frame, show-title,
+            size:(60,80), at:center
+        )
+        antennaNote(text:"Positive/negative ramps separated by field sign.")
+    }
+    body3b{
+        antennaSection(title:"Intensity")
+        field-colorbar(
+            low-color:"#0a1226", high-color:"#ffe94e",
+            orientation:vertical, gamma:1.2,
+            min-label:"0.0", max-label:"1.0",
+            show-ticks, show-frame, show-title,
+            size:(60,80), at:center
+        )
+        antennaNote(text:"Same ramp used by wave-field in intensity mode.")
+    }
+    body3c{
+        antennaSection(title:"Midpoint Ramp")
+        field-colorbar(
+            low-color:"#4fa37a", mid-color:"#ffe94e", high-color:"#d32f2f",
+            orientation:horizontal, gamma:1.0,
+            min-label:"low", max-label:"high",
+            show-ticks, show-frame, show-title,
+            size:(85,60), at:center
+        )
+        antennaNote(text:"Two-stage ramp: low→mid then mid→high.")
+    }
+}

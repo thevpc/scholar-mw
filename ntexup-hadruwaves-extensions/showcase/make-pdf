@@ -1,2 +1,4 @@
 #!/bin/bash
-nuts -Ny ntexup pdf -o target/
+# openpdf (PDF renderer) requires Java 21+; select a registered Java 21 platform via the executor.
+# Alternatively set NUTS_JAVA_HOME to a JDK 21+ and use --java-version=current.
+exec nuts -e --java-version=21 -Ny ntexup pdf -o target/
