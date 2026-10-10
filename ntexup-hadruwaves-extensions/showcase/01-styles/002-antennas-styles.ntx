@@ -1,0 +1,23 @@
+/**
+ * Antenna extension showcase helper templates (used by the antenna demo pages).
+ *
+ * - antennaNote(text)      : documentation callout box under a component.
+ * - antennaSection(title)  : small section heading used inside a body column.
+ */
+@define antennaNote(text){
+    group(
+        background-color: either(documentSurfaceAlt, Gray92),
+        draw-contour,
+        line-color: either(documentLine, Gray80),
+        margin: 4,
+        padding: 1%P,
+        font-size: 2.6%P,
+        color: "#1e293b"
+    ){
+        text("${text}")
+    }
+}
+
+@define antennaSection(title){
+    text("${title}", font-bold, font-size: 3.2%P, color: "#0f172a", margin: (0, 1))
+}
