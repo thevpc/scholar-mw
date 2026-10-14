@@ -112,6 +112,15 @@ public class WaveFieldBuilder implements NTxNodeBuilder {
 
     private void render(NTxRendererContext ctx) {
         NTxBounds2D b = ctx.selfBounds2D();
+        if (b.widthX() <= 8 || b.widthY() <= 8) {
+            return;
+        }
+        ctx.withinClip(b, this::renderBody);
+        ctx.drawContour();
+    }
+
+    private void renderBody(NTxRendererContext ctx) {
+        NTxBounds2D b = ctx.selfBounds2D();
         NTxGraphics g = ctx.graphics();
         double x0 = b.minX(), y0 = b.minY(), w = b.widthX(), h = b.widthY();
         if (w <= 8 || h <= 8) {
@@ -140,18 +149,17 @@ public class WaveFieldBuilder implements NTxNodeBuilder {
         final double yMin = y0v;
         final double yMax = y1v;
 
-        // phase wt: static `time` in print mode, advancing by `speed` in live mode
+        // phase wt: static `time` in print mode, advancing by `speed` against the page clock in live mode
         boolean animate = Props.bool(ctx, "animate", true);
         double timeDeg = Props.dbl(ctx, "time", 0.0);
         double speed = Props.dbl(ctx, "speed", 90.0);
         double phaseT;
-        if (animate && ctx.isAnimate()) {
-            double elapsedMs = System.currentTimeMillis() - ctx.pageStartTime();
-            phaseT = Math.toRadians(((timeDeg + speed * elapsedMs / 1000.0) % 360.0 + 360.0) % 360.0);
+        if (animate && ctx.isAnimate() && ctx.isPageShowing()) {
+            phaseT = Math.toRadians(((timeDeg + speed * ctx.pageElapsedSeconds()) % 360.0 + 360.0) % 360.0);
         } else {
             phaseT = Math.toRadians(timeDeg);
         }
-        AnimationSupport.tick(ctx, animate, 40);
+        ctx.requestAnimationFrame(animate);
 
         double instantScale = Props.dbl(ctx, "instant-scale", WaveFieldPhasorGrid.DEFAULT_INSTANT_SCALE);
         double intensityScale = Props.dbl(ctx, "intensity-scale", WaveFieldPhasorGrid.DEFAULT_INTENSITY_SCALE);
@@ -342,8 +350,6 @@ public class WaveFieldBuilder implements NTxNodeBuilder {
             String cfg2 = sw > hw - 22 ? cfg.replaceAll(" │ ", " · ") : cfg;
             g.drawString(cfg2, hx + 10, hy + hh * 0.75);
         }
-
-        ctx.drawContour();
     }
 
     private static ColorRamp rampOf(Color low, Color high, double gamma) {

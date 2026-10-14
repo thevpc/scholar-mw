@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.thevpc.scholar</groupId>
     <artifactId>ntexup-hadruwaves-extensions-build</artifactId>
@@ -6,6 +8,12 @@
     <packaging>pom</packaging>
     <modules>
         <module>ntexup-extension-antennas</module>
+        <module>ntexup-extension-mw-simulator</module>
+        <module>ntexup-extension-hadruwaves</module>
+        <module>ntexup-extension-openems</module>
+        <module>ntexup-extension-getdp</module>
+        <module>ntexup-extension-qucs</module>
+        <module>ntexup-extension-scuffem</module>
     </modules>
 
 </project>

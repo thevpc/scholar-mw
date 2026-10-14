@@ -10,12 +10,6 @@
         <module>hadruwaves-java</module>
         <module>hadruwaves-puppets</module>
         <module>hadruwaves-scala</module>
-        <module>ntexup-extension-mw-simulator</module>
-        <module>ntexup-extension-hadruwaves</module>
-        <module>ntexup-extension-openems</module>
-        <module>ntexup-extension-getdp</module>
-        <module>ntexup-extension-qucs</module>
-        <module>ntexup-extension-scuffem</module>
     </modules>
 
 </project>

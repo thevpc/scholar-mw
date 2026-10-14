@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.thevpc.ntexup</groupId>
     <artifactId>ntexup-extension-scuffem</artifactId>
-    <version>1.0.0.0</version>
+    <version>1.1.0.0</version>
     <packaging>jar</packaging>
     <name>ntexup :: Extension SCUFF-EM</name>
     <description>SCUFF-EM Surface Integral Equation BEM / MoM Extension for NTexUp</description>
@@ -17,7 +17,7 @@
         <dependency>
             <groupId>net.thevpc.ntexup</groupId>
             <artifactId>ntexup-extension-mw-simulator</artifactId>
-            <version>1.0.0.0</version>
+            <version>1.1.0.0</version>
         </dependency>
         <dependency>
             <groupId>net.thevpc.scholar</groupId>

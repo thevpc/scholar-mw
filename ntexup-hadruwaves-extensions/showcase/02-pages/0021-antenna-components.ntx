@@ -10,7 +10,7 @@ content-slide(title:"Antenna Array Components"){
         text("Chaque composant accepte N, d/λ, β (ou steering), la pondération, les amplitudes/phases explicites, le pattern d'élément, le thème clair/sombre et les couleurs.")
     }
     body2b{
-        grid((3,2)){
+        grid((2,2)){
             styles:{
                 "*": {margin:1.2}
             }
@@ -25,12 +25,6 @@ content-slide(title:"Antenna Array Components"){
             }
             miniPage{
                 antenna-array(n:8, d-lambda:0.5, taper:chebyshev, chebyshev-sll:-30, size:(96,96), at:center)
-            }
-            miniPage{
-                field-colorbar(low-color:"#0a1226", high-color:"#ffe94e", size:(70,96), at:center)
-            }
-            miniPage{
-                dipole-current(length:0.1, size:(70,96), at:center)
             }
         }
     }

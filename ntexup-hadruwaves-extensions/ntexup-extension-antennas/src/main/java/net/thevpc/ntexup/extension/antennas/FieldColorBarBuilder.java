@@ -57,6 +57,15 @@ public class FieldColorBarBuilder implements NTxNodeBuilder {
 
     private void render(NTxRendererContext ctx) {
         NTxBounds2D b = ctx.selfBounds2D();
+        if (b.widthX() <= 8 || b.widthY() <= 8) {
+            return;
+        }
+        ctx.withinClip(b, this::renderBody);
+        ctx.drawContour();
+    }
+
+    private void renderBody(NTxRendererContext ctx) {
+        NTxBounds2D b = ctx.selfBounds2D();
         NTxGraphics g = ctx.graphics();
         double x0 = b.minX(), y0 = b.minY(), w = b.widthX(), h = b.widthY();
         if (w <= 8 || h <= 8) {
@@ -170,8 +179,6 @@ public class FieldColorBarBuilder implements NTxNodeBuilder {
             double tw = g.getFontMetrics().stringWidth(title);
             g.drawString(title, x0 + w / 2 - tw / 2, y0 + titleH * 0.62);
         }
-
-        ctx.drawContour();
     }
 
     private static int rampColor(Color low, Color mid, Color high, boolean hasMid, double t, double gamma) {

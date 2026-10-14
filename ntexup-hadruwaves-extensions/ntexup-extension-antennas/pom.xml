@@ -6,7 +6,7 @@
 
     <groupId>net.thevpc.ntexup</groupId>
     <artifactId>ntexup-extension-antennas</artifactId>
-    <version>1.0.0.0</version>
+    <version>1.1.0.0</version>
     <packaging>jar</packaging>
     <name>ntexup :: Extension :: Antennas</name>
 
@@ -21,13 +21,13 @@
         <dependency>
             <groupId>net.thevpc.ntexup</groupId>
             <artifactId>ntexup-api</artifactId>
-            <version>1.0.0.0</version>
+            <version>1.1.0.0</version>
         </dependency>
         <!-- For testing only -->
         <dependency>
             <groupId>net.thevpc.ntexup</groupId>
             <artifactId>ntexup-engine</artifactId>
-            <version>1.0.0.0</version>
+            <version>1.1.0.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

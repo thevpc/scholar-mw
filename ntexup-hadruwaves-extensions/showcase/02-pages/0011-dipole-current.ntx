@@ -1,5 +1,19 @@
-agenda-slide(title:"Rationale"){
+agenda-slide(title:"Dipôle"){
     body{
-        dipole-current(length:0.1 size:(50,50))
+        grid((2,3)){
+            styles:{
+                "*": {margin:1.2}
+            }
+        dipole-current(length:0.1 )
+
+        dipole-current(preset:"half-wave" show:"all")
+        dipole-current(preset:"full-wave" show:"current,envelope,pattern" phase:90)   // static snapshot for print
+        dipole-current(preset:"short" show:"all,-pattern" wave-color:"#c00")
+        dipole-current(preset:"half-wave"
+            show-animate:"current,charge,waves,pattern"
+            show-print:"current,envelope,charge,arrows,rays,pattern,labels"
+            phase-print:90)
+        dipole-current(preset:"full-wave" show:"current,pattern" show-print:"base,envelope,labels")
+        }
     }
 }

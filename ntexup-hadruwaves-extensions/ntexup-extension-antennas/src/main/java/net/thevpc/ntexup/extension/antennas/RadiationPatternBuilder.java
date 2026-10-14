@@ -89,6 +89,15 @@ public class RadiationPatternBuilder implements NTxNodeBuilder {
 
     private void render(NTxRendererContext ctx) {
         NTxBounds2D b = ctx.selfBounds2D();
+        if (b.widthX() <= 12 || b.widthY() <= 12) {
+            return;
+        }
+        ctx.withinClip(b, this::renderBody);
+        ctx.drawContour();
+    }
+
+    private void renderBody(NTxRendererContext ctx) {
+        NTxBounds2D b = ctx.selfBounds2D();
         NTxGraphics g = ctx.graphics();
         double x0 = b.minX(), y0 = b.minY(), w = b.widthX(), h = b.widthY();
         if (w <= 12 || h <= 12) {
@@ -189,7 +198,7 @@ public class RadiationPatternBuilder implements NTxNodeBuilder {
         for (int i = 0; i <= samples; i++) {
             double theta = -90.0 + (i / (double) samples) * 180.0;
             double af = model.getNormalizedArrayFactor(Math.toRadians(theta));
-            double pat = model.getElementPatternFactor(theta);
+            double pat = model.getElementPatternFactor(Math.toRadians(theta));
             double frac = patternRadius(af, pat, dbScale, dbFloor);
             double px = cx + frac * R * Math.sin(Math.toRadians(theta));
             double py = cy - frac * R * Math.cos(Math.toRadians(theta));
@@ -295,8 +304,6 @@ public class RadiationPatternBuilder implements NTxNodeBuilder {
             double tw = g.getFontMetrics().stringWidth(metrics);
             g.drawString(metrics, cx - tw / 2, y0 + h - metricH * 0.55);
         }
-
-        ctx.drawContour();
     }
 
     /**

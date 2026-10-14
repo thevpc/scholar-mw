@@ -65,6 +65,15 @@ public class AntennaArrayBuilder implements NTxNodeBuilder {
 
     private void render(NTxRendererContext ctx) {
         NTxBounds2D b = ctx.selfBounds2D();
+        if (b.widthX() <= 12 || b.widthY() <= 12) {
+            return;
+        }
+        ctx.withinClip(b, this::renderBody);
+        ctx.drawContour();
+    }
+
+    private void renderBody(NTxRendererContext ctx) {
+        NTxBounds2D b = ctx.selfBounds2D();
         NTxGraphics g = ctx.graphics();
         double x0 = b.minX(), y0 = b.minY(), w = b.widthX(), h = b.widthY();
         if (w <= 12 || h <= 12) {
@@ -195,8 +204,6 @@ public class AntennaArrayBuilder implements NTxNodeBuilder {
         g.setPaint(labelColor);
         double fw = g.getFontMetrics().stringWidth(footer);
         g.drawString(footer, x0 + w / 2 - fw / 2, y0 + h - footH * 0.55);
-
-        ctx.drawContour();
     }
 
     private static Font font(String family, int style, double sizePx) {

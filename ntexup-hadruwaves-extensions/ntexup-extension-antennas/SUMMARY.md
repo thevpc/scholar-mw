@@ -48,7 +48,7 @@ The extension was successfully verified through programmatic testing:
 - Node renderer loaded: `[engine] [BASE] loaded [node renderer] : [dipole-current]`
 
 ✅ **Import Resolution**:
-- `[engine] importing dependencies net.thevpc.ntexup:[ntexup-extension-antennas]#[1.0.0.0]`
+- `[engine] importing dependencies net.thevpc.ntexup:[ntexup-extension-antennas]#[1.1.0.0]`
 
 ✅ **Document Compilation**:
 - `[engine] compiled document in 1s 207ms 861us 194ns`
@@ -58,8 +58,8 @@ The extension was successfully verified through programmatic testing:
 1. **pom.xml**: Maven project configuration with correct coordinates
    - GroupId: `net.thevpc.ntexup`
    - ArtifactId: `ntexup-extension-antennas` 
-   - Version: `1.0.0.0`
-   - Dependency: `net.thevpc.ntexup:ntexup-api:1.0.0.0`
+   - Version: `1.1.0.0`
+   - Dependency: `net.thevpc.ntexup:ntexup-api:1.1.0.0`
 
 2. **DipoleCurrentBuilder.java**: Main implementation
    - Properly implements `NTxNodeBuilder`
@@ -87,7 +87,7 @@ page {
 
 ### Build Information
 - Built with: Java 17
-- Maven coordinates: `net.thevpc.ntexup:ntexup-extension-antennas:1.0.0.0`
+- Maven coordinates: `net.thevpc.ntexup:ntexup-extension-antennas:1.1.0.0`
 - Successfully installed to local Maven repository
 - Extension follows ntexup extension development guidelines
 - No dependencies on other ntexup extensions (only on ntexup-api)

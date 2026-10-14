@@ -140,6 +140,15 @@ public class ArrayFactorBuilder implements NTxNodeBuilder {
 
     private void render(NTxRendererContext ctx) {
         NTxBounds2D b = ctx.selfBounds2D();
+        if (b.widthX() <= 2 || b.widthY() <= 2) {
+            return;
+        }
+        ctx.withinClip(b, this::renderBody);
+        ctx.drawContour();
+    }
+
+    private void renderBody(NTxRendererContext ctx) {
+        NTxBounds2D b = ctx.selfBounds2D();
         NTxGraphics g = ctx.graphics();
         double x0 = b.minX(), y0 = b.minY(), w = b.widthX(), h = b.widthY();
         if (w <= 2 || h <= 2) {
@@ -160,13 +169,12 @@ public class ArrayFactorBuilder implements NTxNodeBuilder {
         // scanning angle psi (static in print mode; advanced by wall clock in live mode)
         boolean animate = Props.bool(ctx, "animate", true);
         double psi = Props.dbl(ctx, "psi", 55.0);
-        if (animate && ctx.isAnimate()) {
+        if (animate && ctx.isAnimate() && ctx.isPageShowing()) {
             double psiSpeed = Props.dbl(ctx, "psi-speed", 26.7);
-            long elapsedMs = System.currentTimeMillis() - ctx.pageStartTime();
-            psi = psi + psiSpeed * (elapsedMs / 1000.0);
+            psi = psi + psiSpeed * ctx.pageElapsedSeconds();
             psi = ((psi % 180.0) + 180.0) % 180.0;
         }
-        AnimationSupport.tick(ctx, animate, 40);
+        ctx.requestAnimationFrame(animate);
 
         boolean showVisibility = Props.bool(ctx, "show-visibility", true);
         boolean showProjections = Props.bool(ctx, "show-projections", true);
@@ -398,8 +406,6 @@ public class ArrayFactorBuilder implements NTxNodeBuilder {
         if (showHeader) {
             drawHeader(g, ctx, n, alpha, betaD, title, x0, y0, w, h, hdrFill, hdrBorder, hdrTitle, hdrText);
         }
-
-        ctx.drawContour();
     }
 
     private void drawProjections(NTxGraphics g, int n, double alpha, double betaD,

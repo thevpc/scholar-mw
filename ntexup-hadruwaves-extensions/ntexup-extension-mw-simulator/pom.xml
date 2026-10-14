@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.thevpc.ntexup</groupId>
-    <artifactId>ntexup-extension-hadruwaves</artifactId>
-    <version>1.0.0.0</version>
+    <artifactId>ntexup-extension-mw-simulator</artifactId>
+    <version>1.1.0.0</version>
     <packaging>jar</packaging>
-    <name>ntexup :: Extension Hadruwaves</name>
+    <name>ntexup :: Extension mw-simulator</name>
     <description>SVG</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -52,12 +52,8 @@
     </licenses>
 
     <dependencies>
-        <dependency><groupId>net.thevpc.ntexup</groupId><artifactId>ntexup-extension-mw-simulator</artifactId><version>1.0.0.0</version></dependency>
-        <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruwaves-java</artifactId><version>3.3.0</version></dependency>
-        <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruplot-laf</artifactId><version>3.3.0</version></dependency>
-        <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruplot-jfreechart</artifactId><version>3.3.0</version></dependency>
-        <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruplot-simple</artifactId><version>3.3.0</version></dependency>
-        <dependency><groupId>net.thevpc.scholar</groupId><artifactId>hadruplot-calc3d</artifactId><version>3.3.0</version></dependency>
+        <dependency><groupId>net.thevpc.ntexup</groupId><artifactId>ntexup-api</artifactId><version>1.1.0.0</version></dependency>
+        <dependency><groupId>net.thevpc.ntexup</groupId><artifactId>ntexup-lib-geometry3d</artifactId><version>1.1.0.0</version></dependency>
     </dependencies>
     <build>
         <plugins>

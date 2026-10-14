@@ -85,30 +85,93 @@ public final class ArrayTapers {
 
     /**
      * Dolph-Chebyshev taper with equal-ripple sidelobes of {@code sllDb} dB.
-     * Standard window from the inverse DFT of a sampled Chebyshev polynomial.
+     *
+     * <p>
+     * Designed for isotropic elements at {@code d = lambda/2}: the array factor is
+     * made proportional to {@code T_{n-1}(x0 cos(phi))} with
+     * {@code x0 = cosh(acosh(R)/(n-1))} and {@code R = 10^(|sllDb|/20)} the voltage
+     * sidelobe ratio. The per-element amplitudes are the expansion coefficients of
+     * that polynomial in the {@code cos} basis of the array factor (solved exactly
+     * for the few unknowns an {@code n}-element array has), then peak-normalized.
+     * For spacings other than {@code lambda/2} the taper is still applied and simply
+     * yields a lower (not exactly equal-ripple) sidelobe level.
      */
     public static double[] chebyshev(int n, double sllDb) {
         int nn = Math.max(1, n);
         if (nn <= 2) {
             return uniform(nn);
         }
-        double r = Math.pow(10.0, -Math.abs(sllDb) / 20.0); // sidelobe amplitude
+        double r = Math.pow(10.0, Math.abs(sllDb) / 20.0); // voltage sidelobe ratio (>= 1)
         double x0 = Math.cosh(acosh(r) / (nn - 1));
-        double[] w = new double[nn];
-        for (int k = 0; k < nn; k++) {
-            double x = x0 * Math.cos(Math.PI * k / nn);
-            double t = chebyshevPoly(nn - 1, x);
-            w[k] = (k & 1) == 1 ? -t : t;
-        }
-        double[] win = new double[nn];
-        for (int j = 0; j < nn; j++) {
-            double s = 0;
-            for (int k = 0; k < nn; k++) {
-                s += w[k] * Math.cos(2.0 * Math.PI * j * k / nn);
+        boolean even = (nn % 2 == 0);
+        int k = even ? nn / 2 : nn / 2 + 1; // independent amplitudes: pairs, plus center if odd
+        // Array factor target for symmetric excitation (d = lambda/2):
+        //   even n = 2k     : AF(phi) = sum_{i=0..k-1} c_i cos((2i+1) phi)
+        //   odd  n = 2k+1   : AF(phi) = sum_{i=0..k-1} c_i cos(2i phi),  c_0 = center
+        // with phi = (pi d / lambda) sin(theta) = (pi/2) sin(theta). Solve the small
+        // square system that makes AF equal T_{n-1}(x0 cos phi) / T_{n-1}(x0).
+        double[][] m = new double[k][k];
+        double[] rhs = new double[k];
+        double tDen = chebyshevPoly(nn - 1, x0);
+        for (int l = 0; l < k; l++) {
+            double phi = Math.PI * (l + 0.5) / (2.0 * k);
+            for (int i = 0; i < k; i++) {
+                m[l][i] = even ? Math.cos((2 * i + 1) * phi) : Math.cos(2 * i * phi);
             }
-            win[j] = s / nn;
+            rhs[l] = chebyshevPoly(nn - 1, x0 * Math.cos(phi)) / tDen;
         }
-        return normalize(win);
+        double[] coeff = solveLinear(m, rhs);
+        double[] full = new double[nn];
+        if (even) {
+            for (int i = 0; i < k; i++) {
+                double amp = coeff[i] / 2.0; // array factor sums symmetric pairs
+                full[k - 1 - i] = amp;
+                full[k + i] = amp;
+            }
+        } else {
+            full[k - 1] = coeff[0]; // center element is not doubled
+            for (int i = 1; i < k; i++) {
+                double amp = coeff[i] / 2.0;
+                full[k - 1 - i] = amp;
+                full[k - 1 + i] = amp;
+            }
+        }
+        return normalize(full);
+    }
+
+    /** Gaussian elimination with partial pivoting for a small square system. */
+    private static double[] solveLinear(double[][] a, double[] b) {
+        int n = b.length;
+        double[][] m = new double[n][n + 1];
+        for (int i = 0; i < n; i++) {
+            System.arraycopy(a[i], 0, m[i], 0, n);
+            m[i][n] = b[i];
+        }
+        for (int col = 0; col < n; col++) {
+            int piv = col;
+            for (int row = col + 1; row < n; row++) {
+                if (Math.abs(m[row][col]) > Math.abs(m[piv][col])) {
+                    piv = row;
+                }
+            }
+            double[] swap = m[col];
+            m[col] = m[piv];
+            m[piv] = swap;
+            for (int row = 0; row < n; row++) {
+                if (row == col) {
+                    continue;
+                }
+                double f = m[row][col] / m[col][col];
+                for (int c = col; c <= n; c++) {
+                    m[row][c] -= f * m[col][c];
+                }
+            }
+        }
+        double[] x = new double[n];
+        for (int i = 0; i < n; i++) {
+            x[i] = m[i][n] / m[i][i];
+        }
+        return x;
     }
 
     private static double chebyshevPoly(int m, double x) {
