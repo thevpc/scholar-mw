@@ -1,0 +1,11 @@
+agenda-slide(title:"Folded Dipole"){
+    body{
+        grid((1,2)){
+            styles:{
+                "*": {margin:1.2}
+            }
+            folded-dipole()                                   // N = 2, half-wave
+            folded-dipole(wires:3 show:"all")   // 3-wire folded dipole, Zin = 9 x 73
+        }
+    }
+}

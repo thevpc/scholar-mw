@@ -1,0 +1,13 @@
+agenda-slide(title:"Loop Antenna"){
+    body{
+        grid((2,2)){
+            styles:{
+                "*": {margin:1.2}
+            }
+            loop-antenna()                                         // small loop, side view
+            loop-antenna(circumference:0.05 turns:10 show:"all")
+            loop-antenna(view:"top" show:"current,waves,labels")
+            loop-antenna(preset:"large" show:"waves,pattern,labels")   // C = 1 lambda: pattern changes shape
+        }
+    }
+}

@@ -1,4 +1,4 @@
-agenda-slide(title:"Dipôle"){
+agenda-slide(title:"Dipole"){
     body{
         grid((2,3)){
             styles:{

@@ -4,3 +4,6 @@ net.thevpc.ntexup.extension.antennas.RadiationPatternBuilder
 net.thevpc.ntexup.extension.antennas.WaveFieldBuilder
 net.thevpc.ntexup.extension.antennas.AntennaArrayBuilder
 net.thevpc.ntexup.extension.antennas.FieldColorBarBuilder
+net.thevpc.ntexup.extension.antennas.FoldedDipoleBuilder
+net.thevpc.ntexup.extension.antennas.LoopAntennaBuilder
+net.thevpc.ntexup.extension.antennas.YagiUdaBuilder
