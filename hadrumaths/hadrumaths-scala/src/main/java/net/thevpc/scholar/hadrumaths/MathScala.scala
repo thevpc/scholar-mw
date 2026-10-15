@@ -11,7 +11,7 @@ import java.util.function
 import java.util.function.{DoublePredicate, Function, IntPredicate, Supplier, ToDoubleFunction}
 import net.thevpc.jeep.JContext
 import net.thevpc.common.mon.{MonitoredAction, ProgressMonitor}
-import net.thevpc.nuts.math.NIndexSelectionStrategy
+import net.thevpc.nuts.util.NIndexSelectionStrategy
 import net.thevpc.nuts.reflect.NTypeName
 import net.thevpc.nuts.text.NTextFormat
 import net.thevpc.nuts.mon.NChronometer

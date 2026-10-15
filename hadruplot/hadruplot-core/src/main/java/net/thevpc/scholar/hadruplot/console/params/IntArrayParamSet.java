@@ -1,7 +1,7 @@
 package net.thevpc.scholar.hadruplot.console.params;
 
-import net.thevpc.nuts.math.NIndexSelectionStrategy;
 import net.thevpc.nuts.util.NArrays;
+import net.thevpc.nuts.util.NIndexSelectionStrategy;
 
 /**
  * @author Taha Ben Salah (taha.bensalah@gmail.com)

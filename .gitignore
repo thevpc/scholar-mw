@@ -102,3 +102,9 @@
 /test_output_cache_disabled.txt
 /test_output_debug.txt
 /ntexup-hadruwaves-extensions/ntexup-extension-antennas/target/
+/hadruwaves/ntexup-extension-getdp/target/
+/hadruwaves/ntexup-extension-hadruwaves/target/
+/hadruwaves/ntexup-extension-mw-simulator/target/
+/hadruwaves/ntexup-extension-openems/target/
+/hadruwaves/ntexup-extension-qucs/target/
+/hadruwaves/ntexup-extension-scuffem/target/
