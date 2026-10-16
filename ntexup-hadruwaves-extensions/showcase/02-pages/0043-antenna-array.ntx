@@ -1,0 +1,135 @@
+// --------------------------------------------------
+// 1×4 Array Parameters (Upper 6 GHz Band: f0 ~ 6.50 GHz)
+// --------------------------------------------------
+
+f  = 6.500GHz
+εr = 4.4
+tanδ = 0.02
+h  = 1.6mm      // substrate height
+h0 = 0.035mm    // copper thickness
+
+W  = 13.5mm     // patch width
+L  = 9.40mm     // patch length
+
+wf = 3.1mm      // 50-ohm line width
+w70 = 1.55mm    // 70.7-ohm Wilkinson quarter-wave branch width
+y0 = 3.4mm      // inset depth
+gap = 0.8mm     // inset notch gap
+
+d  = 22.0mm     // inter-element spacing (~0.48 lambda_0 at 6.5 GHz)
+
+delta_l = 0.35mm
+
+// Substrate and Ground dimensions
+box_w = 90.0mm  // X: -45mm to +45mm
+box_l = 45.0mm  // Y: -30mm to +15mm
+sub_x_min = -45.0mm
+sub_y_min = -30.0mm
+
+feed_in_y_start = -28.0mm
+feed_in_y_end   = -22.0mm
+
+content-slide(title:"1×4 Corporate-Fed Patch Array Geometry"){
+    body{
+
+            styles:{
+                    text:{ color:darkBlue; font-size:1%P }
+                    line:{ color:darkBlue; width:2; arrow:simple(); label-bold:true; label-font-size:2%P; label-offset:(50, 1%P, 0) }
+                    class-substrate:{ bg:gray80; opacity: 0.6 }
+                    class-ground:{ bg:"#cb6d51"; line-color:"#cb6d51" }
+                    class-antenna:{ bg:"#cb6d51"; line-color:"#cb6d51" }
+                    class-feedline:{ bg:"#cb6d51"; line-color:"#cb6d51" }
+                    class-patch:{ bg:"#cb6d51"; line-color:"#cb6d51" }
+                    class-source:{ bg:yellow }
+                    class-patch-mode:{ opacity: 0 }
+                }
+
+                scene3d(
+                    name:"antenna-array",
+                    camera: "isometric-z",
+                    draw-contour,
+                    real-size:(box_w, box_l, 6mm),
+                    real-position:(sub_x_min, sub_y_min, -h - h0)
+                ){
+
+                    // 1. Ground Plane
+                    @(ground) box(
+                        size:(box_w, box_l, h0),
+                        position:(sub_x_min, sub_y_min, -h - h0)
+                    )
+
+                    // 2. Substrate
+                    @(substrate) box(
+                        size:(box_w, box_l, h),
+                        position:(sub_x_min, sub_y_min, -h)
+                    )
+
+                    // 3. Patch Elements 1, 2, 3, 4
+                    // Element 1: xc = -33mm
+                    @(antenna) @(patch) box(size:( (W/2) - (wf/2 + gap), y0, h0), position:(-33.0mm - W/2, 0mm, 0mm))
+                    @(antenna) @(patch) box(size:( (W/2) - (wf/2 + gap), y0, h0), position:(-33.0mm + wf/2 + gap, 0mm, 0mm))
+                    @(antenna) @(patch) box(size:(W, L - y0, h0), position:(-33.0mm - W/2, y0, 0mm))
+                    @(antenna) @(patch) box(size:(wf, y0, h0), position:(-33.0mm - wf/2, 0mm, 0mm))
+                    @(patch-mode) box(size:(W, L, h0), position:(-33.0mm - W/2, 0mm, 0mm))
+
+                    // Element 2: xc = -11mm
+                    @(antenna) @(patch) box(size:( (W/2) - (wf/2 + gap), y0, h0), position:(-11.0mm - W/2, 0mm, 0mm))
+                    @(antenna) @(patch) box(size:( (W/2) - (wf/2 + gap), y0, h0), position:(-11.0mm + wf/2 + gap, 0mm, 0mm))
+                    @(antenna) @(patch) box(size:(W, L - y0, h0), position:(-11.0mm - W/2, y0, 0mm))
+                    @(antenna) @(patch) box(size:(wf, y0, h0), position:(-11.0mm - wf/2, 0mm, 0mm))
+                    @(patch-mode) box(size:(W, L, h0), position:(-11.0mm - W/2, 0mm, 0mm))
+
+                    // Element 3: xc = +11mm
+                    @(antenna) @(patch) box(size:( (W/2) - (wf/2 + gap), y0, h0), position:(11.0mm - W/2, 0mm, 0mm))
+                    @(antenna) @(patch) box(size:( (W/2) - (wf/2 + gap), y0, h0), position:(11.0mm + wf/2 + gap, 0mm, 0mm))
+                    @(antenna) @(patch) box(size:(W, L - y0, h0), position:(11.0mm - W/2, y0, 0mm))
+                    @(antenna) @(patch) box(size:(wf, y0, h0), position:(11.0mm - wf/2, 0mm, 0mm))
+                    @(patch-mode) box(size:(W, L, h0), position:(11.0mm - W/2, 0mm, 0mm))
+
+                    // Element 4: xc = +33mm
+                    @(antenna) @(patch) box(size:( (W/2) - (wf/2 + gap), y0, h0), position:(33.0mm - W/2, 0mm, 0mm))
+                    @(antenna) @(patch) box(size:( (W/2) - (wf/2 + gap), y0, h0), position:(33.0mm + wf/2 + gap, 0mm, 0mm))
+                    @(antenna) @(patch) box(size:(W, L - y0, h0), position:(33.0mm - W/2, y0, 0mm))
+                    @(antenna) @(patch) box(size:(wf, y0, h0), position:(33.0mm - wf/2, 0mm, 0mm))
+                    @(patch-mode) box(size:(W, L, h0), position:(33.0mm - W/2, 0mm, 0mm))
+
+                    // 4. Wilkinson Corporate Feed Network
+                    // Main input line (50-ohm, Y: -28mm to -22mm)
+                    @(antenna) @(feedline) box(size:(wf, 6.0mm, h0), position:(-wf/2, feed_in_y_start, 0mm))
+
+                    // Stage 1 Wilkinson Horizontal Split (Y: -22mm, X: -22mm to +22mm)
+                    @(antenna) @(feedline) box(size:(22.0mm, w70, h0), position:(-22.0mm, feed_in_y_end, 0mm))
+                    @(antenna) @(feedline) box(size:(22.0mm, w70, h0), position:(0.0mm, feed_in_y_end, 0mm))
+
+                    // Inter-stage vertical trunks (50-ohm, Y: -22mm to -11mm)
+                    @(antenna) @(feedline) box(size:(wf, 11.0mm, h0), position:(-22.0mm - wf/2, -22.0mm, 0mm))
+                    @(antenna) @(feedline) box(size:(wf, 11.0mm, h0), position:(22.0mm - wf/2, -22.0mm, 0mm))
+
+                    // Stage 2 Wilkinson Horizontal Splits (Y: -11mm)
+                    // Left pair: feeds x=-33mm and x=-11mm
+                    @(antenna) @(feedline) box(size:(11.0mm, w70, h0), position:(-33.0mm, -11.0mm, 0mm))
+                    @(antenna) @(feedline) box(size:(11.0mm, w70, h0), position:(-22.0mm, -11.0mm, 0mm))
+                    // Right pair: feeds x=+11mm and x=+33mm
+                    @(antenna) @(feedline) box(size:(11.0mm, w70, h0), position:(11.0mm, -11.0mm, 0mm))
+                    @(antenna) @(feedline) box(size:(11.0mm, w70, h0), position:(22.0mm, -11.0mm, 0mm))
+
+                    // Final feeds to patches (50-ohm, Y: -11mm to 0mm)
+                    @(antenna) @(feedline) box(size:(wf, 11.0mm, h0), position:(-33.0mm - wf/2, -11.0mm, 0mm))
+                    @(antenna) @(feedline) box(size:(wf, 11.0mm, h0), position:(-11.0mm - wf/2, -11.0mm, 0mm))
+                    @(antenna) @(feedline) box(size:(wf, 11.0mm, h0), position:(11.0mm - wf/2, -11.0mm, 0mm))
+                    @(antenna) @(feedline) box(size:(wf, 11.0mm, h0), position:(33.0mm - wf/2, -11.0mm, 0mm))
+
+                    // 5. Source Port (Main 50-ohm array input)
+                    @(source) box(
+                        size:(wf, 1.0mm, h0),
+                        position:(-wf/2, feed_in_y_start, 0mm)
+                    )
+
+                    // Dimension markers
+                    line(from:(-33.0mm, L + 4mm, 0), to:(33.0mm, L + 4mm, 0), label:"3 × d = 66 mm")
+                    line(from:(-11.0mm, L + 1.5mm, 0), to:(11.0mm, L + 1.5mm, 0), label:"d = 22 mm")
+                    line(from:(-46.0mm, -30mm, 0), to:(-46.0mm, 15mm, 0), label:"45 mm")
+                    line(from:(-wf/2, feed_in_y_start - 1.5mm, 0), to:(wf/2, feed_in_y_start - 1.5mm, 0), label:{text:"wf", offset:(50, -1%P, 0)})
+                }
+    }
+}

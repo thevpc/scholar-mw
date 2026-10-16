@@ -1,0 +1,105 @@
+// --------------------------------------------------
+// Antenna parameters (Upper 6 GHz Band: 6.425–7.125 GHz, f0 ~ 6.775 GHz)
+// --------------------------------------------------
+
+f  = 6.800GHz
+εr = 4.4
+tanδ = 0.02
+h  = 1.6mm      // substrate height
+h0 = 0.035mm    // copper thickness
+
+W  = 13.5mm     // patch width (total X is -6.75 to 6.75)
+L  = 9.40mm     // patch length (total Y is 0 to 9.40)
+
+wf = 3.1mm      // feed width (X is -1.55 to 1.55, 50-ohm line)
+y0 = 3.4mm      // inset depth (Y is 0 to 3.4, tuned for 50-ohm match in MoM and full-wave)
+gap = 0.8mm     // inset gap
+
+// Inset notch detour delay / effective extension for macro-domain basis
+delta_l = 0.35mm
+
+// Simulation domain
+box_w = 26mm    // X: -13 to 13
+box_l = 26mm    // Y: -11 to 15
+
+feed_y_start = -8.5mm
+feed_y_length = 11.9mm
+port_y_start = -8.5mm
+
+content-slide(title:"Upper 6 GHz Inset-Fed Patch Antenna Geometry"){
+    body{
+
+
+    styles:{
+            text:{ color:darkBlue; font-size:1%P }
+            line:{ color:darkBlue; width:2; arrow:simple(); label-bold:true; label-font-size:2%P; label-offset:(50, 1%P, 0) }
+            class-substrate:{ bg:gray80, opacity: 0.6 }
+            class-ground:{ bg:"#cb6d51", line-color:"#cb6d51" }
+            class-antenna:{ bg:"#cb6d51", line-color:"#cb6d51" }
+            class-source:{ bg:yellow }
+            class-patch-mode:{ opacity: 0 }
+    }
+
+    scene3d(
+                name:"antenna-patch",
+                camera: "isometric-z",
+                draw-contour,
+                real-size:(box_w, box_l, 6mm),
+                real-position:(-13mm, -11mm, -h - h0)
+            ){
+
+                // 1. Ground Plane
+                @(ground) box(
+                    size:(box_w, box_l, h0),
+                    position:(-13mm, -11mm, -h - h0)
+                )
+
+                // 2. Substrate
+                @(substrate) box(
+                    size:(box_w, box_l, h),
+                    position:(-13mm, -11mm, -h)
+                )
+
+                // 3. Patch - Left Flank
+                @(antenna) @(left-flank) box(
+                    size:( (W/2) - (wf/2 + gap), y0, h0),
+                    position:(-6.75mm, 0mm, 0mm)
+                )
+
+                // 4. Patch - Right Flank
+                @(antenna) @(right-flank) box(
+                    size:( (W/2) - (wf/2 + gap), y0, h0),
+                    position:( (wf/2 + gap), 0mm, 0mm)
+                )
+
+                // 5. Patch - Full Width Body
+                @(antenna) @(patch) box(
+                    size:(W, L - y0, h0),
+                    position:(-6.75mm, y0, 0mm)
+                )
+
+                // 5b. Patch Resonant Mode (Spans full length L for MoM resonant cavity current)
+                @(patch-mode) box(
+                    size:(W, L, h0),
+                    position:(-6.75mm, 0mm, 0mm)
+                )
+
+                // 6. Feed Line
+                @(antenna) @(feedline) box(
+                    size:(wf, y0 + 8.5mm, h0),
+                    position:(-wf/2, feed_y_start, 0mm)
+                )
+                // 7. Source Port
+                @(source) box(
+                    size:(wf, 1mm, h0),
+                    position:(-wf/2, port_y_start, 0mm)
+                )
+
+                // Dimension markers
+                line(from:(-W/2, L + 2mm, 0), to:(W/2, L + 2mm, 0), label:"W")
+                line(from:(-W/2 - 2mm, 0, 0), to:(-W/2 - 2mm, L, 0), label:"L")
+                line(from:(W/2 + 2mm, 0, 0), to:(W/2 + 2mm, y0, 0), label:"y0")
+                line(from:(-wf/2, feed_y_start - 1mm, 0), to:(wf/2, feed_y_start - 1mm, 0), label:{text:"wf", offset:(50, -1%P, 0)})
+                line(from:(box_w/2 + 2mm, -11mm, -h), to:(box_w/2 + 2mm, -11mm, 0), label:{text:"h", offset:(50, 1%P, 0)})
+    }
+}

@@ -1,0 +1,55 @@
+f=3.4GHz   // Resonant Frequency (fr)
+εr=4.4     // Substrate Material
+tanδ=0.02  // Substrate loss tangent
+h=1.6mm    // Substrate Height
+h0=0.035mm // Copper thickness
+w=3.1mm    // 50 Ohm Microstrip line width
+l=30mm     // Line length
+
+content-slide(title:"Microstrip Transmission Line 3D Model"){
+    body{
+
+
+            styles:{
+                    text:{ color:darkBlue; font-size:1%P }
+                    line:{ color:black; width:2; arrow:simple(); label-bold:true; label-font-size:2%P; label-offset:(50, 1%P, 0) }
+                    class-substrate:{ background:"#00468B", opacity:0.7 }
+                    class-antenna:{ background-color:"#cb6d51" }
+                    class-ground:{ background-color:"#cb6d51" }
+                    class-copper:{ background-color:"#cb6d51" }
+                    class-source:{ background-color:yellow }
+                }
+            scene3d(
+                        name: "antenna-line"
+                        camera: "isometric-z"
+                        draw-contour,
+                        real-size:(60mm,60mm,10mm)
+                        real-position:(-30mm,-30mm,-h - h0)
+                    ){
+                        // Ground plane
+                        @(ground) box(
+                            size:(60mm,60mm,h0)
+                            position:(-30mm,-30mm,-h - h0)
+                        )
+                        // Substrate
+                        @(substrate) box(
+                            size:(60mm,60mm,h)
+                            position:(-30mm,-30mm,-h)
+                        )
+                        // Microstrip transmission line
+                        @(antenna) box(
+                            size:(w,l,h0)
+                            position:(-w/2,-l/2,0mm)
+                        )
+                        // Source port at start of line
+                        @(source) box(
+                            size:(w,2mm,h0)
+                            position:(-w/2,-l/2,0mm)
+                        )
+                        // Dimension markers
+                        line(from:(-w/2, -l/2 - 4mm, 0), to:(w/2, -l/2 - 4mm, 0), label:{text:"w", offset:(50, -1%P, 0)})
+                        line(from:(w/2 + 4mm, -l/2, 0), to:(w/2 + 4mm, l/2, 0), label:{text:"l", offset:(50, -1%P, 0)})
+                        line(from:(30mm + 3mm, -30mm, -h), to:(30mm + 3mm, -30mm, 0), label:{text:"h", offset:(50, 1%P, 0)})
+            }
+    }
+}
