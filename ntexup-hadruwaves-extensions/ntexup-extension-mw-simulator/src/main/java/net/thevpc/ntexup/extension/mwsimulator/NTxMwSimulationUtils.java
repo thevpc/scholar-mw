@@ -8,6 +8,7 @@ import net.thevpc.ntexup.api.eval.NTxFunctionCallContext;
 import net.thevpc.ntexup.api.eval.NTxResolutionContext;
 import net.thevpc.ntexup.api.eval.NTxFutureObj;
 import net.thevpc.ntexup.api.eval.NTxObj;
+import net.thevpc.ntexup.api.eval.NTxObjs;
 import net.thevpc.ntexup.api.eval.NTxValueByType;
 import net.thevpc.ntexup.api.renderer.NTxRendererContext;
 import net.thevpc.ntexup.api.util.NTxUtils;
@@ -301,6 +302,7 @@ public class NTxMwSimulationUtils {
             for (NTxSolverRun item : runs) {
                 item.afterAll();
             }
+            publishSolverStatus(rendererContext, effectivePlanName, anyError ? failedActions : null);
             if (anyError) {
                 for (NTxSolverListener solverListener : solverListeners) {
                     solverListener.onFinish(rendererContext, plan, true, null);
@@ -349,6 +351,30 @@ public class NTxMwSimulationUtils {
                 .builder()
                 .addAnnotation("@reference", NElement.ofPair("scope", NElement.ofString("mw-simulation")), NElement.ofPair("id", r.id()))
                 .build();
+    }
+
+    /**
+     * Publishes {@code <planName>_status} as a document global so a slide can
+     * annotate its own curves with the outcome of the solver that feeds them.
+     * The string is empty when every run produced a result, which keeps healthy
+     * legends untouched; a failed solver yields an empty result set and would
+     * otherwise render as blank axes indistinguishable from a broken plot.
+     */
+    static void publishSolverStatus(NTxRendererContext rendererContext, String planName, List<String> failedActions) {
+        if (planName == null || planName.trim().isEmpty()) {
+            return;
+        }
+        String key = planName.trim() + "_status";
+        String value = "";
+        if (failedActions != null && !failedActions.isEmpty()) {
+            String reason = String.join("; ", failedActions);
+            if (reason.length() > 90) {
+                reason = reason.substring(0, 87) + "...";
+            }
+            value = planName.trim() + " — " + reason + "; ";
+        }
+        rendererContext.compiledDocument().setGlobalObject(key, NTxObjs.elem(NElement.ofString(value)));
+        rendererContext.compiledDocument().dependencyGraph().notifyBindingUpdated(key);
     }
 
     public static void processResult(NTxSimulationResult result, NTxRendererContext rendererContext) {

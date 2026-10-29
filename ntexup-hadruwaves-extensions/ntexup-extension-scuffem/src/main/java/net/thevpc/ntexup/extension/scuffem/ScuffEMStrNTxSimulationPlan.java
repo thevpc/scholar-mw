@@ -1,10 +1,8 @@
 package net.thevpc.ntexup.extension.scuffem;
 
 import net.thevpc.ntexup.api.renderer.NTxRendererContext;
-import net.thevpc.ntexup.extension.mwsimulator.MicrostripCircuitModel;
 import net.thevpc.ntexup.extension.mwsimulator.NTxMwSimulationUtils;
 import net.thevpc.ntexup.extension.mwsimulator.NTxSimulationPlanImpl;
-import net.thevpc.ntexup.extension.mwsimulator.NTxSolverFallbackPolicy;
 import net.thevpc.ntexup.extension.mwsimulator.NTxSolverRun;
 import net.thevpc.ntexup.extension.scuffem.solvers.NTxScuffEMS11Solver;
 import net.thevpc.ntexup.extension.scuffem.solvers.NTxScuffEMZinSolver;
@@ -22,8 +20,6 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
 
     public ScuffEMModelInfo modelInfo;
     private boolean solved = false;
-    private boolean approximated = false;
-    private MicrostripCircuitModel circuitModel;
 
     private final TreeSet<Double> requestedFrequencies = new TreeSet<>();
     private final TreeMap<Double, Complex> s11Results = new TreeMap<>();
@@ -198,7 +194,6 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.epsilonR).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.lossTangent).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.meshResolution).getBytes(StandardCharsets.UTF_8));
-            NTxMwSimulationUtils.addDigestSource(d, (NTxSolverFallbackPolicy.OPTION + "=" + modelInfo.fallbackPolicy).getBytes(StandardCharsets.UTF_8));
             if (modelInfo.geometryId != null) {
                 NTxMwSimulationUtils.addDigestSource(d, modelInfo.geometryId.getBytes(StandardCharsets.UTF_8));
             }
@@ -247,6 +242,9 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                 double l_mm = b.length() * 1000.0;
                 sb.append(String.format(Locale.US, "Rectangle(%d) = {%.4f, %.4f, 0, %.4f, %.4f};\n", i + 1, x_mm, y_mm, w_mm, l_mm));
             }
+            // Provisional: neither gmsh form is sound for edge-touching rectangles. BooleanUnion
+            // aborts in SCUFF-EM's Sommerfeld integrator; separate surfaces fail the trace reader.
+            // A conforming single-polygon outline is the outstanding fix.
             sb.append("s() = BooleanUnion{ Surface{1}; Delete; }{ Surface{");
             for (int i = 1; i < antBoxes.size(); i++) {
                 if (i > 1) sb.append(", ");
@@ -306,114 +304,96 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
 
         RebuiltGeometry geom = rebuildGeometry();
         String hash = computeHash();
-        NTxSolverFallbackPolicy fallbackPolicy = modelInfo.fallbackPolicy;
 
         List<Double> simFreqs = selectSimulationFrequencies();
 
         NPath workDir = NPath.ofTempFolder("scuffem-sim-");
         workDir.mkdirs();
 
-        boolean dockerOk = ScuffEMProvisioner.ensureDocker(modelInfo.dockerImage, rendererContext(), hash);
-        if (!dockerOk) {
-            fallbackPolicy.requireExplicitOptIn("SCUFF-EM",
-                    "Docker image '" + modelInfo.dockerImage + "' is not available");
+        if (!ScuffEMProvisioner.ensureDocker(modelInfo.dockerImage, rendererContext(), hash)) {
+            throw new IllegalStateException(
+                    "SCUFF-EM: Docker image '" + modelInfo.dockerImage + "' is not available");
         }
-        if (dockerOk) {
-            try {
-                NPath geoFile = workDir.resolve("mesh.geo");
-                geoFile.writeString(generateGmshGeo(geom));
+        try {
+            NPath geoFile = workDir.resolve("mesh.geo");
+            geoFile.writeString(generateGmshGeo(geom));
 
-                NPath pyFile = workDir.resolve("simulate.py");
-                pyFile.writeString(generatePythonScript(geom, simFreqs));
+            NPath pyFile = workDir.resolve("simulate.py");
+            pyFile.writeString(generatePythonScript(geom, simFreqs));
 
-                // 1. Run Gmsh
-                int gmshCode = ScuffEMProvisioner.runInDocker(
-                        modelInfo.dockerImage,
-                        workDir,
-                        "/sim",
-                        Arrays.asList("gmsh", "-2", "/sim/mesh.geo", "-o", "/sim/mesh.msh"),
-                        rendererContext(),
-                        hash
-                );
-                if (gmshCode != 0) {
-                    throw new IllegalStateException("gmsh mesh generation failed with exit code " + gmshCode);
-                }
+            // 1. Run Gmsh
+            int gmshCode = ScuffEMProvisioner.runInDocker(
+                    modelInfo.dockerImage,
+                    workDir,
+                    "/sim",
+                    Arrays.asList("gmsh", "-2", "/sim/mesh.geo", "-o", "/sim/mesh.msh"),
+                    rendererContext(),
+                    hash
+            );
+            if (gmshCode != 0) {
+                throw new IllegalStateException("gmsh mesh generation failed with exit code " + gmshCode);
+            }
 
-                // 2. Run SCUFF-EM python solver
-                int scuffCode = ScuffEMProvisioner.runInDocker(
-                        modelInfo.dockerImage,
-                        workDir,
-                        "/sim",
-                        Arrays.asList("python3", "/sim/simulate.py"),
-                        rendererContext(),
-                        hash
-                );
-                if (scuffCode != 0) {
-                    throw new IllegalStateException("SCUFF-EM solver failed with exit code " + scuffCode);
-                }
+            // 2. Run SCUFF-EM python solver
+            // The image keeps scuff's bindings in /usr/local site-packages, which the
+            // distro python3 does not search by default.
+            int scuffCode = ScuffEMProvisioner.runInDocker(
+                    modelInfo.dockerImage,
+                    workDir,
+                    "/sim",
+                    Arrays.asList("sh", "-c",
+                            "PYTHONPATH=$(ls -d /usr/local/lib/python*/site-packages 2>/dev/null | head -1)"
+                                    + " exec python3 /sim/simulate.py"),
+                    rendererContext(),
+                    hash
+            );
+            if (scuffCode != 0) {
+                throw new IllegalStateException("solver failed with exit code " + scuffCode);
+            }
 
-                // 3. Parse results.dat
-                NPath resFile = workDir.resolve("results.dat");
-                if (resFile.exists()) {
-                    String resStr = new String(resFile.readBytes(), StandardCharsets.UTF_8);
-                    for (String line : resStr.split("\n")) {
-                        line = line.trim();
-                        if (!line.isEmpty() && !line.startsWith("#")) {
-                            String[] parts = line.split("\\s+");
-                            if (parts.length >= 5) {
-                                double f = Double.parseDouble(parts[0]);
-                                double s11Re = Double.parseDouble(parts[1]);
-                                double s11Im = Double.parseDouble(parts[2]);
-                                double zRe = Double.parseDouble(parts[3]);
-                                double zIm = Double.parseDouble(parts[4]);
-                                Complex zin;
-                                Complex s11;
-                                if (geom.isResonator) {
-                                    zin = Complex.of(zRe, zIm);
-                                    s11 = Complex.of(s11Re, s11Im);
-                                } else {
-                                    zin = Complex.of(zRe + 50.0, zIm);
-                                    Complex z0 = Complex.of(50.0);
-                                    s11 = zin.minus(z0).div(zin.plus(z0));
-                                }
-                                s11Results.put(f, s11);
-                                zinResults.put(f, zin);
+            // 3. Parse results.dat
+            NPath resFile = workDir.resolve("results.dat");
+            if (resFile.exists()) {
+                String resStr = new String(resFile.readBytes(), StandardCharsets.UTF_8);
+                for (String line : resStr.split("\n")) {
+                    line = line.trim();
+                    if (!line.isEmpty() && !line.startsWith("#")) {
+                        String[] parts = line.split("\\s+");
+                        if (parts.length >= 5) {
+                            double f = Double.parseDouble(parts[0]);
+                            double s11Re = Double.parseDouble(parts[1]);
+                            double s11Im = Double.parseDouble(parts[2]);
+                            double zRe = Double.parseDouble(parts[3]);
+                            double zIm = Double.parseDouble(parts[4]);
+                            Complex zin;
+                            Complex s11;
+                            if (geom.isResonator) {
+                                zin = Complex.of(zRe, zIm);
+                                s11 = Complex.of(s11Re, s11Im);
+                            } else {
+                                zin = Complex.of(zRe + 50.0, zIm);
+                                Complex z0 = Complex.of(50.0);
+                                s11 = zin.minus(z0).div(zin.plus(z0));
                             }
+                            s11Results.put(f, s11);
+                            zinResults.put(f, zin);
                         }
                     }
                 }
-            } catch (Exception ex) {
-                s11Results.clear();
-                zinResults.clear();
-                fallbackPolicy.requireExplicitOptIn("SCUFF-EM",
-                        "SCUFF-EM simulation failed: " + ex.getMessage());
-                if (rendererContext() != null) {
-                    rendererContext().log(NMsg.ofC("[SCUFF-EM][%s] Simulation failed: %s", hash, ex.getMessage()).asError());
-                }
             }
+        } catch (Exception ex) {
+            s11Results.clear();
+            zinResults.clear();
+            if (rendererContext() != null) {
+                rendererContext().log(NMsg.ofC("[SCUFF-EM][%s] Simulation failed: %s", hash, ex.getMessage()).asError());
+            }
+            throw new IllegalStateException("SCUFF-EM simulation failed: " + ex.getMessage(), ex);
         }
 
         if (s11Results.isEmpty()) {
-            fallbackPolicy.requireExplicitOptIn("SCUFF-EM",
+            throw new IllegalStateException(
                     "SCUFF-EM produced no results at " + simFreqs.size() + " requested frequency point(s)");
-            approximated = true;
-            if (rendererContext() != null) {
-                rendererContext().log(NMsg.ofC(
-                        "[SCUFF-EM][%s] WARNING: no native result; substituting declared analytical approximation "
-                                + "because '%s'='analytical' was explicitly set. These values are NOT SCUFF-EM results.",
-                        hash, NTxSolverFallbackPolicy.OPTION).asWarning());
-            }
-            populateAnalyticalFallback(geom, simFreqs);
         }
-    }
-
-    /**
-     * True when the reported values come from the declared analytical
-     * approximation rather than from a native SCUFF-EM run.
-     */
-    public boolean isApproximated() {
-        ensureSolved();
-        return approximated;
     }
 
     private List<Double> selectSimulationFrequencies() {
@@ -442,35 +422,6 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             Collections.sort(list);
         }
         return list;
-    }
-
-    public synchronized MicrostripCircuitModel getCircuitModel() {
-        if (circuitModel == null) {
-            if (modelInfo == null) {
-                modelInfo = new ScuffEMModelInfo();
-            }
-            circuitModel = MicrostripCircuitModel.parse(
-                    modelInfo.sceneNode,
-                    modelInfo.resolutionContext,
-                    modelInfo.epsilonR,
-                    modelInfo.lossTangent,
-                    modelInfo.z0Ref
-            );
-        }
-        return circuitModel;
-    }
-
-    private void populateAnalyticalFallback(RebuiltGeometry geom, List<Double> freqs) {
-        MicrostripCircuitModel model = getCircuitModel();
-        double z0Val = modelInfo != null ? modelInfo.z0Ref : 50.0;
-        Complex z0 = Complex.of(z0Val);
-        for (double f : freqs) {
-            MicrostripCircuitModel.ComplexNum z = model.computeZin(f);
-            Complex zin = Complex.of(z.re, z.im);
-            Complex s11 = zin.minus(z0).div(zin.plus(z0));
-            s11Results.put(f, s11);
-            zinResults.put(f, zin);
-        }
     }
 
     public Complex computeS11(double freq) {

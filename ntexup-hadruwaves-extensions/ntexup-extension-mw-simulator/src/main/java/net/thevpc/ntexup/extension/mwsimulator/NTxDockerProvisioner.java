@@ -135,6 +135,21 @@ public class NTxDockerProvisioner {
 
     public static int runInDocker(String dockerImage, NPath hostWorkDir, String containerWorkDir,
                                   List<String> command, NTxRendererContext rendererContext, String logPrefix) {
+        return runInDocker(dockerImage, hostWorkDir, containerWorkDir, command, false, rendererContext, logPrefix);
+    }
+
+    /**
+     * Needed for images that declare a CLI ENTRYPOINT (thevpc/scuff-em), which would otherwise
+     * consume the requested program as one of their own subcommands.
+     */
+    public static int runInDockerViaEntrypoint(String dockerImage, NPath hostWorkDir, String containerWorkDir,
+                                               List<String> command, NTxRendererContext rendererContext, String logPrefix) {
+        return runInDocker(dockerImage, hostWorkDir, containerWorkDir, command, true, rendererContext, logPrefix);
+    }
+
+    private static int runInDocker(String dockerImage, NPath hostWorkDir, String containerWorkDir,
+                                   List<String> command, boolean useCommandAsEntrypoint,
+                                   NTxRendererContext rendererContext, String logPrefix) {
         List<String> args = new ArrayList<>();
         args.add("docker");
         args.add("run");
@@ -143,8 +158,14 @@ public class NTxDockerProvisioner {
         args.add(hostWorkDir.toAbsolute().toString() + ":" + containerWorkDir);
         args.add("-w");
         args.add(containerWorkDir);
+        List<String> tail = command;
+        if (useCommandAsEntrypoint && !command.isEmpty()) {
+            args.add("--entrypoint");
+            args.add(command.get(0));
+            tail = command.subList(1, command.size());
+        }
         args.add(dockerImage);
-        args.addAll(command);
+        args.addAll(tail);
 
         if (rendererContext != null) {
             rendererContext.log(NMsg.ofC("[%s] Running in Docker: %s", logPrefix, String.join(" ", command)));

@@ -32,7 +32,7 @@ public class ScuffEMProvisioner {
 
     public static int runInDocker(String dockerImage, NPath hostWorkDir, String containerWorkDir,
                                   List<String> command, NTxRendererContext rendererContext, String logPrefix) {
-        return NTxDockerProvisioner.runInDocker(
+        return NTxDockerProvisioner.runInDockerViaEntrypoint(
                 dockerImage != null ? dockerImage : DEFAULT_DOCKER_IMAGE,
                 hostWorkDir,
                 containerWorkDir,

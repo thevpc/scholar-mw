@@ -2,7 +2,6 @@ package net.thevpc.ntexup.extension.scuffem;
 
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.eval.NTxResolutionContext;
-import net.thevpc.ntexup.extension.mwsimulator.NTxSolverFallbackPolicy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +45,6 @@ public class ScuffEMModelInfo {
     public double meshResolution = 2.5; // mm
     public String dockerImage = "thevpc/scuff-em:latest";
     public String mode = "auto";
-    public NTxSolverFallbackPolicy fallbackPolicy = NTxSolverFallbackPolicy.ERROR;
     public NTxNode sceneNode;
     public NTxResolutionContext resolutionContext;
 

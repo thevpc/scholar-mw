@@ -6,7 +6,6 @@ import net.thevpc.ntexup.extension.getdp.solvers.NTxGetDPZinSolver;
 import net.thevpc.ntexup.extension.mwsimulator.NTxMwSimulationUtils;
 import net.thevpc.ntexup.extension.mwsimulator.NTxSimulationPlanImpl;
 import net.thevpc.ntexup.extension.mwsimulator.NTxSolverRun;
-import net.thevpc.ntexup.extension.mwsimulator.NTxSolverFallbackPolicy;
 import net.thevpc.nuts.io.NDigest;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.text.NMsg;
@@ -26,7 +25,6 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
     private double vpFem = Maths.C;
     private double lTot = 0.0;
     private boolean femSolved = false;
-    private boolean approximated = false;
     private MicrostripCircuitModel circuitModel;
 
     public GetDPStrNTxSimulationPlan(String id, String name, NTxRendererContext rendererContext) {
@@ -177,8 +175,7 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.epsilonR).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.lossTangent).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.meshResolution).getBytes(StandardCharsets.UTF_8));
-            NTxMwSimulationUtils.addDigestSource(d, (NTxSolverFallbackPolicy.OPTION + "=" + modelInfo.fallbackPolicy).getBytes(StandardCharsets.UTF_8));
-            if (modelInfo.geometryId != null) {
+                if (modelInfo.geometryId != null) {
                 NTxMwSimulationUtils.addDigestSource(d, modelInfo.geometryId.getBytes(StandardCharsets.UTF_8));
             }
             for (GetDPModelInfo.GetDPBox b : modelInfo.antennaBoxes) {
@@ -210,20 +207,9 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         NPath energyFile = workDir.resolve("energy.dat");
         NPath energyAirFile = workDir.resolve("energy_air.dat");
 
-        NTxSolverFallbackPolicy fallbackPolicy = modelInfo.fallbackPolicy;
-
         boolean dockerOk = GetDPProvisioner.ensureDocker(modelInfo.dockerImage, rendererContext(), hash);
         if (!dockerOk) {
-            fallbackPolicy.requireExplicitOptIn("GetDP",
-                    "Docker image '" + modelInfo.dockerImage + "' is not available");
-            approximated = true;
-            if (rendererContext() != null) {
-                rendererContext().log(NMsg.ofC("[GetDP][%s] WARNING: Docker unavailable; substituting analytical approximation "
-                        + "because '%s'='analytical' was explicitly set. These values are NOT GetDP FEM results.",
-                        hash, NTxSolverFallbackPolicy.OPTION).asWarning());
-            }
-            computeApproximation(geom);
-            return;
+            throw new IllegalStateException("GetDP: Docker image '" + modelInfo.dockerImage + "' is not available");
         }
 
         NPath geoFile = workDir.resolve("mesh.geo");
@@ -326,75 +312,17 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                     }
                 }
             } catch (Exception ex) {
-                fallbackPolicy.requireExplicitOptIn("GetDP",
-                        "error parsing GetDP FEM energy results: " + ex.getMessage());
-                approximated = true;
-                if (rendererContext() != null) {
-                    rendererContext().log(NMsg.ofC("[GetDP][%s] WARNING: could not parse FEM energy results (%s); "
-                                    + "substituting analytical approximation because '%s'='analytical' was explicitly set. "
-                                    + "These values are NOT GetDP FEM results.",
-                            hash, ex.getMessage(), NTxSolverFallbackPolicy.OPTION).asWarning());
-                }
-                computeApproximation(geom);
+                throw new IllegalStateException("GetDP: error parsing FEM energy results: " + ex.getMessage(), ex);
             }
         } else {
-            fallbackPolicy.requireExplicitOptIn("GetDP",
-                    "GetDP did not produce energy.dat/energy_air.dat");
-            approximated = true;
-            if (rendererContext() != null) {
-                rendererContext().log(NMsg.ofC("[GetDP][%s] WARNING: no FEM energy output; substituting analytical approximation "
-                                + "because '%s'='analytical' was explicitly set. These values are NOT GetDP FEM results.",
-                        hash, NTxSolverFallbackPolicy.OPTION).asWarning());
-            }
-            computeApproximation(geom);
+            throw new IllegalStateException("GetDP: did not produce energy.dat/energy_air.dat");
         }
-    }
-
-    /**
-     * True when the reported parameters come from the declared analytical
-     * approximation rather than from a native GetDP FEM run.
-     */
-    public boolean isApproximated() {
-        ensureFemSolved();
-        return approximated;
     }
 
     private double patchFr = 0.0;
     private double patchRin = 50.0;
     private double patchQ = 30.0;
 
-    private void computeApproximation(RebuiltGeometry geom) {
-        if (geom.h <= 0) return;
-        double u = geom.feedW / geom.h;
-        epsEffFem = (modelInfo.epsilonR + 1.0) / 2.0 + ((modelInfo.epsilonR - 1.0) / 2.0) / Math.sqrt(1.0 + 12.0 / u);
-        z0Fem = MicrostripCircuitModel.calcZ0(geom.feedW, geom.h, modelInfo.epsilonR);
-        vpFem = Maths.C / Math.sqrt(epsEffFem);
-        double dL = 0.412 * geom.h * ((epsEffFem + 0.3) / (epsEffFem - 0.258)) * ((u + 0.264) / (u + 0.8));
-        lTot = geom.lineLength + dL;
-
-        if (geom.isResonator) {
-            double uRes = geom.resW / geom.h;
-            double epsEffRes = (modelInfo.epsilonR + 1.0) / 2.0 + ((modelInfo.epsilonR - 1.0) / 2.0) / Math.sqrt(1.0 + 12.0 / uRes);
-            double dLRes = 0.412 * geom.h * ((epsEffRes + 0.3) / (epsEffRes - 0.258)) * ((uRes + 0.264) / (uRes + 0.8));
-            double notchFraction = geom.resL > 0 ? (geom.insetDepth / geom.resL) : 0.0;
-            double notchFactor = notchFraction * (1.0 - notchFraction);
-            double leff = geom.resL + 2.0 * dLRes + geom.insetDepth * notchFactor;
-            patchFr = Maths.C / (2.0 * leff * Math.sqrt(epsEffRes));
-
-            double k0 = 2.0 * Math.PI * patchFr / Maths.C;
-            double lam0 = Maths.C / patchFr;
-            double grad = (geom.resW / (120.0 * lam0)) * (1.0 - Math.pow(k0 * geom.h, 2.0) / 24.0);
-            double redge = 1.0 / (2.0 * Math.max(1e-6, grad));
-            double cosVal = Math.cos(Math.PI * geom.insetDepth / geom.resL);
-            patchRin = redge * Math.pow(cosVal, 2.0);
-
-            double qDiel = 1.0 / Math.max(1e-6, modelInfo.lossTangent);
-            double qCond = geom.h * Math.sqrt(Math.PI * patchFr * 4.0 * Math.PI * 1e-7 * 5.8e7);
-            double cPatch = 8.854187817e-12 * modelInfo.epsilonR * geom.resW * geom.resL / (2.0 * geom.h);
-            double qRad = 2.0 * Math.PI * patchFr * cPatch * redge;
-            patchQ = 1.0 / ((1.0 / qRad) + (1.0 / qDiel) + (1.0 / qCond));
-        }
-    }
 
     public synchronized MicrostripCircuitModel getCircuitModel() {
         if (circuitModel == null) {

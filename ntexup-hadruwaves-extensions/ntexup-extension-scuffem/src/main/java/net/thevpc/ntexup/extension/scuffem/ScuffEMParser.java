@@ -7,7 +7,6 @@ import net.thevpc.ntexup.api.eval.NTxResolutionContext;
 import net.thevpc.ntexup.api.util.NTxNumberUtils;
 import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.ntexup.extension.mwsimulator.NTxMwSimulationUtils;
-import net.thevpc.ntexup.extension.mwsimulator.NTxSolverFallbackPolicy;
 import net.thevpc.ntexup.lib.geometry3d.NTxNumberElement3;
 import net.thevpc.ntexup.lib.geometry3d.impl.NTx3DUtils;
 import net.thevpc.nuts.elem.NElement;
@@ -77,9 +76,9 @@ public class ScuffEMParser {
                     case "simulationfallback":
                     case "simulation-fallback":
                     case "fallback": {
-                        info.fallbackPolicy = NTxSolverFallbackPolicy.parse(
-                                pv.asStringValue().orNull(), "SCUFF-EM");
-                        break;
+                        throw new IllegalArgumentException("SCUFF-EM: 'simulation-fallback' is no longer supported. "
+                                + "A solver that produces no result now always fails instead of substituting "
+                                + "an analytical approximation; remove the property.");
                     }
                 }
             }

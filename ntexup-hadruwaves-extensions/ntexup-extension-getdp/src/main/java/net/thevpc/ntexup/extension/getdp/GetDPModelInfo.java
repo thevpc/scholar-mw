@@ -2,7 +2,6 @@ package net.thevpc.ntexup.extension.getdp;
 
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.eval.NTxResolutionContext;
-import net.thevpc.ntexup.extension.mwsimulator.NTxSolverFallbackPolicy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +45,6 @@ public class GetDPModelInfo {
     public double meshResolution = 0.5; // mm
     public String dockerImage = "thevpc/getdp:3.2.0";
     public String mode = "auto"; // "auto", "2d", "3d"
-    public NTxSolverFallbackPolicy fallbackPolicy = NTxSolverFallbackPolicy.ERROR;
     public NTxNode sceneNode;
     public NTxResolutionContext resolutionContext;
 

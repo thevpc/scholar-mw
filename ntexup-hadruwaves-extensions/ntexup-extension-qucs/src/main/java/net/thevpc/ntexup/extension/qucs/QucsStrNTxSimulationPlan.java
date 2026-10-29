@@ -5,7 +5,6 @@ import net.thevpc.ntexup.extension.mwsimulator.MicrostripCircuitModel;
 import net.thevpc.ntexup.extension.mwsimulator.NTxMwSimulationUtils;
 import net.thevpc.ntexup.extension.mwsimulator.NTxSimulationPlanImpl;
 import net.thevpc.ntexup.extension.mwsimulator.NTxSolverRun;
-import net.thevpc.ntexup.extension.mwsimulator.NTxSolverFallbackPolicy;
 import net.thevpc.ntexup.extension.qucs.solvers.NTxQucsS11Solver;
 import net.thevpc.ntexup.extension.qucs.solvers.NTxQucsZinSolver;
 import net.thevpc.nuts.io.NDigest;
@@ -24,7 +23,6 @@ public class QucsStrNTxSimulationPlan extends NTxSimulationPlanImpl {
     private final NavigableMap<Double, Complex> s11Map = new TreeMap<>();
     private final NavigableMap<Double, Complex> zinMap = new TreeMap<>();
     private boolean qucsSolved = false;
-    private boolean approximated = false;
     private MicrostripCircuitModel circuitModel;
 
     public QucsStrNTxSimulationPlan(String id, String name, NTxRendererContext rendererContext) {
@@ -75,7 +73,6 @@ public class QucsStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.epsilonR).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.lossTangent).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.z0Ref).getBytes(StandardCharsets.UTF_8));
-            NTxMwSimulationUtils.addDigestSource(d, (NTxSolverFallbackPolicy.OPTION + "=" + modelInfo.fallbackPolicy).getBytes(StandardCharsets.UTF_8));
             if (modelInfo.geometryId != null) {
                 NTxMwSimulationUtils.addDigestSource(d, modelInfo.geometryId.getBytes(StandardCharsets.UTF_8));
             }
@@ -108,12 +105,9 @@ public class QucsStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             String netContent = model.generateQucsNetlist(fmin, fmax, count);
             netFile.writeString(netContent);
 
-            NTxSolverFallbackPolicy fallbackPolicy = modelInfo.fallbackPolicy;
-
             boolean dockerOk = QucsProvisioner.ensureDocker(modelInfo.dockerImage, rendererContext(), hash);
             if (!dockerOk) {
-                fallbackPolicy.requireExplicitOptIn("Qucs",
-                        "Docker image '" + modelInfo.dockerImage + "' is not available");
+                throw new IllegalStateException("Qucs: Docker image '" + modelInfo.dockerImage + "' is not available");
             }
 
             int qucsCode = QucsProvisioner.runInDocker(
@@ -132,24 +126,8 @@ public class QucsStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         if (datFile.exists() && datFile.contentLength() > 0) {
             parseQucsDataset(datFile);
         } else {
-            modelInfo.fallbackPolicy.requireExplicitOptIn("Qucs",
-                    "qucsator produced no dataset");
-            approximated = true;
-            if (rendererContext() != null) {
-                rendererContext().log(NMsg.ofC("[Qucs][%s] WARNING: no qucsator dataset; substituting analytical approximation "
-                                + "because '%s'='analytical' was explicitly set. These values are NOT Qucs results.",
-                        hash, NTxSolverFallbackPolicy.OPTION).asWarning());
-            }
-            computeFallbackSweep(fmin, fmax, count);
+            throw new IllegalStateException("Qucs: qucsator produced no dataset");
         }
-    }
-
-    /**
-     * True when the reported values come from the declared analytical
-     * approximation rather than from a native qucsator run.
-     */
-    public boolean isApproximated() {
-        return approximated;
     }
 
     private void parseQucsDataset(NPath datFile) {
@@ -247,19 +225,6 @@ public class QucsStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             im = -im;
         }
         return Complex.of(re, im);
-    }
-
-    private void computeFallbackSweep(double fmin, double fmax, int count) {
-        double step = count > 1 ? (fmax - fmin) / (count - 1) : 0;
-        MicrostripCircuitModel model = getCircuitModel();
-
-        for (int i = 0; i < count; i++) {
-            double f = fmin + i * step;
-            MicrostripCircuitModel.ComplexNum s11C = model.computeS11(f);
-            MicrostripCircuitModel.ComplexNum zinC = model.computeZin(f);
-            s11Map.put(f, Complex.of(s11C.re, s11C.im));
-            zinMap.put(f, Complex.of(zinC.re, zinC.im));
-        }
     }
 
     public Complex computeS11(double freq) {
