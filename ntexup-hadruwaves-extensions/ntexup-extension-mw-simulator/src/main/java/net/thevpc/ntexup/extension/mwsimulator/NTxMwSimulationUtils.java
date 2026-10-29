@@ -341,6 +341,10 @@ public class NTxMwSimulationUtils {
             rendererContext.compiledDocument().registerFuture(futureObj);
             rendererContext.compiledDocument().setGlobalObject(pName, futureObj);
             rendererContext.compiledDocument().registerProgressBinding(pName, futureObj);
+            // Seeded empty so that a slide rendered while the plan is still
+            // running shows a clean legend; an unbound ${x_status} interpolates
+            // to its own literal text, which reads as a failure on every curve.
+            publishSolverStatus(rendererContext, pName, null);
         }
 
         if (!rendererContext.isAnimate()) {
