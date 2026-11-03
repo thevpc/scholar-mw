@@ -296,7 +296,7 @@ public class NTxMwSimulationUtils {
                 } catch (Exception ex) {
                     anyError = true;
                     failedActions.add(actionName + ": " + ex.getMessage());
-                    rendererContext.log(NMsg.ofC("%s error : %s", prefix, ex).withDurationMillis(chi.stop().durationMs()).asError());
+                    rendererContext.log(NMsg.ofC("%s error : %s", prefix, ex).withDurationMillis(chi.stop().durationMs()).asError(ex));
                 }
             }
             for (NTxSolverRun item : runs) {
@@ -327,7 +327,7 @@ public class NTxMwSimulationUtils {
         }, plan);
 
         node.setUserObject("mw-simulation-process", r);
-        rendererContext.compiledDocument().registerFuture(r.future());
+        rendererContext.compiledDocument().registerTask(NStringUtils.firstNonBlank(planName, plan.getClass().getSimpleName()), r.future());
         if (planName != null && !planName.trim().isEmpty()) {
             String pName = planName.trim();
             NTxFutureObj futureObj = new NTxFutureObj(pName, r.future(), () -> {
@@ -345,6 +345,7 @@ public class NTxMwSimulationUtils {
             // running shows a clean legend; an unbound ${x_status} interpolates
             // to its own literal text, which reads as a failure on every curve.
             publishSolverStatus(rendererContext, pName, null);
+            NTxSolverMetrics.seed(rendererContext, pName);
         }
 
         if (!rendererContext.isAnimate()) {

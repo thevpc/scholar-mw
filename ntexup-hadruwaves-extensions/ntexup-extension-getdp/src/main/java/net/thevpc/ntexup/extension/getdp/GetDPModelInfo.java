@@ -42,7 +42,8 @@ public class GetDPModelInfo {
     public double lossTangent = 0.02;
     public double z0Ref = 50.0;
     public String geometryId;
-    public double meshResolution = 0.5; // mm
+    public double meshResolution = 0.5; // FEM bulk cell size, in half substrate heights
+    public double meshDomainFactor = 20.0; // FEM domain width, in (strip width + substrate height)
     public String dockerImage = "thevpc/getdp:3.2.0";
     public String mode = "auto"; // "auto", "2d", "3d"
     public NTxNode sceneNode;

@@ -18,6 +18,28 @@ import java.util.Objects;
 
 public class ScuffEMParser {
 
+    private static void parsePort(NElement port, NTxResolutionContext context, ScuffEMModelInfo info) {
+        if (!port.isAnyObject()) {
+            throw new IllegalArgumentException("SCUFF-EM: 'port' expects an object, as in port:{deembed:25mm}");
+        }
+        for (NElement c : port.asObject().get().children()) {
+            if (!c.isNamedPair()) {
+                continue;
+            }
+            NPairElement p = c.asNamedPair().get();
+            String key = NTxUtils.uid(p.key().asStringValue().orElse(""));
+            NElement v = context.evalExpression(p.value()).orElse(p.value());
+            if (!"deembed".equals(key)) {
+                throw new IllegalArgumentException("SCUFF-EM: unknown port option '" + key + "'");
+            }
+            double metres = NTxNumberUtils.toMeter(v).orElse(0.0);
+            if (metres <= 0) {
+                throw new IllegalArgumentException("SCUFF-EM: port option 'deembed' expects a positive length, as in 25mm");
+            }
+            info.portDeembed = metres * 1e3;
+        }
+    }
+
     public static ScuffEMModelInfo parse(NTxFunctionCallContext args) {
         ScuffEMModelInfo info = new ScuffEMModelInfo();
         NTxResolutionContext context = args.scopedContext();
@@ -53,6 +75,27 @@ public class ScuffEMParser {
                     case "z":
                     case "zref": {
                         info.z0Ref = pv.asDoubleValue().orElse(50.0);
+                        break;
+                    }
+                    case "mesh": {
+                        if (!pv.isAnyObject()) {
+                            throw new IllegalArgumentException("SCUFF-EM: 'mesh' expects an object, as in mesh:{resolution:1.5}");
+                        }
+                        for (NElement c : pv.asObject().get().children()) {
+                            if (!c.isNamedPair()) {
+                                continue;
+                            }
+                            NPairElement mp = c.asNamedPair().get();
+                            String meshKey = NTxUtils.uid(mp.key().asStringValue().orElse(""));
+                            if (!"resolution".equals(meshKey)) {
+                                throw new IllegalArgumentException("SCUFF-EM: unknown mesh option '" + meshKey + "'");
+                            }
+                            info.meshResolution = context.evalExpression(mp.value()).orElse(mp.value()).asDoubleValue().orElse(info.meshResolution);
+                        }
+                        break;
+                    }
+                    case "port": {
+                        parsePort(pv, context, info);
                         break;
                     }
                     case "meshresolution":

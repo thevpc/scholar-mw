@@ -57,6 +57,24 @@ public class OpenEMSParser {
         public int numberOfTimesteps = 50000;
         public double endCriteria = 1e-5;
         public int numThreads = 2;
+        /**
+         * Subdivides every grid interval. At 1 the patch null reads about 300 MHz low: 7.48,
+         * 7.66, 7.72, 7.74 GHz at 1 to 4 on a 14 x 6.85 mm patch, about 7.8 GHz extrapolated.
+         */
+        public int meshRefinement = 3;
+        public int meshSubstrateCells = 6;
+        // mm, before the refinement subdivides them
+        public double meshMaxCellX = 0.75;
+        public double meshMaxCellY = 1.0;
+        public double meshMaxCellZ = 3.0;
+        public double meshMaxCellOutside = 3.0;
+        public double meshMinCell = 0.20;
+        /**
+         * mm. When positive, Z is read from V and I probes on the feed line instead of at the
+         * lumped port, and moved to the plane this far from the port's outer edge. The feed must
+         * run straight and uniform over that length. Default 0 keeps the lumped port reading.
+         */
+        public double portDeembed = 0.0;
         public String xmlPath;
         public String geometryId;
         public List<OpenEMSBox> groundBoxes = new ArrayList<>();
@@ -110,6 +128,14 @@ public class OpenEMSParser {
                         info.numThreads = pv.asIntValue().orElse(2);
                         break;
                     }
+                    case "mesh": {
+                        parseMesh(pv, context, info);
+                        break;
+                    }
+                    case "port": {
+                        parsePort(pv, context, info);
+                        break;
+                    }
                     case "epsilonr":
                     case "permittivity": {
                         info.epsilonR = pv.asDoubleValue().orElse(4.4);
@@ -148,6 +174,176 @@ public class OpenEMSParser {
         }
 
         return info;
+    }
+
+    private static void parseMesh(NElement mesh, NTxResolutionContext context, OpenEMSModelInfo info) {
+        if (!mesh.isAnyObject()) {
+            throw new IllegalArgumentException("OpenEMS: 'mesh' expects an object, as in mesh:{refinement:3}");
+        }
+        for (NElement c : mesh.asObject().get().children()) {
+            if (!c.isNamedPair()) {
+                continue;
+            }
+            NPairElement p = c.asNamedPair().get();
+            String key = NTxUtils.uid(p.key().asStringValue().orElse(""));
+            NElement v = context.evalExpression(p.value()).orElse(p.value());
+            switch (key) {
+                case "refinement": {
+                    info.meshRefinement = Math.max(1, v.asIntValue().orElse(info.meshRefinement));
+                    break;
+                }
+                case "substrate-cells": {
+                    info.meshSubstrateCells = Math.max(1, v.asIntValue().orElse(info.meshSubstrateCells));
+                    break;
+                }
+                case "max-cell-x": {
+                    info.meshMaxCellX = meshLengthMm(v, key);
+                    break;
+                }
+                case "max-cell-y": {
+                    info.meshMaxCellY = meshLengthMm(v, key);
+                    break;
+                }
+                case "max-cell-z": {
+                    info.meshMaxCellZ = meshLengthMm(v, key);
+                    break;
+                }
+                case "max-cell-outside": {
+                    info.meshMaxCellOutside = meshLengthMm(v, key);
+                    break;
+                }
+                case "min-cell": {
+                    info.meshMinCell = meshLengthMm(v, key);
+                    break;
+                }
+                default: {
+                    throw new IllegalArgumentException("OpenEMS: unknown mesh option '" + key + "'");
+                }
+            }
+        }
+    }
+
+    private static void parsePort(NElement port, NTxResolutionContext context, OpenEMSModelInfo info) {
+        if (!port.isAnyObject()) {
+            throw new IllegalArgumentException("OpenEMS: 'port' expects an object, as in port:{deembed:15mm}");
+        }
+        for (NElement c : port.asObject().get().children()) {
+            if (!c.isNamedPair()) {
+                continue;
+            }
+            NPairElement p = c.asNamedPair().get();
+            String key = NTxUtils.uid(p.key().asStringValue().orElse(""));
+            NElement v = context.evalExpression(p.value()).orElse(p.value());
+            switch (key) {
+                case "deembed": {
+                    info.portDeembed = meshLengthMm(v, key);
+                    break;
+                }
+                default: {
+                    throw new IllegalArgumentException("OpenEMS: unknown port option '" + key + "'");
+                }
+            }
+        }
+    }
+
+    /**
+     * Probe layout for a de-embedded port, in mm. s runs along the feed from the port towards
+     * the antenna: three V probes at c - dx, c, c + dx, two I probes at c -+ dx/2, and the
+     * reference plane at s = refDistance from c.
+     */
+    public static class DeembedProbes {
+        public boolean alongX;
+        public double sign;
+        public double c;
+        public double dx;
+        public double refDistance;
+        public double w1, w2, wMid;
+        public double zGround, zStrip, zStripTop;
+        public double iMargin;
+
+        public double at(double s) {
+            return c + sign * s;
+        }
+    }
+
+    public static DeembedProbes deembedProbes(OpenEMSModelInfo info) {
+        if (info.portDeembed <= 0 || info.sourceBoxes.isEmpty() || info.substrateBoxes.isEmpty()) {
+            return null;
+        }
+        OpenEMSBox src = info.sourceBoxes.get(0);
+        OpenEMSBox sub = info.substrateBoxes.get(0);
+        DeembedProbes p = new DeembedProbes();
+        // the port is thin along the feed and spans the strip across it
+        p.alongX = (src.x2 - src.x1) < (src.y2 - src.y1);
+        double u1 = p.alongX ? src.x1 : src.y1;
+        double u2 = p.alongX ? src.x2 : src.y2;
+        double antLo = Double.MAX_VALUE, antHi = -Double.MAX_VALUE;
+        double top = src.z2;
+        for (OpenEMSBox b : info.antennaBoxes) {
+            antLo = Math.min(antLo, p.alongX ? b.x1 : b.y1);
+            antHi = Math.max(antHi, p.alongX ? b.x2 : b.y2);
+            top = Math.max(top, b.z2);
+        }
+        p.sign = (antLo + antHi) / 2.0 >= (u1 + u2) / 2.0 ? 1.0 : -1.0;
+        double outer = p.sign > 0 ? u1 : u2;
+        double inner = p.sign > 0 ? u2 : u1;
+        double span = info.portDeembed - (u2 - u1);
+        if (span <= 0) {
+            throw new IllegalArgumentException("OpenEMS: port deembed " + info.portDeembed + " mm does not reach past the port box");
+        }
+        // probes sit past the port's near field and short of the reference plane
+        p.c = inner + p.sign * 0.6 * span;
+        p.dx = Math.min(2.0, 0.15 * span);
+        p.refDistance = (outer + p.sign * info.portDeembed - p.c) * p.sign;
+        p.w1 = p.alongX ? src.y1 : src.x1;
+        p.w2 = p.alongX ? src.y2 : src.x2;
+        p.wMid = (p.w1 + p.w2) / 2.0;
+        p.zGround = sub.zMin();
+        p.zStrip = sub.zMax();
+        p.zStripTop = top;
+        p.iMargin = (sub.zMax() - sub.zMin()) / 2.0;
+        return p;
+    }
+
+    private static void appendDeembedProbes(StringBuilder sb, DeembedProbes p) {
+        double[] vs = {-p.dx, 0, p.dx};
+        for (int k = 0; k < vs.length; k++) {
+            double u = p.at(vs[k]);
+            double x = p.alongX ? u : p.wMid;
+            double y = p.alongX ? p.wMid : u;
+            sb.append(String.format(Locale.US, "      <ProbeBox Name=\"port1_V%d\" Type=\"0\" Weight=\"-1\">\n", k + 1));
+            sb.append("        <Primitives>\n");
+            sb.append(String.format(Locale.US, "          <Box Priority=\"100\"><P1 X=\"%.3f\" Y=\"%.3f\" Z=\"%.3f\" /><P2 X=\"%.3f\" Y=\"%.3f\" Z=\"%.3f\" /></Box>\n",
+                    x, y, p.zGround, x, y, p.zStrip));
+            sb.append("        </Primitives>\n");
+            sb.append("      </ProbeBox>\n\n");
+        }
+        double[] is = {-p.dx / 2.0, p.dx / 2.0};
+        for (int k = 0; k < is.length; k++) {
+            double u = p.at(is[k]);
+            double a1 = p.w1 - p.iMargin, a2 = p.w2 + p.iMargin;
+            double z1 = p.zStrip - p.iMargin, z2 = p.zStripTop + p.iMargin;
+            // a plane across the feed: H around it is the strip current, positive along +axis
+            sb.append(String.format(Locale.US, "      <ProbeBox Name=\"port1_I%d\" Type=\"1\" Weight=\"%.0f\">\n", k + 1, p.sign));
+            sb.append("        <Primitives>\n");
+            if (p.alongX) {
+                sb.append(String.format(Locale.US, "          <Box Priority=\"100\"><P1 X=\"%.3f\" Y=\"%.3f\" Z=\"%.3f\" /><P2 X=\"%.3f\" Y=\"%.3f\" Z=\"%.3f\" /></Box>\n",
+                        u, a1, z1, u, a2, z2));
+            } else {
+                sb.append(String.format(Locale.US, "          <Box Priority=\"100\"><P1 X=\"%.3f\" Y=\"%.3f\" Z=\"%.3f\" /><P2 X=\"%.3f\" Y=\"%.3f\" Z=\"%.3f\" /></Box>\n",
+                        a1, u, z1, a2, u, z2));
+            }
+            sb.append("        </Primitives>\n");
+            sb.append("      </ProbeBox>\n\n");
+        }
+    }
+
+    private static double meshLengthMm(NElement value, String key) {
+        double metres = NTxNumberUtils.toMeter(value).orElse(0.0);
+        if (metres <= 0) {
+            throw new IllegalArgumentException("OpenEMS: mesh option '" + key + "' expects a positive length, as in 0.75mm");
+        }
+        return metres * 1e3;
     }
 
     private static void parseScene3D(NTxNode scene3D, NTxResolutionContext context, OpenEMSModelInfo info) {
@@ -268,7 +464,7 @@ public class OpenEMSParser {
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
         sb.append("<openEMS>\n\n");
 
-        sb.append(String.format(Locale.US, "  <FDTD NumberOfTimesteps=\"%d\" endCriteria=\"%e\">\n", info.numberOfTimesteps, info.endCriteria));
+        sb.append(String.format(Locale.US, "  <FDTD NumberOfTimesteps=\"%d\" endCriteria=\"%e\">\n", info.numberOfTimesteps * info.meshRefinement, info.endCriteria));
         sb.append(String.format(Locale.US, "    <Excitation Type=\"0\" f0=\"%e\" fc=\"%e\" />\n", info.frequency, info.fc));
         sb.append("    <BoundaryCond xmin=\"PML_8\" xmax=\"PML_8\" ymin=\"PML_8\" ymax=\"PML_8\" zmin=\"PML_8\" zmax=\"PML_8\" />\n");
         sb.append("  </FDTD>\n\n");
@@ -301,6 +497,20 @@ public class OpenEMSParser {
             OpenEMSBox src = info.sourceBoxes.get(0);
             xCoords.add(round3((src.x1 + src.x2) / 2.0));
             yCoords.add(round3((src.y1 + src.y2) / 2.0));
+        }
+        DeembedProbes probes = deembedProbes(info);
+        if (probes != null) {
+            // probes must sit on mesh lines, or openEMS snaps them to the nearest one
+            TreeSet<Double> along = probes.alongX ? xCoords : yCoords;
+            TreeSet<Double> across = probes.alongX ? yCoords : xCoords;
+            for (double s : new double[]{-probes.dx, -probes.dx / 2.0, 0, probes.dx / 2.0, probes.dx}) {
+                along.add(round3(probes.at(s)));
+            }
+            across.add(round3(probes.wMid));
+            across.add(round3(probes.w1 - probes.iMargin));
+            across.add(round3(probes.w2 + probes.iMargin));
+            zCoords.add(round3(probes.zStrip - probes.iMargin));
+            zCoords.add(round3(probes.zStripTop + probes.iMargin));
         }
 
         double antXmin = Double.MAX_VALUE, antXmax = -Double.MAX_VALUE;
@@ -343,7 +553,7 @@ public class OpenEMSParser {
         }
 
         // Add intermediate Z lines inside substrate (6 cells across substrate thickness)
-        int zSubSteps = 6;
+        int zSubSteps = info.meshSubstrateCells;
         double dzSub = (subZmax - subZmin) / (double) zSubSteps;
         for (int i = 1; i < zSubSteps; i++) {
             zCoords.add(round3(subZmin + i * dzSub));
@@ -384,9 +594,9 @@ public class OpenEMSParser {
         zCoords.add(round3(zmax + 28.0));
         zCoords.add(round3(zmax + 42.0));
 
-        List<Double> finalX = refineGrid(xCoords, 0.20, 0.75, 3.0, antXmin - 0.5, antXmax + 0.5);
-        List<Double> finalY = refineGrid(yCoords, 0.20, 1.0, 3.0, antYmin - 0.5, antYmax + 0.5);
-        List<Double> finalZ = refineGrid(zCoords, 0.20, 3.0, 3.0, 0, 0);
+        List<Double> finalX = subdivideGrid(refineGrid(xCoords, info.meshMinCell, info.meshMaxCellX, info.meshMaxCellOutside, antXmin - 0.5, antXmax + 0.5), info.meshRefinement);
+        List<Double> finalY = subdivideGrid(refineGrid(yCoords, info.meshMinCell, info.meshMaxCellY, info.meshMaxCellOutside, antYmin - 0.5, antYmax + 0.5), info.meshRefinement);
+        List<Double> finalZ = subdivideGrid(refineGrid(zCoords, info.meshMinCell, info.meshMaxCellZ, info.meshMaxCellOutside, 0, 0), info.meshRefinement);
 
         sb.append("    <RectilinearGrid DeltaUnit=\"1e-3\">\n");
         sb.append("      <XLines>").append(formatLines(finalX)).append("</XLines>\n");
@@ -468,12 +678,28 @@ public class OpenEMSParser {
             sb.append("        </Primitives>\n");
             sb.append("      </ProbeBox>\n\n");
         }
+        if (probes != null) {
+            appendDeembedProbes(sb, probes);
+        }
 
         sb.append("    </Properties>\n");
         sb.append("  </ContinuousStructure>\n\n");
         sb.append("</openEMS>\n");
 
         return sb.toString();
+    }
+
+    private static List<Double> subdivideGrid(List<Double> lines, int factor) {
+        List<Double> out = new ArrayList<>();
+        for (int i = 0; i + 1 < lines.size(); i++) {
+            for (int k = 0; k < factor; k++) {
+                out.add(lines.get(i) + (lines.get(i + 1) - lines.get(i)) * k / factor);
+            }
+        }
+        if (!lines.isEmpty()) {
+            out.add(lines.get(lines.size() - 1));
+        }
+        return out;
     }
 
     private static List<Double> refineGrid(TreeSet<Double> sortedCoords, double minAllowedStep, double maxStepInside, double maxStepOutside, double regionMin, double regionMax) {
@@ -522,7 +748,7 @@ public class OpenEMSParser {
             if (val == Math.floor(val)) {
                 sb.append(String.format(Locale.US, "%.0f", val));
             } else {
-                sb.append(String.format(Locale.US, "%.3f", val));
+                sb.append(String.format(Locale.US, "%.5f", val));
             }
         }
         return sb.toString();

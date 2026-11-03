@@ -55,6 +55,33 @@ public class GetDPParser {
                         info.z0Ref = pv.asDoubleValue().orElse(50.0);
                         break;
                     }
+                    case "mesh": {
+                        if (!pv.isAnyObject()) {
+                            throw new IllegalArgumentException("GetDP: 'mesh' expects an object, as in mesh:{resolution:0.5}");
+                        }
+                        for (NElement c : pv.asObject().get().children()) {
+                            if (!c.isNamedPair()) {
+                                continue;
+                            }
+                            NPairElement mp = c.asNamedPair().get();
+                            String meshKey = NTxUtils.uid(mp.key().asStringValue().orElse(""));
+                            NElement mv = context.evalExpression(mp.value()).orElse(mp.value());
+                            switch (meshKey) {
+                                case "resolution": {
+                                    info.meshResolution = mv.asDoubleValue().orElse(info.meshResolution);
+                                    break;
+                                }
+                                case "domain-factor": {
+                                    info.meshDomainFactor = mv.asDoubleValue().orElse(info.meshDomainFactor);
+                                    break;
+                                }
+                                default: {
+                                    throw new IllegalArgumentException("GetDP: unknown mesh option '" + meshKey + "'");
+                                }
+                            }
+                        }
+                        break;
+                    }
                     case "meshresolution":
                     case "resolution": {
                         info.meshResolution = pv.asDoubleValue().orElse(0.5);

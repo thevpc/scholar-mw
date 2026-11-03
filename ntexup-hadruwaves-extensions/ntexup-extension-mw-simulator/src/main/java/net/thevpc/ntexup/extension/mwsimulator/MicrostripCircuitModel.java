@@ -135,6 +135,19 @@ public class MicrostripCircuitModel {
         }
     }
 
+    /**
+     * Quasi-TEM parameters of a microstrip line.
+     */
+    public static class LineParams {
+        public final double z0;
+        public final double epsEff;
+
+        public LineParams(double z0, double epsEff) {
+            this.z0 = z0;
+            this.epsEff = epsEff;
+        }
+    }
+
     public static class Point2D {
         public final double x;
         public final double y;
@@ -181,6 +194,7 @@ public class MicrostripCircuitModel {
     public List<LineSegment> lines = new ArrayList<>();
     public Map<String, List<LineSegment>> nodeToLines = new HashMap<>();
     public Map<String, PatchElement> nodeToPatch = new HashMap<>();
+    private Map<Double, LineParams> solvedLineParams;
 
     public static MicrostripCircuitModel parse(NTxNode scene3D, NTxResolutionContext context, double defaultEr, double defaultTanD, double defaultZ0) {
         MicrostripCircuitModel model = new MicrostripCircuitModel();
@@ -317,32 +331,7 @@ public class MicrostripCircuitModel {
                 p.feedY = ymin;
                 p.nodeName = "_p" + p.id;
 
-                // Analytical cavity resonance
-                double u = p.width / model.substrateH;
-                double epsEff = (model.epsilonR + 1.0) / 2.0 + ((model.epsilonR - 1.0) / 2.0) / Math.sqrt(1.0 + 12.0 / u);
-                double dL = 0.412 * model.substrateH * ((epsEff + 0.3) / (epsEff - 0.258)) * ((u + 0.264) / (u + 0.8));
-                double notchFraction = p.length > 0 ? (p.insetDepth / p.length) : 0.0;
-                double notchFactor = notchFraction * (1.0 - notchFraction);
-                double leff = p.length + 2.0 * dL + p.insetDepth * notchFactor;
-                p.fr = C_LIGHT / (2.0 * leff * Math.sqrt(epsEff));
-
-                double k0 = 2.0 * Math.PI * p.fr / C_LIGHT;
-                double lam0 = C_LIGHT / p.fr;
-                double grad = (p.width / (120.0 * lam0)) * (1.0 - Math.pow(k0 * model.substrateH, 2.0) / 24.0);
-                double redge = 1.0 / (2.0 * Math.max(1e-6, grad));
-                double cosVal = Math.cos(Math.PI * p.insetDepth / p.length);
-                p.rin = redge * Math.pow(cosVal, 2.0);
-
-                // Physical Q factor derived from dielectric, conductor, and radiation losses
-                double qDiel = 1.0 / Math.max(1e-6, model.lossTangent);
-                double qCond = model.substrateH * Math.sqrt(Math.PI * p.fr * 4.0 * Math.PI * 1e-7 * 5.8e7);
-                double cPatch = 8.854187817e-12 * model.epsilonR * p.width * p.length / (2.0 * model.substrateH);
-                double qRad = 2.0 * Math.PI * p.fr * cPatch * redge;
-                p.q = 1.0 / ((1.0 / qRad) + (1.0 / qDiel) + (1.0 / qCond));
-
-                double w0 = 2.0 * Math.PI * p.fr;
-                p.cEq = p.q / (w0 * p.rin);
-                p.lEq = 1.0 / (w0 * w0 * p.cEq);
+                model.computePatchParameters(p);
 
                 model.patches.add(p);
                 model.nodeToPatch.put(p.nodeName, p);
@@ -356,7 +345,7 @@ public class MicrostripCircuitModel {
             double bl = b.length();
             if (bw <= 0.0001 || bl <= 0.0001) continue;
 
-            boolean isHoriz = bw > bl;
+            boolean isHoriz = isHorizontalLine(b, rawAntennaBoxes, srcBox);
             double w = isHoriz ? bl : bw;
             double len = isHoriz ? bw : bl;
 
@@ -428,10 +417,26 @@ public class MicrostripCircuitModel {
             nodeNames.add(p.nodeName);
         }
 
+        // Where two lines end on the same point, that point is a junction: register it before
+        // any tolerance matching. Otherwise an 18.9 mm feed, whose tolerance is its 6.1 mm
+        // width, ends 5.1 mm from the patch node and snaps to it, dropping the transformer.
+        for (LineSegment a : model.lines) {
+            for (Point2D ep : new Point2D[]{a.pA, a.pB}) {
+                for (LineSegment b : model.lines) {
+                    if (b != a && (ep.distanceTo(b.pA) < 1e-9 || ep.distanceTo(b.pB) < 1e-9)) {
+                        resolveOrCreateNode(ep, nodePoints, nodeNames, 1e-9);
+                        break;
+                    }
+                }
+            }
+        }
+
         // Helper to find or create node for a point
         for (LineSegment line : model.lines) {
-            line.nodeA = resolveOrCreateNode(line.pA, nodePoints, nodeNames, Math.max(line.width, 2e-3));
-            line.nodeB = resolveOrCreateNode(line.pB, nodePoints, nodeNames, Math.max(line.width, 2e-3));
+            // Capped by the length: the two ends of a short wide line must stay two nodes
+            double tol = Math.min(Math.max(line.width, 2e-3), 0.45 * line.length);
+            line.nodeA = resolveOrCreateNode(line.pA, nodePoints, nodeNames, tol);
+            line.nodeB = resolveOrCreateNode(line.pB, nodePoints, nodeNames, tol);
             model.nodeToLines.computeIfAbsent(line.nodeA, k -> new ArrayList<>()).add(line);
             model.nodeToLines.computeIfAbsent(line.nodeB, k -> new ArrayList<>()).add(line);
         }
@@ -439,11 +444,114 @@ public class MicrostripCircuitModel {
         return model;
     }
 
-    private static String resolveOrCreateNode(Point2D pt, List<Point2D> nodePoints, List<String> nodeNames, double tol) {
-        for (int i = 0; i < nodePoints.size(); i++) {
-            if (pt.distanceTo(nodePoints.get(i)) <= tol) {
-                return nodeNames.get(i);
+    /**
+     * @return the distinct conductor widths of the circuit: lines and patches
+     */
+    public Set<Double> conductorWidths() {
+        Set<Double> widths = new TreeSet<>();
+        for (LineSegment l : lines) {
+            widths.add(l.width);
+        }
+        for (PatchElement p : patches) {
+            widths.add(p.width);
+        }
+        return widths;
+    }
+
+    /**
+     * Replaces the closed-form line formulas with externally solved parameters,
+     * and derives the patches from them again.
+     *
+     * @param params parameters for every width of {@link #conductorWidths()}
+     */
+    public void useLineParams(Map<Double, LineParams> params) {
+        for (double w : conductorWidths()) {
+            if (!params.containsKey(w)) {
+                throw new IllegalArgumentException("no line parameters for width " + w);
             }
+        }
+        solvedLineParams = new HashMap<>(params);
+        for (PatchElement p : patches) {
+            computePatchParameters(p);
+        }
+    }
+
+    private LineParams lineParams(double width) {
+        if (solvedLineParams != null) {
+            return solvedLineParams.get(width);
+        }
+        return new LineParams(calcZ0(width, substrateH, epsilonR), calcEpsEff(width, substrateH, epsilonR));
+    }
+
+    private void computePatchParameters(PatchElement p) {
+        // Analytical cavity resonance
+        double u = p.width / substrateH;
+        double epsEff = lineParams(p.width).epsEff;
+        double dL = 0.412 * substrateH * ((epsEff + 0.3) / (epsEff - 0.258)) * ((u + 0.264) / (u + 0.8));
+        double notchFraction = p.length > 0 ? (p.insetDepth / p.length) : 0.0;
+        double notchFactor = notchFraction * (1.0 - notchFraction);
+        double leff = p.length + 2.0 * dL + p.insetDepth * notchFactor;
+        p.fr = C_LIGHT / (2.0 * leff * Math.sqrt(epsEff));
+
+        double k0 = 2.0 * Math.PI * p.fr / C_LIGHT;
+        double lam0 = C_LIGHT / p.fr;
+        double grad = (p.width / (120.0 * lam0)) * (1.0 - Math.pow(k0 * substrateH, 2.0) / 24.0);
+        double redge = 1.0 / (2.0 * Math.max(1e-6, grad));
+        double cosVal = Math.cos(Math.PI * p.insetDepth / p.length);
+        p.rin = redge * Math.pow(cosVal, 2.0);
+
+        // Physical Q factor derived from dielectric, conductor, and radiation losses
+        double qDiel = 1.0 / Math.max(1e-6, lossTangent);
+        double qCond = substrateH * Math.sqrt(Math.PI * p.fr * 4.0 * Math.PI * 1e-7 * 5.8e7);
+        double cPatch = 8.854187817e-12 * epsilonR * p.width * p.length / (2.0 * substrateH);
+        double qRad = 2.0 * Math.PI * p.fr * cPatch * redge;
+        p.q = 1.0 / ((1.0 / qRad) + (1.0 / qDiel) + (1.0 / qCond));
+
+        double w0 = 2.0 * Math.PI * p.fr;
+        p.cEq = p.q / (w0 * p.rin);
+        p.lEq = 1.0 / (w0 * w0 * p.cEq);
+    }
+
+    /**
+     * A line runs towards what it connects to, which a short wide line's aspect ratio
+     * gets wrong. The aspect ratio only decides when the contacts do not.
+     */
+    private static boolean isHorizontalLine(Box3D b, List<Box3D> conductors, Box3D source) {
+        boolean contactX = false;
+        boolean contactY = false;
+        List<Box3D> others = new ArrayList<>(conductors);
+        if (source != null) {
+            others.add(source);
+        }
+        for (Box3D o : others) {
+            if (o == b) continue;
+            boolean overlapX = o.xMin() < b.xMax() - 1e-9 && o.xMax() > b.xMin() + 1e-9;
+            boolean overlapY = o.yMin() < b.yMax() - 1e-9 && o.yMax() > b.yMin() + 1e-9;
+            if (overlapY && (Math.abs(o.xMin() - b.xMax()) < 1e-6 || Math.abs(o.xMax() - b.xMin()) < 1e-6)) {
+                contactX = true;
+            }
+            if (overlapX && (Math.abs(o.yMin() - b.yMax()) < 1e-6 || Math.abs(o.yMax() - b.yMin()) < 1e-6
+                    || Math.abs(o.yMin() - b.yMin()) < 1e-6 || Math.abs(o.yMax() - b.yMax()) < 1e-6)) {
+                contactY = true;
+            }
+        }
+        if (contactX != contactY) {
+            return contactX;
+        }
+        return b.width() > b.length();
+    }
+
+    private static String resolveOrCreateNode(Point2D pt, List<Point2D> nodePoints, List<String> nodeNames, double tol) {
+        // nearest, not first: a wide line's tolerance can reach past a short neighbour
+        int best = -1;
+        for (int i = 0; i < nodePoints.size(); i++) {
+            double d = pt.distanceTo(nodePoints.get(i));
+            if (d <= tol && (best < 0 || d < pt.distanceTo(nodePoints.get(best)))) {
+                best = i;
+            }
+        }
+        if (best >= 0) {
+            return nodeNames.get(best);
         }
         String newName = "_net" + nodeNames.size();
         nodePoints.add(pt);
@@ -469,9 +577,13 @@ public class MicrostripCircuitModel {
 
     public static ComplexNum tline(double w, double length, double f, double h, double er, ComplexNum zLoad) {
         if (length <= 0) return zLoad;
-        double z0 = calcZ0(w, h, er);
-        double epsEff = calcEpsEff(w, h, er);
-        double vp = C_LIGHT / Math.sqrt(epsEff);
+        return tline(new LineParams(calcZ0(w, h, er), calcEpsEff(w, h, er)), length, f, zLoad);
+    }
+
+    private static ComplexNum tline(LineParams line, double length, double f, ComplexNum zLoad) {
+        if (length <= 0) return zLoad;
+        double z0 = line.z0;
+        double vp = C_LIGHT / Math.sqrt(line.epsEff);
         double beta = 2.0 * Math.PI * f / vp;
         double bl = beta * length;
         double tanBl = Math.tan(bl);
@@ -501,7 +613,7 @@ public class MicrostripCircuitModel {
 
             visited.add(line);
             ComplexNum zNext = computeNodeZin(nextNode, node, freq, visited);
-            ComplexNum zTrans = tline(line.width, line.length, freq, substrateH, epsilonR, zNext);
+            ComplexNum zTrans = tline(lineParams(line.width), line.length, freq, zNext);
             branchLoads.add(zTrans);
         }
 
