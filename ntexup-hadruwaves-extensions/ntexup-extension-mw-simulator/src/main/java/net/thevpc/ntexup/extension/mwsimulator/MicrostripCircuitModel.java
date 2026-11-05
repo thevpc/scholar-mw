@@ -28,6 +28,8 @@ import java.util.*;
 public class MicrostripCircuitModel {
 
     public static final double C_LIGHT = 2.99792458e8;
+    /** Part of every cache hash built on this model: change it when the model changes. */
+    public static final String VERSION = "2-kirschning-jansen";
 
     public static class ComplexNum {
         public final double re;
@@ -187,6 +189,7 @@ public class MicrostripCircuitModel {
     public double epsilonR = 4.4;
     public double lossTangent = 0.02;
     public double z0Ref = 50.0;
+    public boolean dispersion = true;
     public Point2D portLocation = new Point2D(0, 0);
     public double portWidth = 3.1e-3;
 
@@ -483,15 +486,51 @@ public class MicrostripCircuitModel {
         return new LineParams(calcZ0(width, substrateH, epsilonR), calcEpsEff(width, substrateH, epsilonR));
     }
 
+    /**
+     * The line's permittivity at freq. The quasi-static value (closed form or FEM) is low on a
+     * thick substrate: at f h = 25 GHz mm it is 3.59 against 4.07 for a 14 mm strip on 3.2 mm FR4,
+     * which puts the cavity resonance 5.6% above the full-wave solvers.
+     */
+    private LineParams lineParams(double width, double freq) {
+        LineParams p = lineParams(width);
+        if (!dispersion) {
+            return p;
+        }
+        return new LineParams(p.z0, epsEffDispersion(freq, substrateH, width / substrateH, epsilonR, p.epsEff));
+    }
+
+    /**
+     * Kirschning-Jansen (1982), in its GHz mm form; valid up to f h = 25 GHz mm.
+     */
+    public static double epsEffDispersion(double f, double h, double u, double er, double epsEff0) {
+        double fn = (f * 1e-9) * (h * 1e3);
+        double p1 = 0.27488 + (0.6315 + 0.525 / Math.pow(1.0 + 0.0157 * fn, 20)) * u
+                - 0.065683 * Math.exp(-8.7513 * u);
+        double p2 = 0.33622 * (1.0 - Math.exp(-0.03442 * er));
+        double p3 = 0.0363 * Math.exp(-4.6 * u) * (1.0 - Math.exp(-Math.pow(fn / 38.7, 4.97)));
+        double p4 = 1.0 + 2.751 * (1.0 - Math.exp(-Math.pow(er / 15.916, 8)));
+        double p = p1 * p2 * Math.pow((0.1844 + p3 * p4) * fn, 1.5763);
+        return er - (er - epsEff0) / (1.0 + p);
+    }
+
     private void computePatchParameters(PatchElement p) {
-        // Analytical cavity resonance
+        // Analytical cavity resonance, at the permittivity of its own frequency
         double u = p.width / substrateH;
-        double epsEff = lineParams(p.width).epsEff;
-        double dL = 0.412 * substrateH * ((epsEff + 0.3) / (epsEff - 0.258)) * ((u + 0.264) / (u + 0.8));
         double notchFraction = p.length > 0 ? (p.insetDepth / p.length) : 0.0;
         double notchFactor = notchFraction * (1.0 - notchFraction);
-        double leff = p.length + 2.0 * dL + p.insetDepth * notchFactor;
-        p.fr = C_LIGHT / (2.0 * leff * Math.sqrt(epsEff));
+        double epsEff = lineParams(p.width).epsEff;
+        p.fr = 0;
+        for (int i = 0; i < 30; i++) {
+            double dL = 0.412 * substrateH * ((epsEff + 0.3) / (epsEff - 0.258)) * ((u + 0.264) / (u + 0.8));
+            double leff = p.length + 2.0 * dL + p.insetDepth * notchFactor;
+            double fr = C_LIGHT / (2.0 * leff * Math.sqrt(epsEff));
+            boolean converged = Math.abs(fr - p.fr) < 1e3;
+            p.fr = fr;
+            if (!dispersion || converged) {
+                break;
+            }
+            epsEff = lineParams(p.width, fr).epsEff;
+        }
 
         double k0 = 2.0 * Math.PI * p.fr / C_LIGHT;
         double lam0 = C_LIGHT / p.fr;
@@ -613,7 +652,7 @@ public class MicrostripCircuitModel {
 
             visited.add(line);
             ComplexNum zNext = computeNodeZin(nextNode, node, freq, visited);
-            ComplexNum zTrans = tline(lineParams(line.width), line.length, freq, zNext);
+            ComplexNum zTrans = tline(lineParams(line.width, freq), line.length, freq, zNext);
             branchLoads.add(zTrans);
         }
 

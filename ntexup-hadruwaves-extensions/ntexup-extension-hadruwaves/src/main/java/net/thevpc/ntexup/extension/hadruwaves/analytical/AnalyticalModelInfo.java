@@ -9,7 +9,7 @@ public class AnalyticalModelInfo {
     public double height = 1.6e-3;
     public double stubLength = 30e-3; // Length from port reference plane to open end
     public double z0Ref = 50.0;
-    public boolean dispersion = false;
+    public boolean dispersion = true;
     public String geometryId;
 
     public boolean isResonator = false;

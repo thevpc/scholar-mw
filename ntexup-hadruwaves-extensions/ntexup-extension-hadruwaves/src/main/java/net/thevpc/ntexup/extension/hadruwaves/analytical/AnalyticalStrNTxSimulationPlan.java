@@ -40,6 +40,7 @@ public class AnalyticalStrNTxSimulationPlan extends NTxSimulationPlanImpl {
     public String computeHash() {
         NDigest d = NDigest.of();
         NTxMwSimulationUtils.addDigestSource(d, "AnalyticalQuasiTEM".getBytes(StandardCharsets.UTF_8));
+        NTxMwSimulationUtils.addDigestSource(d, net.thevpc.ntexup.extension.mwsimulator.MicrostripCircuitModel.VERSION.getBytes(StandardCharsets.UTF_8));
         if (modelInfo != null) {
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.frequency).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.epsilonR).getBytes(StandardCharsets.UTF_8));
@@ -47,6 +48,7 @@ public class AnalyticalStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.width).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.stubLength).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.height).getBytes(StandardCharsets.UTF_8));
+            NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.dispersion).getBytes(StandardCharsets.UTF_8));
             if (modelInfo.geometryId != null) {
                 NTxMwSimulationUtils.addDigestSource(d, modelInfo.geometryId.getBytes(StandardCharsets.UTF_8));
             }
@@ -71,6 +73,7 @@ public class AnalyticalStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                     modelInfo.lossTangent,
                     modelInfo.z0Ref
             );
+            circuitModel.dispersion = modelInfo.dispersion;
         }
         return circuitModel;
     }

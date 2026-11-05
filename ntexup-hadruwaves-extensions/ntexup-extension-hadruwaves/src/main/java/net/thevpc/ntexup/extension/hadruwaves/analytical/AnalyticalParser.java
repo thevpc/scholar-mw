@@ -56,7 +56,7 @@ public class AnalyticalParser {
                         break;
                     }
                     case "dispersion": {
-                        info.dispersion = pv.asBooleanValue().orElse(false);
+                        info.dispersion = pv.asBooleanValue().orElse(true);
                         break;
                     }
                     case "geometry": {

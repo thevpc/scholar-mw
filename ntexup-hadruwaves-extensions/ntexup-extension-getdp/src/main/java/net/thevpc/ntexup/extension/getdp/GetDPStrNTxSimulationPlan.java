@@ -52,6 +52,7 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
     public String computeHash() {
         NDigest d = NDigest.of();
         NTxMwSimulationUtils.addDigestSource(d, "GetDPFEM-lines".getBytes(StandardCharsets.UTF_8));
+        NTxMwSimulationUtils.addDigestSource(d, MicrostripCircuitModel.VERSION.getBytes(StandardCharsets.UTF_8));
         if (modelInfo != null) {
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.frequency).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.epsilonR).getBytes(StandardCharsets.UTF_8));
