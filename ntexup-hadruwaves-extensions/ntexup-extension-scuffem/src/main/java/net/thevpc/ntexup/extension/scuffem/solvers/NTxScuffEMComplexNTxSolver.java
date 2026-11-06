@@ -174,6 +174,7 @@ public abstract class NTxScuffEMComplexNTxSolver extends NTxSolverRunImpl {
                 .set("abs", NTxObjs.elem(yeAbs))
                 .set("db", NTxObjs.elem(yeDb))
                 .set("complex", NTxObjs.elem(ye));
+        NTxSolverMetrics.publish(curveMap, plan.rendererContext(), plan.name(), outputName(), x, yeDb);
 
         if (plan.rendererContext() != null && plan.rendererContext().compiledDocument() != null) {
             plan.rendererContext().compiledDocument().setGlobalObject(outputName(), curveMap);

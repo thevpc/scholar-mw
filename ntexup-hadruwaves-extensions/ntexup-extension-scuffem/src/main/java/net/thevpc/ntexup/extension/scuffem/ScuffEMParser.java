@@ -7,7 +7,6 @@ import net.thevpc.ntexup.api.eval.NTxResolutionContext;
 import net.thevpc.ntexup.api.util.NTxNumberUtils;
 import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.ntexup.extension.mwsimulator.NTxMwSimulationUtils;
-import net.thevpc.ntexup.extension.mwsimulator.NTxSolverFallbackPolicy;
 import net.thevpc.ntexup.lib.geometry3d.NTxNumberElement3;
 import net.thevpc.ntexup.lib.geometry3d.impl.NTx3DUtils;
 import net.thevpc.nuts.elem.NElement;
@@ -18,6 +17,28 @@ import net.thevpc.nuts.util.NOptional;
 import java.util.Objects;
 
 public class ScuffEMParser {
+
+    private static void parsePort(NElement port, NTxResolutionContext context, ScuffEMModelInfo info) {
+        if (!port.isAnyObject()) {
+            throw new IllegalArgumentException("SCUFF-EM: 'port' expects an object, as in port:{deembed:25mm}");
+        }
+        for (NElement c : port.asObject().get().children()) {
+            if (!c.isNamedPair()) {
+                continue;
+            }
+            NPairElement p = c.asNamedPair().get();
+            String key = NTxUtils.uid(p.key().asStringValue().orElse(""));
+            NElement v = context.evalExpression(p.value()).orElse(p.value());
+            if (!"deembed".equals(key)) {
+                throw new IllegalArgumentException("SCUFF-EM: unknown port option '" + key + "'");
+            }
+            double metres = NTxNumberUtils.toMeter(v).orElse(0.0);
+            if (metres <= 0) {
+                throw new IllegalArgumentException("SCUFF-EM: port option 'deembed' expects a positive length, as in 25mm");
+            }
+            info.portDeembed = metres * 1e3;
+        }
+    }
 
     public static ScuffEMModelInfo parse(NTxFunctionCallContext args) {
         ScuffEMModelInfo info = new ScuffEMModelInfo();
@@ -56,6 +77,27 @@ public class ScuffEMParser {
                         info.z0Ref = pv.asDoubleValue().orElse(50.0);
                         break;
                     }
+                    case "mesh": {
+                        if (!pv.isAnyObject()) {
+                            throw new IllegalArgumentException("SCUFF-EM: 'mesh' expects an object, as in mesh:{resolution:1.5}");
+                        }
+                        for (NElement c : pv.asObject().get().children()) {
+                            if (!c.isNamedPair()) {
+                                continue;
+                            }
+                            NPairElement mp = c.asNamedPair().get();
+                            String meshKey = NTxUtils.uid(mp.key().asStringValue().orElse(""));
+                            if (!"resolution".equals(meshKey)) {
+                                throw new IllegalArgumentException("SCUFF-EM: unknown mesh option '" + meshKey + "'");
+                            }
+                            info.meshResolution = context.evalExpression(mp.value()).orElse(mp.value()).asDoubleValue().orElse(info.meshResolution);
+                        }
+                        break;
+                    }
+                    case "port": {
+                        parsePort(pv, context, info);
+                        break;
+                    }
                     case "meshresolution":
                     case "resolution": {
                         info.meshResolution = pv.asDoubleValue().orElse(2.5);
@@ -77,9 +119,9 @@ public class ScuffEMParser {
                     case "simulationfallback":
                     case "simulation-fallback":
                     case "fallback": {
-                        info.fallbackPolicy = NTxSolverFallbackPolicy.parse(
-                                pv.asStringValue().orNull(), "SCUFF-EM");
-                        break;
+                        throw new IllegalArgumentException("SCUFF-EM: 'simulation-fallback' is no longer supported. "
+                                + "A solver that produces no result now always fails instead of substituting "
+                                + "an analytical approximation; remove the property.");
                     }
                 }
             }

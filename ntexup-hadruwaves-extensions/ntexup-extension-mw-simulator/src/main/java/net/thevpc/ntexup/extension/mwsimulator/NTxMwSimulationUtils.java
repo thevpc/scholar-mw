@@ -8,6 +8,7 @@ import net.thevpc.ntexup.api.eval.NTxFunctionCallContext;
 import net.thevpc.ntexup.api.eval.NTxResolutionContext;
 import net.thevpc.ntexup.api.eval.NTxFutureObj;
 import net.thevpc.ntexup.api.eval.NTxObj;
+import net.thevpc.ntexup.api.eval.NTxObjs;
 import net.thevpc.ntexup.api.eval.NTxValueByType;
 import net.thevpc.ntexup.api.renderer.NTxRendererContext;
 import net.thevpc.ntexup.api.util.NTxUtils;
@@ -295,12 +296,13 @@ public class NTxMwSimulationUtils {
                 } catch (Exception ex) {
                     anyError = true;
                     failedActions.add(actionName + ": " + ex.getMessage());
-                    rendererContext.log(NMsg.ofC("%s error : %s", prefix, ex).withDurationMillis(chi.stop().durationMs()).asError());
+                    rendererContext.log(NMsg.ofC("%s error : %s", prefix, ex).withDurationMillis(chi.stop().durationMs()).asError(ex));
                 }
             }
             for (NTxSolverRun item : runs) {
                 item.afterAll();
             }
+            publishSolverStatus(rendererContext, effectivePlanName, anyError ? failedActions : null);
             if (anyError) {
                 for (NTxSolverListener solverListener : solverListeners) {
                     solverListener.onFinish(rendererContext, plan, true, null);
@@ -325,7 +327,7 @@ public class NTxMwSimulationUtils {
         }, plan);
 
         node.setUserObject("mw-simulation-process", r);
-        rendererContext.compiledDocument().registerFuture(r.future());
+        rendererContext.compiledDocument().registerTask(NStringUtils.firstNonBlank(planName, plan.getClass().getSimpleName()), r.future());
         if (planName != null && !planName.trim().isEmpty()) {
             String pName = planName.trim();
             NTxFutureObj futureObj = new NTxFutureObj(pName, r.future(), () -> {
@@ -339,6 +341,11 @@ public class NTxMwSimulationUtils {
             rendererContext.compiledDocument().registerFuture(futureObj);
             rendererContext.compiledDocument().setGlobalObject(pName, futureObj);
             rendererContext.compiledDocument().registerProgressBinding(pName, futureObj);
+            // Seeded empty so that a slide rendered while the plan is still
+            // running shows a clean legend; an unbound ${x_status} interpolates
+            // to its own literal text, which reads as a failure on every curve.
+            publishSolverStatus(rendererContext, pName, null);
+            NTxSolverMetrics.seed(rendererContext, pName);
         }
 
         if (!rendererContext.isAnimate()) {
@@ -349,6 +356,30 @@ public class NTxMwSimulationUtils {
                 .builder()
                 .addAnnotation("@reference", NElement.ofPair("scope", NElement.ofString("mw-simulation")), NElement.ofPair("id", r.id()))
                 .build();
+    }
+
+    /**
+     * Publishes {@code <planName>_status} as a document global so a slide can
+     * annotate its own curves with the outcome of the solver that feeds them.
+     * The string is empty when every run produced a result, which keeps healthy
+     * legends untouched; a failed solver yields an empty result set and would
+     * otherwise render as blank axes indistinguishable from a broken plot.
+     */
+    static void publishSolverStatus(NTxRendererContext rendererContext, String planName, List<String> failedActions) {
+        if (planName == null || planName.trim().isEmpty()) {
+            return;
+        }
+        String key = planName.trim() + "_status";
+        String value = "";
+        if (failedActions != null && !failedActions.isEmpty()) {
+            String reason = String.join("; ", failedActions);
+            if (reason.length() > 90) {
+                reason = reason.substring(0, 87) + "...";
+            }
+            value = planName.trim() + " — " + reason + "; ";
+        }
+        rendererContext.compiledDocument().setGlobalObject(key, NTxObjs.elem(NElement.ofString(value)));
+        rendererContext.compiledDocument().dependencyGraph().notifyBindingUpdated(key);
     }
 
     public static void processResult(NTxSimulationResult result, NTxRendererContext rendererContext) {

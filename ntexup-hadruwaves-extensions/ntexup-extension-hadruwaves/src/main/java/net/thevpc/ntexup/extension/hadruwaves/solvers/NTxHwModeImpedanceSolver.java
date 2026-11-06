@@ -32,9 +32,9 @@ public class NTxHwModeImpedanceSolver extends NTxHwNopNTxSolver {
             ModeInfo mode = modesArr[i];
             log(NMsg.ofC("%s : %s", mode.mode, mode.impedance.impedanceValue()));
         }
-        if (plan().rendererContext().isAnimate()) {
-            Plot.cd(fullPath()).title(fullName()).plot(Arrays.stream(str.modeFunctions().getModes()).map(x -> x.impedance.impedanceValue()).toArray(Complex[]::new));
-        }
+//        if (plan().rendererContext().isAnimate()) {
+//            Plot.cd(fullPath()).title(fullName()).plot(Arrays.stream(str.modeFunctions().getModes()).map(x -> x.impedance.impedanceValue()).toArray(Complex[]::new));
+//        }
     }
 
 

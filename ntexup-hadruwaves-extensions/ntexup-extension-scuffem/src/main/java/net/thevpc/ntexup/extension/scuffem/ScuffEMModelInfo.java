@@ -2,7 +2,6 @@ package net.thevpc.ntexup.extension.scuffem;
 
 import net.thevpc.ntexup.api.document.node.NTxNode;
 import net.thevpc.ntexup.api.eval.NTxResolutionContext;
-import net.thevpc.ntexup.extension.mwsimulator.NTxSolverFallbackPolicy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,9 +43,14 @@ public class ScuffEMModelInfo {
     public double z0Ref = 50.0;
     public String geometryId;
     public double meshResolution = 2.5; // mm
+    /**
+     * mm. When positive, the feed is extended by this length behind the port, the port moves to
+     * the new end, and S11 is read from the standing wave of the strip current on the extension,
+     * referred back to the original port plane. Default 0 keeps the edge-port reading.
+     */
+    public double portDeembed = 0.0;
     public String dockerImage = "thevpc/scuff-em:latest";
     public String mode = "auto";
-    public NTxSolverFallbackPolicy fallbackPolicy = NTxSolverFallbackPolicy.ERROR;
     public NTxNode sceneNode;
     public NTxResolutionContext resolutionContext;
 

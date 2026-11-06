@@ -41,9 +41,9 @@ public class NTxHwScalarProductsSolver extends NTxHwNopNTxSolver {
             }
         }
         if (plan().rendererContext().isAnimate()) {
-            Plot.cd(fullPath()).title(fullName())
-                    .asMatrix()
-                    .plot(testModeScalarProducts);
+//            Plot.cd(fullPath()).title(fullName())
+//                    .asMatrix()
+//                    .plot(testModeScalarProducts);
         }
     }
 

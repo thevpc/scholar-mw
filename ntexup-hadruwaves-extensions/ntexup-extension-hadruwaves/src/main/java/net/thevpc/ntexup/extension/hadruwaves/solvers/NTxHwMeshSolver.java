@@ -39,9 +39,9 @@ public class NTxHwMeshSolver extends NTxHwNopNTxSolver {
             log.log(NMsg.ofC("%s", triangleAndIteration));
         }
         if (plan().rendererContext().isAnimate()) {
-            Plot.cd(fullPath())
-                    .title("Mesh")
-                    .plot(new MultiAreaComponent(m.stream().map(x -> x.getGeometry()).toArray(HGeometry[]::new)));
+//            Plot.cd(fullPath())
+//                    .title("Mesh")
+//                    .plot(new MultiAreaComponent(m.stream().map(x -> x.getGeometry()).toArray(HGeometry[]::new)));
         }
     }
 

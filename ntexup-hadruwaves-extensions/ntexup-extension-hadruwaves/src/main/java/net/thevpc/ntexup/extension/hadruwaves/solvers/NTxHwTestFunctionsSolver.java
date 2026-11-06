@@ -38,7 +38,7 @@ public class NTxHwTestFunctionsSolver extends NTxHwNopNTxSolver {
             a.add(Maths.expr(g));
         }
         if (plan().rendererContext().isAnimate()) {
-            Plot.cd(fullPath()).title(fullName()).plot(a);
+//            Plot.cd(fullPath()).title(fullName()).plot(a);
         }
     }
 

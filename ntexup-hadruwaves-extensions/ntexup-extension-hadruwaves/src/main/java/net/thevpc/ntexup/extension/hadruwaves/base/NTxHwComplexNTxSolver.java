@@ -139,6 +139,7 @@ public abstract class NTxHwComplexNTxSolver extends NTxHwNTxSolver {
                 .set("abs", NTxObjs.elem(yeAbs))
                 .set("db", NTxObjs.elem(yeDb))
                 .set("complex", NTxObjs.elem(ye));
+        NTxSolverMetrics.publish(curveMap, plan().rendererContext(), plan().name(), outputName(), x, yeDb);
         plan().rendererContext().compiledDocument().setGlobalObject(outputName(), curveMap);
         if (plan().name() != null && !plan().name().trim().isEmpty()) {
             String pName = plan().name().trim();

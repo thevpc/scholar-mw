@@ -6,7 +6,6 @@ import net.thevpc.ntexup.extension.getdp.solvers.NTxGetDPZinSolver;
 import net.thevpc.ntexup.extension.mwsimulator.NTxMwSimulationUtils;
 import net.thevpc.ntexup.extension.mwsimulator.NTxSimulationPlanImpl;
 import net.thevpc.ntexup.extension.mwsimulator.NTxSolverRun;
-import net.thevpc.ntexup.extension.mwsimulator.NTxSolverFallbackPolicy;
 import net.thevpc.nuts.io.NDigest;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.text.NMsg;
@@ -17,16 +16,13 @@ import net.thevpc.scholar.hadrumaths.Maths;
 import net.thevpc.ntexup.extension.mwsimulator.MicrostripCircuitModel;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
     public GetDPModelInfo modelInfo;
-    private double epsEffFem = 1.0;
-    private double z0Fem = 50.0;
-    private double vpFem = Maths.C;
-    private double lTot = 0.0;
     private boolean femSolved = false;
-    private boolean approximated = false;
     private MicrostripCircuitModel circuitModel;
 
     public GetDPStrNTxSimulationPlan(String id, String name, NTxRendererContext rendererContext) {
@@ -52,133 +48,16 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         return null;
     }
 
-    public static class RebuiltGeometry {
-        public double h = 0.0;
-        public double feedW = 0.0;
-        public double portY = 0.0;
-        public double lineLength = 0.0;
-        public boolean isResonator = false;
-        public double resW = 0.0;
-        public double resL = 0.0;
-        public double feedLength = 0.0;
-        public double insetDepth = 0.0;
-        public int numElements = 1;
-    }
-
-    public RebuiltGeometry rebuildGeometry() {
-        RebuiltGeometry geom = new RebuiltGeometry();
-        if (modelInfo == null) {
-            return geom;
-        }
-        for (GetDPModelInfo.GetDPBox sb : modelInfo.substrateBoxes) {
-            double sh = sb.height();
-            if (sh > 0.0001) {
-                geom.h = sh;
-            }
-        }
-
-        GetDPModelInfo.GetDPBox src = modelInfo.sourceBoxes.isEmpty() ? null : modelInfo.sourceBoxes.get(0);
-        if (src != null) {
-            geom.feedW = src.width();
-            geom.portY = src.yMin();
-        }
-
-        GetDPModelInfo.GetDPBox feedBox = null;
-        double antXmin = Double.MAX_VALUE, antXmax = -Double.MAX_VALUE;
-        double antYmin = Double.MAX_VALUE, antYmax = -Double.MAX_VALUE;
-
-        for (GetDPModelInfo.GetDPBox b : modelInfo.antennaBoxes) {
-            antXmin = Math.min(antXmin, b.xMin());
-            antXmax = Math.max(antXmax, b.xMax());
-            antYmin = Math.min(antYmin, b.yMin());
-            antYmax = Math.max(antYmax, b.yMax());
-
-            if (src != null && b.xMax() >= src.xMin() - 1e-6 && b.xMin() <= src.xMax() + 1e-6
-                    && b.yMax() >= src.yMin() - 1e-6 && b.yMin() <= src.yMax() + 1e-6) {
-                if (feedBox == null || b.length() > feedBox.length()) {
-                    feedBox = b;
-                }
-            }
-        }
-
-        if (feedBox != null) {
-            geom.feedW = feedBox.width();
-            geom.portY = src != null ? src.yMin() : feedBox.yMin();
-        } else if (geom.feedW <= 0) {
-            geom.feedW = 3.1e-3;
-        }
-
-        double totalLength = antYmax > antYmin ? (antYmax - geom.portY) : 30e-3;
-        geom.lineLength = totalLength;
-
-        java.util.List<GetDPModelInfo.GetDPBox> candidateBoxes = new java.util.ArrayList<>();
-        for (GetDPModelInfo.GetDPBox b : modelInfo.antennaBoxes) {
-            if (b.isPatch) {
-                candidateBoxes.add(b);
-            }
-        }
-        if (candidateBoxes.isEmpty()) {
-            double widthThreshold = 1.25 * geom.feedW;
-            for (GetDPModelInfo.GetDPBox b : modelInfo.antennaBoxes) {
-                if (b.width() > widthThreshold && b.length() > 1.5 * geom.feedW) {
-                    candidateBoxes.add(b);
-                }
-            }
-        }
-
-        if (!candidateBoxes.isEmpty()) {
-            candidateBoxes.sort(java.util.Comparator.comparingDouble(GetDPModelInfo.GetDPBox::xMin));
-            java.util.List<GetDPModelInfo.GetDPBox> clusters = new java.util.ArrayList<>();
-            for (GetDPModelInfo.GetDPBox b : candidateBoxes) {
-                if (clusters.isEmpty()) {
-                    clusters.add(new GetDPModelInfo.GetDPBox(b.x1, b.y1, b.z1, b.x2, b.y2, b.z2, b.name, b.type));
-                } else {
-                    GetDPModelInfo.GetDPBox last = clusters.get(clusters.size() - 1);
-                    if (b.xMin() <= last.xMax() + 4e-3) {
-                        last.x1 = Math.min(last.x1, b.xMin());
-                        last.x2 = Math.max(last.x2, b.xMax());
-                        last.y1 = Math.min(last.y1, b.yMin());
-                        last.y2 = Math.max(last.y2, b.yMax());
-                    } else {
-                        clusters.add(new GetDPModelInfo.GetDPBox(b.x1, b.y1, b.z1, b.x2, b.y2, b.z2, b.name, b.type));
-                    }
-                }
-            }
-
-            geom.isResonator = true;
-            geom.numElements = clusters.size();
-            geom.resW = clusters.get(0).width();
-            geom.resL = clusters.get(0).length();
-            geom.feedLength = Math.max(0.0, clusters.get(0).yMin() - geom.portY);
-
-            if (feedBox != null && feedBox.yMax() > clusters.get(0).yMin()) {
-                geom.insetDepth = Math.min(geom.resL, feedBox.yMax() - clusters.get(0).yMin());
-            } else {
-                for (GetDPModelInfo.GetDPBox b : modelInfo.antennaBoxes) {
-                    if (b != feedBox && b.width() < (geom.resW * 0.45) && b.yMin() <= clusters.get(0).yMin() + 1e-6) {
-                        geom.insetDepth = Math.max(geom.insetDepth, b.length());
-                    }
-                }
-            }
-        } else {
-            geom.isResonator = false;
-            geom.numElements = 1;
-        }
-
-        return geom;
-    }
-
     @Override
     public String computeHash() {
         NDigest d = NDigest.of();
-        NTxMwSimulationUtils.addDigestSource(d, "GetDPFEM".getBytes(StandardCharsets.UTF_8));
+        NTxMwSimulationUtils.addDigestSource(d, "GetDPFEM-lines".getBytes(StandardCharsets.UTF_8));
         if (modelInfo != null) {
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.frequency).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.epsilonR).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.lossTangent).getBytes(StandardCharsets.UTF_8));
-            NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.meshResolution).getBytes(StandardCharsets.UTF_8));
-            NTxMwSimulationUtils.addDigestSource(d, (NTxSolverFallbackPolicy.OPTION + "=" + modelInfo.fallbackPolicy).getBytes(StandardCharsets.UTF_8));
-            if (modelInfo.geometryId != null) {
+            NTxMwSimulationUtils.addDigestSource(d, (modelInfo.meshResolution + "," + modelInfo.meshDomainFactor).getBytes(StandardCharsets.UTF_8));
+                if (modelInfo.geometryId != null) {
                 NTxMwSimulationUtils.addDigestSource(d, modelInfo.geometryId.getBytes(StandardCharsets.UTF_8));
             }
             for (GetDPModelInfo.GetDPBox b : modelInfo.antennaBoxes) {
@@ -194,48 +73,51 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         return d.computeString();
     }
 
+    /**
+     * Solves the quasi-static cross-section of every conductor width and hands the
+     * resulting Z0 and effective permittivity to the circuit model, in place of its
+     * closed-form line formulas. The FEM sees cross-sections only: the patch is still
+     * the cavity RLC, derived from the permittivity solved for its width.
+     */
     public synchronized void ensureFemSolved() {
         if (femSolved) {
             return;
         }
-        femSolved = true;
         if (modelInfo == null) {
             modelInfo = new GetDPModelInfo();
         }
-        RebuiltGeometry geom = rebuildGeometry();
+        MicrostripCircuitModel model = getCircuitModel();
+        if (model.conductorWidths().isEmpty()) {
+            throw new IllegalStateException("GetDP: the geometry has no conductor to solve");
+        }
         String hash = computeHash();
-        NPath workDir = NPath.ofTempFolder("getdp-sim-");
-        workDir.mkdirs();
-
-        NPath energyFile = workDir.resolve("energy.dat");
-        NPath energyAirFile = workDir.resolve("energy_air.dat");
-
-        NTxSolverFallbackPolicy fallbackPolicy = modelInfo.fallbackPolicy;
-
         boolean dockerOk = GetDPProvisioner.ensureDocker(modelInfo.dockerImage, rendererContext(), hash);
         if (!dockerOk) {
-            fallbackPolicy.requireExplicitOptIn("GetDP",
-                    "Docker image '" + modelInfo.dockerImage + "' is not available");
-            approximated = true;
-            if (rendererContext() != null) {
-                rendererContext().log(NMsg.ofC("[GetDP][%s] WARNING: Docker unavailable; substituting analytical approximation "
-                        + "because '%s'='analytical' was explicitly set. These values are NOT GetDP FEM results.",
-                        hash, NTxSolverFallbackPolicy.OPTION).asWarning());
-            }
-            computeApproximation(geom);
-            return;
+            throw new IllegalStateException("GetDP: Docker image '" + modelInfo.dockerImage + "' is not available");
         }
+        NPath workDir = NPath.ofTempFolder("getdp-sim-");
+        Map<Double, MicrostripCircuitModel.LineParams> params = new HashMap<>();
+        int index = 0;
+        for (double width : model.conductorWidths()) {
+            MicrostripCircuitModel.LineParams line = solveCrossSection(workDir.resolve("w" + index++), width, model.substrateH, hash);
+            params.put(width, line);
+            if (rendererContext() != null) {
+                rendererContext().log(NMsg.ofC("[GetDP][%s] FEM w=%.3f mm: Z0=%.2f Ohm, eps_eff=%.4f (closed form Z0=%.2f Ohm, eps_eff=%.4f)",
+                        hash, width * 1e3, line.z0, line.epsEff,
+                        MicrostripCircuitModel.calcZ0(width, model.substrateH, modelInfo.epsilonR),
+                        MicrostripCircuitModel.calcEpsEff(width, model.substrateH, modelInfo.epsilonR)));
+            }
+        }
+        model.useLineParams(params);
+        femSolved = true;
+    }
 
-        NPath geoFile = workDir.resolve("mesh.geo");
-        geoFile.writeString(generateGmshGeo(geom));
+    private MicrostripCircuitModel.LineParams solveCrossSection(NPath workDir, double width, double h, String hash) {
+        workDir.mkdirs();
+        workDir.resolve("mesh.geo").writeString(generateGmshGeo(width, h));
+        workDir.resolve("fem.pro").writeString(generateGetDPPro(modelInfo.epsilonR, "energy.dat"));
+        workDir.resolve("fem_air.pro").writeString(generateGetDPPro(1.0, "energy_air.dat"));
 
-        NPath proFile = workDir.resolve("fem.pro");
-        proFile.writeString(generateGetDPPro(modelInfo.epsilonR));
-
-        NPath proAirFile = workDir.resolve("fem_air.pro");
-        proAirFile.writeString(generateGetDPPro(1.0));
-
-        // Run Gmsh
         int gmshCode = GetDPProvisioner.runInDocker(
                 modelInfo.dockerImage,
                 workDir,
@@ -247,153 +129,38 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         if (gmshCode != 0) {
             throw new IllegalStateException("GetDP: gmsh mesh generation failed with exit code " + gmshCode);
         }
+        double substrateEnergy = solveEnergy(workDir, "fem.pro", "energy.dat", hash);
+        double airEnergy = solveEnergy(workDir, "fem_air.pro", "energy_air.dat", hash);
 
-        // Run GetDP substrate
-        int femCode = GetDPProvisioner.runInDocker(
+        // Energy per unit length at 1 V gives the capacitance with and without the substrate
+        double c = 2.0 * substrateEnergy;
+        double c0 = 2.0 * airEnergy;
+        double epsEff = c / c0;
+        double z0 = 1.0 / (Maths.C * Math.sqrt(c * c0));
+        if (!(epsEff >= 1.0 && epsEff <= modelInfo.epsilonR && z0 > 0)) {
+            throw new IllegalStateException("GetDP: non-physical line at w=" + width + " m: eps_eff=" + epsEff + ", Z0=" + z0);
+        }
+        return new MicrostripCircuitModel.LineParams(z0, epsEff);
+    }
+
+    private double solveEnergy(NPath workDir, String proFile, String energyFile, String hash) {
+        int code = GetDPProvisioner.runInDocker(
                 modelInfo.dockerImage,
                 workDir,
                 "/sim",
-                Arrays.asList("getdp", "/sim/fem.pro", "-msh", "/sim/mesh.msh", "-solve", "Analysis", "-pos", "Map"),
+                Arrays.asList("getdp", "/sim/" + proFile, "-msh", "/sim/mesh.msh", "-solve", "Analysis", "-pos", "Map"),
                 rendererContext(),
                 hash
         );
-        if (femCode != 0) {
-            throw new IllegalStateException("GetDP: substrate solve failed with exit code " + femCode);
+        if (code != 0) {
+            throw new IllegalStateException("GetDP: " + proFile + " failed with exit code " + code);
         }
-
-        // Run GetDP air
-        int femAirCode = GetDPProvisioner.runInDocker(
-                modelInfo.dockerImage,
-                workDir,
-                "/sim",
-                Arrays.asList("getdp", "/sim/fem_air.pro", "-msh", "/sim/mesh.msh", "-solve", "Analysis", "-pos", "Map"),
-                rendererContext(),
-                hash
-        );
-        if (femAirCode != 0) {
-            throw new IllegalStateException("GetDP: air solve failed with exit code " + femAirCode);
+        NPath file = workDir.resolve(energyFile);
+        if (!file.exists()) {
+            throw new IllegalStateException("GetDP: did not produce " + energyFile);
         }
-
-        if (energyFile.exists() && energyAirFile.exists()) {
-            try {
-                String energyStr = new String(energyFile.readBytes(), StandardCharsets.UTF_8).trim();
-                String[] p1 = energyStr.split("\\s+");
-                double W = Double.parseDouble(p1[p1.length - 1]);
-
-                String energyAirStr = new String(energyAirFile.readBytes(), StandardCharsets.UTF_8).trim();
-                String[] p2 = energyAirStr.split("\\s+");
-                double W0 = Double.parseDouble(p2[p2.length - 1]);
-
-                double C = 2.0 * W;
-                double C0 = 2.0 * W0;
-                double c = Maths.C;
-
-                epsEffFem = C / C0;
-                z0Fem = 1.0 / (c * Math.sqrt(C * C0));
-                vpFem = c / Math.sqrt(epsEffFem);
-
-                double u = geom.feedW / geom.h;
-                double dL = 0.412 * geom.h * ((epsEffFem + 0.3) / (epsEffFem - 0.258)) * ((u + 0.264) / (u + 0.8));
-                lTot = geom.lineLength + dL;
-
-                if (geom.isResonator) {
-                    double uRes = geom.resW / geom.h;
-                    double epsEffRes = (modelInfo.epsilonR + 1.0) / 2.0 + ((modelInfo.epsilonR - 1.0) / 2.0) / Math.sqrt(1.0 + 12.0 / uRes);
-                    double dLRes = 0.412 * geom.h * ((epsEffRes + 0.3) / (epsEffRes - 0.258)) * ((uRes + 0.264) / (uRes + 0.8));
-                    double notchFactor = geom.numElements > 1 ? 0.28 : 0.135;
-                    double dLNotch = geom.insetDepth > 0 ? geom.insetDepth * notchFactor : 0.0;
-                    double leff = geom.resL + 2.0 * dLRes + dLNotch;
-                    patchFr = c / (2.0 * leff * Math.sqrt(epsEffRes));
-                    double k0 = 2.0 * Math.PI * patchFr / c;
-                    double lam0 = c / patchFr;
-                    double grad = (geom.resW / (120.0 * lam0)) * (1.0 - Math.pow(k0 * geom.h, 2.0) / 24.0);
-                    double redge = 1.0 / (2.0 * Math.max(1e-6, grad));
-                    double cosVal = Math.cos(Math.PI * geom.insetDepth / geom.resL);
-                    patchRin = redge * Math.pow(cosVal, 2.0);
-                    if (patchRin < 15.0 || patchRin > 300.0) {
-                        patchRin = 50.0;
-                    }
-                    patchQ = geom.numElements > 1 ? 30.0 : 35.0;
-                }
-
-                if (rendererContext() != null) {
-                    if (geom.isResonator) {
-                        rendererContext().log(NMsg.ofC("[GetDP][%s] Patch FEM Parameters: fr=%.4f GHz, eps_eff=%.4f, dL=%.3f mm, Rin=%.2f Ohm",
-                                hash, patchFr / 1e9, epsEffFem, dL * 1e3, patchRin));
-                    } else {
-                        rendererContext().log(NMsg.ofC("[GetDP][%s] FEM Parameters: eps_eff=%.4f, Z0=%.2f Ohm, v_p=%.3e m/s, dL=%.3f mm",
-                                hash, epsEffFem, z0Fem, vpFem, dL * 1e3));
-                    }
-                }
-            } catch (Exception ex) {
-                fallbackPolicy.requireExplicitOptIn("GetDP",
-                        "error parsing GetDP FEM energy results: " + ex.getMessage());
-                approximated = true;
-                if (rendererContext() != null) {
-                    rendererContext().log(NMsg.ofC("[GetDP][%s] WARNING: could not parse FEM energy results (%s); "
-                                    + "substituting analytical approximation because '%s'='analytical' was explicitly set. "
-                                    + "These values are NOT GetDP FEM results.",
-                            hash, ex.getMessage(), NTxSolverFallbackPolicy.OPTION).asWarning());
-                }
-                computeApproximation(geom);
-            }
-        } else {
-            fallbackPolicy.requireExplicitOptIn("GetDP",
-                    "GetDP did not produce energy.dat/energy_air.dat");
-            approximated = true;
-            if (rendererContext() != null) {
-                rendererContext().log(NMsg.ofC("[GetDP][%s] WARNING: no FEM energy output; substituting analytical approximation "
-                                + "because '%s'='analytical' was explicitly set. These values are NOT GetDP FEM results.",
-                        hash, NTxSolverFallbackPolicy.OPTION).asWarning());
-            }
-            computeApproximation(geom);
-        }
-    }
-
-    /**
-     * True when the reported parameters come from the declared analytical
-     * approximation rather than from a native GetDP FEM run.
-     */
-    public boolean isApproximated() {
-        ensureFemSolved();
-        return approximated;
-    }
-
-    private double patchFr = 0.0;
-    private double patchRin = 50.0;
-    private double patchQ = 30.0;
-
-    private void computeApproximation(RebuiltGeometry geom) {
-        if (geom.h <= 0) return;
-        double u = geom.feedW / geom.h;
-        epsEffFem = (modelInfo.epsilonR + 1.0) / 2.0 + ((modelInfo.epsilonR - 1.0) / 2.0) / Math.sqrt(1.0 + 12.0 / u);
-        z0Fem = MicrostripCircuitModel.calcZ0(geom.feedW, geom.h, modelInfo.epsilonR);
-        vpFem = Maths.C / Math.sqrt(epsEffFem);
-        double dL = 0.412 * geom.h * ((epsEffFem + 0.3) / (epsEffFem - 0.258)) * ((u + 0.264) / (u + 0.8));
-        lTot = geom.lineLength + dL;
-
-        if (geom.isResonator) {
-            double uRes = geom.resW / geom.h;
-            double epsEffRes = (modelInfo.epsilonR + 1.0) / 2.0 + ((modelInfo.epsilonR - 1.0) / 2.0) / Math.sqrt(1.0 + 12.0 / uRes);
-            double dLRes = 0.412 * geom.h * ((epsEffRes + 0.3) / (epsEffRes - 0.258)) * ((uRes + 0.264) / (uRes + 0.8));
-            double notchFraction = geom.resL > 0 ? (geom.insetDepth / geom.resL) : 0.0;
-            double notchFactor = notchFraction * (1.0 - notchFraction);
-            double leff = geom.resL + 2.0 * dLRes + geom.insetDepth * notchFactor;
-            patchFr = Maths.C / (2.0 * leff * Math.sqrt(epsEffRes));
-
-            double k0 = 2.0 * Math.PI * patchFr / Maths.C;
-            double lam0 = Maths.C / patchFr;
-            double grad = (geom.resW / (120.0 * lam0)) * (1.0 - Math.pow(k0 * geom.h, 2.0) / 24.0);
-            double redge = 1.0 / (2.0 * Math.max(1e-6, grad));
-            double cosVal = Math.cos(Math.PI * geom.insetDepth / geom.resL);
-            patchRin = redge * Math.pow(cosVal, 2.0);
-
-            double qDiel = 1.0 / Math.max(1e-6, modelInfo.lossTangent);
-            double qCond = geom.h * Math.sqrt(Math.PI * patchFr * 4.0 * Math.PI * 1e-7 * 5.8e7);
-            double cPatch = 8.854187817e-12 * modelInfo.epsilonR * geom.resW * geom.resL / (2.0 * geom.h);
-            double qRad = 2.0 * Math.PI * patchFr * cPatch * redge;
-            patchQ = 1.0 / ((1.0 / qRad) + (1.0 / qDiel) + (1.0 / qCond));
-        }
+        String[] tokens = new String(file.readBytes(), StandardCharsets.UTF_8).trim().split("\\s+");
+        return Double.parseDouble(tokens[tokens.length - 1]);
     }
 
     public synchronized MicrostripCircuitModel getCircuitModel() {
@@ -426,19 +193,28 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         return zin.minus(z0).div(zin.plus(z0));
     }
 
-    private String generateGmshGeo(RebuiltGeometry geom) {
-        double w = geom.feedW * 1e3;
-        double h = geom.h * 1e3;
-        double boxW = Math.max(40.0, w * 4.0);
-        double airH = Math.max(10.0, h * 6.0);
-        double cl = modelInfo.meshResolution;
+    /**
+     * The domain walls are natural boundaries, so the domain has to be large against the
+     * line: the default 20 (w + h) stays within about 1% of a domain and mesh refined further.
+     * The mesh is sized from the strip, since the field is singular at its edges.
+     */
+    private String generateGmshGeo(double width, double height) {
+        double w = width * 1e3;
+        double h = height * 1e3;
+        double boxW = modelInfo.meshDomainFactor * (w + h);
+        double airH = boxW / 2.0;
+        double bulk = modelInfo.meshResolution * h / 2.0;
+        double edge = bulk / 16.0;
+        double far = boxW / 16.0;
 
         return String.format(Locale.US,
-                "cl = %.3f;\n" +
-                "w = %.3f;\n" +
-                "h = %.3f;\n" +
-                "box_w = %.3f;\n" +
-                "air_h = %.3f;\n\n" +
+                "w = %.4f;\n" +
+                "h = %.4f;\n" +
+                "box_w = %.4f;\n" +
+                "air_h = %.4f;\n" +
+                "bulk = %.4f;\n" +
+                "edge = %.4f;\n" +
+                "far = %.4f;\n\n" +
                 "x0 = -box_w/2;\n" +
                 "x1 = -w/2;\n" +
                 "x2 = w/2;\n" +
@@ -446,14 +222,14 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                 "y0 = -h;\n" +
                 "y1 = 0;\n" +
                 "y2 = air_h;\n\n" +
-                "Point(1) = {x0, y0, 0, cl*2};\n" +
-                "Point(2) = {x3, y0, 0, cl*2};\n" +
-                "Point(3) = {x3, y1, 0, cl*1.5};\n" +
-                "Point(4) = {x2, y1, 0, cl*0.5};\n" +
-                "Point(5) = {x1, y1, 0, cl*0.5};\n" +
-                "Point(6) = {x0, y1, 0, cl*1.5};\n" +
-                "Point(7) = {x3, y2, 0, cl*3};\n" +
-                "Point(8) = {x0, y2, 0, cl*3};\n\n" +
+                "Point(1) = {x0, y0, 0, far};\n" +
+                "Point(2) = {x3, y0, 0, far};\n" +
+                "Point(3) = {x3, y1, 0, far};\n" +
+                "Point(4) = {x2, y1, 0, edge};\n" +
+                "Point(5) = {x1, y1, 0, edge};\n" +
+                "Point(6) = {x0, y1, 0, far};\n" +
+                "Point(7) = {x3, y2, 0, far};\n" +
+                "Point(8) = {x0, y2, 0, far};\n\n" +
                 "Line(1) = {1, 2};\n" +
                 "Line(2) = {2, 3};\n" +
                 "Line(3) = {3, 4};\n" +
@@ -470,12 +246,35 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                 "Physical Surface(1) = {200};\n" + // Air
                 "Physical Surface(2) = {100};\n" + // Substrate
                 "Physical Curve(3) = {1};\n" +     // Ground
-                "Physical Curve(4) = {4};\n",       // Strip
-                cl, w, h, boxW, airH
+                "Physical Curve(4) = {4};\n\n" +   // Strip
+                "Field[1] = Distance;\n" +
+                "Field[1].PointsList = {4, 5};\n" +
+                "Field[2] = Threshold;\n" +
+                "Field[2].InField = 1;\n" +
+                "Field[2].SizeMin = edge;\n" +
+                "Field[2].SizeMax = bulk;\n" +
+                "Field[2].DistMin = 0;\n" +
+                "Field[2].DistMax = h;\n" +
+                "Field[3] = Distance;\n" +
+                "Field[3].CurvesList = {4};\n" +
+                "Field[3].NumPointsPerCurve = 400;\n" +
+                "Field[4] = Threshold;\n" +
+                "Field[4].InField = 3;\n" +
+                "Field[4].SizeMin = bulk;\n" +
+                "Field[4].SizeMax = far;\n" +
+                "Field[4].DistMin = 2*h;\n" +
+                "Field[4].DistMax = box_w/2;\n" +
+                "Field[5] = Min;\n" +
+                "Field[5].FieldsList = {2, 4};\n" +
+                "Background Field = 5;\n" +
+                "Mesh.MeshSizeFromPoints = 0;\n" +
+                "Mesh.MeshSizeExtendFromBoundary = 0;\n" +
+                "Mesh.MeshSizeFromCurvature = 0;\n",
+                w, h, boxW, airH, bulk, edge, far
         );
     }
 
-    private String generateGetDPPro(double er) {
+    private String generateGetDPPro(double er, String energyFile) {
         return String.format(Locale.US,
                 "Group {\n" +
                 "  Air = Region[1];\n" +
@@ -565,7 +364,7 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                 "    }\n" +
                 "  }\n" +
                 "}\n",
-                er, er > 1.1 ? "energy.dat" : "energy_air.dat"
+                er, energyFile
         );
     }
 }
