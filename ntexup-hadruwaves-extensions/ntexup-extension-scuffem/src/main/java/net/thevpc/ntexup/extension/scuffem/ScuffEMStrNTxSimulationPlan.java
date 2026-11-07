@@ -747,6 +747,7 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             if (scuffCode != 0) {
                 throw new IllegalStateException("solver failed with exit code " + scuffCode);
             }
+            NTxMwSimulationUtils.keepSolverInputs(rendererContext(), name, workDir);
 
             // 3. Parse results.dat
             NPath resFile = workDir.resolve("results.dat");

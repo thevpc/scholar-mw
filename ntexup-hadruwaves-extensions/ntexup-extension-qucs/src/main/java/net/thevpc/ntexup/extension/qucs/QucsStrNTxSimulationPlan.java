@@ -122,6 +122,7 @@ public class QucsStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             if (qucsCode != 0) {
                 throw new IllegalStateException("Qucs: qucsator failed with exit code " + qucsCode);
             }
+            NTxMwSimulationUtils.keepSolverInputs(rendererContext(), name, workDir);
         }
 
         if (datFile.exists() && datFile.contentLength() > 0) {

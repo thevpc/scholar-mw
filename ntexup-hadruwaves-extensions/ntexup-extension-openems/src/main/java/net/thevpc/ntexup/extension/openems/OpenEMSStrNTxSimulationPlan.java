@@ -136,6 +136,7 @@ public class OpenEMSStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                 cmd.run();
             }
 
+            NTxMwSimulationUtils.keepSolverInputs(rendererContext, name, workDir);
             NPath vFile = workDir.resolve("port1_V");
             NPath iFile = workDir.resolve("port1_I");
             if (!vFile.exists() || !iFile.exists()) {

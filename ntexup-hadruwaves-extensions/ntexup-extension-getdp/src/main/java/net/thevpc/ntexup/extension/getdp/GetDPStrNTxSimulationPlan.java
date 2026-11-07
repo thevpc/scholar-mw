@@ -109,6 +109,7 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                         MicrostripCircuitModel.calcEpsEff(width, model.substrateH, modelInfo.epsilonR)));
             }
         }
+        NTxMwSimulationUtils.keepSolverInputs(rendererContext(), name, workDir);
         model.useLineParams(params);
         femSolved = true;
     }

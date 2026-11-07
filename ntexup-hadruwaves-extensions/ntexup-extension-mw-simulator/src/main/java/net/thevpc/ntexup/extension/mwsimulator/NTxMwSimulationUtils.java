@@ -482,4 +482,51 @@ public class NTxMwSimulationUtils {
             return;
         } catch (Throwable ignored) {}
     }
+
+    /**
+     * Copies a solver's work folder to {@code <deck dir>/target/solver-inputs/<planName>}, so
+     * the exact files handed to the solver (meshes, scripts, problem files) can be published
+     * and rerun with the solver alone, without ntexup. The previous copy is replaced. Bulky
+     * solver results that the solver regenerates (GetDP .res / .pre) are skipped.
+     */
+    public static void keepSolverInputs(NTxRendererContext ctx, String planName, net.thevpc.nuts.io.NPath workDir) {
+        if (ctx == null || workDir == null || planName == null || planName.trim().isEmpty()) {
+            return;
+        }
+        try {
+            if (ctx.document() == null || ctx.document().source() == null || !ctx.document().source().path().isPresent()) {
+                return;
+            }
+            // the source is the deck folder when a folder is rendered, the .ntx file otherwise
+            net.thevpc.nuts.io.NPath source = ctx.document().source().path().get();
+            java.nio.file.Path deckDir = (source.isRegularFile() ? source.parent() : source).toPath().orNull();
+            java.nio.file.Path src = workDir.toPath().orNull();
+            if (deckDir == null || src == null || !java.nio.file.Files.isDirectory(src)) {
+                return;
+            }
+            java.nio.file.Path dst = deckDir.resolve("target").resolve("solver-inputs").resolve(planName.trim());
+            if (java.nio.file.Files.exists(dst)) {
+                try (java.util.stream.Stream<java.nio.file.Path> s = java.nio.file.Files.walk(dst)) {
+                    s.sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());
+                }
+            }
+            try (java.util.stream.Stream<java.nio.file.Path> s = java.nio.file.Files.walk(src)) {
+                for (java.nio.file.Path p : (Iterable<java.nio.file.Path>) s::iterator) {
+                    String n = p.getFileName().toString();
+                    if (n.endsWith(".res") || n.endsWith(".pre")) {
+                        continue;
+                    }
+                    java.nio.file.Path t = dst.resolve(src.relativize(p).toString());
+                    if (java.nio.file.Files.isDirectory(p)) {
+                        java.nio.file.Files.createDirectories(t);
+                    } else {
+                        java.nio.file.Files.createDirectories(t.getParent());
+                        java.nio.file.Files.copy(p, t, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            ctx.log(NMsg.ofC("[%s] could not keep solver inputs: %s", planName, ex.toString()).asWarning());
+        }
+    }
 }
