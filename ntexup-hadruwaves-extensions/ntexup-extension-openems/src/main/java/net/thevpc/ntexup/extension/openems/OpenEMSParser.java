@@ -16,6 +16,7 @@ import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NPairElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.text.NMsg;
+import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NStringUtils;
 
@@ -75,6 +76,20 @@ public class OpenEMSParser {
          * run straight and uniform over that length. Default 0 keeps the lumped port reading.
          */
         public double portDeembed = 0.0;
+        /**
+         * "lumped": 50 ohm lumped port across the substrate at the source box (default).
+         * "msl": openEMS's own microstrip port (AddMSLPort / CalcPort, python interface): the feed
+         * enters from the domain edge and S11 is moved to the source box's outer edge with
+         * openEMS's ref_plane_shift. Needs an infinite ground.
+         */
+        public String portType = "lumped";
+        /** mm, msl port: the measurement plane sits this far before the reference plane */
+        public double portMeasureBefore = 10.0;
+        /**
+         * Ground box tagged @(infinite): the ground is the PEC domain boundary below the substrate and
+         * the substrate runs to the domain edges (through the PML). Otherwise the boxes are a finite board.
+         */
+        public boolean infiniteGround = false;
         public String xmlPath;
         public String geometryId;
         public List<OpenEMSBox> groundBoxes = new ArrayList<>();
@@ -172,6 +187,18 @@ public class OpenEMSParser {
                 context.log(NMsg.ofC("OpenEMS: 'geometry' %s could not be resolved in the current scope", finalGeometryId).asError());
             }
         }
+        if (info.portType.equals("msl")) {
+            if (!info.infiniteGround) {
+                // over a finite ground sheet MSLPort read the 50 ohm feed as a different line (Z0, eps_eff off)
+                throw new IllegalArgumentException("OpenEMS: port type msl needs an infinite ground: tag the ground box @(infinite)");
+            }
+            if (info.portDeembed > 0) {
+                throw new IllegalArgumentException("OpenEMS: port deembed applies to the lumped port only; the msl port de-embeds itself");
+            }
+            if (info.xmlPath != null) {
+                throw new IllegalArgumentException("OpenEMS: port type msl needs the geometry, not an xml file");
+            }
+        }
 
         return info;
     }
@@ -237,6 +264,18 @@ public class OpenEMSParser {
             switch (key) {
                 case "deembed": {
                     info.portDeembed = meshLengthMm(v, key);
+                    break;
+                }
+                case "type": {
+                    String t = NNameFormat.LOWER_KEBAB_CASE.format(v.asStringValue().orElse(""));
+                    if (!t.equals("lumped") && !t.equals("msl")) {
+                        throw new IllegalArgumentException("OpenEMS: port type '" + t + "' is not supported, use lumped or msl");
+                    }
+                    info.portType = t;
+                    break;
+                }
+                case "measure-before": {
+                    info.portMeasureBefore = meshLengthMm(v, key);
                     break;
                 }
                 default: {
@@ -397,6 +436,9 @@ public class OpenEMSParser {
                         OpenEMSBox box = new OpenEMSBox(x1, y1, z1, x2, y2, z2, name, nodeType);
                         if (isGround) {
                             info.groundBoxes.add(box);
+                            if (NTxMwSimulationUtils.hasStyleClass(child, "infinite")) {
+                                info.infiniteGround = true;
+                            }
                         } else if (isSubstrate || (!isAntenna && !isSource && z2 <= 0 && zw > 0.1)) {
                             info.substrateBoxes.add(box);
                         } else if (isSource) {
@@ -466,7 +508,7 @@ public class OpenEMSParser {
 
         sb.append(String.format(Locale.US, "  <FDTD NumberOfTimesteps=\"%d\" endCriteria=\"%e\">\n", info.numberOfTimesteps * info.meshRefinement, info.endCriteria));
         sb.append(String.format(Locale.US, "    <Excitation Type=\"0\" f0=\"%e\" fc=\"%e\" />\n", info.frequency, info.fc));
-        sb.append("    <BoundaryCond xmin=\"PML_8\" xmax=\"PML_8\" ymin=\"PML_8\" ymax=\"PML_8\" zmin=\"PML_8\" zmax=\"PML_8\" />\n");
+        sb.append("    <BoundaryCond xmin=\"PML_8\" xmax=\"PML_8\" ymin=\"PML_8\" ymax=\"PML_8\" zmin=\"" + (info.infiniteGround ? "PEC" : "PML_8") + "\" zmax=\"PML_8\" />\n");
         sb.append("  </FDTD>\n\n");
 
         sb.append("  <ContinuousStructure CoordSystem=\"0\">\n\n");
@@ -585,9 +627,12 @@ public class OpenEMSParser {
         yCoords.add(round3(ymax + 22.0));
         yCoords.add(round3(ymax + 35.0));
 
-        zCoords.add(round3(zmin - 5.0));
-        zCoords.add(round3(zmin - 12.0));
-        zCoords.add(round3(zmin - 22.0));
+        if (!info.infiniteGround) {
+            // air below a finite board; an infinite ground is the domain's bottom face
+            zCoords.add(round3(zmin - 5.0));
+            zCoords.add(round3(zmin - 12.0));
+            zCoords.add(round3(zmin - 22.0));
+        }
         zCoords.add(round3(zmax + 3.0));
         zCoords.add(round3(zmax + 8.0));
         zCoords.add(round3(zmax + 16.0));
@@ -609,7 +654,8 @@ public class OpenEMSParser {
         // Ground
         sb.append("      <Metal Name=\"ground\">\n");
         sb.append("        <Primitives>\n");
-        for (OpenEMSBox g : info.groundBoxes) {
+        for (OpenEMSBox g0 : info.groundBoxes) {
+            OpenEMSBox g = info.infiniteGround ? toDomainEdges(g0, finalX, finalY) : g0;
             sb.append(String.format(Locale.US, "          <Box Priority=\"10\"><P1 X=\"%.3f\" Y=\"%.3f\" Z=\"%.3f\" /><P2 X=\"%.3f\" Y=\"%.3f\" Z=\"%.3f\" /></Box>\n",
                     g.x1, g.y1, g.z1, g.x2, g.y2, g.z2));
         }
@@ -620,7 +666,8 @@ public class OpenEMSParser {
         sb.append("      <Material Name=\"substrate\">\n");
         sb.append(String.format(Locale.US, "        <Property Epsilon=\"%.3f\" Kappa=\"%e\" />\n", info.epsilonR, kappa));
         sb.append("        <Primitives>\n");
-        for (OpenEMSBox s : info.substrateBoxes) {
+        for (OpenEMSBox s0 : info.substrateBoxes) {
+            OpenEMSBox s = info.infiniteGround ? toDomainEdges(s0, finalX, finalY) : s0;
             sb.append(String.format(Locale.US, "          <Box Priority=\"1\"><P1 X=\"%.3f\" Y=\"%.3f\" Z=\"%.3f\" /><P2 X=\"%.3f\" Y=\"%.3f\" Z=\"%.3f\" /></Box>\n",
                     s.x1, s.y1, s.z1, s.x2, s.y2, s.z2));
         }
@@ -637,8 +684,8 @@ public class OpenEMSParser {
         sb.append("        </Primitives>\n");
         sb.append("      </Metal>\n\n");
 
-        // Source / Lumped Port
-        if (!info.sourceBoxes.isEmpty()) {
+        // Source / Lumped Port (an msl port is added by openEMS's python interface, see msl_driver.py)
+        if (!info.sourceBoxes.isEmpty() && info.portType.equals("lumped")) {
             OpenEMSBox src = info.sourceBoxes.get(0);
             double portZ1 = subZmin;
             double portZ2 = subZmax;
@@ -687,6 +734,54 @@ public class OpenEMSParser {
         sb.append("</openEMS>\n");
 
         return sb.toString();
+    }
+
+    private static OpenEMSBox toDomainEdges(OpenEMSBox b, List<Double> xs, List<Double> ys) {
+        return new OpenEMSBox(xs.get(0), ys.get(0), b.z1, xs.get(xs.size() - 1), ys.get(ys.size() - 1), b.z2, b.name, b.type);
+    }
+
+    /**
+     * The geometry and mesh alone (the ContinuousStructure element), for openEMS's python
+     * interface to read with CSX.ReadFromXML.
+     */
+    public static String generateGeometryXml(OpenEMSModelInfo info) {
+        String all = generateOpenEMSXml(info);
+        int a = all.indexOf("<ContinuousStructure");
+        int b = all.indexOf("</ContinuousStructure>") + "</ContinuousStructure>".length();
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + all.substring(a, b) + "\n";
+    }
+
+    /**
+     * Where the msl port goes, in mm: the feed runs along x (alongX) or y; the port strip enters
+     * from the domain edge on the side away from the antenna and ends at the reference plane, the
+     * source box's outer edge, spanning the source box across the feed.
+     */
+    public static Map<String, Object> mslPortLayout(OpenEMSModelInfo info) {
+        if (info.sourceBoxes.isEmpty() || info.substrateBoxes.isEmpty()) {
+            throw new IllegalArgumentException("OpenEMS: port type msl needs a source box and a substrate box");
+        }
+        OpenEMSBox src = info.sourceBoxes.get(0);
+        OpenEMSBox sub = info.substrateBoxes.get(0);
+        boolean alongX = (src.x2 - src.x1) < (src.y2 - src.y1);
+        double u1 = alongX ? src.x1 : src.y1;
+        double u2 = alongX ? src.x2 : src.y2;
+        double antLo = Double.MAX_VALUE, antHi = -Double.MAX_VALUE;
+        for (OpenEMSBox b : info.antennaBoxes) {
+            antLo = Math.min(antLo, alongX ? b.x1 : b.y1);
+            antHi = Math.max(antHi, alongX ? b.x2 : b.y2);
+        }
+        double sign = (antLo + antHi) / 2.0 >= (u1 + u2) / 2.0 ? 1.0 : -1.0;
+        Map<String, Object> m = new LinkedHashMap<>();
+        m.put("prop_dir", alongX ? "x" : "y");
+        m.put("exc_dir", "z");
+        m.put("sign", sign);
+        m.put("reference", sign > 0 ? u1 : u2);
+        m.put("w1", alongX ? src.y1 : src.x1);
+        m.put("w2", alongX ? src.y2 : src.x2);
+        m.put("z_strip", sub.zMax());
+        m.put("z_ground", sub.zMin());
+        m.put("measure_before", info.portMeasureBefore);
+        return m;
     }
 
     private static List<Double> subdivideGrid(List<Double> lines, int factor) {

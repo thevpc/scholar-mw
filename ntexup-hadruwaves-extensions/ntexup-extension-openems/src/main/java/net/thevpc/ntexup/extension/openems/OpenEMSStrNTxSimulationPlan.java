@@ -14,9 +14,8 @@ import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.scholar.hadrumaths.Complex;
 
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.io.InputStream;
+import java.util.*;
 
 public class OpenEMSStrNTxSimulationPlan extends NTxSimulationPlanImpl {
 
@@ -36,6 +35,9 @@ public class OpenEMSStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         public double[] sqrtEpsFit;
         public double alphaFit;
         public double sqrtEpsMin, sqrtEpsMax;
+        // msl port: S11 from openEMS's CalcPort, on a frequency grid
+        public double[] mslF;
+        public Complex[] mslS11;
     }
 
     public OpenEMSStrNTxSimulationPlan(String id, String name, NTxRendererContext rendererContext) {
@@ -70,7 +72,8 @@ public class OpenEMSStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.numberOfTimesteps).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, (modelInfo.meshRefinement + "," + modelInfo.meshSubstrateCells + "," + modelInfo.meshMaxCellX + "," + modelInfo.meshMaxCellY
                     + "," + modelInfo.meshMaxCellZ + "," + modelInfo.meshMaxCellOutside + "," + modelInfo.meshMinCell).getBytes(StandardCharsets.UTF_8));
-            NTxMwSimulationUtils.addDigestSource(d, ("port:" + modelInfo.portDeembed).getBytes(StandardCharsets.UTF_8));
+            NTxMwSimulationUtils.addDigestSource(d, ("port:" + modelInfo.portDeembed + "," + modelInfo.portType + "," + modelInfo.portMeasureBefore
+                    + ",ground:" + (modelInfo.infiniteGround ? "infinite" : "board")).getBytes(StandardCharsets.UTF_8));
             // the geometry id alone is not enough: an edited box under the same id must not reuse the cached run
             if (modelInfo.xmlPath == null) {
                 NTxMwSimulationUtils.addDigestSource(d, OpenEMSParser.generateOpenEMSXml(modelInfo).getBytes(StandardCharsets.UTF_8));
@@ -97,6 +100,10 @@ public class OpenEMSStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         }
 
         NPath workDir = NPath.ofTempFolder("openems-sim-");
+        if (modelInfo.portType.equals("msl")) {
+            runData = runMslPort(workDir);
+            return runData;
+        }
         try {
             NPath xmlFile = workDir.resolve("simulation.xml");
             if (modelInfo.xmlPath != null && !modelInfo.xmlPath.trim().isEmpty()) {
@@ -181,6 +188,127 @@ public class OpenEMSStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         } catch (Exception ex) {
             throw new RuntimeException("OpenEMS simulation error: " + ex.getMessage(), ex);
         }
+    }
+
+    /**
+     * openEMS's own microstrip port, through its python interface: the extension writes the
+     * geometry and mesh (geometry.xml) and the port's placement (driver.json); msl_driver.py,
+     * fixed, calls AddMSLPort and CalcPort and writes s11.dat.
+     */
+    private OpenEMSRunData runMslPort(NPath workDir) {
+        try {
+            workDir.resolve("geometry.xml").writeString(OpenEMSParser.generateGeometryXml(modelInfo));
+            Map<String, Object> drv = new LinkedHashMap<>(OpenEMSParser.mslPortLayout(modelInfo));
+            drv.put("timesteps", modelInfo.numberOfTimesteps * modelInfo.meshRefinement);
+            drv.put("endcriteria", modelInfo.endCriteria);
+            drv.put("f0", modelInfo.frequency);
+            drv.put("fc", modelInfo.fc);
+            drv.put("boundaries", Arrays.asList("PML_8", "PML_8", "PML_8", "PML_8", "PEC", "PML_8"));
+            drv.put("threads", modelInfo.numThreads);
+            drv.put("ref_impedance", 50.0);
+            drv.put("f_min", Math.max(0.1e9, modelInfo.frequency - 1.5 * modelInfo.fc));
+            drv.put("f_max", modelInfo.frequency + 1.5 * modelInfo.fc);
+            drv.put("f_count", 1201);
+            workDir.resolve("driver.json").writeString(toJson(drv));
+            try (InputStream in = OpenEMSStrNTxSimulationPlan.class.getResourceAsStream("msl_driver.py")) {
+                workDir.resolve("msl_driver.py").writeBytes(in.readAllBytes());
+            }
+            if (!OpenEMSProvisioner.ensurePythonDocker(rendererContext, id)) {
+                throw new IllegalStateException("OpenEMS: port type msl needs Docker and the image " + OpenEMSProvisioner.PYTHON_DOCKER_IMAGE);
+            }
+            if (rendererContext != null) {
+                rendererContext.log(NMsg.ofC("[OpenEMS][%s] Running openEMS with its own MSL port in Docker (%s)", id, OpenEMSProvisioner.PYTHON_DOCKER_IMAGE));
+            }
+            NExec.ofSystem("docker", "run", "--rm",
+                    "-v", workDir.toAbsolute().normalize().toString() + ":/simulations",
+                    "-w", "/simulations",
+                    OpenEMSProvisioner.PYTHON_DOCKER_IMAGE,
+                    "python3", "msl_driver.py"
+            ).directory(workDir).run();
+            NTxMwSimulationUtils.keepSolverInputs(rendererContext, name, workDir);
+            NPath out = workDir.resolve("s11.dat");
+            if (!out.exists()) {
+                throw new IllegalStateException("OpenEMS msl port: no s11.dat in " + workDir);
+            }
+            List<double[]> rows = new ArrayList<>();
+            for (String line : out.readString().split("\n")) {
+                line = line.trim();
+                if (line.isEmpty() || line.startsWith("#")) {
+                    continue;
+                }
+                String[] t = line.split("\\s+");
+                rows.add(new double[]{Double.parseDouble(t[0]), Double.parseDouble(t[1]), Double.parseDouble(t[2]), Double.parseDouble(t[3]), Double.parseDouble(t[4])});
+            }
+            OpenEMSRunData d = new OpenEMSRunData();
+            d.mslF = new double[rows.size()];
+            d.mslS11 = new Complex[rows.size()];
+            for (int k = 0; k < rows.size(); k++) {
+                d.mslF[k] = rows.get(k)[0];
+                d.mslS11[k] = Complex.of(rows.get(k)[1], rows.get(k)[2]);
+            }
+            if (rendererContext != null) {
+                double[] r = rows.get(nearest(d.mslF, modelInfo.frequency));
+                rendererContext.log(NMsg.ofC("[OpenEMS][%s] msl port: openEMS reads the feed line at %s ohm at %s GHz",
+                        id, String.format(Locale.US, "%.2f%+.2fj", r[3], r[4]), String.format(Locale.US, "%.3f", r[0] / 1e9)));
+            }
+            return d;
+        } catch (Exception ex) {
+            throw new RuntimeException("OpenEMS simulation error: " + ex.getMessage(), ex);
+        }
+    }
+
+    private static int nearest(double[] xs, double x) {
+        int best = 0;
+        for (int k = 1; k < xs.length; k++) {
+            if (Math.abs(xs[k] - x) < Math.abs(xs[best] - x)) {
+                best = k;
+            }
+        }
+        return best;
+    }
+
+    /** linear interpolation on the msl port's frequency grid; outside it there is no excitation to read */
+    private Complex mslS11(double freq) {
+        OpenEMSRunData d = runSimulation();
+        double[] f = d.mslF;
+        if (freq < f[0] || freq > f[f.length - 1]) {
+            throw new IllegalArgumentException(String.format(Locale.US, "OpenEMS msl port: %.4f GHz is outside the excited band %.4f-%.4f GHz (set fc)",
+                    freq / 1e9, f[0] / 1e9, f[f.length - 1] / 1e9));
+        }
+        int k = Math.min(f.length - 2, Math.max(0, (int) ((freq - f[0]) / (f[1] - f[0]))));
+        double t = (freq - f[k]) / (f[k + 1] - f[k]);
+        return d.mslS11[k].mul(1 - t).plus(d.mslS11[k + 1].mul(t));
+    }
+
+    private static String toJson(Map<String, Object> m) {
+        StringBuilder sb = new StringBuilder("{");
+        for (Map.Entry<String, Object> e : m.entrySet()) {
+            if (sb.length() > 1) {
+                sb.append(", ");
+            }
+            sb.append('"').append(e.getKey()).append("\": ").append(toJsonValue(e.getValue()));
+        }
+        return sb.append("}\n").toString();
+    }
+
+    private static String toJsonValue(Object v) {
+        if (v instanceof String) {
+            return "\"" + v + "\"";
+        }
+        if (v instanceof List) {
+            StringBuilder sb = new StringBuilder("[");
+            for (Object o : (List<?>) v) {
+                if (sb.length() > 1) {
+                    sb.append(", ");
+                }
+                sb.append(toJsonValue(o));
+            }
+            return sb.append("]").toString();
+        }
+        if (v instanceof Double) {
+            return String.format(Locale.US, "%.10g", (Double) v);
+        }
+        return String.valueOf(v);
     }
 
     public Complex computeVf(double freq) {
@@ -338,6 +466,10 @@ public class OpenEMSStrNTxSimulationPlan extends NTxSimulationPlanImpl {
     }
 
     public Complex computeZin(double freq) {
+        if (runSimulation().mslF != null) {
+            Complex s = mslS11(freq);
+            return Complex.of(50.0).mul(Complex.ONE.plus(s)).div(Complex.ONE.minus(s));
+        }
         if (runSimulation().layout != null) {
             return deembeddedZin(freq);
         }
@@ -350,6 +482,9 @@ public class OpenEMSStrNTxSimulationPlan extends NTxSimulationPlanImpl {
     }
 
     public Complex computeS11(double freq) {
+        if (runSimulation().mslF != null) {
+            return mslS11(freq);
+        }
         if (runSimulation().layout != null) {
             Complex z = deembeddedZin(freq);
             return z.minus(Complex.of(50.0)).div(z.plus(50.0));

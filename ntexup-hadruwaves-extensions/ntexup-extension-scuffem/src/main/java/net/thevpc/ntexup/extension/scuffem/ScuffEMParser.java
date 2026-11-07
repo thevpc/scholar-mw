@@ -198,6 +198,7 @@ public class ScuffEMParser {
                         box.isPatch = NTxMwSimulationUtils.isSimulationNode(child, "patch");
                         if (isGround) {
                             info.groundBoxes.add(box);
+                            NTxMwSimulationUtils.warnIfFiniteGround(child, context, "SCUFF-EM", "its layered-substrate (MOI) model");
                         } else if (isSubstrate || (!isAntenna && !isSource && z2 <= 0 && zw > 0.0001)) {
                             info.substrateBoxes.add(box);
                         } else if (isSource) {

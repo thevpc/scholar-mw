@@ -182,6 +182,7 @@ public class GetDPParser {
                         box.isPatch = NTxMwSimulationUtils.isSimulationNode(child, "patch");
                         if (isGround) {
                             info.groundBoxes.add(box);
+                            NTxMwSimulationUtils.warnIfFiniteGround(child, context, "GetDP", "the line-parameter and circuit model");
                         } else if (isSubstrate || (!isAntenna && !isSource && z2 <= 0 && zw > 0.0001)) {
                             info.substrateBoxes.add(box);
                         } else if (isSource) {

@@ -54,6 +54,23 @@ public class OpenEMSProvisioner {
         );
     }
 
+    /** openEMS plus its own python interface (CSXCAD, openEMS.ports), for the msl port */
+    public static final String PYTHON_DOCKER_IMAGE = "thevpc/openems-py:0.0.36";
+
+    public static boolean ensurePythonDocker(NTxRendererContext rendererContext, String logPrefix) {
+        // built on top of the plain image
+        if (!ensureDocker(DEFAULT_DOCKER_IMAGE, rendererContext, logPrefix)) {
+            return false;
+        }
+        return NTxDockerProvisioner.ensureDockerImage(
+                PYTHON_DOCKER_IMAGE,
+                null,
+                OpenEMSProvisioner.class.getResource("Dockerfile-python"),
+                rendererContext,
+                "OpenEMS][" + logPrefix
+        );
+    }
+
     public static boolean buildDockerImage(String dockerImage, NTxRendererContext rendererContext, String logPrefix) {
         return NTxDockerProvisioner.buildDockerImage(
                 dockerImage,

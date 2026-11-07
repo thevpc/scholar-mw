@@ -402,6 +402,24 @@ public class NTxMwSimulationUtils {
                 || hasName(child, name);
     }
 
+    /**
+     * A ground node tagged @(infinite) asks for an infinite ground and substrate; untagged, the
+     * boxes are a finite board.
+     */
+    public static boolean isInfiniteGround(NTxNode ground) {
+        return hasStyleClass(ground, "infinite");
+    }
+
+    /**
+     * For solvers whose model has no board edge (layered substrate, line parameters): they cannot
+     * honour a finite board, so they say so instead of substituting silently.
+     */
+    public static void warnIfFiniteGround(NTxNode ground, NTxResolutionContext context, String solver, String model) {
+        if (!isInfiniteGround(ground)) {
+            context.log(NMsg.ofC("%s: the ground is a finite board (no @(infinite)), but %s has an infinite ground and substrate; the board size is ignored", solver, model).asWarning());
+        }
+    }
+
     public static boolean hasName(NTxNode child, String name) {
         String n = child.getName() == null ? "" : child.getName().trim();
         return (n.equalsIgnoreCase(name)
