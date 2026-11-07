@@ -1,0 +1,6 @@
+# gmsh only, to mesh the Palace model (the same gmsh as the GetDP image)
+FROM ubuntu:22.04
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates gmsh \
+    && rm -rf /var/lib/apt/lists/*
+CMD ["gmsh", "--version"]
