@@ -249,6 +249,8 @@ public class PalaceStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         NPath workDir = NPath.ofTempFolder("palace-sim-");
         workDir.resolve("model.geo").writeString(generateGeo());
         workDir.resolve("palace.json").writeString(generateConfig(sweepBand()));
+        // created here, not by the container: a root-owned postpro/ could not be deleted with the temp folder
+        workDir.resolve("postpro").mkdirs();
         log("[Palace][%s] meshing with gmsh (%s)", hash, PalaceProvisioner.GMSH_DOCKER_IMAGE);
         int code = NTxDockerProvisioner.runInDocker(PalaceProvisioner.GMSH_DOCKER_IMAGE, workDir, "/sim",
                 Arrays.asList("gmsh", "-3", "model.geo", "-o", "model.msh"), rendererContext(), "Palace][" + hash);
