@@ -103,6 +103,19 @@ public class ScuffEMParser {
                         info.meshResolution = pv.asDoubleValue().orElse(2.5);
                         break;
                     }
+                    case "solve-points": {
+                        // solve-points:all solves every requested frequency
+                        if (pv.isAnyStringOrName() && "all".equalsIgnoreCase(pv.asStringValue().orElse(""))) {
+                            info.solvePoints = 0;
+                        } else {
+                            int n = pv.asIntValue().orElse(-1);
+                            if (n < 2) {
+                                throw new IllegalArgumentException("SCUFF-EM: 'solve-points' expects 'all' or an integer >= 2");
+                            }
+                            info.solvePoints = n;
+                        }
+                        break;
+                    }
                     case "dockerimage":
                     case "image": {
                         info.dockerImage = pv.asStringValue().orElse(ScuffEMProvisioner.DEFAULT_DOCKER_IMAGE);

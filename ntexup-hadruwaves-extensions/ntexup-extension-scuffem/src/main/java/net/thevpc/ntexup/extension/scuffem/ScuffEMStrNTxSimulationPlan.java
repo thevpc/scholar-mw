@@ -209,6 +209,10 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.meshResolution).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, ("port:" + modelInfo.portDeembed).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, "mesh:narrow-strips;gap-port".getBytes(StandardCharsets.UTF_8));
+            if (modelInfo.solvePoints != 10) {
+                // only when changed, so caches of decks on the default stay valid
+                NTxMwSimulationUtils.addDigestSource(d, ("solve-points:" + modelInfo.solvePoints).getBytes(StandardCharsets.UTF_8));
+            }
             if (modelInfo.geometryId != null) {
                 NTxMwSimulationUtils.addDigestSource(d, modelInfo.geometryId.getBytes(StandardCharsets.UTF_8));
             }
@@ -825,16 +829,17 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             return list;
         }
 
-        if (requestedFrequencies.size() <= 12) {
+        if (requestedFrequencies.size() <= 12 || modelInfo.solvePoints == 0
+                || requestedFrequencies.size() <= modelInfo.solvePoints) {
             list.addAll(requestedFrequencies);
             return list;
         }
 
-        // Downsample to at most 12 anchor frequencies across range
+        // Downsample to solve-points anchor frequencies across range; the rest is interpolated
         List<Double> all = new ArrayList<>(requestedFrequencies);
         double fmin = all.get(0);
         double fmax = all.get(all.size() - 1);
-        int nAnchors = 10;
+        int nAnchors = modelInfo.solvePoints;
         for (int i = 0; i < nAnchors; i++) {
             double f = fmin + (fmax - fmin) * (double) i / (double) (nAnchors - 1);
             list.add(f);

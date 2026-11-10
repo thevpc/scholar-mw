@@ -49,6 +49,12 @@ public class ScuffEMModelInfo {
      * referred back to the original port plane. Default 0 keeps the edge-port reading.
      */
     public double portDeembed = 0.0;
+    /**
+     * How many frequencies SCUFF-EM actually solves; the rest of the sweep is interpolated.
+     * 0 solves every requested frequency. Default 10 anchors (plus the solve frequency) keeps
+     * existing decks unchanged, but cannot resolve a null narrower than the anchor spacing.
+     */
+    public int solvePoints = 10;
     public String dockerImage = "thevpc/scuff-em:latest";
     public String mode = "auto";
     public NTxNode sceneNode;
