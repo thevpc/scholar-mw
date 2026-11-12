@@ -24,7 +24,7 @@ import java.util.Objects;
  *     geometry:"antenna-patch", frequency:f, epsilonr:εr, losstangent:tanδ,
  *     port:{ type:wave, extension:20mm, mode:1 },
  *     mesh:{ metal:0.4mm, substrate:1.5mm, air:3.5mm, order:2, padding:33mm, air-height:15mm },
- *     adaptive-tol:1e-3, processes:16,
+ *     adaptive-tol:1e-3, processes:16, linear-solver:ams,
  *     results:{ allS11:S11(frequency:{from:6.9GHz, to:9.8GHz, count:81}) }
  * )
  * </pre>
@@ -84,6 +84,19 @@ public class PalaceParser {
                 case "processes":
                 case "threads": {
                     info.processes = Math.max(1, v.asIntValue().orElse(info.processes));
+                    break;
+                }
+                case "linear-solver": {
+                    String t = NNameFormat.LOWER_KEBAB_CASE.format(v.asStringValue().orElse(""));
+                    switch (t) {
+                        case "ams": info.linearSolver = "AMS"; break;
+                        case "superlu": case "super-lu": info.linearSolver = "SuperLU"; break;
+                        case "mumps": info.linearSolver = "MUMPS"; break;
+                        case "strumpack": info.linearSolver = "STRUMPACK"; break;
+                        case "default": info.linearSolver = "Default"; break;
+                        default:
+                            throw new IllegalArgumentException("Palace: 'linear-solver' expects ams, superlu, mumps, strumpack or default");
+                    }
                     break;
                 }
             }

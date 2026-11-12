@@ -70,6 +70,7 @@ public abstract class NTxScuffEMComplexNTxSolver extends NTxSolverRunImpl {
 
     @Override
     public List<NTxSimulationResult> execute() {
+        NTxSolverCost.begin(plan().name()); // published with the metrics
         ScuffEMStrNTxSimulationPlan plan = (ScuffEMStrNTxSimulationPlan) plan();
 
         NTxChronometer chronometer = NTxChronometer.of();

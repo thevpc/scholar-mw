@@ -75,6 +75,7 @@ public abstract class NTxPalaceComplexNTxSolver extends NTxSolverRunImpl {
 
     @Override
     public List<NTxSimulationResult> execute() {
+        NTxSolverCost.begin(plan().name()); // published with the metrics
         PalaceStrNTxSimulationPlan plan = (PalaceStrNTxSimulationPlan) plan();
         plan.ensureSolved();
 

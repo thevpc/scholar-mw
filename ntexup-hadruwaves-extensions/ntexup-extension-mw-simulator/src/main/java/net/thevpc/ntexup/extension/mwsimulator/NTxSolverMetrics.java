@@ -47,10 +47,20 @@ public class NTxSolverMetrics {
     public static final String BW3_MHZ = "bw3MHz";
     public static final String GRID_STEP_MHZ = "gridStepMHz";
 
+    /**
+     * Cost of the solve on this machine (see {@link NTxSolverCost}): wall-clock time as
+     * text ("1 h 50 min") and peak container memory in GB ("n/a" for in-process solvers).
+     */
+    public static final String RUN_TIME = "runTime";
+    public static final String PEAK_MEM_GB = "peakMemGB";
+
     public static final String[] NAMES = {
             FR, MIN_DB, BW10, Q10, BW3, Q3, GRID_STEP, POINTS,
-            FR_GHZ, BW10_MHZ, BW3_MHZ, GRID_STEP_MHZ
+            FR_GHZ, BW10_MHZ, BW3_MHZ, GRID_STEP_MHZ, RUN_TIME, PEAK_MEM_GB
     };
+
+    /** Per plan, the costliest output published so far: later outputs reuse the solved plan. */
+    private static final Map<String, NTxSolverCost> PUBLISHED_COST = new java.util.concurrent.ConcurrentHashMap<>();
 
     /**
      * Suffix appended to a plan name to form the flat global of a metric.
@@ -78,6 +88,7 @@ public class NTxSolverMetrics {
                                String outputName,
                                Number[] x,
                                NArrayElement dbValues) {
+        publishCost(curveMap, rendererContext, planName, outputName);
         Map<String, Double> metrics = compute(toDoubles(x), toDoubles(dbValues));
         if (metrics.isEmpty()) {
             return;
@@ -98,6 +109,33 @@ public class NTxSolverMetrics {
                 put(rendererContext, globalName(pName, e.getKey()), value);
             }
         }
+    }
+
+    private static void publishCost(NTxObjFromMap curveMap, NTxRendererContext rendererContext,
+                                    String planName, String outputName) {
+        NTxSolverCost cost = NTxSolverCost.finish(planName);
+        if (cost == null) {
+            return;
+        }
+        if (curveMap != null) {
+            curveMap.set(RUN_TIME, NTxObjs.elem(NElement.ofString(cost.timeText())));
+            curveMap.set(PEAK_MEM_GB, NTxObjs.elem(NElement.ofString(cost.peakGBText())));
+        }
+        if (planName == null || planName.trim().isEmpty()
+                || rendererContext == null || rendererContext.compiledDocument() == null) {
+            return;
+        }
+        String pName = planName.trim();
+        NTxSolverCost shown = PUBLISHED_COST.merge(pName, cost,
+                (a, b) -> b.seconds() > a.seconds() ? b : a);
+        NElement time = NElement.ofString(shown.timeText());
+        NElement mem = NElement.ofString(shown.peakGBText());
+        put(rendererContext, pName + "." + outputName + "." + RUN_TIME, NElement.ofString(cost.timeText()));
+        put(rendererContext, pName + "." + outputName + "." + PEAK_MEM_GB, NElement.ofString(cost.peakGBText()));
+        put(rendererContext, pName + "." + RUN_TIME, time);
+        put(rendererContext, pName + "." + PEAK_MEM_GB, mem);
+        put(rendererContext, globalName(pName, RUN_TIME), time);
+        put(rendererContext, globalName(pName, PEAK_MEM_GB), mem);
     }
 
     private static void put(NTxRendererContext rendererContext, String key, NElement value) {

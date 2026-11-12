@@ -70,6 +70,7 @@ public abstract class NTxGetDPComplexNTxSolver extends NTxSolverRunImpl {
 
     @Override
     public List<NTxSimulationResult> execute() {
+        NTxSolverCost.begin(plan().name()); // published with the metrics
         GetDPStrNTxSimulationPlan plan = (GetDPStrNTxSimulationPlan) plan();
         plan.ensureFemSolved();
 

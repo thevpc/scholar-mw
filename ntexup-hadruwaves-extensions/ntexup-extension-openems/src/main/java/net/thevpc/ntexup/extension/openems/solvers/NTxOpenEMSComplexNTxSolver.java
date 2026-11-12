@@ -70,6 +70,7 @@ public abstract class NTxOpenEMSComplexNTxSolver extends NTxSolverRunImpl {
 
     @Override
     public List<NTxSimulationResult> execute() {
+        NTxSolverCost.begin(plan().name()); // published with the metrics
         OpenEMSStrNTxSimulationPlan plan = (OpenEMSStrNTxSimulationPlan) plan();
         NTxChronometer chronometer = NTxChronometer.of();
         List<Number> complexValues = new ArrayList<>();

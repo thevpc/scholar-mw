@@ -55,6 +55,8 @@ public class PalaceModelInfo {
     /** Palace's adaptive fast frequency sweep tolerance */
     public double adaptiveTol = 1e-3;
     public int processes = 16;
+    /** Palace's Solver.Linear.Type; "Default" lets Palace choose (SuperLU on the patch decks). */
+    public String linearSolver = "Default";
 
     public List<PalaceBox> groundBoxes = new ArrayList<>();
     public List<PalaceBox> substrateBoxes = new ArrayList<>();

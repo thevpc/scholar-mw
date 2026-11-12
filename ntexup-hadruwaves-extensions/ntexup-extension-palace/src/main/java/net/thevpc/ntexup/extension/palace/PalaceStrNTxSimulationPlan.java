@@ -176,7 +176,9 @@ public class PalaceStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                         + "Field[3].XMin = x0; Field[3].XMax = x1; Field[3].YMin = y0; Field[3].YMax = y1; Field[3].ZMin = zg; Field[3].ZMax = zt;\n"
                         + "Field[4] = Min; Field[4].FieldsList = {2, 3};\nBackground Field = 4;\n"
                         + "Mesh.MeshSizeFromPoints = 0; Mesh.MeshSizeExtendFromBoundary = 0; Mesh.MeshSizeFromCurvature = 0;\n",
-                m.meshMetal, m.meshAir, Math.min(m.meshSubstrate, h / 2), m.meshAir));
+                // at least one element through the substrate; Field[2] already refines it near the
+                // metal. h/2 over the whole board tripled the mesh (0.89M elements, 56 GB on Sheen).
+                m.meshMetal, m.meshAir, Math.min(m.meshSubstrate, h), m.meshAir));
         return sb.toString();
     }
 
@@ -231,11 +233,11 @@ public class PalaceStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                         + "      \"Samples\": [ { \"Type\": \"Linear\", \"MinFreq\": %.9g, \"MaxFreq\": %.9g, \"FreqStep\": %.9g } ],\n"
                         + "      \"AdaptiveTol\": %.3g\n"
                         + "    },\n"
-                        + "    \"Linear\": { \"Type\": \"Default\", \"KSPType\": \"GMRES\", \"Tol\": 1.0e-8, \"MaxIts\": 400 }\n"
+                        + "    \"Linear\": { \"Type\": \"%s\", \"KSPType\": \"GMRES\", \"Tol\": 1.0e-8, \"MaxIts\": 400 }\n"
                         + "  }\n"
                         + "}\n",
                 m.epsilonR, m.lossTangent, m.portMode, m.portExtension, m.order,
-                band[0] / 1e9, band[1] / 1e9, band[2] / 1e9, m.adaptiveTol);
+                band[0] / 1e9, band[1] / 1e9, band[2] / 1e9, m.adaptiveTol, m.linearSolver);
     }
 
     public synchronized void ensureSolved() {

@@ -6,7 +6,12 @@ import net.thevpc.nuts.io.NCp;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.text.NMsg;
 
+import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -150,10 +155,28 @@ public class NTxDockerProvisioner {
     private static int runInDocker(String dockerImage, NPath hostWorkDir, String containerWorkDir,
                                    List<String> command, boolean useCommandAsEntrypoint,
                                    NTxRendererContext rendererContext, String logPrefix) {
+        NTxSolverCost cost = NTxSolverCost.current();
+        Path cidFile = null;
+        if (cost != null) {
+            try {
+                cidFile = Files.createTempFile("ntx-docker-", ".cid");
+                Files.delete(cidFile); // docker refuses an existing cid file
+            } catch (IOException e) {
+                cidFile = null;
+            }
+        }
         List<String> args = new ArrayList<>();
         args.add("docker");
         args.add("run");
         args.add("--rm");
+        if (cidFile != null) {
+            args.add("--cidfile");
+            args.add(cidFile.toString());
+        }
+        // every solver container is capped, swap included: a solver that needs more is
+        // killed (exit 137) instead of taking the machine down
+        args.add("--memory=" + solverMemoryLimit());
+        args.add("--memory-swap=" + solverMemoryLimit());
         args.add("-v");
         args.add(hostWorkDir.toAbsolute().toString() + ":" + containerWorkDir);
         args.add("-w");
@@ -174,6 +197,97 @@ public class NTxDockerProvisioner {
         NExec exec = NExec.ofSystem(args.toArray(new String[0]))
                 .directory(hostWorkDir)
                 .failFast(false);
-        return exec.run().exitCode();
+        if (cidFile == null) {
+            return logMemoryKill(exec.run().exitCode(), rendererContext, logPrefix);
+        }
+        PeakMemoryPoller poller = new PeakMemoryPoller(cidFile, cost);
+        poller.start();
+        try {
+            return logMemoryKill(exec.run().exitCode(), rendererContext, logPrefix);
+        } finally {
+            poller.stopPolling();
+        }
+    }
+
+    /** Docker memory limit of every solver container; NTX_SOLVER_MEMORY overrides the 20g default. */
+    public static String solverMemoryLimit() {
+        String v = System.getenv("NTX_SOLVER_MEMORY");
+        return v == null || v.trim().isEmpty() ? "20g" : v.trim();
+    }
+
+    private static int logMemoryKill(int code, NTxRendererContext rendererContext, String logPrefix) {
+        if (code == 137 && rendererContext != null) {
+            rendererContext.log(NMsg.ofC("[%s] solver container killed (exit 137): most likely it exceeded the %s memory limit",
+                    logPrefix, solverMemoryLimit()).asError());
+        }
+        return code;
+    }
+
+    /**
+     * Samples the container's cgroup v2 working set every two seconds: {@code memory.current}
+     * less the reclaimable file cache ({@code inactive_file} in {@code memory.stat}), as
+     * {@code docker stats} does. {@code memory.peak} is not used: it counts that cache, which
+     * grows until the limit, so every long run would report the cap. Sampling can miss a
+     * spike shorter than two seconds.
+     */
+    private static class PeakMemoryPoller extends Thread {
+        private final Path cidFile;
+        private final NTxSolverCost cost;
+        private volatile boolean running = true;
+
+        PeakMemoryPoller(Path cidFile, NTxSolverCost cost) {
+            super("ntx-docker-mem");
+            setDaemon(true);
+            this.cidFile = cidFile;
+            this.cost = cost;
+        }
+
+        @Override
+        public void run() {
+            String cid = null;
+            while (running) {
+                try {
+                    if (cid == null && Files.exists(cidFile)) {
+                        String s = new String(Files.readAllBytes(cidFile), StandardCharsets.UTF_8).trim();
+                        cid = s.isEmpty() ? null : s;
+                    }
+                    if (cid != null) {
+                        for (String p : new String[]{
+                                "/sys/fs/cgroup/system.slice/docker-" + cid + ".scope",
+                                "/sys/fs/cgroup/docker/" + cid}) {
+                            Path current = Paths.get(p, "memory.current");
+                            if (Files.isReadable(current)) {
+                                long used = Long.parseLong(new String(Files.readAllBytes(current), StandardCharsets.UTF_8).trim());
+                                cost.recordPeak(used - inactiveFile(Paths.get(p, "memory.stat")));
+                                break;
+                            }
+                        }
+                    }
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    return;
+                } catch (Exception ignored) {
+                    // the container may exit between the check and the read
+                }
+            }
+        }
+
+        private static long inactiveFile(Path stat) throws IOException {
+            for (String line : Files.readAllLines(stat, StandardCharsets.UTF_8)) {
+                if (line.startsWith("inactive_file ")) {
+                    return Long.parseLong(line.substring("inactive_file ".length()).trim());
+                }
+            }
+            return 0;
+        }
+
+        void stopPolling() {
+            running = false;
+            interrupt();
+            try {
+                Files.deleteIfExists(cidFile);
+            } catch (IOException ignored) {
+            }
+        }
     }
 }

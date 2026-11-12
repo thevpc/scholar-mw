@@ -69,6 +69,7 @@ public abstract class NTxAnalyticalComplexNTxSolver extends NTxSolverRunImpl {
 
     @Override
     public List<NTxSimulationResult> execute() {
+        NTxSolverCost.begin(plan().name()); // published with the metrics
         AnalyticalStrNTxSimulationPlan plan = (AnalyticalStrNTxSimulationPlan) plan();
         NTxChronometer chronometer = NTxChronometer.of();
         List<Number> complexValues = new ArrayList<>();

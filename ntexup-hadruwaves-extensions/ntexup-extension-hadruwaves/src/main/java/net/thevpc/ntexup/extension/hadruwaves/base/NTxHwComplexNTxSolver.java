@@ -53,6 +53,7 @@ public abstract class NTxHwComplexNTxSolver extends NTxHwNTxSolver {
 
     @Override
     public List<NTxSimulationResult> execute() {
+        NTxSolverCost.begin(plan().name()); // published with the metrics
         MomStructure str = ((MoMStrNTxSimulationPlan) plan()).str;
         NTxChronometer chronometer = NTxChronometer.of();
         List<Number> complexValues = new ArrayList<>();

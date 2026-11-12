@@ -70,6 +70,7 @@ public abstract class NTxQucsComplexNTxSolver extends NTxSolverRunImpl {
 
     @Override
     public List<NTxSimulationResult> execute() {
+        NTxSolverCost.begin(plan().name()); // published with the metrics
         QucsStrNTxSimulationPlan plan = (QucsStrNTxSimulationPlan) plan();
 
         NTxChronometer chronometer = NTxChronometer.of();

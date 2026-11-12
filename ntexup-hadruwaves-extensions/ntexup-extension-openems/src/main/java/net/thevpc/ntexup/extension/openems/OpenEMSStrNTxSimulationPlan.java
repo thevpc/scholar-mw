@@ -1,6 +1,7 @@
 package net.thevpc.ntexup.extension.openems;
 
 import net.thevpc.ntexup.api.renderer.NTxRendererContext;
+import net.thevpc.ntexup.extension.mwsimulator.NTxDockerProvisioner;
 import net.thevpc.ntexup.extension.mwsimulator.NTxMwSimulationUtils;
 import net.thevpc.ntexup.extension.mwsimulator.NTxSimulationPlanImpl;
 import net.thevpc.ntexup.extension.mwsimulator.NTxSolverRun;
@@ -124,15 +125,13 @@ public class OpenEMSStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                 if (rendererContext != null) {
                     rendererContext.log(NMsg.ofC("[OpenEMS][%s] Running openEMS simulation in Docker (%s)", id, dockerImage));
                 }
-                NExec cmd = NExec.ofSystem("docker", "run", "--rm",
-                        "-v", workDir.toAbsolute().normalize().toString() + ":/simulations",
-                        "-w", "/simulations",
-                        dockerImage,
-                        "openEMS", xmlFile.name(),
-                        "--numThreads=" + modelInfo.numThreads,
-                        "--disable-dumps"
-                ).directory(workDir);
-                cmd.run();
+                // through the shared launcher so the container's peak memory is recorded;
+                // a failed run is reported by the missing probe files below
+                NTxDockerProvisioner.runInDocker(dockerImage, workDir.toAbsolute().normalize(), "/simulations",
+                        Arrays.asList("openEMS", xmlFile.name(),
+                                "--numThreads=" + modelInfo.numThreads,
+                                "--disable-dumps"),
+                        rendererContext, "OpenEMS][" + id);
             } else {
                 NPath nativeBin = OpenEMSProvisioner.ensureNativeBinary(rendererContext, id);
                 if (rendererContext != null) {
@@ -219,12 +218,10 @@ public class OpenEMSStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             if (rendererContext != null) {
                 rendererContext.log(NMsg.ofC("[OpenEMS][%s] Running openEMS with its own MSL port in Docker (%s)", id, OpenEMSProvisioner.PYTHON_DOCKER_IMAGE));
             }
-            NExec.ofSystem("docker", "run", "--rm",
-                    "-v", workDir.toAbsolute().normalize().toString() + ":/simulations",
-                    "-w", "/simulations",
-                    OpenEMSProvisioner.PYTHON_DOCKER_IMAGE,
-                    "python3", "msl_driver.py"
-            ).directory(workDir).run();
+            // a failed run is reported by the missing s11.dat below
+            NTxDockerProvisioner.runInDocker(OpenEMSProvisioner.PYTHON_DOCKER_IMAGE, workDir.toAbsolute().normalize(),
+                    "/simulations", Arrays.asList("python3", "msl_driver.py"),
+                    rendererContext, "OpenEMS][" + id);
             NTxMwSimulationUtils.keepSolverInputs(rendererContext, name, workDir);
             NPath out = workDir.resolve("s11.dat");
             if (!out.exists()) {
