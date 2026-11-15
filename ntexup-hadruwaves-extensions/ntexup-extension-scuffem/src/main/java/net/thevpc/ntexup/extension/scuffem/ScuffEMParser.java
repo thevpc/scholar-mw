@@ -87,10 +87,18 @@ public class ScuffEMParser {
                             }
                             NPairElement mp = c.asNamedPair().get();
                             String meshKey = NTxUtils.uid(mp.key().asStringValue().orElse(""));
-                            if (!"resolution".equals(meshKey)) {
+                            NElement meshValue = context.evalExpression(mp.value()).orElse(mp.value());
+                            if ("resolution".equals(meshKey)) {
+                                info.meshResolution = meshValue.asDoubleValue().orElse(info.meshResolution);
+                            } else if ("edge".equals(meshKey)) {
+                                // triangle size along the conductor edges, in mm like resolution
+                                info.meshEdge = meshValue.asDoubleValue().orElse(0.0);
+                                if (!(info.meshEdge > 0)) {
+                                    throw new IllegalArgumentException("SCUFF-EM: mesh option 'edge' expects a positive size in mm, as in mesh:{resolution:1.5, edge:0.6}");
+                                }
+                            } else {
                                 throw new IllegalArgumentException("SCUFF-EM: unknown mesh option '" + meshKey + "'");
                             }
-                            info.meshResolution = context.evalExpression(mp.value()).orElse(mp.value()).asDoubleValue().orElse(info.meshResolution);
                         }
                         break;
                     }

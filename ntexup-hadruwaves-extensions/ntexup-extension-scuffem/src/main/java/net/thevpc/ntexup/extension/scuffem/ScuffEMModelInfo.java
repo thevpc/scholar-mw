@@ -43,6 +43,8 @@ public class ScuffEMModelInfo {
     public double z0Ref = 50.0;
     public String geometryId;
     public double meshResolution = 2.5; // mm
+    /** Triangle size along the conductor edges in mm, where the current is singular; 0 = same as meshResolution. */
+    public double meshEdge = 0;
     /**
      * mm. When positive, the feed is extended by this length behind the port, the port moves to
      * the new end, and S11 is read from the standing wave of the strip current on the extension,

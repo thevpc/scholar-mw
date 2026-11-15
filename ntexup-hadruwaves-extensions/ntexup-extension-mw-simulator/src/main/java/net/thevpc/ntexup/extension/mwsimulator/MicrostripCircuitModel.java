@@ -29,7 +29,7 @@ public class MicrostripCircuitModel {
 
     public static final double C_LIGHT = 2.99792458e8;
     /** Part of every cache hash built on this model: change it when the model changes. */
-    public static final String VERSION = "2-kirschning-jansen";
+    public static final String VERSION = "5-no-notch-length";
 
     public static class ComplexNum {
         public final double re;
@@ -218,7 +218,11 @@ public class MicrostripCircuitModel {
 
             boolean isGround = NTxMwSimulationUtils.isSimulationNode(child, "ground");
             boolean isSubstrate = NTxMwSimulationUtils.isSimulationNode(child, "substrate");
-            boolean isPatch = NTxMwSimulationUtils.isSimulationNode(child, "patch");
+            // The flanks either side of an inset feed are patch metal: read as lines they left the
+            // patch with the length above the inset only, and its resonance far above the band.
+            boolean isPatch = NTxMwSimulationUtils.isSimulationNode(child, "patch")
+                    || NTxMwSimulationUtils.isSimulationNode(child, "left-flank")
+                    || NTxMwSimulationUtils.isSimulationNode(child, "right-flank");
             boolean isSource = NTxMwSimulationUtils.isSimulationNode(child, "source");
             boolean isAntenna = NTxMwSimulationUtils.isSimulationNode(child, "antenna")
                     || isPatch
@@ -438,8 +442,14 @@ public class MicrostripCircuitModel {
         for (LineSegment line : model.lines) {
             // Capped by the length: the two ends of a short wide line must stay two nodes
             double tol = Math.min(Math.max(line.width, 2e-3), 0.45 * line.length);
-            line.nodeA = resolveOrCreateNode(line.pA, nodePoints, nodeNames, tol);
-            line.nodeB = resolveOrCreateNode(line.pB, nodePoints, nodeNames, tol);
+            line.nodeA = insetFeedNode(model, line.pA, tol);
+            if (line.nodeA == null) {
+                line.nodeA = resolveOrCreateNode(line.pA, nodePoints, nodeNames, tol);
+            }
+            line.nodeB = insetFeedNode(model, line.pB, tol);
+            if (line.nodeB == null) {
+                line.nodeB = resolveOrCreateNode(line.pB, nodePoints, nodeNames, tol);
+            }
             model.nodeToLines.computeIfAbsent(line.nodeA, k -> new ArrayList<>()).add(line);
             model.nodeToLines.computeIfAbsent(line.nodeB, k -> new ArrayList<>()).add(line);
         }
@@ -516,13 +526,13 @@ public class MicrostripCircuitModel {
     private void computePatchParameters(PatchElement p) {
         // Analytical cavity resonance, at the permittivity of its own frequency
         double u = p.width / substrateH;
-        double notchFraction = p.length > 0 ? (p.insetDepth / p.length) : 0.0;
-        double notchFactor = notchFraction * (1.0 - notchFraction);
+        // The inset notches add no resonant length: OpenEMS and Palace put the inset patch of
+        // compare-patch at 7.045 GHz, this model at 6.99 GHz without a notch term (6.41 with one).
         double epsEff = lineParams(p.width).epsEff;
         p.fr = 0;
         for (int i = 0; i < 30; i++) {
             double dL = 0.412 * substrateH * ((epsEff + 0.3) / (epsEff - 0.258)) * ((u + 0.264) / (u + 0.8));
-            double leff = p.length + 2.0 * dL + p.insetDepth * notchFactor;
+            double leff = p.length + 2.0 * dL;
             double fr = C_LIGHT / (2.0 * leff * Math.sqrt(epsEff));
             boolean converged = Math.abs(fr - p.fr) < 1e3;
             p.fr = fr;
@@ -580,6 +590,20 @@ public class MicrostripCircuitModel {
         return b.width() > b.length();
     }
 
+    /**
+     * A feed drawn as one box up to the end of an inset notch ends inside the patch, up to the
+     * inset depth away from the patch edge where the patch node sits: it still feeds that patch.
+     */
+    private static String insetFeedNode(MicrostripCircuitModel model, Point2D pt, double tol) {
+        for (PatchElement p : model.patches) {
+            if (p.insetDepth > 0 && Math.abs(pt.x - p.feedX) <= tol
+                    && pt.y >= p.feedY - 1e-9 && pt.y <= p.feedY + p.insetDepth + 1e-9) {
+                return p.nodeName;
+            }
+        }
+        return null;
+    }
+
     private static String resolveOrCreateNode(Point2D pt, List<Point2D> nodePoints, List<String> nodeNames, double tol) {
         // nearest, not first: a wide line's tolerance can reach past a short neighbour
         int best = -1;
@@ -631,6 +655,44 @@ public class MicrostripCircuitModel {
         return num.div(den);
     }
 
+    /** Copper resistivity, the value the Qucs netlist carries (rho). */
+    private static final double RHO_CONDUCTOR = 2.44e-8;
+
+    /**
+     * Attenuation of a line in Np/m: the dielectric loss of the quasi-TEM mode (filling factor
+     * eps_r (eps_eff - 1) / (eps_eff (eps_r - 1))) plus the conductor loss Rs / (Z0 w).
+     */
+    private double lineAttenuation(LineParams line, double width, double f) {
+        double k0 = 2.0 * Math.PI * f / C_LIGHT;
+        double alphaD = epsilonR > 1.0
+                ? k0 * epsilonR * (line.epsEff - 1.0) * lossTangent / (2.0 * Math.sqrt(line.epsEff) * (epsilonR - 1.0))
+                : 0.0;
+        double rs = Math.sqrt(Math.PI * f * 4.0e-7 * Math.PI * RHO_CONDUCTOR);
+        double alphaC = rs / (line.z0 * width);
+        return alphaD + alphaC;
+    }
+
+    /**
+     * A lossy line: Zin = Z0 (ZL + Z0 tanh(g l)) / (Z0 + ZL tanh(g l)), g = alpha + j beta.
+     * Lossless, an open stub reflects everything, where the full-wave and circuit solvers
+     * read -0.6 to -1 dB on 30 mm of FR4 at 3.4 GHz.
+     */
+    private ComplexNum lossyTline(LineParams line, double width, double length, double f, ComplexNum zLoad) {
+        if (length <= 0) return zLoad;
+        double a = lineAttenuation(line, width, f) * length;
+        double b = 2.0 * Math.PI * f * Math.sqrt(line.epsEff) / C_LIGHT * length;
+        // tanh(a + jb) = (sinh 2a + j sin 2b) / (cosh 2a + cos 2b)
+        double den = Math.cosh(2.0 * a) + Math.cos(2.0 * b);
+        if (Math.abs(den) < 1e-300) {
+            den = 1e-300;
+        }
+        ComplexNum t = ComplexNum.of(Math.sinh(2.0 * a) / den, Math.sin(2.0 * b) / den);
+        ComplexNum z0 = ComplexNum.of(line.z0);
+        ComplexNum num = zLoad.plus(t.mul(line.z0));
+        ComplexNum d = z0.plus(zLoad.mul(t));
+        return z0.mul(num.div(d));
+    }
+
     public ComplexNum computeZin(double freq) {
         Set<LineSegment> visited = new HashSet<>();
         return computeNodeZin("_net0", null, freq, visited);
@@ -652,7 +714,7 @@ public class MicrostripCircuitModel {
 
             visited.add(line);
             ComplexNum zNext = computeNodeZin(nextNode, node, freq, visited);
-            ComplexNum zTrans = tline(lineParams(line.width, freq), line.length, freq, zNext);
+            ComplexNum zTrans = lossyTline(lineParams(line.width, freq), line.width, line.length, freq, zNext);
             branchLoads.add(zTrans);
         }
 

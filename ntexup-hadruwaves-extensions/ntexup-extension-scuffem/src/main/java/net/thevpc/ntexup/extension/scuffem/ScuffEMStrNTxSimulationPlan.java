@@ -208,6 +208,10 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.lossTangent).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.meshResolution).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, ("port:" + modelInfo.portDeembed).getBytes(StandardCharsets.UTF_8));
+            if (modelInfo.meshEdge > 0) {
+                // only when set, so decks without it keep their hash
+                NTxMwSimulationUtils.addDigestSource(d, ("mesh-edge:" + modelInfo.meshEdge).getBytes(StandardCharsets.UTF_8));
+            }
             NTxMwSimulationUtils.addDigestSource(d, "mesh:narrow-strips;gap-port".getBytes(StandardCharsets.UTF_8));
             if (modelInfo.solvePoints != 10) {
                 // only when changed, so caches of decks on the default stay valid
@@ -245,6 +249,9 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         double minSize = lc;
         for (int i = 0; i < n; i++) {
             size[i] = Math.min(lc, 0.5 * localFeatureSize(o.points, i) * 1000.0);
+            if (modelInfo.meshEdge > 0) {
+                size[i] = Math.min(size[i], modelInfo.meshEdge);
+            }
             minSize = Math.min(minSize, size[i]);
         }
         sb.append(String.format(Locale.US, "Mesh.CharacteristicLengthMin = %.4f;\n", minSize));
@@ -260,6 +267,25 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             sb.append(i + 1).append(i + 1 == n ? "};\n" : ", ");
         }
         sb.append("Plane Surface(1) = {1};\n");
+        if (modelInfo.meshEdge > 0 && modelInfo.meshEdge < lc) {
+            // The current is singular along the conductor edges, so the resonance converges with
+            // the triangles there and not with the bulk size: on the quarter-wave patch deck the
+            // null moved 8.13 -> 8.06 -> 8.05 GHz for 1.5 -> 0.6 -> 0.35 mm at the edges.
+            // Sizes then come from this field alone inside the surface; the point sizes above
+            // still set the 1D mesh of the outline.
+            double e = modelInfo.meshEdge;
+            sb.append("Field[1] = Distance;\nField[1].CurvesList = {");
+            for (int i = 0; i < n; i++) {
+                sb.append(i + 1).append(i + 1 == n ? "};\n" : ", ");
+            }
+            sb.append("Field[1].NumPointsPerCurve = 400;\n");
+            sb.append(String.format(Locale.US,
+                    "Field[2] = Threshold;\nField[2].InField = 1;\nField[2].SizeMin = %.4f;\nField[2].SizeMax = %.4f;\n"
+                            + "Field[2].DistMin = %.4f;\nField[2].DistMax = %.4f;\nBackground Field = 2;\n"
+                            + "Mesh.MeshSizeExtendFromBoundary = 0;\nMesh.MeshSizeFromCurvature = 0;\n",
+                    e, lc, e, e + 4.0 * (lc - e)));
+            sb.append(String.format(Locale.US, "Mesh.CharacteristicLengthMin = %.4f;\n", Math.min(minSize, e)));
+        }
         if (Double.isNaN(o.stubTop)) {
             sb.append("Physical Surface(\"Antenna\") = {1};\n");
             return sb.toString();
@@ -277,6 +303,11 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         for (int i = 0; i < 4; i++) {
             sb.append(String.format(Locale.US, "Line(%d) = {%d, %d};\n", n + 1 + i, n + 1 + i, n + 1 + (i + 1) % 4));
         }
+        // scuff orders boundary edges by their node pair, and gmsh numbers the nodes inside the
+        // last curve last. Five nodes on the stub's last side put two of its own edges at the
+        // end of that order, where the GetEdgeByIndex bug above would otherwise find the gap
+        // edge: a 3.1 mm feed at lc 1.5, whose stub sides carry one inner node each, aborted.
+        sb.append(String.format(Locale.US, "Transfinite Curve{%d} = 5;\n", n + 4));
         sb.append(String.format(Locale.US, "Curve Loop(2) = {%d, %d, %d, %d};\n", n + 1, n + 2, n + 3, n + 4));
         sb.append("Plane Surface(2) = {2};\n");
         sb.append("Physical Surface(\"Antenna\") = {1, 2};\n");
@@ -316,78 +347,95 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         if (boxes.isEmpty()) {
             throw new IllegalStateException("SCUFF-EM: no conductor surface to mesh");
         }
-        double tol = 1e-9;
-        TreeSet<Double> ys = new TreeSet<>();
+        // The union is taken on a 1 nm grid, so boxes that abut up to rounding share their edge
+        // exactly. A band-by-band sweep along Y did this before, but it allows one conductor per
+        // band: an inset feed between two patch flanks, or two patches side by side, failed.
+        final double grid = 1e9;
+        java.awt.geom.Area area = new java.awt.geom.Area();
         for (ScuffEMModelInfo.ScuffEMBox b : boxes) {
-            ys.add(b.yMin());
-            ys.add(b.yMax());
-        }
-        // Abutting boxes can differ by rounding, which would leave a zero-height band
-        List<Double> yEdge = new ArrayList<>();
-        for (double y : ys) {
-            if (yEdge.isEmpty() || y - yEdge.get(yEdge.size() - 1) > tol) {
-                yEdge.add(y);
+            double x = Math.rint(b.xMin() * grid), y = Math.rint(b.yMin() * grid);
+            double w = Math.rint(b.xMax() * grid) - x, h = Math.rint(b.yMax() * grid) - y;
+            if (w > 0 && h > 0) {
+                area.add(new java.awt.geom.Area(new java.awt.geom.Rectangle2D.Double(x, y, w, h)));
             }
         }
-        int nb = yEdge.size() - 1;
-        double[] left = new double[nb];
-        double[] right = new double[nb];
-        for (int k = 0; k < nb; k++) {
-            double ya = yEdge.get(k);
-            double yb = yEdge.get(k + 1);
-            double ym = (ya + yb) / 2.0;
-            List<double[]> spans = new ArrayList<>();
-            for (ScuffEMModelInfo.ScuffEMBox b : boxes) {
-                if (b.yMin() - tol <= ym && ym <= b.yMax() + tol) {
-                    spans.add(new double[]{b.xMin(), b.xMax()});
+        List<List<double[]>> loops = new ArrayList<>();
+        List<double[]> current = null;
+        double[] c6 = new double[6];
+        for (java.awt.geom.PathIterator it = area.getPathIterator(null); !it.isDone(); it.next()) {
+            int seg = it.currentSegment(c6);
+            if (seg == java.awt.geom.PathIterator.SEG_MOVETO) {
+                current = new ArrayList<>();
+                loops.add(current);
+                current.add(new double[]{c6[0] / grid, c6[1] / grid});
+            } else if (seg == java.awt.geom.PathIterator.SEG_LINETO && current != null) {
+                current.add(new double[]{c6[0] / grid, c6[1] / grid});
+            }
+        }
+        double tol = 1e-9;
+        loops.removeIf(l -> l.size() < 3);
+        if (loops.size() != 1) {
+            throw new IllegalStateException(String.format(
+                    "SCUFF-EM: the conductor boxes merge into %d outlines; the trace mesh needs one"
+                            + " connected surface without holes (separate strips need one physical surface each)",
+                    loops.size()));
+        }
+        List<double[]> pts = new ArrayList<>();
+        for (double[] p : loops.get(0)) {
+            if (pts.isEmpty() || !near(pts.get(pts.size() - 1), p, tol)) {
+                pts.add(p);
+            }
+        }
+        while (pts.size() > 1 && near(pts.get(pts.size() - 1), pts.get(0), tol)) {
+            pts.remove(pts.size() - 1);
+        }
+        // drop the points left in the middle of a straight side where two boxes met
+        for (boolean changed = true; changed && pts.size() > 3; ) {
+            changed = false;
+            for (int i = 0; i < pts.size(); i++) {
+                double[] p0 = pts.get((i + pts.size() - 1) % pts.size()), p1 = pts.get(i), p2 = pts.get((i + 1) % pts.size());
+                double cross = (p1[0] - p0[0]) * (p2[1] - p1[1]) - (p1[1] - p0[1]) * (p2[0] - p1[0]);
+                if (Math.abs(cross) < 1e-15) {
+                    pts.remove(i);
+                    changed = true;
+                    break;
                 }
             }
-            if (spans.isEmpty()) {
-                throw new IllegalStateException(String.format(
-                        "SCUFF-EM: conductor is disconnected in Y at %.4f..%.4f mm; the trace outline must be one connected surface",
-                        ya * 1000.0, yb * 1000.0));
-            }
-            spans.sort(Comparator.comparingDouble(a -> a[0]));
-            double lo = spans.get(0)[0];
-            double hi = spans.get(0)[1];
-            for (int i = 1; i < spans.size(); i++) {
-                double[] s = spans.get(i);
-                if (s[0] - hi > tol) {
-                    throw new IllegalStateException(String.format(
-                            "SCUFF-EM: two separate conductors at y=%.4f mm (x %.4f..%.4f and %.4f..%.4f mm);"
-                                    + " a multi-strip trace mesh needs one physical surface per strip",
-                            ym * 1000.0, lo * 1000.0, hi * 1000.0, s[0] * 1000.0, s[1] * 1000.0));
-                }
-                hi = Math.max(hi, s[1]);
-            }
-            left[k] = lo;
-            right[k] = hi;
         }
-
+        double signedArea = 0;
+        for (int i = 0; i < pts.size(); i++) {
+            double[] p = pts.get(i), q = pts.get((i + 1) % pts.size());
+            signedArea += p[0] * q[1] - q[0] * p[1];
+        }
+        if (signedArea < 0) {
+            Collections.reverse(pts);
+        }
+        // counter-clockwise, starting on the port edge: the lowest edge, which then runs left to
+        // right. With several lowest edges, the one under the source.
+        double yMin = Double.MAX_VALUE;
+        for (double[] p : pts) {
+            yMin = Math.min(yMin, p[1]);
+        }
+        int start = -1;
+        for (int i = 0; i < pts.size(); i++) {
+            double[] p = pts.get(i), q = pts.get((i + 1) % pts.size());
+            if (Math.abs(p[1] - yMin) <= tol && Math.abs(q[1] - yMin) <= tol && q[0] > p[0]) {
+                boolean underSource = p[0] <= geom.feedCenter && geom.feedCenter <= q[0];
+                if (start < 0 || underSource) {
+                    start = i;
+                }
+            }
+        }
+        if (start < 0) {
+            throw new IllegalStateException("SCUFF-EM: the trace outline has no bottom edge to feed");
+        }
         Outline o = new Outline();
-        // counter-clockwise: bottom edge, right side going up, top edge, left side coming down
-        o.points.add(new double[]{left[0], yEdge.get(0)});
-        o.points.add(new double[]{right[0], yEdge.get(0)});
-        for (int k = 0; k < nb; k++) {
-            double yTop = yEdge.get(k + 1);
-            o.points.add(new double[]{right[k], yTop});
-            if (k + 1 < nb && Math.abs(right[k + 1] - right[k]) > tol) {
-                o.points.add(new double[]{right[k + 1], yTop});
-            }
+        for (int i = 0; i < pts.size(); i++) {
+            o.points.add(pts.get((start + i) % pts.size()));
         }
-        o.points.add(new double[]{left[nb - 1], yEdge.get(nb)});
-        for (int k = nb - 1; k >= 0; k--) {
-            o.points.add(new double[]{left[k], yEdge.get(k)});
-            if (k - 1 >= 0 && Math.abs(left[k - 1] - left[k]) > tol) {
-                o.points.add(new double[]{left[k - 1], yEdge.get(k)});
-            }
-        }
-        while (o.points.size() > 1 && near(o.points.get(o.points.size() - 1), o.points.get(0), tol)) {
-            o.points.remove(o.points.size() - 1);
-        }
-        o.portY = yEdge.get(0);
-        o.portX1 = left[0];
-        o.portX2 = right[0];
+        o.portY = yMin;
+        o.portX1 = o.points.get(0)[0];
+        o.portX2 = o.points.get(1)[0];
         o.refY = o.portY;
         if (Math.abs(o.portY - geom.portY) > 1e-6) {
             rendererContext().log(NMsg.ofC("[SCUFF-EM] port y=%.4f mm is not the trace bottom y=%.4f mm;"
@@ -777,13 +825,12 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                                 epsMin = Math.min(epsMin, eps);
                                 epsMax = Math.max(epsMax, eps);
                                 residMax = Math.max(residMax, Double.parseDouble(parts[6]));
-                            } else if (geom.isResonator) {
+                            } else {
+                                // A plain line is read like a resonator: the solved Z11 as it is.
+                                // It used to get 50 Ohm added in series, which turned an open stub's
+                                // -1 dB into a -28 dB null where its reactance crosses zero.
                                 zin = Complex.of(zRe, zIm);
                                 s11 = Complex.of(s11Re, s11Im);
-                            } else {
-                                zin = Complex.of(zRe + 50.0, zIm);
-                                Complex z0 = Complex.of(50.0);
-                                s11 = zin.minus(z0).div(zin.plus(z0));
                             }
                             s11Results.put(f, s11);
                             zinResults.put(f, zin);
