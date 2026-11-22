@@ -67,6 +67,10 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                 NTxMwSimulationUtils.addDigestSource(d, ("quadrature:" + modelInfo.quadrature).getBytes(StandardCharsets.UTF_8));
             }
             net.thevpc.ntexup.extension.mwsimulator.NTxConductorOptions.addToDigest(d, modelInfo.conductor);
+            if (modelInfo.z0Ref != 50.0) {
+                // z0 sets S11 but was missing from the hash
+                NTxMwSimulationUtils.addDigestSource(d, ("z0:" + modelInfo.z0Ref).getBytes(StandardCharsets.UTF_8));
+            }
                 if (modelInfo.geometryId != null) {
                 NTxMwSimulationUtils.addDigestSource(d, modelInfo.geometryId.getBytes(StandardCharsets.UTF_8));
             }
