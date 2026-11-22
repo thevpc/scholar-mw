@@ -18,6 +18,14 @@ import java.util.Objects;
 
 public class GetDPParser {
 
+    private static double lengthMm(NElement value, String key) {
+        double metres = NTxNumberUtils.toMeter(value).orElse(0.0);
+        if (!(metres > 0)) {
+            throw new IllegalArgumentException("GetDP: mesh option '" + key + "' expects a positive length, as in " + key + ":0.05mm");
+        }
+        return metres * 1e3;
+    }
+
     public static GetDPModelInfo parse(NTxFunctionCallContext args) {
         GetDPModelInfo info = new GetDPModelInfo();
         NTxResolutionContext context = args.scopedContext();
@@ -75,11 +83,44 @@ public class GetDPParser {
                                     info.meshDomainFactor = mv.asDoubleValue().orElse(info.meshDomainFactor);
                                     break;
                                 }
+                                case "edge": {
+                                    info.meshEdge = lengthMm(mv, meshKey);
+                                    break;
+                                }
+                                case "far": {
+                                    info.meshFar = lengthMm(mv, meshKey);
+                                    break;
+                                }
+                                case "air-height": {
+                                    info.meshAirHeight = lengthMm(mv, meshKey);
+                                    break;
+                                }
+                                case "edge-samples": {
+                                    info.meshEdgeSamples = mv.asIntValue().orElse(0);
+                                    if (info.meshEdgeSamples < 2) {
+                                        throw new IllegalArgumentException("GetDP: mesh option 'edge-samples' expects an integer >= 2, as in mesh:{edge-samples:800}");
+                                    }
+                                    break;
+                                }
                                 default: {
-                                    throw new IllegalArgumentException("GetDP: unknown mesh option '" + meshKey + "'");
+                                    throw new IllegalArgumentException("GetDP: unknown mesh option '" + meshKey
+                                            + "' (expected resolution, domain-factor, edge, far, air-height or edge-samples)");
                                 }
                             }
                         }
+                        break;
+                    }
+                    case "quadrature": {
+                        // the Gauss rules GetDP has for triangles
+                        int n = pv.asIntValue().orElse(0);
+                        if (!java.util.Arrays.asList(1, 3, 4, 6, 7, 12, 13, 16).contains(n)) {
+                            throw new IllegalArgumentException("GetDP: 'quadrature' expects 1, 3, 4, 6, 7, 12, 13 or 16 Gauss points per triangle");
+                        }
+                        info.quadrature = n;
+                        break;
+                    }
+                    case "conductor": {
+                        info.conductor = net.thevpc.ntexup.extension.mwsimulator.NTxConductorOptions.parse("GetDP", pv, context, "rho");
                         break;
                     }
                     case "meshresolution":

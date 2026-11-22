@@ -44,6 +44,18 @@ public class GetDPModelInfo {
     public String geometryId;
     public double meshResolution = 0.5; // FEM bulk cell size, in half substrate heights
     public double meshDomainFactor = 20.0; // FEM domain width, in (strip width + substrate height)
+    /** mm, cell size at the strip edges; 0 = bulk / 16 */
+    public double meshEdge = 0;
+    /** mm, cell size at the domain walls; 0 = domain width / 16 */
+    public double meshFar = 0;
+    /** mm, air above the substrate; 0 = half the domain width */
+    public double meshAirHeight = 0;
+    /** sampling of the strip in gmsh's Distance field; 0 = 400 */
+    public int meshEdgeSamples = 0;
+    /** Gauss points per triangle in the energy integral; 0 = 4 */
+    public int quadrature = 0;
+    /** conductor:{rho}; unset keeps the circuit model's defaults */
+    public net.thevpc.ntexup.extension.mwsimulator.NTxConductorOptions conductor;
     public String dockerImage = "thevpc/getdp:3.2.0";
     public String mode = "auto"; // "auto", "2d", "3d"
     public NTxNode sceneNode;

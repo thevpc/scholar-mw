@@ -58,6 +58,15 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.epsilonR).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.lossTangent).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, (modelInfo.meshResolution + "," + modelInfo.meshDomainFactor).getBytes(StandardCharsets.UTF_8));
+            // the options below enter the hash only when set, so decks without them keep their cache
+            if (modelInfo.meshEdge > 0 || modelInfo.meshFar > 0 || modelInfo.meshAirHeight > 0 || modelInfo.meshEdgeSamples > 0) {
+                NTxMwSimulationUtils.addDigestSource(d, ("mesh:" + modelInfo.meshEdge + "," + modelInfo.meshFar + "," + modelInfo.meshAirHeight
+                        + "," + modelInfo.meshEdgeSamples).getBytes(StandardCharsets.UTF_8));
+            }
+            if (modelInfo.quadrature > 0) {
+                NTxMwSimulationUtils.addDigestSource(d, ("quadrature:" + modelInfo.quadrature).getBytes(StandardCharsets.UTF_8));
+            }
+            net.thevpc.ntexup.extension.mwsimulator.NTxConductorOptions.addToDigest(d, modelInfo.conductor);
                 if (modelInfo.geometryId != null) {
                 NTxMwSimulationUtils.addDigestSource(d, modelInfo.geometryId.getBytes(StandardCharsets.UTF_8));
             }
@@ -177,6 +186,7 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                     modelInfo.lossTangent,
                     modelInfo.z0Ref
             );
+            circuitModel.applyConductor(modelInfo.conductor);
         }
         return circuitModel;
     }
@@ -204,10 +214,10 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         double w = width * 1e3;
         double h = height * 1e3;
         double boxW = modelInfo.meshDomainFactor * (w + h);
-        double airH = boxW / 2.0;
+        double airH = modelInfo.meshAirHeight > 0 ? modelInfo.meshAirHeight : boxW / 2.0;
         double bulk = modelInfo.meshResolution * h / 2.0;
-        double edge = bulk / 16.0;
-        double far = boxW / 16.0;
+        double edge = modelInfo.meshEdge > 0 ? modelInfo.meshEdge : bulk / 16.0;
+        double far = modelInfo.meshFar > 0 ? modelInfo.meshFar : boxW / 16.0;
 
         return String.format(Locale.US,
                 "w = %.4f;\n" +
@@ -259,7 +269,7 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                 "Field[2].DistMax = h;\n" +
                 "Field[3] = Distance;\n" +
                 "Field[3].CurvesList = {4};\n" +
-                "Field[3].NumPointsPerCurve = 400;\n" +
+                "Field[3].NumPointsPerCurve = " + (modelInfo.meshEdgeSamples > 0 ? modelInfo.meshEdgeSamples : 400) + ";\n" +
                 "Field[4] = Threshold;\n" +
                 "Field[4].InField = 3;\n" +
                 "Field[4].SizeMin = bulk;\n" +
@@ -321,7 +331,7 @@ public class GetDPStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                 "    Case {\n" +
                 "      { Type Gauss;\n" +
                 "        Case {\n" +
-                "          { GeoElement Triangle; NumberOfPoints 4; }\n" +
+                "          { GeoElement Triangle; NumberOfPoints " + (modelInfo.quadrature > 0 ? modelInfo.quadrature : 4) + "; }\n" +
                 "          { GeoElement Quadrangle; NumberOfPoints 4; }\n" +
                 "        }\n" +
                 "      }\n" +
