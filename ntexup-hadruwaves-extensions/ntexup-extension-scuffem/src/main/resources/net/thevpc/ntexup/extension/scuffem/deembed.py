@@ -134,6 +134,6 @@ with open("/sim/results.dat", "w") as f:
         f_ghz = freq / 1e9
         Solver.AssembleSystemMatrix(f_ghz * 2.0 * math.pi / 300.0)
         s11, eps_eff, resid = deembedded_s11(f_ghz)
-        z11 = 50.0 * (1 + s11) / (1 - s11)
+        z11 = globals().get("DE_Z0", 50.0) * (1 + s11) / (1 - s11)
         f.write(f"{freq:.6e} {s11.real:.8e} {s11.imag:.8e} {z11.real:.8e} {z11.imag:.8e} {eps_eff:.5f} {resid:.5f}\n")
         f.flush()

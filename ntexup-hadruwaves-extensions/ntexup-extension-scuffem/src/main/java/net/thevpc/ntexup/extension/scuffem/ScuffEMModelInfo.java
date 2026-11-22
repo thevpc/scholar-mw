@@ -53,6 +53,23 @@ public class ScuffEMModelInfo {
     public double meshAcross = 0;
     /** mm. Smallest outline point size, applied after meshAcross and meshEdge; 0 = no floor. */
     public double meshMin = 0;
+    /** Sampling of the outline in gmsh's Distance field when meshEdge is set; 0 = 400. */
+    public int meshEdgeSamples = 0;
+    /**
+     * With meshEdge set, the size grows from meshEdge at the outline to meshResolution over
+     * meshEdge + grade (meshResolution - meshEdge) mm; 0 = the default grade of 4.
+     */
+    public double meshGrade = 0;
+    /** mm, de-embedded port: the gap between the extended feed and the stub; 0 = 0.3 mm. */
+    public double portGap = 0;
+    /** mm, de-embedded port: the stub beyond the gap; 0 = 3 mm. */
+    public double portStub = 0;
+    /** Nodes on the stub's last side (works around scuff's GetEdgeByIndex bound check); 0 = 5. */
+    public int portStubNodes = 0;
+    /** De-embedded port: the fraction of the extension the current fit uses, from the reference end; 0 = 0.8. */
+    public double portWindow = 0;
+    /** mm, de-embedded port: the current bin height; 0 = 1 mm, or less to keep 12 bins over the window. */
+    public double portBin = 0;
     /**
      * mm. When positive, the feed is extended by this length behind the port, the port moves to
      * the new end, and S11 is read from the standing wave of the strip current on the extension,

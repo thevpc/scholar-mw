@@ -218,6 +218,16 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             if (modelInfo.meshMin > 0) {
                 NTxMwSimulationUtils.addDigestSource(d, ("mesh-min:" + modelInfo.meshMin).getBytes(StandardCharsets.UTF_8));
             }
+            if (modelInfo.meshEdgeSamples > 0 || modelInfo.meshGrade > 0) {
+                NTxMwSimulationUtils.addDigestSource(d, ("mesh-field:" + modelInfo.meshEdgeSamples + "," + modelInfo.meshGrade).getBytes(StandardCharsets.UTF_8));
+            }
+            if (modelInfo.portGap > 0 || modelInfo.portStub > 0 || modelInfo.portStubNodes > 0 || modelInfo.portWindow > 0 || modelInfo.portBin > 0) {
+                NTxMwSimulationUtils.addDigestSource(d, ("port-gap:" + modelInfo.portGap + "," + modelInfo.portStub + "," + modelInfo.portStubNodes
+                        + "," + modelInfo.portWindow + "," + modelInfo.portBin).getBytes(StandardCharsets.UTF_8));
+            }
+            if (modelInfo.z0Ref != 50.0) {
+                NTxMwSimulationUtils.addDigestSource(d, ("z0:" + modelInfo.z0Ref).getBytes(StandardCharsets.UTF_8));
+            }
             NTxMwSimulationUtils.addDigestSource(d, "mesh:narrow-strips;gap-port".getBytes(StandardCharsets.UTF_8));
             if (modelInfo.solvePoints != 10) {
                 // only when changed, so caches of decks on the default stay valid
@@ -289,12 +299,12 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             for (int i = 0; i < n; i++) {
                 sb.append(i + 1).append(i + 1 == n ? "};\n" : ", ");
             }
-            sb.append("Field[1].NumPointsPerCurve = 400;\n");
+            sb.append("Field[1].NumPointsPerCurve = ").append(modelInfo.meshEdgeSamples > 0 ? modelInfo.meshEdgeSamples : 400).append(";\n");
             sb.append(String.format(Locale.US,
                     "Field[2] = Threshold;\nField[2].InField = 1;\nField[2].SizeMin = %.4f;\nField[2].SizeMax = %.4f;\n"
                             + "Field[2].DistMin = %.4f;\nField[2].DistMax = %.4f;\nBackground Field = 2;\n"
                             + "Mesh.MeshSizeExtendFromBoundary = 0;\nMesh.MeshSizeFromCurvature = 0;\n",
-                    e, lc, e, e + 4.0 * (lc - e)));
+                    e, lc, e, e + (modelInfo.meshGrade > 0 ? modelInfo.meshGrade : 4.0) * (lc - e)));
             sb.append(String.format(Locale.US, "Mesh.CharacteristicLengthMin = %.4f;\n", Math.min(minSize, e)));
         }
         if (Double.isNaN(o.stubTop)) {
@@ -306,7 +316,7 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         // boundary edges aborts with "internal error"; a 3 mm stub drawn gap edge last did.
         double x1 = o.portX1 * 1000.0, x2 = o.portX2 * 1000.0;
         double top = o.stubTop * 1000.0, bot = o.stubBottom * 1000.0;
-        double ss = Math.min(lc, 0.5 * GAP_PORT_STUB * 1000.0);
+        double ss = Math.min(lc, 0.5 * gapPortStub() * 1000.0);
         double[][] stub = {{x2, top}, {x1, top}, {x1, bot}, {x2, bot}};
         for (int i = 0; i < 4; i++) {
             sb.append(String.format(Locale.US, "Point(%d) = {%.4f, %.4f, 0, %.4f};\n", n + 1 + i, stub[i][0], stub[i][1], ss));
@@ -318,7 +328,7 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         // last curve last. Five nodes on the stub's last side put two of its own edges at the
         // end of that order, where the GetEdgeByIndex bug above would otherwise find the gap
         // edge: a 3.1 mm feed at lc 1.5, whose stub sides carry one inner node each, aborted.
-        sb.append(String.format(Locale.US, "Transfinite Curve{%d} = 5;\n", n + 4));
+        sb.append(String.format(Locale.US, "Transfinite Curve{%d} = %d;\n", n + 4, modelInfo.portStubNodes > 0 ? modelInfo.portStubNodes : 5));
         sb.append(String.format(Locale.US, "Curve Loop(2) = {%d, %d, %d, %d};\n", n + 1, n + 2, n + 3, n + 4));
         sb.append("Plane Surface(2) = {2};\n");
         sb.append("Physical Surface(\"Antenna\") = {1, 2};\n");
@@ -465,14 +475,19 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             // patch directly, so the de-embedded S11 moved by up to 0.3 GHz with the extension
             // length. Across a gap the charges cancel: the reading then holds within about 1.5 dB
             // from 25 to 50 mm, and a 3 mm stub reads like a 10 mm one.
-            o.stubTop = o.portY - GAP_PORT_GAP;
-            o.stubBottom = o.stubTop - GAP_PORT_STUB;
+            o.stubTop = o.portY - (modelInfo.portGap > 0 ? modelInfo.portGap / 1000.0 : GAP_PORT_GAP);
+            o.stubBottom = o.stubTop - gapPortStub();
         }
         return o;
     }
 
     private static final double GAP_PORT_GAP = 0.3e-3;
     private static final double GAP_PORT_STUB = 3e-3;
+
+    /** m */
+    private double gapPortStub() {
+        return modelInfo.portStub > 0 ? modelInfo.portStub / 1000.0 : GAP_PORT_STUB;
+    }
 
     private static boolean near(double[] a, double[] b, double tol) {
         return Math.abs(a[0] - b[0]) <= tol && Math.abs(a[1] - b[1]) <= tol;
@@ -679,8 +694,11 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         }
         sb.append("]\n");
         sb.append(String.format(Locale.US, "DE_X0, DE_X1 = %.6f, %.6f\n", o.portX1 * 1000.0 - 0.05, o.portX2 * 1000.0 + 0.05));
-        sb.append(String.format(Locale.US, "DE_Y0, DE_Y1, DE_DY = %.6f, %.6f, %.6f\n", refY - 0.8 * ext, refY, deembedBin()));
+        sb.append(String.format(Locale.US, "DE_Y0, DE_Y1, DE_DY = %.6f, %.6f, %.6f\n", refY - deembedWindow() * ext, refY, deembedBin()));
         sb.append(String.format(Locale.US, "DE_YREF = %.6f\n", refY));
+        if (modelInfo.z0Ref != 50.0) {
+            sb.append(String.format(Locale.US, "DE_Z0 = %.6f\n", modelInfo.z0Ref));
+        }
         sb.append(String.format(Locale.US, "DE_EPS, DE_TAND, DE_H = %.6f, %.6f, %.6f\n\n",
                 modelInfo.epsilonR, modelInfo.lossTangent, substrateThickness_mm()));
         try (java.io.InputStream in = getClass().getResourceAsStream("deembed.py")) {
@@ -699,9 +717,17 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         return sb.toString();
     }
 
+    /** The fit window is the extension minus its first fifth, which holds the port's near field. */
+    private double deembedWindow() {
+        return modelInfo.portWindow > 0 ? modelInfo.portWindow : 0.8;
+    }
+
     /** Current bins of about 1 mm, but at least 12 of them over the fit window. */
     private double deembedBin() {
-        return Math.min(1.0, 0.8 * modelInfo.portDeembed / 12.0);
+        if (modelInfo.portBin > 0) {
+            return modelInfo.portBin;
+        }
+        return Math.min(1.0, deembedWindow() * modelInfo.portDeembed / 12.0);
     }
 
     private double substrateThickness_mm() {
@@ -738,7 +764,8 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         sb.append("        # form of a 50 Ohm open stub (-76.0j vs -75.5j at 0.5 GHz; the total gives -138.6j).\n");
         sb.append("        z_mat = Solver.GetZMatrix(None, True)\n");
         sb.append("        z11 = -(z_mat.GetEntry(1, 0) + z_mat.GetEntry(2, 0)).conjugate()\n");
-        sb.append("        s11 = (z11 - 50.0) / (z11 + 50.0)\n");
+        String z0 = modelInfo.z0Ref != 50.0 ? String.format(Locale.US, "%.6f", modelInfo.z0Ref) : "50.0";
+        sb.append("        s11 = (z11 - ").append(z0).append(") / (z11 + ").append(z0).append(")\n");
         sb.append("        f.write(f\"{freq:.6e} {s11.real:.8e} {s11.imag:.8e} {z11.real:.8e} {z11.imag:.8e}\\n\")\n");
         sb.append("        f.flush()\n");
         return sb.toString();

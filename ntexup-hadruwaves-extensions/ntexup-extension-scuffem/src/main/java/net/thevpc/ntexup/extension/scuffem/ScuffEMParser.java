@@ -29,15 +29,49 @@ public class ScuffEMParser {
             NPairElement p = c.asNamedPair().get();
             String key = NTxUtils.uid(p.key().asStringValue().orElse(""));
             NElement v = context.evalExpression(p.value()).orElse(p.value());
-            if (!"deembed".equals(key)) {
-                throw new IllegalArgumentException("SCUFF-EM: unknown port option '" + key + "'");
+            switch (key) {
+                case "deembed":
+                    info.portDeembed = portLengthMm(v, key, "25mm");
+                    break;
+                case "gap":
+                    info.portGap = portLengthMm(v, key, "0.3mm");
+                    break;
+                case "stub":
+                    info.portStub = portLengthMm(v, key, "3mm");
+                    break;
+                case "bin":
+                    info.portBin = portLengthMm(v, key, "1mm");
+                    break;
+                case "stub-nodes": {
+                    // fewer than 5 can put the gap edge where scuff's bound check aborts
+                    int n = v.asIntValue().orElse(0);
+                    if (n < 5) {
+                        throw new IllegalArgumentException("SCUFF-EM: port option 'stub-nodes' expects an integer >= 5");
+                    }
+                    info.portStubNodes = n;
+                    break;
+                }
+                case "window": {
+                    double w = v.asDoubleValue().orElse(0.0);
+                    if (!(w > 0 && w <= 1)) {
+                        throw new IllegalArgumentException("SCUFF-EM: port option 'window' expects a fraction in (0, 1], as in window:0.8");
+                    }
+                    info.portWindow = w;
+                    break;
+                }
+                default:
+                    throw new IllegalArgumentException("SCUFF-EM: unknown port option '" + key
+                            + "' (expected deembed, gap, stub, stub-nodes, window or bin)");
             }
-            double metres = NTxNumberUtils.toMeter(v).orElse(0.0);
-            if (metres <= 0) {
-                throw new IllegalArgumentException("SCUFF-EM: port option 'deembed' expects a positive length, as in 25mm");
-            }
-            info.portDeembed = metres * 1e3;
         }
+    }
+
+    private static double portLengthMm(NElement v, String key, String example) {
+        double metres = NTxNumberUtils.toMeter(v).orElse(0.0);
+        if (metres <= 0) {
+            throw new IllegalArgumentException("SCUFF-EM: port option '" + key + "' expects a positive length, as in " + example);
+        }
+        return metres * 1e3;
     }
 
     public static ScuffEMModelInfo parse(NTxFunctionCallContext args) {
@@ -108,8 +142,19 @@ public class ScuffEMParser {
                                 if (!(info.meshMin > 0)) {
                                     throw new IllegalArgumentException("SCUFF-EM: mesh option 'min' expects a positive size in mm, as in mesh:{min:0.8}");
                                 }
+                            } else if ("edge-samples".equals(meshKey)) {
+                                info.meshEdgeSamples = meshValue.asIntValue().orElse(0);
+                                if (info.meshEdgeSamples < 2) {
+                                    throw new IllegalArgumentException("SCUFF-EM: mesh option 'edge-samples' expects an integer >= 2, as in mesh:{edge-samples:800}");
+                                }
+                            } else if ("grade".equals(meshKey)) {
+                                info.meshGrade = meshValue.asDoubleValue().orElse(0.0);
+                                if (!(info.meshGrade > 0)) {
+                                    throw new IllegalArgumentException("SCUFF-EM: mesh option 'grade' expects a positive number, as in mesh:{edge:0.6, grade:4}");
+                                }
                             } else {
-                                throw new IllegalArgumentException("SCUFF-EM: unknown mesh option '" + meshKey + "' (expected resolution, edge, across or min)");
+                                throw new IllegalArgumentException("SCUFF-EM: unknown mesh option '" + meshKey
+                                        + "' (expected resolution, edge, across, min, edge-samples or grade)");
                             }
                         }
                         break;
