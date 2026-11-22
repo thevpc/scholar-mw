@@ -190,6 +190,17 @@ public class MicrostripCircuitModel {
     public double lossTangent = 0.02;
     public double z0Ref = 50.0;
     public boolean dispersion = true;
+    /**
+     * Conductor resistivity in ohm m; 0 = the defaults: RHO_CONDUCTOR for the line loss and the
+     * Qucs netlist, copper's 5.8e7 S/m for the patch's conductor Q. Set through
+     * {@link #applyConductor}, which also derives the patches again.
+     */
+    public double rho = 0;
+    /** m, Qucs only (SUBST D); 0 = 1 um. */
+    public double roughness = 0;
+    /** Qucs MLIN DispModel and Model; null = Kirschning and Hammerstad. */
+    public String qucsDispModel;
+    public String qucsModel;
     public Point2D portLocation = new Point2D(0, 0);
     public double portWidth = 3.1e-3;
 
@@ -458,6 +469,28 @@ public class MicrostripCircuitModel {
     }
 
     /**
+     * Applies the ntx conductor options; only the ones set change the model, and the patches are
+     * derived again only when the resistivity changes their Q.
+     */
+    public void applyConductor(NTxConductorOptions c) {
+        if (c == null) {
+            return;
+        }
+        if (c.thickness > 0) {
+            copperT = c.thickness;
+        }
+        if (c.roughness > 0) {
+            roughness = c.roughness;
+        }
+        if (c.rho > 0) {
+            rho = c.rho;
+            for (PatchElement p : patches) {
+                computePatchParameters(p);
+            }
+        }
+    }
+
+    /**
      * @return the distinct conductor widths of the circuit: lines and patches
      */
     public Set<Double> conductorWidths() {
@@ -551,7 +584,8 @@ public class MicrostripCircuitModel {
 
         // Physical Q factor derived from dielectric, conductor, and radiation losses
         double qDiel = 1.0 / Math.max(1e-6, lossTangent);
-        double qCond = substrateH * Math.sqrt(Math.PI * p.fr * 4.0 * Math.PI * 1e-7 * 5.8e7);
+        double sigma = rho > 0 ? 1.0 / rho : 5.8e7;
+        double qCond = substrateH * Math.sqrt(Math.PI * p.fr * 4.0 * Math.PI * 1e-7 * sigma);
         double cPatch = 8.854187817e-12 * epsilonR * p.width * p.length / (2.0 * substrateH);
         double qRad = 2.0 * Math.PI * p.fr * cPatch * redge;
         p.q = 1.0 / ((1.0 / qRad) + (1.0 / qDiel) + (1.0 / qCond));
@@ -667,7 +701,7 @@ public class MicrostripCircuitModel {
         double alphaD = epsilonR > 1.0
                 ? k0 * epsilonR * (line.epsEff - 1.0) * lossTangent / (2.0 * Math.sqrt(line.epsEff) * (epsilonR - 1.0))
                 : 0.0;
-        double rs = Math.sqrt(Math.PI * f * 4.0e-7 * Math.PI * RHO_CONDUCTOR);
+        double rs = Math.sqrt(Math.PI * f * 4.0e-7 * Math.PI * (rho > 0 ? rho : RHO_CONDUCTOR));
         double alphaC = rs / (line.z0 * width);
         return alphaD + alphaC;
     }
@@ -752,7 +786,8 @@ public class MicrostripCircuitModel {
                 "Pac:P1 _net0 gnd Num=\"1\" Z=\"%.2fOhm\" P=\"0.001\" f=\"1e+09Hz\" Temp=\"26.85\"\n",
                 fmin, fmax, count, z0Ref));
 
-        String mlinParams = "Subst=\"Sub1\" DispModel=\"Kirschning\" Model=\"Hammerstad\"\n";
+        String mlinParams = "Subst=\"Sub1\" DispModel=\"" + (qucsDispModel != null ? qucsDispModel : "Kirschning")
+                + "\" Model=\"" + (qucsModel != null ? qucsModel : "Hammerstad") + "\"\n";
 
         for (LineSegment l : lines) {
             sb.append(String.format(Locale.US,
@@ -773,8 +808,10 @@ public class MicrostripCircuitModel {
         }
 
         sb.append(String.format(Locale.US,
-                "SUBST:Sub1 er=\"%.4f\" h=\"%.4f mm\" t=\"%.4f mm\" tand=\"%.4f\" rho=\"2.44e-08\" D=\"1e-06\"\n",
-                epsilonR, substrateH * 1e3, copperT * 1e3, lossTangent));
+                "SUBST:Sub1 er=\"%.4f\" h=\"%.4f mm\" t=\"%.4f mm\" tand=\"%.4f\" rho=\"%s\" D=\"%s\"\n",
+                epsilonR, substrateH * 1e3, copperT * 1e3, lossTangent,
+                rho > 0 ? String.format(Locale.US, "%.6e", rho) : "2.44e-08",
+                roughness > 0 ? String.format(Locale.US, "%.6e", roughness) : "1e-06"));
 
         return sb.toString();
     }
