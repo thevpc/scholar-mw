@@ -469,6 +469,21 @@ public class MicrostripCircuitModel {
     }
 
     /**
+     * Turns the Kirschning-Jansen dispersion on or off, and derives the patches again: they are
+     * built during {@link #parse} with dispersion on, so setting the field afterwards reached
+     * the lines only.
+     */
+    public void setDispersion(boolean dispersion) {
+        if (this.dispersion == dispersion) {
+            return;
+        }
+        this.dispersion = dispersion;
+        for (PatchElement p : patches) {
+            computePatchParameters(p);
+        }
+    }
+
+    /**
      * Applies the ntx conductor options; only the ones set change the model, and the patches are
      * derived again only when the resistivity changes their Q.
      */
