@@ -49,6 +49,10 @@ public class AnalyticalStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.stubLength).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.height).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.dispersion).getBytes(StandardCharsets.UTF_8));
+            if (!modelInfo.dispersion) {
+                // patches now follow dispersion:false too, so those caches must not be reused
+                NTxMwSimulationUtils.addDigestSource(d, "patch-dispersion".getBytes(StandardCharsets.UTF_8));
+            }
             // only when set, so decks without them keep their cache
             net.thevpc.ntexup.extension.mwsimulator.NTxConductorOptions.addToDigest(d, modelInfo.conductor);
             if (modelInfo.z0Ref != 50.0) {
@@ -79,7 +83,7 @@ public class AnalyticalStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                     modelInfo.lossTangent,
                     modelInfo.z0Ref
             );
-            circuitModel.dispersion = modelInfo.dispersion;
+            circuitModel.setDispersion(modelInfo.dispersion);
             circuitModel.applyConductor(modelInfo.conductor);
         }
         return circuitModel;
