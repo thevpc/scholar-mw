@@ -96,8 +96,20 @@ public class ScuffEMParser {
                                 if (!(info.meshEdge > 0)) {
                                     throw new IllegalArgumentException("SCUFF-EM: mesh option 'edge' expects a positive size in mm, as in mesh:{resolution:1.5, edge:0.6}");
                                 }
+                            } else if ("across".equals(meshKey)) {
+                                // triangles across the narrowest strip; the extension's default is 2
+                                info.meshAcross = meshValue.asDoubleValue().orElse(0.0);
+                                if (!(info.meshAcross >= 1)) {
+                                    throw new IllegalArgumentException("SCUFF-EM: mesh option 'across' expects a number >= 1, as in mesh:{across:1}");
+                                }
+                            } else if ("min".equals(meshKey)) {
+                                // smallest triangle size along the outline, in mm; no floor by default
+                                info.meshMin = meshValue.asDoubleValue().orElse(0.0);
+                                if (!(info.meshMin > 0)) {
+                                    throw new IllegalArgumentException("SCUFF-EM: mesh option 'min' expects a positive size in mm, as in mesh:{min:0.8}");
+                                }
                             } else {
-                                throw new IllegalArgumentException("SCUFF-EM: unknown mesh option '" + meshKey + "'");
+                                throw new IllegalArgumentException("SCUFF-EM: unknown mesh option '" + meshKey + "' (expected resolution, edge, across or min)");
                             }
                         }
                         break;

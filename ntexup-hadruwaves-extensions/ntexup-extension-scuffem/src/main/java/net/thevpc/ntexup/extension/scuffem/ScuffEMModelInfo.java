@@ -46,6 +46,14 @@ public class ScuffEMModelInfo {
     /** Triangle size along the conductor edges in mm, where the current is singular; 0 = same as meshResolution. */
     public double meshEdge = 0;
     /**
+     * Triangles across the narrowest part of the outline: each outline point takes its local
+     * feature size (the distance to the nearest edge not ending on it) divided by this. 0 = the
+     * default of 2, which gives a narrow strip two triangles across.
+     */
+    public double meshAcross = 0;
+    /** mm. Smallest outline point size, applied after meshAcross and meshEdge; 0 = no floor. */
+    public double meshMin = 0;
+    /**
      * mm. When positive, the feed is extended by this length behind the port, the port moves to
      * the new end, and S11 is read from the standing wave of the strip current on the extension,
      * referred back to the original port plane. Default 0 keeps the edge-port reading.

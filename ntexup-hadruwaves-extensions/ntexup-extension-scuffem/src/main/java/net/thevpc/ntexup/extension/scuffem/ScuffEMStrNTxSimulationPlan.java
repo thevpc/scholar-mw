@@ -212,6 +212,12 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                 // only when set, so decks without it keep their hash
                 NTxMwSimulationUtils.addDigestSource(d, ("mesh-edge:" + modelInfo.meshEdge).getBytes(StandardCharsets.UTF_8));
             }
+            if (modelInfo.meshAcross > 0) {
+                NTxMwSimulationUtils.addDigestSource(d, ("mesh-across:" + modelInfo.meshAcross).getBytes(StandardCharsets.UTF_8));
+            }
+            if (modelInfo.meshMin > 0) {
+                NTxMwSimulationUtils.addDigestSource(d, ("mesh-min:" + modelInfo.meshMin).getBytes(StandardCharsets.UTF_8));
+            }
             NTxMwSimulationUtils.addDigestSource(d, "mesh:narrow-strips;gap-port".getBytes(StandardCharsets.UTF_8));
             if (modelInfo.solvePoints != 10) {
                 // only when changed, so caches of decks on the default stay valid
@@ -248,9 +254,14 @@ public class ScuffEMStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         double[] size = new double[n];
         double minSize = lc;
         for (int i = 0; i < n; i++) {
-            size[i] = Math.min(lc, 0.5 * localFeatureSize(o.points, i) * 1000.0);
+            double across = modelInfo.meshAcross > 0 ? modelInfo.meshAcross : 2.0;
+            size[i] = Math.min(lc, localFeatureSize(o.points, i) * 1000.0 / across);
             if (modelInfo.meshEdge > 0) {
                 size[i] = Math.min(size[i], modelInfo.meshEdge);
+            }
+            if (modelInfo.meshMin > 0) {
+                // the floor wins over both: it bounds the triangle count on long, narrow feeds
+                size[i] = Math.max(size[i], Math.min(modelInfo.meshMin, lc));
             }
             minSize = Math.min(minSize, size[i]);
         }
