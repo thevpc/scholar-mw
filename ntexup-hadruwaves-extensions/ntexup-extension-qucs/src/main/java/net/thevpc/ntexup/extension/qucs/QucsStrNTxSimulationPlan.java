@@ -2,6 +2,7 @@ package net.thevpc.ntexup.extension.qucs;
 
 import net.thevpc.ntexup.api.renderer.NTxRendererContext;
 import net.thevpc.ntexup.extension.mwsimulator.MicrostripCircuitModel;
+import net.thevpc.ntexup.extension.mwsimulator.NTxConductorOptions;
 import net.thevpc.ntexup.extension.mwsimulator.NTxMwSimulationUtils;
 import net.thevpc.ntexup.extension.mwsimulator.NTxSimulationPlanImpl;
 import net.thevpc.ntexup.extension.mwsimulator.NTxSolverRun;
@@ -60,6 +61,9 @@ public class QucsStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                     modelInfo.lossTangent,
                     modelInfo.z0Ref
             );
+            circuitModel.applyConductor(modelInfo.conductor);
+            circuitModel.qucsDispModel = modelInfo.dispModel;
+            circuitModel.qucsModel = modelInfo.model;
         }
         return circuitModel;
     }
@@ -76,6 +80,20 @@ public class QucsStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.z0Ref).getBytes(StandardCharsets.UTF_8));
             if (modelInfo.geometryId != null) {
                 NTxMwSimulationUtils.addDigestSource(d, modelInfo.geometryId.getBytes(StandardCharsets.UTF_8));
+            }
+            // the options below enter the hash only when set, so decks without them keep their cache
+            NTxConductorOptions.addToDigest(d, modelInfo.conductor);
+            if (modelInfo.dispModel != null) {
+                NTxMwSimulationUtils.addDigestSource(d, ("disp-model:" + modelInfo.dispModel).getBytes(StandardCharsets.UTF_8));
+            }
+            if (modelInfo.model != null) {
+                NTxMwSimulationUtils.addDigestSource(d, ("model:" + modelInfo.model).getBytes(StandardCharsets.UTF_8));
+            }
+            if (modelInfo.solvePoints > 0) {
+                NTxMwSimulationUtils.addDigestSource(d, ("solve-points:" + modelInfo.solvePoints).getBytes(StandardCharsets.UTF_8));
+            }
+            if (modelInfo.solveFrom > 0 || modelInfo.solveTo > 0) {
+                NTxMwSimulationUtils.addDigestSource(d, ("solve-band:" + modelInfo.solveFrom + "," + modelInfo.solveTo).getBytes(StandardCharsets.UTF_8));
             }
         }
         for (NTxSolverRun item : items) {
@@ -229,19 +247,27 @@ public class QucsStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         return Complex.of(re, im);
     }
 
-    public Complex computeS11(double freq) {
+    /**
+     * The solved band, solve-band:{from, to}, by default 0.8 to 1.2 times the frequency, at
+     * solve-points frequencies (41 by default); requests outside it take the nearest end's value.
+     */
+    private void ensureQucsSolved(double freq) {
         double fCenter = (modelInfo != null && modelInfo.frequency > 0) ? modelInfo.frequency : freq;
-        double fmin = fCenter * 0.8;
-        double fmax = fCenter * 1.2;
-        ensureQucsSolved(fmin, fmax, 41);
+        double fmin = modelInfo != null && modelInfo.solveFrom > 0 ? modelInfo.solveFrom : fCenter * 0.8;
+        double fmax = modelInfo != null && modelInfo.solveTo > 0 ? modelInfo.solveTo : fCenter * 1.2;
+        if (!(fmax > fmin)) {
+            throw new IllegalArgumentException(String.format(Locale.US, "Qucs: the solved band %.4f-%.4f GHz is empty (check solve-band)", fmin / 1e9, fmax / 1e9));
+        }
+        ensureQucsSolved(fmin, fmax, modelInfo != null && modelInfo.solvePoints > 0 ? modelInfo.solvePoints : 41);
+    }
+
+    public Complex computeS11(double freq) {
+        ensureQucsSolved(freq);
         return interpolate(s11Map, freq);
     }
 
     public Complex computeZin(double freq) {
-        double fCenter = (modelInfo != null && modelInfo.frequency > 0) ? modelInfo.frequency : freq;
-        double fmin = fCenter * 0.8;
-        double fmax = fCenter * 1.2;
-        ensureQucsSolved(fmin, fmax, 41);
+        ensureQucsSolved(freq);
         return interpolate(zinMap, freq);
     }
 

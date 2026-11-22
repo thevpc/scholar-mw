@@ -6,6 +6,7 @@ import net.thevpc.ntexup.api.eval.NTxFunctionCallContext;
 import net.thevpc.ntexup.api.eval.NTxResolutionContext;
 import net.thevpc.ntexup.api.util.NTxNumberUtils;
 import net.thevpc.ntexup.api.util.NTxUtils;
+import net.thevpc.ntexup.extension.mwsimulator.NTxConductorOptions;
 import net.thevpc.ntexup.extension.mwsimulator.NTxMwSimulationUtils;
 import net.thevpc.ntexup.lib.geometry3d.NTxNumberElement3;
 import net.thevpc.ntexup.lib.geometry3d.impl.NTx3DUtils;
@@ -17,6 +18,28 @@ import net.thevpc.nuts.util.NOptional;
 import java.util.Objects;
 
 public class QucsParser {
+
+    private static final String[] DISP_MODELS = {"Kirschning", "Kobayashi", "Yamashita", "Hammerstad", "Getsinger", "Schneider", "Pramanick"};
+    private static final String[] MODELS = {"Hammerstad", "Wheeler", "Schneider"};
+
+    /** qucsator's own spelling of one of the names, or a clear error */
+    private static String qucsName(NElement v, String key, String[] names) {
+        String s = v.asStringValue().orElse("");
+        for (String n : names) {
+            if (n.equalsIgnoreCase(s)) {
+                return n;
+            }
+        }
+        throw new IllegalArgumentException("Qucs: '" + key + "' expects one of " + String.join(", ", names) + ", not '" + s + "'");
+    }
+
+    private static double hertz(NElement v, String key) {
+        double d = v.asNumber().flatMap(NTxNumberUtils::toHertz).orElse(0.0);
+        if (!(d > 0)) {
+            throw new IllegalArgumentException("Qucs: solve-band option '" + key + "' expects a positive frequency, as in " + key + ":6GHz");
+        }
+        return d;
+    }
 
     public static QucsModelInfo parse(NTxFunctionCallContext args) {
         QucsModelInfo info = new QucsModelInfo();
@@ -57,11 +80,44 @@ public class QucsParser {
                     }
                     case "dispmodel":
                     case "dispersion": {
-                        info.dispModel = pv.asStringValue().orElse("Kirschning");
+                        info.dispModel = qucsName(pv, "dispersion", DISP_MODELS);
                         break;
                     }
                     case "model": {
-                        info.model = pv.asStringValue().orElse("Hammerstad");
+                        info.model = qucsName(pv, "model", MODELS);
+                        break;
+                    }
+                    case "conductor": {
+                        info.conductor = NTxConductorOptions.parse("Qucs", pv, context, "rho", "thickness", "roughness");
+                        break;
+                    }
+                    case "solve-points": {
+                        int n = pv.asIntValue().orElse(-1);
+                        if (n < 2) {
+                            throw new IllegalArgumentException("Qucs: 'solve-points' expects an integer >= 2, as in solve-points:201");
+                        }
+                        info.solvePoints = n;
+                        break;
+                    }
+                    case "solve-band": {
+                        if (!pv.isAnyObject()) {
+                            throw new IllegalArgumentException("Qucs: 'solve-band' expects an object, as in solve-band:{from:6GHz, to:9GHz}");
+                        }
+                        for (NElement c : pv.asObject().get().children()) {
+                            if (!c.isNamedPair()) {
+                                continue;
+                            }
+                            NPairElement bp = c.asNamedPair().get();
+                            String bk = NTxUtils.uid(bp.key().asStringValue().orElse(""));
+                            NElement bv = context.evalExpression(bp.value()).orElse(bp.value());
+                            if ("from".equals(bk)) {
+                                info.solveFrom = hertz(bv, bk);
+                            } else if ("to".equals(bk)) {
+                                info.solveTo = hertz(bv, bk);
+                            } else {
+                                throw new IllegalArgumentException("Qucs: unknown solve-band option '" + bk + "' (expected from or to)");
+                            }
+                        }
                         break;
                     }
                     case "dockerimage":

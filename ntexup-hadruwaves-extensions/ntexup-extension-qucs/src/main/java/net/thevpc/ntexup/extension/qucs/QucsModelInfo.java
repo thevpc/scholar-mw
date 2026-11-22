@@ -37,12 +37,17 @@ public class QucsModelInfo {
     public double frequency = 3.4e9;
     public double epsilonR = 4.4;
     public double lossTangent = 0.02;
-    public double thickness = 0.035e-3;
-    public double rho = 0.022e-6;
-    public double roughness = 0.15e-6;
     public double z0Ref = 50.0;
-    public String dispModel = "Kirschning";
-    public String model = "Hammerstad";
+    /** conductor:{rho, thickness, roughness}; unset fields keep the circuit model's defaults */
+    public net.thevpc.ntexup.extension.mwsimulator.NTxConductorOptions conductor;
+    /** MLIN DispModel and Model; null = Kirschning and Hammerstad */
+    public String dispModel;
+    public String model;
+    /** Frequencies qucsator solves, the rest is interpolated; 0 = the default of 41. */
+    public int solvePoints = 0;
+    /** Hz, the solved band; 0 = the defaults of 0.8 and 1.2 times the frequency. */
+    public double solveFrom = 0;
+    public double solveTo = 0;
     public String dockerImage = QucsProvisioner.DEFAULT_DOCKER_IMAGE;
     public String geometryId;
     public NTxNode sceneNode;
