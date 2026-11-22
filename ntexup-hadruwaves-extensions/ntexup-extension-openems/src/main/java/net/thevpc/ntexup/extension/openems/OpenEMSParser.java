@@ -90,6 +90,20 @@ public class OpenEMSParser {
          * the substrate runs to the domain edges (through the PML). Otherwise the boxes are a finite board.
          */
         public boolean infiniteGround = false;
+        /** PML cells on the absorbing faces; 0 = 8 */
+        public int pmlCells = 0;
+        /** ohm: lumped port resistance and S11 reference; 50 by default */
+        public double z0Ref = 50.0;
+        /**
+         * mm: the graded air lines beyond the structure end this far out sideways (padding),
+         * above it (airHeight) and below a finite board (airBelow); 0 = 35, 42 and 22, with the
+         * lines in between scaled from the default ladders.
+         */
+        public double meshPadding = 0;
+        public double meshAirHeight = 0;
+        public double meshAirBelow = 0;
+        /** msl port: frequencies openEMS's CalcPort evaluates over the excited band; 0 = 1201 */
+        public int portSamples = 0;
         public String xmlPath;
         public String geometryId;
         public List<OpenEMSBox> groundBoxes = new ArrayList<>();
@@ -149,6 +163,19 @@ public class OpenEMSParser {
                     }
                     case "port": {
                         parsePort(pv, context, info);
+                        break;
+                    }
+                    case "boundary": {
+                        parseBoundary(pv, context, info);
+                        break;
+                    }
+                    case "z0":
+                    case "z":
+                    case "zref": {
+                        info.z0Ref = pv.asDoubleValue().orElse(0.0);
+                        if (!(info.z0Ref > 0)) {
+                            throw new IllegalArgumentException("OpenEMS: 'z0' expects a positive impedance in ohm, as in z0:50");
+                        }
                         break;
                     }
                     case "epsilonr":
@@ -243,11 +270,63 @@ public class OpenEMSParser {
                     info.meshMinCell = meshLengthMm(v, key);
                     break;
                 }
+                case "padding": {
+                    info.meshPadding = meshLengthMm(v, key);
+                    break;
+                }
+                case "air-height": {
+                    info.meshAirHeight = meshLengthMm(v, key);
+                    break;
+                }
+                case "air-below": {
+                    info.meshAirBelow = meshLengthMm(v, key);
+                    break;
+                }
                 default: {
-                    throw new IllegalArgumentException("OpenEMS: unknown mesh option '" + key + "'");
+                    throw new IllegalArgumentException("OpenEMS: unknown mesh option '" + key + "' (expected refinement, substrate-cells,"
+                            + " max-cell-x, max-cell-y, max-cell-z, max-cell-outside, min-cell, padding, air-height or air-below)");
                 }
             }
         }
+    }
+
+    private static void parseBoundary(NElement b, NTxResolutionContext context, OpenEMSModelInfo info) {
+        if (!b.isAnyObject()) {
+            throw new IllegalArgumentException("OpenEMS: 'boundary' expects an object, as in boundary:{pml:8}");
+        }
+        for (NElement c : b.asObject().get().children()) {
+            if (!c.isNamedPair()) {
+                continue;
+            }
+            NPairElement p = c.asNamedPair().get();
+            String key = NTxUtils.uid(p.key().asStringValue().orElse(""));
+            NElement v = context.evalExpression(p.value()).orElse(p.value());
+            if (!"pml".equals(key)) {
+                throw new IllegalArgumentException("OpenEMS: unknown boundary option '" + key + "' (expected pml)");
+            }
+            int n = v.asIntValue().orElse(0);
+            if (n < 4 || n > 20) {
+                throw new IllegalArgumentException("OpenEMS: boundary option 'pml' expects 4 to 20 cells, as in boundary:{pml:8}");
+            }
+            info.pmlCells = n;
+        }
+    }
+
+    /** openEMS's name of the absorbing boundary */
+    public static String pml(OpenEMSModelInfo info) {
+        return "PML_" + (info.pmlCells > 0 ? info.pmlCells : 8);
+    }
+
+    /** the default ladder, or the same ladder scaled to end at extent */
+    private static double[] ladder(double[] base, double extent) {
+        if (!(extent > 0)) {
+            return base;
+        }
+        double[] out = new double[base.length];
+        for (int i = 0; i < base.length; i++) {
+            out[i] = base[i] * extent / base[base.length - 1];
+        }
+        return out;
     }
 
     private static void parsePort(NElement port, NTxResolutionContext context, OpenEMSModelInfo info) {
@@ -278,8 +357,16 @@ public class OpenEMSParser {
                     info.portMeasureBefore = meshLengthMm(v, key);
                     break;
                 }
+                case "samples": {
+                    info.portSamples = v.asIntValue().orElse(0);
+                    if (info.portSamples < 2) {
+                        throw new IllegalArgumentException("OpenEMS: port option 'samples' expects an integer >= 2, as in port:{type:msl, samples:2401}");
+                    }
+                    break;
+                }
                 default: {
-                    throw new IllegalArgumentException("OpenEMS: unknown port option '" + key + "'");
+                    throw new IllegalArgumentException("OpenEMS: unknown port option '" + key
+                            + "' (expected deembed, type, measure-before or samples)");
                 }
             }
         }
@@ -508,7 +595,8 @@ public class OpenEMSParser {
 
         sb.append(String.format(Locale.US, "  <FDTD NumberOfTimesteps=\"%d\" endCriteria=\"%e\">\n", info.numberOfTimesteps * info.meshRefinement, info.endCriteria));
         sb.append(String.format(Locale.US, "    <Excitation Type=\"0\" f0=\"%e\" fc=\"%e\" />\n", info.frequency, info.fc));
-        sb.append("    <BoundaryCond xmin=\"PML_8\" xmax=\"PML_8\" ymin=\"PML_8\" ymax=\"PML_8\" zmin=\"" + (info.infiniteGround ? "PEC" : "PML_8") + "\" zmax=\"PML_8\" />\n");
+        String pml = pml(info);
+        sb.append("    <BoundaryCond xmin=\"" + pml + "\" xmax=\"" + pml + "\" ymin=\"" + pml + "\" ymax=\"" + pml + "\" zmin=\"" + (info.infiniteGround ? "PEC" : pml) + "\" zmax=\"" + pml + "\" />\n");
         sb.append("  </FDTD>\n\n");
 
         sb.append("  <ContinuousStructure CoordSystem=\"0\">\n\n");
@@ -609,35 +697,22 @@ public class OpenEMSParser {
         double zmin = zCoords.first();
         double zmax = zCoords.last();
 
-        xCoords.add(round3(xmin - 5.0));
-        xCoords.add(round3(xmin - 12.0));
-        xCoords.add(round3(xmin - 22.0));
-        xCoords.add(round3(xmin - 35.0));
-        xCoords.add(round3(xmax + 5.0));
-        xCoords.add(round3(xmax + 12.0));
-        xCoords.add(round3(xmax + 22.0));
-        xCoords.add(round3(xmax + 35.0));
-
-        yCoords.add(round3(ymin - 5.0));
-        yCoords.add(round3(ymin - 12.0));
-        yCoords.add(round3(ymin - 22.0));
-        yCoords.add(round3(ymin - 35.0));
-        yCoords.add(round3(ymax + 5.0));
-        yCoords.add(round3(ymax + 12.0));
-        yCoords.add(round3(ymax + 22.0));
-        yCoords.add(round3(ymax + 35.0));
+        for (double d : ladder(new double[]{5.0, 12.0, 22.0, 35.0}, info.meshPadding)) {
+            xCoords.add(round3(xmin - d));
+            xCoords.add(round3(xmax + d));
+            yCoords.add(round3(ymin - d));
+            yCoords.add(round3(ymax + d));
+        }
 
         if (!info.infiniteGround) {
             // air below a finite board; an infinite ground is the domain's bottom face
-            zCoords.add(round3(zmin - 5.0));
-            zCoords.add(round3(zmin - 12.0));
-            zCoords.add(round3(zmin - 22.0));
+            for (double d : ladder(new double[]{5.0, 12.0, 22.0}, info.meshAirBelow)) {
+                zCoords.add(round3(zmin - d));
+            }
         }
-        zCoords.add(round3(zmax + 3.0));
-        zCoords.add(round3(zmax + 8.0));
-        zCoords.add(round3(zmax + 16.0));
-        zCoords.add(round3(zmax + 28.0));
-        zCoords.add(round3(zmax + 42.0));
+        for (double d : ladder(new double[]{3.0, 8.0, 16.0, 28.0, 42.0}, info.meshAirHeight)) {
+            zCoords.add(round3(zmax + d));
+        }
 
         List<Double> finalX = subdivideGrid(refineGrid(xCoords, info.meshMinCell, info.meshMaxCellX, info.meshMaxCellOutside, antXmin - 0.5, antXmax + 0.5), info.meshRefinement);
         List<Double> finalY = subdivideGrid(refineGrid(yCoords, info.meshMinCell, info.meshMaxCellY, info.meshMaxCellOutside, antYmin - 0.5, antYmax + 0.5), info.meshRefinement);
@@ -702,7 +777,8 @@ public class OpenEMSParser {
             sb.append("      </Excitation>\n\n");
 
             // Lumped 50-ohm resistor
-            sb.append("      <LumpedElement Name=\"port1_R\" R=\"50\" Direction=\"2\" Caps=\"1\">\n");
+            String r = info.z0Ref != 50.0 ? String.format(Locale.US, "%.6g", info.z0Ref) : "50";
+            sb.append("      <LumpedElement Name=\"port1_R\" R=\"" + r + "\" Direction=\"2\" Caps=\"1\">\n");
             sb.append("        <Primitives>\n");
             sb.append(String.format(Locale.US, "          <Box Priority=\"100\"><P1 X=\"%.3f\" Y=\"%.3f\" Z=\"%.3f\" /><P2 X=\"%.3f\" Y=\"%.3f\" Z=\"%.3f\" /></Box>\n",
                     src.x1, src.y1, portZ1, src.x2, src.y2, portZ2));

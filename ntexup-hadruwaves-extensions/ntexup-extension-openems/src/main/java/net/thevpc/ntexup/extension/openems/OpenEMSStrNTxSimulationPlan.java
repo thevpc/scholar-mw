@@ -75,6 +75,17 @@ public class OpenEMSStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                     + "," + modelInfo.meshMaxCellZ + "," + modelInfo.meshMaxCellOutside + "," + modelInfo.meshMinCell).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, ("port:" + modelInfo.portDeembed + "," + modelInfo.portType + "," + modelInfo.portMeasureBefore
                     + ",ground:" + (modelInfo.infiniteGround ? "infinite" : "board")).getBytes(StandardCharsets.UTF_8));
+            // only when set, so decks without them keep their cache; pml and the mesh ladders
+            // reach the hash through the generated XML below
+            if (modelInfo.z0Ref != 50.0) {
+                NTxMwSimulationUtils.addDigestSource(d, ("z0:" + modelInfo.z0Ref).getBytes(StandardCharsets.UTF_8));
+            }
+            if (modelInfo.portSamples > 0) {
+                NTxMwSimulationUtils.addDigestSource(d, ("port-samples:" + modelInfo.portSamples).getBytes(StandardCharsets.UTF_8));
+            }
+            if (modelInfo.pmlCells > 0 && modelInfo.xmlPath != null) {
+                NTxMwSimulationUtils.addDigestSource(d, ("pml:" + modelInfo.pmlCells).getBytes(StandardCharsets.UTF_8));
+            }
             // the geometry id alone is not enough: an edited box under the same id must not reuse the cached run
             if (modelInfo.xmlPath == null) {
                 NTxMwSimulationUtils.addDigestSource(d, OpenEMSParser.generateOpenEMSXml(modelInfo).getBytes(StandardCharsets.UTF_8));
@@ -202,12 +213,17 @@ public class OpenEMSStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             drv.put("endcriteria", modelInfo.endCriteria);
             drv.put("f0", modelInfo.frequency);
             drv.put("fc", modelInfo.fc);
-            drv.put("boundaries", Arrays.asList("PML_8", "PML_8", "PML_8", "PML_8", "PEC", "PML_8"));
+            String pml = OpenEMSParser.pml(modelInfo);
+            drv.put("boundaries", Arrays.asList(pml, pml, pml, pml, "PEC", pml));
             drv.put("threads", modelInfo.numThreads);
-            drv.put("ref_impedance", 50.0);
+            drv.put("ref_impedance", modelInfo.z0Ref);
             drv.put("f_min", Math.max(0.1e9, modelInfo.frequency - 1.5 * modelInfo.fc));
             drv.put("f_max", modelInfo.frequency + 1.5 * modelInfo.fc);
-            drv.put("f_count", 1201);
+            drv.put("f_count", modelInfo.portSamples > 0 ? modelInfo.portSamples : 1201);
+            if (modelInfo.pmlCells > 0) {
+                // the excitation sits 4 cells clear of the PML
+                drv.put("feed_cell", modelInfo.pmlCells + 4);
+            }
             workDir.resolve("driver.json").writeString(toJson(drv));
             try (InputStream in = OpenEMSStrNTxSimulationPlan.class.getResourceAsStream("msl_driver.py")) {
                 workDir.resolve("msl_driver.py").writeBytes(in.readAllBytes());
@@ -465,7 +481,7 @@ public class OpenEMSStrNTxSimulationPlan extends NTxSimulationPlanImpl {
     public Complex computeZin(double freq) {
         if (runSimulation().mslF != null) {
             Complex s = mslS11(freq);
-            return Complex.of(50.0).mul(Complex.ONE.plus(s)).div(Complex.ONE.minus(s));
+            return Complex.of(modelInfo.z0Ref).mul(Complex.ONE.plus(s)).div(Complex.ONE.minus(s));
         }
         if (runSimulation().layout != null) {
             return deembeddedZin(freq);
@@ -484,11 +500,11 @@ public class OpenEMSStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         }
         if (runSimulation().layout != null) {
             Complex z = deembeddedZin(freq);
-            return z.minus(Complex.of(50.0)).div(z.plus(50.0));
+            return z.minus(Complex.of(modelInfo.z0Ref)).div(z.plus(modelInfo.z0Ref));
         }
         Complex vf = computeVf(freq);
         Complex ifVal = computeIf(freq);
-        Complex z0I = ifVal.mul(50.0);
+        Complex z0I = ifVal.mul(modelInfo.z0Ref);
         Complex num = vf.minus(z0I);
         Complex den = vf.plus(z0I);
         if (den.isZero()) {
