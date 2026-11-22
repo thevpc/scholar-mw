@@ -86,6 +86,46 @@ public class PalaceParser {
                     info.processes = Math.max(1, v.asIntValue().orElse(info.processes));
                     break;
                 }
+                case "boundary": {
+                    parseBoundary(v, context, info);
+                    break;
+                }
+                case "linear-ksp": {
+                    String t = v.asStringValue().orElse("");
+                    info.linearKsp = null;
+                    for (String k : new String[]{"GMRES", "FGMRES", "CG", "MINRES", "BiCGSTAB"}) {
+                        if (k.equalsIgnoreCase(t)) {
+                            info.linearKsp = k;
+                        }
+                    }
+                    if (info.linearKsp == null) {
+                        throw new IllegalArgumentException("Palace: 'linear-ksp' expects gmres, fgmres, cg, minres or bicgstab");
+                    }
+                    break;
+                }
+                case "linear-tol": {
+                    info.linearTol = v.asDoubleValue().orElse(0.0);
+                    if (!(info.linearTol > 0 && info.linearTol < 1)) {
+                        throw new IllegalArgumentException("Palace: 'linear-tol' expects a relative tolerance in (0, 1), as in linear-tol:1e-8");
+                    }
+                    break;
+                }
+                case "linear-max-its": {
+                    info.linearMaxIts = v.asIntValue().orElse(0);
+                    if (info.linearMaxIts < 1) {
+                        throw new IllegalArgumentException("Palace: 'linear-max-its' expects a positive integer, as in linear-max-its:400");
+                    }
+                    break;
+                }
+                case "z0":
+                case "z":
+                case "zref": {
+                    info.z0Ref = v.asDoubleValue().orElse(0.0);
+                    if (!(info.z0Ref > 0)) {
+                        throw new IllegalArgumentException("Palace: 'z0' expects a positive impedance in ohm, as in z0:50");
+                    }
+                    break;
+                }
                 case "linear-solver": {
                     String t = NNameFormat.LOWER_KEBAB_CASE.format(v.asStringValue().orElse(""));
                     switch (t) {
@@ -158,6 +198,28 @@ public class PalaceParser {
         }
     }
 
+    private static void parseBoundary(NElement b, NTxResolutionContext context, PalaceModelInfo info) {
+        if (!b.isAnyObject()) {
+            throw new IllegalArgumentException("Palace: 'boundary' expects an object, as in boundary:{order:2}");
+        }
+        for (NElement c : b.asObject().get().children()) {
+            if (!c.isNamedPair()) {
+                continue;
+            }
+            NPairElement p = c.asNamedPair().get();
+            String key = NTxUtils.uid(p.key().asStringValue().orElse(""));
+            NElement v = context.evalExpression(p.value()).orElse(p.value());
+            if (!"order".equals(key)) {
+                throw new IllegalArgumentException("Palace: unknown boundary option '" + key + "' (expected order)");
+            }
+            int n = v.asIntValue().orElse(0);
+            if (n != 1 && n != 2) {
+                throw new IllegalArgumentException("Palace: boundary option 'order' expects 1 or 2 (Palace's absorbing boundary orders)");
+            }
+            info.absorbingOrder = n;
+        }
+    }
+
     private static void parseMesh(NElement mesh, NTxResolutionContext context, PalaceModelInfo info) {
         if (!mesh.isAnyObject()) {
             throw new IllegalArgumentException("Palace: 'mesh' expects an object, as in mesh:{metal:0.4mm}");
@@ -194,8 +256,17 @@ public class PalaceParser {
                     info.airHeight = lengthMm(v, key);
                     break;
                 }
+                case "grade-start": {
+                    info.meshGradeStart = lengthMm(v, key);
+                    break;
+                }
+                case "grade-end": {
+                    info.meshGradeEnd = lengthMm(v, key);
+                    break;
+                }
                 default: {
-                    throw new IllegalArgumentException("Palace: unknown mesh option '" + key + "'");
+                    throw new IllegalArgumentException("Palace: unknown mesh option '" + key
+                            + "' (expected metal, substrate, air, order, padding, air-height, grade-start or grade-end)");
                 }
             }
         }

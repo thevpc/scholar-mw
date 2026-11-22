@@ -57,6 +57,17 @@ public class PalaceModelInfo {
     public int processes = 16;
     /** Palace's Solver.Linear.Type; "Default" lets Palace choose (SuperLU on the patch decks). */
     public String linearSolver = "Default";
+    /** mm: the metal size holds up to gradeStart from the metal and reaches the air size at gradeEnd; 0 = 0.5 and 20 */
+    public double meshGradeStart = 0;
+    public double meshGradeEnd = 0;
+    /** Order of the absorbing boundary (1 or 2); 0 = 1 */
+    public int absorbingOrder = 0;
+    /** Solver.Linear: KSPType, Tol, MaxIts; null/0 = GMRES, 1e-8, 400 */
+    public String linearKsp;
+    public double linearTol = 0;
+    public int linearMaxIts = 0;
+    /** ohm, the reference of Zin = z0 (1 + S11) / (1 - S11) */
+    public double z0Ref = 50.0;
 
     public List<PalaceBox> groundBoxes = new ArrayList<>();
     public List<PalaceBox> substrateBoxes = new ArrayList<>();

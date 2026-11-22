@@ -64,6 +64,10 @@ public class PalaceStrNTxSimulationPlan extends NTxSimulationPlanImpl {
             NTxMwSimulationUtils.addDigestSource(d, generateGeo().getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, generateConfig(sweepBand()).getBytes(StandardCharsets.UTF_8));
             NTxMwSimulationUtils.addDigestSource(d, String.valueOf(modelInfo.processes).getBytes(StandardCharsets.UTF_8));
+            if (modelInfo.z0Ref != 50.0) {
+                // only when set: the other options already reach the hash through the .geo and the config
+                NTxMwSimulationUtils.addDigestSource(d, ("z0:" + modelInfo.z0Ref).getBytes(StandardCharsets.UTF_8));
+            }
         }
         for (NTxSolverRun item : items) {
             NTxMwSimulationUtils.addDigestSource(d, item.toElement().toString().getBytes(StandardCharsets.UTF_8));
@@ -171,14 +175,17 @@ public class PalaceStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         sb.append("Physical Surface(\"Port\", 5) = sPort();\nPhysical Surface(\"Abc\", 6) = sAbc();\n");
         sb.append(String.format(Locale.US, "Field[1] = Distance; Field[1].SurfacesList = {sMetal()};\n"
                         + "Field[2] = Threshold; Field[2].InField = 1; Field[2].SizeMin = %.6f; Field[2].SizeMax = %.6f;\n"
-                        + "Field[2].DistMin = 0.5; Field[2].DistMax = 20;\n"
+                        + "Field[2].DistMin = %s; Field[2].DistMax = %s;\n"
                         + "Field[3] = Box; Field[3].VIn = %.6f; Field[3].VOut = %.6f;\n"
                         + "Field[3].XMin = x0; Field[3].XMax = x1; Field[3].YMin = y0; Field[3].YMax = y1; Field[3].ZMin = zg; Field[3].ZMax = zt;\n"
                         + "Field[4] = Min; Field[4].FieldsList = {2, 3};\nBackground Field = 4;\n"
                         + "Mesh.MeshSizeFromPoints = 0; Mesh.MeshSizeExtendFromBoundary = 0; Mesh.MeshSizeFromCurvature = 0;\n",
                 // at least one element through the substrate; Field[2] already refines it near the
                 // metal. h/2 over the whole board tripled the mesh (0.89M elements, 56 GB on Sheen).
-                m.meshMetal, m.meshAir, Math.min(m.meshSubstrate, h), m.meshAir));
+                m.meshMetal, m.meshAir,
+                m.meshGradeStart > 0 ? String.format(Locale.US, "%.6f", m.meshGradeStart) : "0.5",
+                m.meshGradeEnd > 0 ? String.format(Locale.US, "%.6f", m.meshGradeEnd) : "20",
+                Math.min(m.meshSubstrate, h), m.meshAir));
         return sb.toString();
     }
 
@@ -221,7 +228,7 @@ public class PalaceStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                         + "  },\n"
                         + "  \"Boundaries\": {\n"
                         + "    \"PEC\": { \"Attributes\": [3, 4] },\n"
-                        + "    \"Absorbing\": { \"Attributes\": [6], \"Order\": 1 },\n"
+                        + "    \"Absorbing\": { \"Attributes\": [6], \"Order\": %d },\n"
                         + "    \"WavePort\": [\n"
                         + "      { \"Index\": 1, \"Attributes\": [5], \"Mode\": %d, \"Excitation\": true, \"Offset\": %.6f }\n"
                         + "    ]\n"
@@ -233,11 +240,14 @@ public class PalaceStrNTxSimulationPlan extends NTxSimulationPlanImpl {
                         + "      \"Samples\": [ { \"Type\": \"Linear\", \"MinFreq\": %.9g, \"MaxFreq\": %.9g, \"FreqStep\": %.9g } ],\n"
                         + "      \"AdaptiveTol\": %.3g\n"
                         + "    },\n"
-                        + "    \"Linear\": { \"Type\": \"%s\", \"KSPType\": \"GMRES\", \"Tol\": 1.0e-8, \"MaxIts\": 400 }\n"
+                        + "    \"Linear\": { \"Type\": \"%s\", \"KSPType\": \"%s\", \"Tol\": %s, \"MaxIts\": %d }\n"
                         + "  }\n"
                         + "}\n",
-                m.epsilonR, m.lossTangent, m.portMode, m.portExtension, m.order,
-                band[0] / 1e9, band[1] / 1e9, band[2] / 1e9, m.adaptiveTol, m.linearSolver);
+                m.epsilonR, m.lossTangent, m.absorbingOrder > 0 ? m.absorbingOrder : 1, m.portMode, m.portExtension, m.order,
+                band[0] / 1e9, band[1] / 1e9, band[2] / 1e9, m.adaptiveTol, m.linearSolver,
+                m.linearKsp != null ? m.linearKsp : "GMRES",
+                m.linearTol > 0 ? String.format(Locale.US, "%.3e", m.linearTol) : "1.0e-8",
+                m.linearMaxIts > 0 ? m.linearMaxIts : 400);
     }
 
     public synchronized void ensureSolved() {
@@ -318,9 +328,9 @@ public class PalaceStrNTxSimulationPlan extends NTxSimulationPlanImpl {
         return sS11[k].mul(1 - t).plus(sS11[k + 1].mul(t));
     }
 
-    /** referred to 50 ohm; Palace's S11 is normalized to the port mode, of about 50 ohm here */
+    /** referred to z0 (50 ohm); Palace's S11 is normalized to the port mode, of about 50 ohm here */
     public Complex computeZin(double freq) {
         Complex s = computeS11(freq);
-        return Complex.of(50.0).mul(Complex.ONE.plus(s)).div(Complex.ONE.minus(s));
+        return Complex.of(modelInfo.z0Ref).mul(Complex.ONE.plus(s)).div(Complex.ONE.minus(s));
     }
 }
