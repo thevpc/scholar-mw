@@ -55,6 +55,10 @@ public class AnalyticalParser {
                         info.z0Ref = pv.asDoubleValue().orElse(50.0);
                         break;
                     }
+                    case "conductor": {
+                        info.conductor = net.thevpc.ntexup.extension.mwsimulator.NTxConductorOptions.parse("Analytical", pv, context, "rho");
+                        break;
+                    }
                     case "dispersion": {
                         info.dispersion = pv.asBooleanValue().orElse(true);
                         break;

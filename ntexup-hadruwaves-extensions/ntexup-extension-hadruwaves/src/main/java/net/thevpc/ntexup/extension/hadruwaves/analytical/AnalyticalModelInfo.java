@@ -10,6 +10,8 @@ public class AnalyticalModelInfo {
     public double stubLength = 30e-3; // Length from port reference plane to open end
     public double z0Ref = 50.0;
     public boolean dispersion = true;
+    /** conductor:{rho}; unset keeps the circuit model's defaults */
+    public net.thevpc.ntexup.extension.mwsimulator.NTxConductorOptions conductor;
     public String geometryId;
 
     public boolean isResonator = false;
