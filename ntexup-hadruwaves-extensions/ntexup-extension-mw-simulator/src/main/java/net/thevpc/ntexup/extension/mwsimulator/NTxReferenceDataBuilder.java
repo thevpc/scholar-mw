@@ -13,6 +13,7 @@ import net.thevpc.ntexup.api.renderer.NTxRendererContext;
 import net.thevpc.ntexup.api.util.NTxUtils;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NPairElement;
+import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.util.NOptional;
 
@@ -30,8 +31,21 @@ import java.util.*;
  *     zin-re:sheen_zin_re  zin-im:sheen_zin_im  z0:50   // or: s11-db:sheen_fdtd
  *     source:"Sheen et al. 1990, Fig. 6"
  * )
+ * reference-data(                           // the same data from a CSV next to the deck
+ *     name:"sheen", output:"allS11"
+ *     csv:"sheen1990-fig6.csv"
+ *     frequency:"frequency_hz", zin-re:"zin_re_ohm", zin-im:"zin_im_ohm"   // column names
+ * )
  * reference-data(name:"sheenmeas", fr:7.46GHz, min-db:-15, source:"Sheen et al. 1990, Fig. 5")
  * </pre>
+ * With {@code csv:}, the path is relative to the deck, lines starting with {@code #} and blank
+ * lines are skipped, the first other line is the comma-separated header, and
+ * {@code frequency}, {@code s11-db}, {@code zin-re}, {@code zin-im} name columns instead of
+ * holding arrays.
+ * <p>
+ * The curve is published like a solver output: {@code <name>.<output>.x}, {@code .db} (and
+ * {@code .zinRe}, {@code .zinIm} with Zin input) for plot2d, with the metrics next to it
+ * ({@code <name>.<output>.fr}); {@code output} defaults to {@code s11}.
  * Publishes {@code <name>_<metric>} and {@code <name>.<metric>} for every metric of
  * {@link NTxSolverMetrics#NAMES}, {@code <name>_source}, {@code <name>_status} (empty when
  * the data is valid) and the object {@code <name>} with the curve ({@code x}, {@code db})
@@ -58,6 +72,12 @@ public class NTxReferenceDataBuilder implements NTxNodeBuilder {
     static final class Input {
         String name;
         String source = "";
+        String output = "s11";
+        NElement csv;
+        String fCol;
+        String dbCol;
+        String reCol;
+        String imCol;
         double[] f;
         double[] db;
         double[] zre;
@@ -108,14 +128,25 @@ public class NTxReferenceDataBuilder implements NTxNodeBuilder {
         put(rendererContext, in.name + "_source", NElement.ofString(in.source));
         put(rendererContext, in.name + "_status", NElement.ofString(error == null ? "" : " — invalid reference data: " + error));
         NTxObjFromMap obj = NTxObjs.map();
-        if (curveDb != null) {
-            obj.set("x", NTxObjs.elem(array(in.f)));
-            obj.set("db", NTxObjs.elem(array(curveDb)));
+        NTxObjFromMap out = NTxObjs.map();
+        for (NTxObjFromMap m : new NTxObjFromMap[]{obj, out}) {
+            if (curveDb != null) {
+                m.set("x", NTxObjs.elem(array(in.f)));
+                m.set("db", NTxObjs.elem(array(curveDb)));
+                if (in.zre != null && in.zim != null) {
+                    m.set("zinRe", NTxObjs.elem(array(in.zre)));
+                    m.set("zinIm", NTxObjs.elem(array(in.zim)));
+                }
+            }
+            for (Map.Entry<String, Double> e : metrics.entrySet()) {
+                m.set(e.getKey(), NTxObjs.elem(NElement.ofDouble(e.getValue())));
+            }
+            m.set("source", NTxObjs.elem(NElement.ofString(in.source)));
         }
+        obj.set(in.output, out);
         for (Map.Entry<String, Double> e : metrics.entrySet()) {
-            obj.set(e.getKey(), NTxObjs.elem(NElement.ofDouble(e.getValue())));
+            put(rendererContext, in.name + "." + in.output + "." + e.getKey(), NElement.ofDouble(e.getValue()));
         }
-        obj.set("source", NTxObjs.elem(NElement.ofString(in.source)));
         rendererContext.compiledDocument().setGlobalObject(in.name, obj);
         rendererContext.compiledDocument().dependencyGraph().notifyBindingUpdated(in.name);
         node.setUserObject("reference-data-published", Boolean.TRUE);
@@ -159,17 +190,40 @@ public class NTxReferenceDataBuilder implements NTxNodeBuilder {
                     break;
                 case "frequency":
                 case "x":
-                    in.f = doubles(key, v);
+                    if (v.isAnyString() && !v.isName()) {
+                        in.fCol = v.asStringValue().get().trim();
+                    } else {
+                        in.f = doubles(key, v);
+                    }
                     break;
                 case "s11-db":
                 case "db":
-                    in.db = doubles(key, v);
+                    if (v.isAnyString() && !v.isName()) {
+                        in.dbCol = v.asStringValue().get().trim();
+                    } else {
+                        in.db = doubles(key, v);
+                    }
                     break;
                 case "zin-re":
-                    in.zre = doubles(key, v);
+                    if (v.isAnyString() && !v.isName()) {
+                        in.reCol = v.asStringValue().get().trim();
+                    } else {
+                        in.zre = doubles(key, v);
+                    }
                     break;
                 case "zin-im":
-                    in.zim = doubles(key, v);
+                    if (v.isAnyString() && !v.isName()) {
+                        in.imCol = v.asStringValue().get().trim();
+                    } else {
+                        in.zim = doubles(key, v);
+                    }
+                    break;
+                case "csv":
+                    in.csv = v;
+                    break;
+                case "output":
+                    in.output = v.asStringValue().map(String::trim).filter(x -> !x.isEmpty())
+                            .orElseThrow(() -> new Invalid("output must be a non-empty name"));
                     break;
                 case "z0":
                     in.z0 = scalar(key, v);
@@ -187,9 +241,99 @@ public class NTxReferenceDataBuilder implements NTxNodeBuilder {
                     in.bw10 = scalar(key, v);
                     break;
                 default:
-                    throw new Invalid("unknown option '" + key + "', expected name, source, frequency, s11-db, zin-re, zin-im, z0, fr, min-db, bw10");
+                    throw new Invalid("unknown option '" + key + "', expected name, source, output, csv, frequency, s11-db, zin-re, zin-im, z0, fr, min-db, bw10");
             }
         }
+        boolean anyCol = in.fCol != null || in.dbCol != null || in.reCol != null || in.imCol != null;
+        if (in.csv == null) {
+            if (anyCol) {
+                throw new Invalid("column names (frequency/s11-db/zin-re/zin-im as strings) need csv:\"file.csv\"");
+            }
+            return;
+        }
+        if (in.f != null || in.db != null || in.zre != null || in.zim != null) {
+            throw new Invalid("with csv:, frequency/s11-db/zin-re/zin-im are column names, not arrays");
+        }
+        if (in.fCol == null) {
+            throw new Invalid("csv: needs frequency:\"<column>\"");
+        }
+        NPath path;
+        try {
+            path = args.scopedContext().resolvePath(in.csv);
+        } catch (RuntimeException e) {
+            throw new Invalid("cannot resolve csv path " + NTxUtils.snippet(in.csv) + ": " + e.getMessage());
+        }
+        if (path == null || !path.isRegularFile()) {
+            throw new Invalid("csv file not found: " + (path == null ? NTxUtils.snippet(in.csv) : path.toString()));
+        }
+        Map<String, double[]> cols = readCsv(path);
+        in.f = column(cols, in.fCol, path);
+        in.db = in.dbCol == null ? null : column(cols, in.dbCol, path);
+        in.zre = in.reCol == null ? null : column(cols, in.reCol, path);
+        in.zim = in.imCol == null ? null : column(cols, in.imCol, path);
+        if (in.source.isEmpty()) {
+            in.source = path.name();
+        }
+    }
+
+    private static double[] column(Map<String, double[]> cols, String name, NPath path) {
+        double[] c = cols.get(name);
+        if (c == null) {
+            throw new Invalid("column '" + name + "' not in " + path.name() + ", columns are " + cols.keySet());
+        }
+        return c;
+    }
+
+    /**
+     * Comma-separated numbers under one header line; {@code #} lines and blank lines skipped.
+     */
+    static Map<String, double[]> readCsv(NPath path) {
+        List<String> lines;
+        try {
+            lines = Arrays.asList(path.readString().split("\\R"));
+        } catch (RuntimeException e) {
+            throw new Invalid("cannot read " + path + ": " + e.getMessage());
+        }
+        String[] header = null;
+        List<double[]> rows = new ArrayList<>();
+        for (int ln = 0; ln < lines.size(); ln++) {
+            String line = lines.get(ln).trim();
+            if (line.isEmpty() || line.startsWith("#")) {
+                continue;
+            }
+            String[] cells = line.split(",", -1);
+            for (int i = 0; i < cells.length; i++) {
+                cells[i] = cells[i].trim().replaceAll("^\"(.*)\"$", "$1");
+            }
+            if (header == null) {
+                header = cells;
+                continue;
+            }
+            if (cells.length != header.length) {
+                throw new Invalid(path.name() + " line " + (ln + 1) + ": " + cells.length + " cells for " + header.length + " columns");
+            }
+            double[] r = new double[cells.length];
+            for (int i = 0; i < cells.length; i++) {
+                try {
+                    r[i] = Double.parseDouble(cells[i]);
+                } catch (NumberFormatException e) {
+                    throw new Invalid(path.name() + " line " + (ln + 1) + ", column '" + header[i] + "': '" + cells[i] + "' is not a number");
+                }
+            }
+            rows.add(r);
+        }
+        if (header == null) {
+            throw new Invalid(path.name() + " has no header line");
+        }
+        Map<String, double[]> cols = new LinkedHashMap<>();
+        for (int i = 0; i < header.length; i++) {
+            double[] c = new double[rows.size()];
+            for (int k = 0; k < c.length; k++) {
+                c[k] = rows.get(k)[i];
+            }
+            cols.put(header[i], c);
+        }
+        return cols;
     }
 
     private static double scalar(String key, NElement v) {
