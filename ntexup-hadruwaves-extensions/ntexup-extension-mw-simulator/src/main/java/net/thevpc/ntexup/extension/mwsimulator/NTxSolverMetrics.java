@@ -111,6 +111,58 @@ public class NTxSolverMetrics {
         }
     }
 
+    /**
+     * Publishes metrics that do not come from a solve (reference data, see
+     * {@link NTxReferenceDataBuilder}) under {@code <name>.<metric>} and
+     * {@code <name>_<metric>}, the names a solver of that name would use, so a
+     * table row or a claim reads a reference exactly like a result. Cost metrics
+     * do not apply and are published empty.
+     */
+    public static void publishReference(NTxRendererContext rendererContext, String name, Map<String, Double> metrics) {
+        if (name == null || name.trim().isEmpty() || rendererContext == null || rendererContext.compiledDocument() == null) {
+            return;
+        }
+        String pName = name.trim();
+        for (String metric : NAMES) {
+            Double v = metrics.get(metric);
+            NElement value;
+            if (RUN_TIME.equals(metric) || PEAK_MEM_GB.equals(metric)) {
+                value = NElement.ofString("");
+            } else if (POINTS.equals(metric) && v != null && Double.isFinite(v)) {
+                value = NElement.ofLong(v.longValue());
+            } else {
+                value = NElement.ofDouble(v == null ? Double.NaN : v);
+            }
+            put(rendererContext, pName + "." + metric, value);
+            put(rendererContext, globalName(pName, metric), value);
+        }
+    }
+
+    /**
+     * The metrics of a sweep given as arrays, {@link #compute} under a public name.
+     */
+    public static Map<String, Double> computeFromSweep(double[] x, double[] db) {
+        return compute(x, db);
+    }
+
+    /**
+     * Metrics of a reference known only by its scalars (a measurement quoted in a
+     * paper's text): the display forms and Q follow from the values given, the rest
+     * is NaN. {@code bw10} may be null when the source does not give it.
+     */
+    public static Map<String, Double> fromScalars(Double fr, Double minDb, Double bw10) {
+        Map<String, Double> r = new LinkedHashMap<>();
+        double f = fr == null ? Double.NaN : fr;
+        double b = bw10 == null ? Double.NaN : bw10;
+        r.put(MIN_DB, minDb == null ? Double.NaN : minDb);
+        r.put(FR, f);
+        r.put(FR_GHZ, round(f / 1e9, 3));
+        r.put(BW10, b);
+        r.put(BW10_MHZ, round(b / 1e6, 3));
+        r.put(Q10, round(f > 0 && b > 0 ? f / b : Double.NaN, 2));
+        return r;
+    }
+
     private static void publishCost(NTxObjFromMap curveMap, NTxRendererContext rendererContext,
                                     String planName, String outputName) {
         NTxSolverCost cost = NTxSolverCost.finish(planName);
