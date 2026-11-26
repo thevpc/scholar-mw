@@ -28,6 +28,16 @@ public final class MemRawD1ComplexMatrix extends AbstractComplexMatrix implement
         resize(rows, cols);
     }
 
+    /** Row-major real parts, not copied: for in-package numerics such as {@link CLUDecomposition}. */
+    double[] rawReals() {
+        return reals;
+    }
+
+    /** Row-major imaginary parts, not copied. */
+    double[] rawImags() {
+        return imags;
+    }
+
     private double _set(int r, int c, double[] reals, int C, double v) {
         return reals[r * C + c] = v;
     }
