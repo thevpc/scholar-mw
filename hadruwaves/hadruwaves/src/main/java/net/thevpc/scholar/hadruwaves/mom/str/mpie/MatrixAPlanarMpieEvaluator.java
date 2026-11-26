@@ -14,6 +14,7 @@ import net.thevpc.scholar.hadruwaves.Material;
 import net.thevpc.scholar.hadruwaves.mom.MomStructure;
 import net.thevpc.scholar.hadruwaves.mom.RWGDeltaGapBMatrix;
 import net.thevpc.scholar.hadruwaves.mom.mpie.MpiePotentialHelper;
+import net.thevpc.scholar.hadruwaves.mom.mpie.GroundedSlabGreen;
 import net.thevpc.scholar.hadruwaves.mom.str.MatrixAEvaluator;
 
 import java.util.stream.IntStream;
@@ -113,7 +114,38 @@ public class MatrixAPlanarMpieEvaluator implements MatrixAEvaluator {
         } else if (epsEffProp != null && !epsEffProp.isEmpty()) {
             epsEff = Double.parseDouble(epsEffProp);
         }
-        str.log().log(net.thevpc.nuts.text.NMsg.ofC("MPIE Evaluator: charW=%.4f mm, epsEff=%.4f, f=%.3f GHz", charW * 1000, epsEff, freq / 1e9));
+        // Green's function: "homogeneous" (legacy epsEff + image kernel, default) or "layered"
+        // (Sommerfeld grounded-slab kernel; epsEff and charW are then unused)
+        Object greenHint = str.getHintsManager() != null ? str.getHintsManager().getHint("mpieGreen") : null;
+        final boolean layered = greenHint != null && "layered".equalsIgnoreCase(String.valueOf(greenHint).trim());
+        MpiePotentialHelper.Kernel layeredKernel = null;
+        Complex layeredEps = null;
+        if (layered) {
+            double xmin = Double.POSITIVE_INFINITY, xmax = Double.NEGATIVE_INFINITY, ymin = Double.POSITIVE_INFINITY, ymax = Double.NEGATIVE_INFINITY;
+            for (int i = 0; i < N; i++) {
+                RWG r = RWGDeltaGapBMatrix.tryUnwrapRWG(g[i]);
+                if (r == null) {
+                    continue;
+                }
+                for (HTriangle tr : new HTriangle[]{r.tr1, r.tr2}) {
+                    for (HPoint p : new HPoint[]{tr.p1(), tr.p2(), tr.p3()}) {
+                        xmin = Math.min(xmin, p.x);
+                        xmax = Math.max(xmax, p.x);
+                        ymin = Math.min(ymin, p.y);
+                        ymax = Math.max(ymax, p.y);
+                    }
+                }
+            }
+            double rhoMax = Math.hypot(xmax - xmin, ymax - ymin) * 1.02 + 1e-6;
+            GroundedSlabGreen.Table table = new GroundedSlabGreen(freq, epsr, tand, h0).tabulate(rhoMax);
+            layeredKernel = MpiePotentialHelper.layeredKernel(table);
+            layeredEps = Complex.of(table.getEpsAvg().re, table.getEpsAvg().im);
+            str.log().log(net.thevpc.nuts.text.NMsg.ofC("MPIE Evaluator: layered grounded-slab kernel, epsr=%.4f, tand=%.4f, h=%.4f mm, rhoMax=%.2f mm, f=%.3f GHz",
+                    epsr, tand, h0 * 1000, rhoMax * 1000, freq / 1e9));
+        } else {
+            str.log().log(net.thevpc.nuts.text.NMsg.ofC("MPIE Evaluator: charW=%.4f mm, epsEff=%.4f, f=%.3f GHz", charW * 1000, epsEff, freq / 1e9));
+        }
+        final MpiePotentialHelper.Kernel kernel = layeredKernel;
         double k0 = omega / Maths.C;
         final double k = k0 * Math.sqrt(epsEff);
         final double h = h0;
@@ -121,7 +153,7 @@ public class MatrixAPlanarMpieEvaluator implements MatrixAEvaluator {
         // MPIE prefactors:
         // Z_mn = j*omega*mu0 * <fm, An> + 1/(j*omega*eps0*epsC) * <div fm, Phin>
         // Complex permittivity with substrate loss tangent:
-        Complex epsC = tand > 0 ? Complex.of(epsEff, -epsEff * tand) : Complex.of(epsEff, 0);
+        Complex epsC = layered ? layeredEps : (tand > 0 ? Complex.of(epsEff, -epsEff * tand) : Complex.of(epsEff, 0));
         final Complex cA = Complex.I.mul(omega * Maths.U0);
         final Complex cV = Complex.I.mul(omega * Maths.EPS0).mul(epsC).inv();
 
@@ -170,30 +202,22 @@ public class MatrixAPlanarMpieEvaluator implements MatrixAEvaluator {
 
                 // 4 triangle pair combinations: (T1_i, T1_j), (T1_i, T2_j), (T2_i, T1_j), (T2_i, T2_j)
                 // Combination (1, 1): sign = +1 * +1 = +1
-                MpiePotentialHelper.InteractionResult r11 = MpiePotentialHelper.computeTriangleInteraction(
-                        t1_i, v1_i, t1_j, v1_j, k, k0, h
-                );
+                MpiePotentialHelper.InteractionResult r11 = interact(t1_i, v1_i, t1_j, v1_j, kernel, k, k0, h);
                 zij_V = zij_V.plus(r11.scalarIntegral.mul((+1.0 * li / a1_i) * (+1.0 * lj / a1_j)));
                 zij_A = zij_A.plus(r11.vectorIntegral.mul((+1.0 * li / (2.0 * a1_i)) * (+1.0 * lj / (2.0 * a1_j))));
 
                 // Combination (1, 2): sign = +1 * -1 = -1
-                MpiePotentialHelper.InteractionResult r12 = MpiePotentialHelper.computeTriangleInteraction(
-                        t1_i, v1_i, t2_j, v2_j, k, k0, h
-                );
+                MpiePotentialHelper.InteractionResult r12 = interact(t1_i, v1_i, t2_j, v2_j, kernel, k, k0, h);
                 zij_V = zij_V.plus(r12.scalarIntegral.mul((+1.0 * li / a1_i) * (-1.0 * lj / a2_j)));
                 zij_A = zij_A.plus(r12.vectorIntegral.mul((+1.0 * li / (2.0 * a1_i)) * (-1.0 * lj / (2.0 * a2_j))));
 
                 // Combination (2, 1): sign = -1 * +1 = -1
-                MpiePotentialHelper.InteractionResult r21 = MpiePotentialHelper.computeTriangleInteraction(
-                        t2_i, v2_i, t1_j, v1_j, k, k0, h
-                );
+                MpiePotentialHelper.InteractionResult r21 = interact(t2_i, v2_i, t1_j, v1_j, kernel, k, k0, h);
                 zij_V = zij_V.plus(r21.scalarIntegral.mul((-1.0 * li / a2_i) * (+1.0 * lj / a1_j)));
                 zij_A = zij_A.plus(r21.vectorIntegral.mul((-1.0 * li / (2.0 * a2_i)) * (+1.0 * lj / (2.0 * a1_j))));
 
                 // Combination (2, 2): sign = -1 * -1 = +1
-                MpiePotentialHelper.InteractionResult r22 = MpiePotentialHelper.computeTriangleInteraction(
-                        t2_i, v2_i, t2_j, v2_j, k, k0, h
-                );
+                MpiePotentialHelper.InteractionResult r22 = interact(t2_i, v2_i, t2_j, v2_j, kernel, k, k0, h);
                 zij_V = zij_V.plus(r22.scalarIntegral.mul((-1.0 * li / a2_i) * (-1.0 * lj / a2_j)));
                 zij_A = zij_A.plus(r22.vectorIntegral.mul((-1.0 * li / (2.0 * a2_i)) * (-1.0 * lj / (2.0 * a2_j))));
 
@@ -213,6 +237,13 @@ public class MatrixAPlanarMpieEvaluator implements MatrixAEvaluator {
         });
 
         return Maths.matrix(A);
+    }
+
+    private static MpiePotentialHelper.InteractionResult interact(HTriangle ta, HPoint va, HTriangle tb, HPoint vb,
+                                                                   MpiePotentialHelper.Kernel kernel, double k, double k0, double h) {
+        return kernel != null
+                ? MpiePotentialHelper.computeTriangleInteraction(ta, va, tb, vb, kernel)
+                : MpiePotentialHelper.computeTriangleInteraction(ta, va, tb, vb, k, k0, h);
     }
 
     private static double triangleVertexNormSq(HTriangle t) {

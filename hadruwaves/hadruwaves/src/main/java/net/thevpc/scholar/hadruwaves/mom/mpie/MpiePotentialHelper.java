@@ -69,6 +69,105 @@ public final class MpiePotentialHelper {
     }
 
     /**
+     * Smooth (non-1/R) parts of the vector- and scalar-potential kernels, in "g units": the full
+     * kernels are g_A(R) = 1/R + smoothA(R) and g_V(R) = 1/R + smoothV(R); the physical constants
+     * (mu0/(4 pi), 1/(4 pi eps0 epsSingular)) are applied by the caller.
+     */
+    public interface Kernel {
+        Complex smoothA(double R);
+
+        Complex smoothV(double R);
+    }
+
+    /** Kernel backed by the tabulated grounded-slab Sommerfeld remainders. */
+    public static Kernel layeredKernel(GroundedSlabGreen.Table table) {
+        return new Kernel() {
+            @Override
+            public Complex smoothA(double R) {
+                GroundedSlabGreen.Cx c = table.remA(R);
+                return Complex.of(c.re, c.im);
+            }
+
+            @Override
+            public Complex smoothV(double R) {
+                GroundedSlabGreen.Cx c = table.remV(R);
+                return Complex.of(c.re, c.im);
+            }
+        };
+    }
+
+    /**
+     * Same integrals as {@link #computeTriangleInteraction(HTriangle, HPoint, HTriangle, HPoint, double, double, double)}
+     * but with distinct vector- and scalar-potential kernels: scalarIntegral uses g_V, vectorIntegral g_A.
+     * The 1/R part is integrated in closed form (Wilton) for near pairs.
+     */
+    public static InteractionResult computeTriangleInteraction(
+            HTriangle ta, HPoint va,
+            HTriangle tb, HPoint vb,
+            Kernel kernel) {
+        double areaA = ta.area();
+        double areaB = tb.area();
+        if (areaA <= 1e-15 || areaB <= 1e-15) {
+            return new InteractionResult(Complex.ZERO, Complex.ZERO);
+        }
+        double distCent = ta.getBarycenter().distance(tb.getBarycenter());
+        boolean isNear = distCent < 1.5 * (ta.longestEdge() + tb.longestEdge());
+        double inv4Pi = 1.0 / (4.0 * Math.PI);
+        Complex totalPhi = Complex.ZERO;
+        Complex totalA = Complex.ZERO;
+        if (isNear) {
+            for (int i = 0; i < GAUSS_7_POINTS.length; i++) {
+                double wa = GAUSS_7_WEIGHTS[i];
+                double rx = GAUSS_7_POINTS[i][0] * ta.p1().x + GAUSS_7_POINTS[i][1] * ta.p2().x + GAUSS_7_POINTS[i][2] * ta.p3().x;
+                double ry = GAUSS_7_POINTS[i][0] * ta.p1().y + GAUSS_7_POINTS[i][1] * ta.p2().y + GAUSS_7_POINTS[i][2] * ta.p3().y;
+                double singPhi = WiltonPotentialIntegrals.integrateScalarPotential(rx, ry, tb);
+                double[] singA = WiltonPotentialIntegrals.integrateLinearPotential(rx, ry, vb.x, vb.y, tb);
+                Complex smoothPhi = Complex.ZERO;
+                Complex smoothAx = Complex.ZERO;
+                Complex smoothAy = Complex.ZERO;
+                for (int j = 0; j < GAUSS_7_POINTS.length; j++) {
+                    double wb = GAUSS_7_WEIGHTS[j];
+                    double px = GAUSS_7_POINTS[j][0] * tb.p1().x + GAUSS_7_POINTS[j][1] * tb.p2().x + GAUSS_7_POINTS[j][2] * tb.p3().x;
+                    double py = GAUSS_7_POINTS[j][0] * tb.p1().y + GAUSS_7_POINTS[j][1] * tb.p2().y + GAUSS_7_POINTS[j][2] * tb.p3().y;
+                    double R = Math.hypot(rx - px, ry - py);
+                    Complex gA = kernel.smoothA(R);
+                    Complex gV = kernel.smoothV(R);
+                    smoothPhi = smoothPhi.plus(gV.mul(wb));
+                    smoothAx = smoothAx.plus(gA.mul(wb * (px - vb.x)));
+                    smoothAy = smoothAy.plus(gA.mul(wb * (py - vb.y)));
+                }
+                Complex innerPhi = Complex.of(singPhi, 0).plus(smoothPhi.mul(areaB)).mul(inv4Pi);
+                Complex innerAx = Complex.of(singA[0], 0).plus(smoothAx.mul(areaB)).mul(inv4Pi);
+                Complex innerAy = Complex.of(singA[1], 0).plus(smoothAy.mul(areaB)).mul(inv4Pi);
+                Complex dotA = innerAx.mul(rx - va.x).plus(innerAy.mul(ry - va.y));
+                totalPhi = totalPhi.plus(innerPhi.mul(wa));
+                totalA = totalA.plus(dotA.mul(wa));
+            }
+            return new InteractionResult(totalPhi.mul(areaA), totalA.mul(areaA));
+        }
+        for (int i = 0; i < GAUSS_4_POINTS.length; i++) {
+            double wa = GAUSS_4_WEIGHTS[i];
+            double rx = GAUSS_4_POINTS[i][0] * ta.p1().x + GAUSS_4_POINTS[i][1] * ta.p2().x + GAUSS_4_POINTS[i][2] * ta.p3().x;
+            double ry = GAUSS_4_POINTS[i][0] * ta.p1().y + GAUSS_4_POINTS[i][1] * ta.p2().y + GAUSS_4_POINTS[i][2] * ta.p3().y;
+            for (int j = 0; j < GAUSS_4_POINTS.length; j++) {
+                double wb = GAUSS_4_WEIGHTS[j];
+                double px = GAUSS_4_POINTS[j][0] * tb.p1().x + GAUSS_4_POINTS[j][1] * tb.p2().x + GAUSS_4_POINTS[j][2] * tb.p3().x;
+                double py = GAUSS_4_POINTS[j][0] * tb.p1().y + GAUSS_4_POINTS[j][1] * tb.p2().y + GAUSS_4_POINTS[j][2] * tb.p3().y;
+                double R = Math.hypot(rx - px, ry - py);
+                Complex invR = Complex.of(1 / R);
+                Complex gA = invR.plus(kernel.smoothA(R)).mul(inv4Pi);
+                Complex gV = invR.plus(kernel.smoothV(R)).mul(inv4Pi);
+                double w = wa * wb;
+                double dot = (rx - va.x) * (px - vb.x) + (ry - va.y) * (py - vb.y);
+                totalPhi = totalPhi.plus(gV.mul(w));
+                totalA = totalA.plus(gA.mul(w * dot));
+            }
+        }
+        double areaFactor = areaA * areaB;
+        return new InteractionResult(totalPhi.mul(areaFactor), totalA.mul(areaFactor));
+    }
+
+    /**
      * Computes the scalar and vector potential interaction between triangle Ta
      * (with free vertex va) and triangle Tb (with free vertex vb).
      *
