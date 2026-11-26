@@ -136,6 +136,21 @@ public class MomParser {
         if (moMSolverQueryInfo.epsEff != null) {
             str.getHintsManager().setHint("epsEff", moMSolverQueryInfo.epsEff);
         }
+        if (moMSolverQueryInfo.green != null) {
+            str.getHintsManager().setHint("mpieGreen", moMSolverQueryInfo.green);
+            if ("layered".equals(moMSolverQueryInfo.green) && str.getSolverType() != MomSolverType.SPATIAL_MPIE) {
+                context.log(NMsg.ofC("'green:layered' only applies to 'solver:mpie' (RWG); it is ignored by the %s solver", str.getSolverType()).asWarning());
+            }
+            if ("layered".equals(moMSolverQueryInfo.green) && (moMSolverQueryInfo.charW != null || moMSolverQueryInfo.epsEff != null)) {
+                context.log(NMsg.ofC("'characteristic-width'/'effective-permittivity' are not used with 'green:layered'").asWarning());
+            }
+        }
+        if (moMSolverQueryInfo.deembed != null) {
+            str.getHintsManager().setHint("deembed", moMSolverQueryInfo.deembed);
+        }
+        if (moMSolverQueryInfo.deembedSurfaceWave != null) {
+            str.getHintsManager().setHint("deembedSurfaceWave", moMSolverQueryInfo.deembedSurfaceWave);
+        }
         return str;
     }
 
@@ -236,6 +251,45 @@ public class MomParser {
                         NNumberElement ne = context.evalExpression(pv).flatMap(NElement::asNumber).orNull();
                         if (ne != null) {
                             query.charW = NTxNumberUtils.toMeter(ne).orNull();
+                        }
+                        break;
+                    }
+                    case "green":
+                    case "green-function":
+                    case "kernel": {
+                        // MPIE kernel: "layered" = grounded-slab Sommerfeld Green's function (open substrate,
+                        // no box); "homogeneous" = legacy epsEff + image kernel (default)
+                        String s = context.evalExpression(pv).flatMap(NElement::asStringValue).orElse("").trim().toLowerCase();
+                        if (s.equals("layered") || s.equals("sommerfeld") || s.equals("open")) {
+                            query.green = "layered";
+                        } else if (s.equals("homogeneous") || s.equals("legacy")) {
+                            query.green = "homogeneous";
+                        } else {
+                            context.log(NMsg.ofC("invalid 'green' %s, expected layered|homogeneous", s).asError());
+                        }
+                        break;
+                    }
+                    case "port-deembed":
+                    case "deembed": {
+                        // RWG port de-embedding: "lsq" (wave fit, beta from the solution), "legacy" (two
+                        // planes, closed-form beta), "none" (raw delta-gap impedance). Default: lsq with
+                        // the layered kernel, legacy otherwise.
+                        String s = context.evalExpression(pv).flatMap(NElement::asStringValue).orElse("").trim().toLowerCase();
+                        if (s.equals("lsq") || s.equals("legacy") || s.equals("none")) {
+                            query.deembed = s;
+                        } else {
+                            context.log(NMsg.ofC("invalid 'port-deembed' %s, expected lsq|legacy|none", s).asError());
+                        }
+                        break;
+                    }
+                    case "port-surface-wave": {
+                        // LSQ port: also fit the TM0 surface wave riding on the port line. auto (default with
+                        // green:layered): kept when it at least halves the fit residual
+                        String s = context.evalExpression(pv).flatMap(NElement::asStringValue).orElse("").trim().toLowerCase();
+                        if (s.equals("true") || s.equals("false") || s.equals("auto")) {
+                            query.deembedSurfaceWave = s;
+                        } else {
+                            context.log(NMsg.ofC("invalid 'port-surface-wave' %s, expected auto|true|false", s).asError());
                         }
                         break;
                     }
@@ -616,5 +670,8 @@ public class MomParser {
         MomSolverType solverType;
         Double charW;
         Double epsEff;
+        String green;
+        String deembed;
+        String deembedSurfaceWave;
     }
 }

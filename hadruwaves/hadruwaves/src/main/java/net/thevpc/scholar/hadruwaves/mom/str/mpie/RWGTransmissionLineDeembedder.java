@@ -52,6 +52,9 @@ public class RWGTransmissionLineDeembedder {
         if (str == null || B == null || X == null) {
             return null;
         }
+        if ("none".equals(deembedMode(str))) {
+            return null; // caller uses the raw delta-gap impedance
+        }
         int portCount = B.getColumnCount();
         if (portCount == 0) {
             return null;
@@ -208,6 +211,14 @@ public class RWGTransmissionLineDeembedder {
             }
         }
         double dir = (countPos >= countNeg) ? 1.0 : -1.0;
+
+        if ("lsq".equals(deembedMode(str))) {
+            Complex z = deembedPortLsq(str, tfs, X, p, portCoord, dir, minTrans, maxTrans, polY, h0, epsr, Z0);
+            if (z != null) {
+                return z;
+            }
+            str.log().log(NMsg.ofC("[DEEMBED LSQ] failed, falling back to the two-plane de-embedding").asWarning());
+        }
 
         // Effective permittivity (Hammerstad/Wheeler)
         double u = wf / h0;
@@ -396,6 +407,244 @@ public class RWGTransmissionLineDeembedder {
         }
         Collections.reverse(selected);
         return selected;
+    }
+
+    /**
+     * "legacy" (two planes, Hammerstad beta), "lsq" (least-squares wave fit, beta from the solution)
+     * or "none". Hint "deembed"; default lsq with the layered kernel, legacy otherwise.
+     */
+    static String deembedMode(MomStructure str) {
+        Object h = str.getHintsManager() != null ? str.getHintsManager().getHint("deembed") : null;
+        if (h != null && !String.valueOf(h).trim().isEmpty()) {
+            return String.valueOf(h).trim().toLowerCase();
+        }
+        Object g = str.getHintsManager() != null ? str.getHintsManager().getHint("mpieGreen") : null;
+        return g != null && "layered".equalsIgnoreCase(String.valueOf(g).trim()) ? "lsq" : "legacy";
+    }
+
+    /** total conductor width crossed by the cut at longitudinal coordinate c, within [tLo, tHi]. */
+    private static double conductorWidthAt(double c, List<HTriangle> tris, double tLo, double tHi, boolean polY) {
+        double w = 0;
+        for (HTriangle t : tris) {
+            List<Double> xs = new ArrayList<>();
+            intersectEdge(t.p1(), t.p2(), c, polY, xs);
+            intersectEdge(t.p2(), t.p3(), c, polY, xs);
+            intersectEdge(t.p3(), t.p1(), c, polY, xs);
+            if (xs.size() < 2) {
+                continue;
+            }
+            double a = Math.max(Collections.min(xs), tLo), b = Math.min(Collections.max(xs), tHi);
+            if (b > a) {
+                w += b - a;
+            }
+        }
+        return w;
+    }
+
+    /**
+     * Least-squares de-embedding: the port line current, sampled on many cuts over the uniform stretch
+     * of the feed line (2 wf clear of the gap and of the first discontinuity), is fitted with
+     * I(s) = a e^{-gamma s} + b e^{+gamma s}, gamma = alpha + j beta found by minimising the residual
+     * (beta, alpha are the solver's own, not a closed form). The voltage reflection coefficient at the
+     * gap plane is -b/a; it is normalised to the line itself (like an MSL port), and returned as the
+     * impedance Z0 (1+G)/(1-G) so that S11 = G with the port impedance Z0.
+     */
+    private static Complex deembedPortLsq(MomStructure str, DoubleToVector[] tfs, ComplexMatrix X, int p,
+                                          double portCoord, double dir, double minTrans, double maxTrans,
+                                          boolean polY, double h0, double epsr, Complex Z0) {
+        double wf = maxTrans - minTrans;
+        double k0 = 2.0 * Math.PI * str.getFrequency() / Maths.C;
+        // unique triangles
+        Map<String, HTriangle> uniq = new LinkedHashMap<>();
+        for (DoubleToVector f : tfs) {
+            RWG r = RWGDeltaGapBMatrix.tryUnwrapRWG(f);
+            if (r == null) {
+                continue;
+            }
+            for (HTriangle tr : new HTriangle[]{r.getTriangle1(), r.getTriangle2()}) {
+                HPoint c = tr.getBarycenter();
+                uniq.putIfAbsent(Math.round(c.x * 1e9) + ":" + Math.round(c.y * 1e9), tr);
+            }
+        }
+        List<HTriangle> tris = new ArrayList<>(uniq.values());
+        double tLo = minTrans - wf, tHi = maxTrans + wf;
+        // walk along the line until its width changes by more than 15% (junction, bend, step or end)
+        double step = wf / 8, sEnd = 0;
+        for (double s = 0.5 * wf; s < 2.0; s += step) {
+            double w = conductorWidthAt(portCoord + dir * s, tris, tLo, tHi, polY);
+            if (w < 0.85 * wf || w > 1.15 * wf) {
+                break;
+            }
+            sEnd = s;
+        }
+        double s0 = 2 * wf, s1 = sEnd - 2 * wf;
+        double betaGuess = k0 * Math.sqrt((epsr + 1) / 2);
+        if (s1 - s0 < 0.25 * 2 * Math.PI / betaGuess) {
+            str.log().log(NMsg.ofC("[DEEMBED LSQ] uniform feed line too short: %.2f mm usable (from %.2f to %.2f mm), need lambda_g/4 = %.2f mm; lengthen the port line",
+                    (s1 - s0) * 1e3, s0 * 1e3, s1 * 1e3, 0.25 * 2 * Math.PI / betaGuess * 1e3).asWarning());
+            return null;
+        }
+        int nc = 32;
+        double[] ss = new double[nc];
+        Complex[] is = new Complex[nc];
+        for (int i = 0; i < nc; i++) {
+            ss[i] = s0 + (s1 - s0) * (i + 0.37) / nc;
+            is[i] = computeCurrentAtCoord(portCoord + dir * ss[i], minTrans, maxTrans, tfs, X, p, polY);
+        }
+        // The TM0 surface wave launched at the gap and at the discontinuities rides along the strip; on
+        // thick substrates it biases a 2-wave fit badly (it then needs a negative alpha). Fit it too, with
+        // its propagation constant from the grounded-slab pole (lossy).
+        Complex swGamma = null;
+        if (surfaceWaveTerms(str)) {
+            double tand = 0;
+            if (str.getFirstBoxSpace() != null && str.getFirstBoxSpace().getMaterial() != null) {
+                tand = str.getFirstBoxSpace().getMaterial().lossTangent();
+            }
+            net.thevpc.scholar.hadruwaves.mom.mpie.GroundedSlabGreen.Cx kp =
+                    new net.thevpc.scholar.hadruwaves.mom.mpie.GroundedSlabGreen(str.getFrequency(), epsr, tand, h0).tm0Pole();
+            swGamma = Complex.of(-kp.im, kp.re); // j kp
+        }
+        // 2-wave fit always; the 4-wave one when asked ("true") or, in "auto", kept only when it at least
+        // halves the residual (thick substrates: 4-21x on the 3.2 mm patch; thin: 1.2-1.6x on 1.6 mm, where
+        // the extra freedom only makes the line constants wander)
+        double[] ab2 = searchGamma(null, k0, epsr, ss, is);
+        Complex sw = null;
+        double alpha = ab2[0], beta = ab2[1];
+        String swMode = surfaceWaveMode(str);
+        if (swGamma != null && !"false".equals(swMode)) {
+            double[] ab4 = searchGamma(swGamma, k0, epsr, ss, is);
+            double r2 = (Double) fitWaves(ab2[0], ab2[1], null, ss, is)[2];
+            double r4 = (Double) fitWaves(ab4[0], ab4[1], swGamma, ss, is)[2];
+            if ("true".equals(swMode) || r4 < 0.5 * r2) {
+                sw = swGamma;
+                alpha = ab4[0];
+                beta = ab4[1];
+            }
+            str.log().log(NMsg.ofC("[DEEMBED LSQ] residual 2 waves %.2e, 4 waves %.2e (port-surface-wave=%s): using %s",
+                    r2, r4, swMode, sw == null ? "2 waves" : "4 waves"));
+        }
+        Object[] fit = fitWaves(alpha, beta, sw, ss, is);
+        Complex a = (Complex) fit[0], b = (Complex) fit[1];
+        double res = (Double) fit[2];
+        Complex gamma = b.div(a).neg();
+        Complex zin = Z0.mul(Complex.ONE.plus(gamma)).div(Complex.ONE.minus(gamma));
+        str.log().log(NMsg.ofC("[DEEMBED LSQ] f=%.3fGHz: window %.2f..%.2f mm from the gap (line uniform to %.2f mm), %s, beta/k0=%.4f (epsEff %.4f), alpha=%.3f Np/m, fit residual %.2e, S11=%.2f dB, Zin=%s",
+                str.getFrequency() / 1e9, s0 * 1e3, s1 * 1e3, sEnd * 1e3, sw == null ? "2 waves" : "4 waves (line + TM0 surface wave)",
+                beta / k0, Math.pow(beta / k0, 2), alpha, res, 20 * Math.log10(gamma.absdbl()), zin));
+        if (alpha < 0) {
+            str.log().log(NMsg.ofC("[DEEMBED LSQ] negative line attenuation %.3f Np/m: the fit is absorbing a wave it does not model", alpha).asWarning());
+        }
+        if (res > 0.15) {
+            str.log().log(NMsg.ofC("[DEEMBED LSQ] poor fit (residual %.2e): the port line current is not a clean two-wave field", res).asWarning());
+        }
+        return zin;
+    }
+
+    /** "port-surface-wave": auto (default), true or false. Hint "deembedSurfaceWave". */
+    static String surfaceWaveMode(MomStructure str) {
+        Object h = str.getHintsManager() != null ? str.getHintsManager().getHint("deembedSurfaceWave") : null;
+        String s = h == null ? "auto" : String.valueOf(h).trim().toLowerCase();
+        return s.equals("true") || s.equals("false") ? s : "auto";
+    }
+
+    /** the TM0 surface wave exists only in the layered kernel's model; "false" disables it. */
+    static boolean surfaceWaveTerms(MomStructure str) {
+        if ("false".equals(surfaceWaveMode(str))) {
+            return false;
+        }
+        Object g = str.getHintsManager() != null ? str.getHintsManager().getHint("mpieGreen") : null;
+        return g != null && "layered".equalsIgnoreCase(String.valueOf(g).trim());
+    }
+
+    /** beta by grid + golden, then alpha (may come out negative: reported), then beta again. */
+    private static double[] searchGamma(Complex sw, double k0, double epsr, double[] ss, Complex[] is) {
+        double best = k0, bestRes = Double.POSITIVE_INFINITY;
+        for (double b = k0; b <= Math.sqrt(epsr) * k0; b += 0.002 * k0) {
+            double r = (Double) fitWaves(0, b, sw, ss, is)[2];
+            if (r < bestRes) {
+                bestRes = r;
+                best = b;
+            }
+        }
+        double beta = golden(x -> (Double) fitWaves(0, x, sw, ss, is)[2], best - 0.002 * k0, best + 0.002 * k0);
+        final double b1 = beta;
+        double alpha = golden(x -> (Double) fitWaves(x, b1, sw, ss, is)[2], -0.05 * beta, 0.1 * beta);
+        final double a1 = alpha;
+        beta = golden(x -> (Double) fitWaves(a1, x, sw, ss, is)[2], beta - 0.002 * k0, beta + 0.002 * k0);
+        return new double[]{alpha, beta};
+    }
+
+    /**
+     * least squares I(s) = a e^{-g s} + b e^{g s} [+ c e^{-sw s} + d e^{sw s}], g = alpha + j beta;
+     * returns {a, b, relative residual}.
+     */
+    private static Object[] fitWaves(double alpha, double beta, Complex sw, double[] ss, Complex[] is) {
+        if (sw == null) {
+            return fitWaves(alpha, beta, ss, is);
+        }
+        int n = ss.length;
+        Complex g = Complex.of(alpha, beta);
+        Complex[][] a = new Complex[n][4];
+        Complex[][] rhs = new Complex[n][1];
+        for (int i = 0; i < n; i++) {
+            a[i][0] = g.mul(-ss[i]).exp();
+            a[i][1] = g.mul(ss[i]).exp();
+            a[i][2] = sw.mul(-ss[i]).exp();
+            a[i][3] = sw.mul(ss[i]).exp();
+            rhs[i][0] = is[i];
+        }
+        ComplexMatrix am = Maths.matrix(a);
+        ComplexMatrix ah = am.transposeHermitian();
+        ComplexMatrix x = ah.mul(am).solve(ah.mul(Maths.matrix(rhs)));
+        double res = 0, nrm = 0;
+        for (int i = 0; i < n; i++) {
+            Complex f = Complex.ZERO;
+            for (int k = 0; k < 4; k++) {
+                f = f.plus(a[i][k].mul(x.get(k, 0)));
+            }
+            res += f.minus(is[i]).absdblsqr();
+            nrm += is[i].absdblsqr();
+        }
+        return new Object[]{x.get(0, 0), x.get(1, 0), Math.sqrt(res / Math.max(nrm, 1e-300))};
+    }
+
+    /** least squares I(s) = a e^{-g s} + b e^{g s}, g = alpha + j beta; returns {a, b, relative residual}. */
+    private static Object[] fitWaves(double alpha, double beta, double[] ss, Complex[] is) {
+        // normal equations of the 2-column system, solved in closed form
+        Complex s11 = Complex.ZERO, s12 = Complex.ZERO, s22 = Complex.ZERO, r1 = Complex.ZERO, r2 = Complex.ZERO;
+        Complex[] e1 = new Complex[ss.length], e2 = new Complex[ss.length];
+        for (int i = 0; i < ss.length; i++) {
+            double m = Math.exp(-alpha * ss[i]);
+            e1[i] = Complex.of(m * Math.cos(beta * ss[i]), -m * Math.sin(beta * ss[i]));
+            e2[i] = Complex.of(Math.cos(beta * ss[i]) / m, Math.sin(beta * ss[i]) / m);
+            s11 = s11.plus(e1[i].conj().mul(e1[i]));
+            s12 = s12.plus(e1[i].conj().mul(e2[i]));
+            s22 = s22.plus(e2[i].conj().mul(e2[i]));
+            r1 = r1.plus(e1[i].conj().mul(is[i]));
+            r2 = r2.plus(e2[i].conj().mul(is[i]));
+        }
+        Complex s21 = s12.conj();
+        Complex det = s11.mul(s22).minus(s12.mul(s21));
+        Complex a = r1.mul(s22).minus(s12.mul(r2)).div(det);
+        Complex b = s11.mul(r2).minus(s21.mul(r1)).div(det);
+        double res = 0, nrm = 0;
+        for (int i = 0; i < ss.length; i++) {
+            res += e1[i].mul(a).plus(e2[i].mul(b)).minus(is[i]).absdblsqr();
+            nrm += is[i].absdblsqr();
+        }
+        return new Object[]{a, b, Math.sqrt(res / Math.max(nrm, 1e-300))};
+    }
+
+    private static double golden(java.util.function.DoubleUnaryOperator f, double lo, double hi) {
+        for (int it = 0; it < 80; it++) {
+            double m1 = hi - 0.6180339887 * (hi - lo), m2 = lo + 0.6180339887 * (hi - lo);
+            if (f.applyAsDouble(m1) < f.applyAsDouble(m2)) {
+                hi = m2;
+            } else {
+                lo = m1;
+            }
+        }
+        return 0.5 * (lo + hi);
     }
 
     private static Complex computeCurrentAtCoord(double coord, double minTrans, double maxTrans,
