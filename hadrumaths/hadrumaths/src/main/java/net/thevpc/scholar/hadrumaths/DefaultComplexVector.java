@@ -600,6 +600,14 @@ public class DefaultComplexVector extends AbstractVector<Complex> implements Com
         return new DefaultComplexVector(isRow(), all);
     }
 
+    public ComplexVector atanh() {
+        Complex[] all = new Complex[size()];
+        for (int i = 0; i < all.length; i++) {
+            all[i] = get(i).atanh();
+        }
+        return new DefaultComplexVector(isRow(), all);
+    }
+
     public ComplexVector asin() {
         Complex[] all = new Complex[size()];
         for (int i = 0; i < all.length; i++) {

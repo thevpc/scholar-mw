@@ -38,6 +38,20 @@ public class MemMatrix<T> extends AbstractMatrix<T> implements Serializable {
      *
      * @return maximum column sum.
      */
+    /**
+     * Frobenius norm, straight off the backing array.
+     */
+    @Override
+    public double normF() {
+        double f = 0;
+        for (int j = 0; j < elements[0].length; j++) {
+            for (T[] element : elements) {
+                f += vs.absdblsqr(element[j]);
+            }
+        }
+        return Math.sqrt(f);
+    }
+
     public double norm1() {
         double f = 0;
         for (int j = 0; j < elements[0].length; j++) {
@@ -48,16 +62,6 @@ public class MemMatrix<T> extends AbstractMatrix<T> implements Serializable {
             f = Math.max(f, s);
         }
         return f;
-    }
-
-    public double norm2() {
-        double f = 0;
-        for (int j = 0; j < elements[0].length; j++) {
-            for (T[] element : elements) {
-                f += vs.absdblsqr(element[j]);
-            }
-        }
-        return Math.sqrt(f);
     }
 
     /**

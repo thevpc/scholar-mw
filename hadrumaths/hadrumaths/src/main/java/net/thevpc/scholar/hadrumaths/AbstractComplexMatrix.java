@@ -99,8 +99,27 @@ public abstract class AbstractComplexMatrix extends AbstractMatrix<Complex> impl
             case NORM_INF: {
                 return normInf();
             }
+            case NORM_F: {
+                return normF();
+            }
         }
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Frobenius norm: sqrt(sum |a_ij|^2).
+     */
+    @Override
+    public double normF() {
+        double f = 0;
+        int columnDimension = getColumnCount();
+        int rows = getRowCount();
+        for (int c = 0; c < columnDimension; c++) {
+            for (int r = 0; r < rows; r++) {
+                f += get(r, c).absdblsqr();
+            }
+        }
+        return Math.sqrt(f);
     }
 
     /**
@@ -120,18 +139,6 @@ public abstract class AbstractComplexMatrix extends AbstractMatrix<Complex> impl
             f = Math.max(f, s);
         }
         return f;
-    }
-
-    public double norm2() {
-        double f = 0;
-        int columnDimension = getColumnCount();
-        int rows = getRowCount();
-        for (int c = 0; c < columnDimension; c++) {
-            for (int r = 0; r < rows; r++) {
-                f += get(r, c).absdblsqr();
-            }
-        }
-        return Math.sqrt(f);
     }
 
     /**
@@ -534,9 +541,10 @@ public abstract class AbstractComplexMatrix extends AbstractMatrix<Complex> impl
         int b_cols = other.getColumnCount();
         int b_rows = other.getRowCount();
         ComplexMatrix newElements = createMatrix(a_rows, b_cols);
+        MutableComplex sum = MutableComplex.Zero();
         for (int i = 0; i < a_rows; i++) {
             for (int j = 0; j < b_cols; j++) {
-                MutableComplex sum = MutableComplex.Zero();
+                sum.setZero();
                 for (int k = 0; k < b_rows; k++) {
                     sum.addProduct(get(i, k), (other.get(k, j)));
                 }
@@ -726,7 +734,7 @@ public abstract class AbstractComplexMatrix extends AbstractMatrix<Complex> impl
 
     public ComplexMatrix subMatrix(int row, int col, int rows, int cols) {
         ComplexMatrix m = createMatrix(rows, cols);
-        m.set(row, col, this);
+        m.set(0, 0, this, row, col, rows, cols);
         return m;
     }
 
@@ -1986,6 +1994,18 @@ public abstract class AbstractComplexMatrix extends AbstractMatrix<Complex> impl
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 X.set(i, j, get(i, j).asinh());
+            }
+        }
+        return X;
+    }
+
+    public ComplexMatrix atanh() {
+        int rows = getRowCount();
+        int columns = getColumnCount();
+        ComplexMatrix X = createMatrix(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                X.set(i, j, get(i, j).atanh());
             }
         }
         return X;

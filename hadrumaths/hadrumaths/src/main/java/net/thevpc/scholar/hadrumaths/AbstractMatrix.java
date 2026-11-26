@@ -188,8 +188,7 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
         VectorSpace<T> vs = getComponentVectorSpace();
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
-                double a = vs.absdbl(get(r, c));
-                f += a * a;
+                f += vs.absdblsqr(get(r, c));
             }
         }
         return Math.sqrt(f);
@@ -853,7 +852,7 @@ public abstract class AbstractMatrix<T> implements Matrix<T> {
 
     public Matrix<T> subMatrix(int row, int col, int rows, int cols) {
         Matrix<T> m = createMatrix(rows, cols);
-        m.set(row, col, this);
+        m.set(0, 0, this, row, col, rows, cols);
         return m;
     }
 

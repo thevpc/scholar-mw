@@ -37,6 +37,20 @@ public final class MemRawD1ComplexMatrix extends AbstractComplexMatrix implement
     }
 
     /**
+     * Frobenius norm: sqrt(sum |a_ij|^2), straight off the flat storage.
+     */
+    @Override
+    public double normF() {
+        double f = 0;
+        for (int i = 0; i < reals.length; i++) {
+            double rr = reals[i];
+            double ii = imags[i];
+            f += rr * rr + ii * ii;
+        }
+        return Math.sqrt(f);
+    }
+
+    /**
      * One norm
      *
      * @return maximum column sum.
@@ -46,24 +60,14 @@ public final class MemRawD1ComplexMatrix extends AbstractComplexMatrix implement
         for (int jj = 0; jj < columnsCount; jj++) {
             double s = 0;
             for (int ii = 0; ii < rowsCount; ii++) {
-                double vr = reals[jj];
-                double vi = imags[jj];
-                double vv = Maths.dsqrt(vi * vi + vr * vr);
-                s += vv;
+                int k = ii * columnsCount + jj;
+                double vr = reals[k];
+                double vi = imags[k];
+                s += Math.sqrt(vi * vi + vr * vr);
             }
             f = Math.max(f, s);
         }
         return f;
-    }
-
-    public double norm2() {
-        double f = 0;
-        for (int i = 0; i < reals.length; i++) {
-            double ii = imags[i];
-            double rr = reals[i];
-            f += rr * rr + ii * ii;
-        }
-        return Math.sqrt(f);
     }
 
     /**
@@ -91,11 +95,12 @@ public final class MemRawD1ComplexMatrix extends AbstractComplexMatrix implement
         double f = 0;
         for (int ii = 0; ii < rowsCount; ii++) {
             double s = 0;
+            int rowStart = ii * columnsCount;
             for (int jj = 0; jj < columnsCount; jj++) {
-                double vr = reals[jj];
-                double vi = imags[jj];
-                double vv = Maths.dsqrt(vi * vi + vr * vr);
-                s += vv;
+                int k = rowStart + jj;
+                double vr = reals[k];
+                double vi = imags[k];
+                s += Math.sqrt(vi * vi + vr * vr);
             }
             f = Math.max(f, s);
         }
@@ -163,7 +168,7 @@ public final class MemRawD1ComplexMatrix extends AbstractComplexMatrix implement
             MutableComplex mc = new MutableComplex(reals[i], imags[i]);
             mc.div(c);
             er[i] = mc.getReal();
-            ei[i] = mc.getReal();
+            ei[i] = mc.getImag();
         }
         return new MemRawD1ComplexMatrix(rowsCount, columnsCount, er, ei);
     }
@@ -179,7 +184,7 @@ public final class MemRawD1ComplexMatrix extends AbstractComplexMatrix implement
             MutableComplex mc = new MutableComplex(reals[i], imags[i]);
             mc.mul(c);
             er[i] = mc.getReal();
-            ei[i] = mc.getReal();
+            ei[i] = mc.getImag();
         }
         return new MemRawD1ComplexMatrix(rowsCount, columnsCount, er, ei);
     }
@@ -560,7 +565,7 @@ public final class MemRawD1ComplexMatrix extends AbstractComplexMatrix implement
     @Override
     public MemRawD1ComplexMatrix coMatrix(int row, int col) {
         int tms = getRowCount();
-        MemRawD1ComplexMatrix ap = (MemRawD1ComplexMatrix) createMatrix(tms - 1, tms - 1);
+        MemRawD1ComplexMatrix ap = new MemRawD1ComplexMatrix(tms - 1, tms - 1);
         int ia = 0;
         int ja;
         for (int ii = 0; ii < row; ii++) {
@@ -607,7 +612,7 @@ public final class MemRawD1ComplexMatrix extends AbstractComplexMatrix implement
         for (int i = 0; i < d.length; i++) {
             for (int j = 0; j < d[i].length; j++) {
                 double rr = _getr(i, j);
-                double ii = _getr(i, j);
+                double ii = _geti(i, j);
                 d[i][j] = Maths.sqrt(rr * rr + ii * ii);
             }
         }
@@ -620,7 +625,7 @@ public final class MemRawD1ComplexMatrix extends AbstractComplexMatrix implement
         for (int i = 0; i < d.length; i++) {
             for (int j = 0; j < d[i].length; j++) {
                 double rr = _getr(i, j);
-                double ii = _getr(i, j);
+                double ii = _geti(i, j);
                 double v = Maths.sqrt(rr * rr + ii * ii);
                 d[i][j] = Complex.of(v);
             }
@@ -634,7 +639,7 @@ public final class MemRawD1ComplexMatrix extends AbstractComplexMatrix implement
         for (int i = 0; i < d.length; i++) {
             for (int j = 0; j < d[i].length; j++) {
                 double rr = _getr(i, j);
-                double ii = _getr(i, j);
+                double ii = _geti(i, j);
                 double v = (rr * rr + ii * ii);
                 d[i][j] = Complex.of(v);
             }
@@ -653,7 +658,7 @@ public final class MemRawD1ComplexMatrix extends AbstractComplexMatrix implement
             alpha = 0;
             for (int c = 0; c < cols; c++) {
                 double rr = _getr(r, c);
-                double ii = _getr(r, c);
+                double ii = _geti(r, c);
                 alpha = alpha + ((rr * rr + ii * ii));
             }
             x *= Maths.sqrt(alpha);
@@ -702,7 +707,7 @@ public final class MemRawD1ComplexMatrix extends AbstractComplexMatrix implement
             f0 = reals[i] * reals[i] + imags[i] * imags[i];
             f = Math.max(f, f0);
         }
-        return f;
+        return Math.sqrt(f);
     }
 
     @Override
@@ -713,7 +718,7 @@ public final class MemRawD1ComplexMatrix extends AbstractComplexMatrix implement
             f0 = reals[i] * reals[i] + imags[i] * imags[i];
             f = Math.min(f, f0);
         }
-        return f;
+        return Math.sqrt(f);
     }
 
     @Override

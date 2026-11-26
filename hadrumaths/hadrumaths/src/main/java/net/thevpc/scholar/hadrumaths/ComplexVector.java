@@ -95,6 +95,8 @@ public interface ComplexVector extends Normalizable, Vector<Complex> {
 
     ComplexVector asinh();
 
+    ComplexVector atanh();
+
     ComplexVector asin();
 
     ComplexVector atan();

@@ -25,11 +25,20 @@ public interface Matrix<T> extends Normalizable, Serializable, Iterable<Vector<T
     double norm1();
 
     /**
-     * Frobenius norm
+     * Spectral (2-) norm: the largest singular value, <code>sqrt(lambda_max(A^H A))</code>.
+     * This is the matrix 2-norm in the usual sense (as in MATLAB's {@code norm(A)}); it is
+     * <b>not</b> the Frobenius norm (see {@link #normF()}).
      *
-     * @return
+     * @return largest singular value
      */
     double norm2();
+
+    /**
+     * Frobenius norm: <code>sqrt(sum |a_ij|^2)</code>.
+     *
+     * @return Frobenius norm
+     */
+    double normF();
 
     /**
      * One norm

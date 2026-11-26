@@ -345,6 +345,8 @@ public interface ComplexMatrix extends Normalizable, Matrix<Complex> {
 
     ComplexMatrix asinh();
 
+    ComplexMatrix atanh();
+
     ComplexMatrix sinh();
 
 //    Matrix dotabs();

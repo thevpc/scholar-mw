@@ -67,18 +67,6 @@ public class DefaultMatrix<T> extends AbstractMatrix<T> implements Serializable 
         return f;
     }
 
-    public double norm2() {
-        double f = 0;
-        int columnDimension = getColumnCount();
-        int rows = getRowCount();
-        for (int c = 0; c < columnDimension; c++) {
-            for (int r = 0; r < rows; r++) {
-                f += vs.absdblsqr(get(r, c));
-            }
-        }
-        return Math.sqrt(f);
-    }
-
     /**
      * One norm
      *
