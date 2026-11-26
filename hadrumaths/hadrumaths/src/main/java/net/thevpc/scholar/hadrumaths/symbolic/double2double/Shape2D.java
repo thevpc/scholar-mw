@@ -12,7 +12,7 @@ public final class Shape2D extends AbstractDoubleToDouble {
     public static final Shape2D ZERO = new Shape2D(0, Domain.EMPTYXY);
     private static final long serialVersionUID = 1L;
     //    public static final int CODE = 1;
-    public double value;
+    public final double value;
     private final HGeometry geometry;
 
     public Shape2D(double cst, Domain domain) {

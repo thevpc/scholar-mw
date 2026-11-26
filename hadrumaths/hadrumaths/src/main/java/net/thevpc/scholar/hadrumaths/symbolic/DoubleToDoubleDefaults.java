@@ -479,15 +479,18 @@ public final class DoubleToDoubleDefaults {
             if (contains(x, y, z)) {
                 DoubleToDouble c1 = this.getChild(0).toDD();
                 DoubleToDouble c2 = this.getChild(1).toDD();
-                BooleanRef defined2 = BooleanMarker.ref();
-                double a = c1.toDD().evalDouble(x, y, z, defined2);
-                if (defined2.get()) {
-                    double b = c2.toDD().evalDouble(x, y, z, defined2);
-                    if (defined2.get()) {
-                        defined.set();
-                        return evalDoubleSimple(a, b);
-                    }
+                BooleanRef d1 = BooleanMarker.ref();
+                double a = c1.evalDouble(x, y, z, d1);
+                if (!d1.get()) {
+                    return 0;
                 }
+                BooleanRef d2 = BooleanMarker.ref();
+                double b = c2.evalDouble(x, y, z, d2);
+                if (!d2.get()) {
+                    return 0;
+                }
+                defined.set();
+                return evalDoubleSimple(a, b);
 
             }
             return 0;
@@ -498,15 +501,18 @@ public final class DoubleToDoubleDefaults {
             if (contains(x)) {
                 DoubleToDouble c1 = this.getChild(0).toDD();
                 DoubleToDouble c2 = this.getChild(1).toDD();
-                BooleanRef defined2 = BooleanMarker.ref();
-                double a = c1.evalDouble(x, defined2);
-                if (defined2.get()) {
-                    double b = c2.evalDouble(x, defined2);
-                    if (defined2.get()) {
-                        defined.set();
-                        return evalDoubleSimple(a, b);
-                    }
+                BooleanRef d1 = BooleanMarker.ref();
+                double a = c1.evalDouble(x, d1);
+                if (!d1.get()) {
+                    return 0;
                 }
+                BooleanRef d2 = BooleanMarker.ref();
+                double b = c2.evalDouble(x, d2);
+                if (!d2.get()) {
+                    return 0;
+                }
+                defined.set();
+                return evalDoubleSimple(a, b);
             }
             return 0;
         }
@@ -516,15 +522,18 @@ public final class DoubleToDoubleDefaults {
             if (contains(x, y)) {
                 DoubleToDouble c1 = this.getChild(0).toDD();
                 DoubleToDouble c2 = this.getChild(1).toDD();
-                BooleanRef defined2 = BooleanMarker.ref();
-                double a = c1.evalDouble(x, y, defined2);
-                if (defined2.get()) {
-                    double b = c2.evalDouble(x, y, defined2);
-                    if (defined2.get()) {
-                        defined.set();
-                        return evalDoubleSimple(a, b);
-                    }
+                BooleanRef d1 = BooleanMarker.ref();
+                double a = c1.evalDouble(x, y, d1);
+                if (!d1.get()) {
+                    return 0;
                 }
+                BooleanRef d2 = BooleanMarker.ref();
+                double b = c2.evalDouble(x, y, d2);
+                if (!d2.get()) {
+                    return 0;
+                }
+                defined.set();
+                return evalDoubleSimple(a, b);
 
             }
             return 0;

@@ -114,7 +114,7 @@ class DbDoubleToDouble extends Db implements DoubleToDoubleDefaults.DoubleToDoub
 
     @Override
     public NElement toElement() {
-        return NElement.ofNamedObject("Div");
+        return NElement.ofNamedObject("Db");
     }
 
     @Override
@@ -131,7 +131,7 @@ class DbDoubleToComplex extends Db implements DoubleToComplexDefaults.DoubleToCo
 
     @Override
     public NElement toElement() {
-        return NElement.ofNamedObject("Div");
+        return NElement.ofNamedObject("Db");
     }
 
     @Override
@@ -147,7 +147,7 @@ class DbDoubleToVector extends Db implements DoubleToVectorDefaults.DoubleToVect
 
     @Override
     public NElement toElement() {
-        return NElement.ofNamedObject("Div");
+        return NElement.ofNamedObject("Db");
     }
     @Override
     public ComplexVector aggregateVector(ComplexVector v) {
@@ -162,7 +162,7 @@ class DbDoubleToMatrix extends Db implements DoubleToMatrixDefaults.DoubleToMatr
 
     @Override
     public NElement toElement() {
-        return NElement.ofNamedObject("Div");
+        return NElement.ofNamedObject("Db");
     }
     @Override
     public ComplexMatrix aggregateMatrix(ComplexMatrix m) {

@@ -2376,7 +2376,7 @@ public class ExprDefaults {
     }
 
     public static Expr atanh(Expr me) {
-        throw new IllegalArgumentException("Not yet supported");
+        return Atanh.of(me);
     }
 
     public static Expr acos(Expr me) {
@@ -2748,7 +2748,7 @@ public class ExprDefaults {
     }
 
     public static Expr sqr(Expr me) {
-        return Sqrt.of(me);
+        return Sqr.of(me);
     }
 
     public static Expr log(Expr me) {

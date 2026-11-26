@@ -42,10 +42,10 @@ public class ExprElementParser {
                         return NOptional.of(Maths.X);
                     case "Y":
                     case "y":
-                        return NOptional.of(Maths.X);
+                        return NOptional.of(Maths.Y);
                     case "Z":
                     case "z":
-                        return NOptional.of(Maths.X);
+                        return NOptional.of(Maths.Z);
                 }
                 return NOptional.of(Maths.param(value.asStringValue().get()));
             }
@@ -66,6 +66,9 @@ public class ExprElementParser {
                         }
                         case "cosh": {
                             return parse(p).map(Expr::cosh);
+                        }
+                        case "atanh": {
+                            return parse(p).map(Expr::atanh);
                         }
                         case "asinh": {
                             return parse(p).map(Expr::asinh);

@@ -19,7 +19,7 @@ public final class DoubleExpr implements DoubleToDoubleDefaults.DoubleToDoubleSi
     public static final DoubleExpr NAN = new DoubleExpr(Double.NaN);
 
     private static final long serialVersionUID = 1L;
-    public double value;
+    public final double value;
 
     private DoubleExpr(double cst) {
         this.value = cst;
@@ -323,7 +323,7 @@ public final class DoubleExpr implements DoubleToDoubleDefaults.DoubleToDoubleSi
 
     public NumberExpr log10() {
         if (value >= 0) {
-            return DoubleExpr.of(Maths.log(value));
+            return DoubleExpr.of(Maths.log10(value));
         }
         return Complex.of(value).log10();
     }

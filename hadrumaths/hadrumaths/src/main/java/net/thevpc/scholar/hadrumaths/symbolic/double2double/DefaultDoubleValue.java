@@ -34,7 +34,7 @@ public final class DefaultDoubleValue implements DoubleToDoubleDefaults.DoubleTo
     public static final DefaultDoubleValue NAN3 = new DefaultDoubleValue(Double.NaN, Domain.FULLXYZ);
 
     private static final long serialVersionUID = 1L;
-    public double value;
+    public final double value;
     protected Domain domain;
 
     public DefaultDoubleValue(Domain domain) {

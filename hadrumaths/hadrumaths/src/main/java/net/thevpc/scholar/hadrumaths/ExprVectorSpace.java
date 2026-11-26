@@ -257,7 +257,7 @@ public class ExprVectorSpace extends AbstractVectorSpace<Expr> {
                 return Maths.expr(Maths.abssqr(a.toDouble()), a.getDomain());
             }
             case COMPLEX_NBR: {
-                return Maths.expr(a.toDouble(), a.getDomain());
+                return Maths.expr(a.toComplex().absdblsqr(), a.getDomain());
             }
         }
         if (a instanceof CDiscrete) {

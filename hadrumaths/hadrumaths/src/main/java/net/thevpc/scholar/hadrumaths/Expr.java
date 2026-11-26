@@ -619,7 +619,7 @@ public interface Expr extends HSerializable {
     }
 
     default Expr log10() {
-        return ExprDefaults.log(this);
+        return ExprDefaults.log10(this);
     }
 
     default Expr abs() {

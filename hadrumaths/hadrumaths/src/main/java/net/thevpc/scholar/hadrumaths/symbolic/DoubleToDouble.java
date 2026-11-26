@@ -70,7 +70,7 @@ public interface DoubleToDouble extends DoubleDomainExpr {
     double evalDouble(double x, double y, BooleanMarker defined);
 
     default double apply(double x, double y, double z) {
-        return evalDouble(x, y);
+        return evalDouble(x, y, z);
     }
 
     default ExprType getNarrowType() {
