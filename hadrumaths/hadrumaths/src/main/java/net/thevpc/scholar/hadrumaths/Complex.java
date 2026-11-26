@@ -88,6 +88,16 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
     }
 
     public static Complex of(double a, double b) {
+        // Hot path kept tiny so it is always inlined; canonicalisation (zero/imag/
+        // singletons) happens out of line. Canonicalisation itself is kept on purpose:
+        // it gives smaller objects and shared constants for stored values.
+        if (a != 0.0 && b != 0.0 && a == a && b == b) {
+            return new ComplexRI(a, b);
+        }
+        return ofSpecial(a, b);
+    }
+
+    private static Complex ofSpecial(double a, double b) {
         if (a != a && b != b) {
             return NaNRI;
         }
@@ -100,13 +110,21 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
     }
 
     public static Complex of(double doubleValue) {
+        if (doubleValue != 0.0 && doubleValue == doubleValue
+                && doubleValue != 1.0 && doubleValue != 2.0 && doubleValue != -1.0) {
+            return new ComplexR(doubleValue);
+        }
+        return ofSpecial(doubleValue);
+    }
+
+    private static Complex ofSpecial(double doubleValue) {
         if (doubleValue != doubleValue) {
             return NaN;
         }
         if (doubleValue == 0.0) {
-            if ((1 / doubleValue) < 0) {
-                return ZERO_MINUS;
-            }
+            // -0.0 is folded into +0.0, as ofRaw() does for every arithmetic result:
+            // equals()/hashCode() compare raw bits, so a -0.0 here made Complex.of(-0.0)
+            // differ from the same value computed by Complex or MutableComplex arithmetic.
             return ZERO;
         }
         if (doubleValue == 1.0) {
@@ -119,6 +137,145 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
             return MINUS_ONE;
         }
         return new ComplexR(doubleValue);
+    }
+
+    // Java's Math.acosh/asinh are not available on every JDK image; these are the
+    // standard log forms, guarded against overflow for huge arguments.
+    private static double acoshD(double x) {
+        if (x > 1e154) {
+            return Math.log(x) + Math.log(2.0);
+        }
+        return Math.log(x + Math.sqrt(x - 1.0) * Math.sqrt(x + 1.0));
+    }
+
+    /** 0.5 ln((1+x)/(1-x)); real branch, |x| &lt; 1. */
+    static double atanhD(double x) {
+        return 0.5 * Math.log((1.0 + x) / (1.0 - x));
+    }
+
+    private static double asinhD(double x) {
+        double ax = Math.abs(x);
+        double r;
+        if (ax > 1e154) {
+            r = Math.log(ax) + Math.log(2.0);
+        } else {
+            r = Math.log(ax + Math.sqrt(ax * ax + 1.0));
+        }
+        return Math.copySign(r, x);
+    }
+
+    /**
+     * Principal arc sine (C99 branch cuts).
+     * For real |x| &gt; 1 the analytic continuation pi/2*sign(x) + i*acosh|x| is used; the
+     * generic log formula gives its conjugate there.
+     */
+    static Complex asinRaw(double re, double im) {
+        if (im == 0) {
+            if (re >= -1 && re <= 1) {
+                return ofRaw(Math.asin(re), 0);
+            }
+            double l = acoshD(Math.abs(re));
+            return re > 0 ? ofRaw(Math.PI / 2, l) : ofRaw(-Math.PI / 2, l);
+        }
+        Complex z = ofRaw(re, im);
+        return z.mul(I).plus(ONE.minus(z.sqr()).sqrt()).log().mul(MINUS_I);
+    }
+
+    /** Principal arc cosine: pi/2 - asin(z). */
+    static Complex acosRaw(double re, double im) {
+        if (im == 0) {
+            if (re >= -1 && re <= 1) {
+                return ofRaw(Math.acos(re), 0);
+            }
+            double l = acoshD(Math.abs(re));
+            return re > 0 ? ofRaw(0, -l) : ofRaw(Math.PI, -l);
+        }
+        return HALF_PI.minus(asinRaw(re, im));
+    }
+
+    /**
+     * Principal inverse hyperbolic sine. On the imaginary axis beyond +-i the generic
+     * log formula flips the real part; the analytic continuation is acosh|y| +- i*pi/2.
+     */
+    static Complex asinhRaw(double re, double im) {
+        if (im == 0) {
+            return ofRaw(asinhD(re), 0);
+        }
+        if (re == 0 && Math.abs(im) > 1) {
+            return ofRaw(acoshD(Math.abs(im)), Math.copySign(Math.PI / 2, im));
+        }
+        Complex z = ofRaw(re, im);
+        return z.plus(z.sqr().plus(ONE).sqrt()).log();
+    }
+
+    /**
+     * Principal inverse hyperbolic cosine.
+     * The product form log(z + sqrt(z+1)sqrt(z-1)) is used because log(z + sqrt(z^2-1))
+     * is wrong for the whole left half-plane.
+     */
+    static Complex acoshRaw(double re, double im) {
+        if (im == 0) {
+            if (re >= 1) {
+                return ofRaw(acoshD(re), 0);
+            }
+            if (re < -1) {
+                return ofRaw(acoshD(-re), Math.PI);
+            }
+        }
+        Complex z = ofRaw(re, im);
+        return z.plus(ofRaw(re + 1, im).sqrt().mul(ofRaw(re - 1, im).sqrt())).log();
+    }
+
+    /**
+     * Unconditional <code>ComplexRI</code> construction: no canonicalisation, no branch
+     * cascade. This is the hot-path factory used by arithmetic; it keeps the call site
+     * monomorphic so the JIT can inline it and scalar-replace the temporary.
+     * Value semantics (equals/hashCode) are identical to {@link #of(double,double)}.
+     */
+    static Complex ofRaw(double re, double im) {
+        // +0.0 normalisation: equals()/hashCode() compare raw bits, so -0.0 must never
+        // leak out of arithmetic (otherwise -4.0+0i != -4.0 and hashes diverge).
+        return new ComplexRI(re + 0.0, im + 0.0);
+    }
+
+    static Complex ofRaw(double re) {
+        return new ComplexRI(re + 0.0, 0);
+    }
+
+    /**
+     * Principal square root (Re &gt;= 0 branch) in closed algebraic form: one sqrt for the
+     * modulus, no atan2/cos/sin round-trip. Same branch convention as
+     * {@code r = sqrt(|z|), theta = arg(z)/2}.
+     */
+    static Complex sqrtRaw(double re, double im) {
+        if (im == 0) {
+            return re >= 0 ? ofRaw(Math.sqrt(re), 0) : ofRaw(0, Math.sqrt(-re));
+        }
+        double r = Math.sqrt(re * re + im * im);
+        if (r == 0) {
+            return ofRaw(0, 0);
+        }
+        double sr = Math.sqrt((r + Math.abs(re)) / 2);
+        if (re >= 0) {
+            return ofRaw(sr, im / (2 * sr));
+        }
+        return ofRaw(Math.abs(im) / (2 * sr), Math.copySign(sr, im));
+    }
+
+    /**
+     * Smith's division: avoids the overflow/underflow of the naive
+     * {@code c*c + d*d} denominator for very large or very small |divisor|.
+     */
+    static Complex divRaw(double a, double b, double c, double d) {
+        if (Math.abs(c) >= Math.abs(d)) {
+            double r = d / c;
+            double den = c + d * r;
+            return ofRaw((a + b * r) / den, (b - a * r) / den);
+        } else {
+            double r = c / d;
+            double den = c * r + d;
+            return ofRaw((a * r + b) / den, (b * r - a) / den);
+        }
     }
 
     public static Complex I(double iValue) {
@@ -304,7 +461,7 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
             r *= aC;
             i *= aC;
         }
-        return Complex.of(r, i);
+        return Complex.ofRaw(r, i);
     }
 
     public Complex divAll(double... c) {
@@ -314,7 +471,7 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
             r /= aC;
             i /= aC;
         }
-        return Complex.of(r, i);
+        return Complex.ofRaw(r, i);
     }
 
     public Complex addAll(double... c) {
@@ -324,7 +481,7 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
             r += aC;
             i += aC;
         }
-        return Complex.of(r, i);
+        return Complex.ofRaw(r, i);
     }
 
     public Complex mulAll(Complex... c) {
@@ -356,12 +513,12 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
     }
 
     public Complex plus(MutableComplex c) {
-        return Complex.of(getReal() + c.getReal(), getImag() + c.getImag());
+        return Complex.ofRaw(getReal() + c.getReal(), getImag() + c.getImag());
     }
 
     public Complex rem(double other) {
         if (isReal()) {
-            return Complex.of(toDouble() % other);
+            return Complex.ofRaw(toDouble() % other);
         }
         Complex u = this.div(other);
         int d = (int) u.getReal();
@@ -370,7 +527,7 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
 
     public Complex rem(Complex other) {
         if (isReal() && other.isReal()) {
-            return Complex.of(toDouble() % other.toDouble());
+            return Complex.ofRaw(toDouble() % other.toDouble());
         }
         Complex u = this.div(other);
         int d = (int) u.getReal();
@@ -382,7 +539,7 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
     }
 
     public Complex abssqr() {
-        return Complex.of(absdbl());
+        return Complex.ofRaw(getReal() * getReal() + getImag() * getImag());
     }
 
     public double absdbl() {
@@ -536,7 +693,7 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
     }
 
     public Complex arg() {
-        return Complex.of(Math.atan2(getImag(), getReal()));
+        return Complex.ofRaw(Math.atan2(getImag(), getReal()));
     }
 
     public double argdbl() {
@@ -583,17 +740,17 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
         } else if (power == 2) {
             return sqr();
 //        } else if (imag == 0) {
-//            return real >= 0 ? Complex.valueOf(Maths.pow(real, power), 0) : new Complex(0, Math.pow(-real, power));
+//            return real >= 0 ? Complex.valueOf(Math.pow(real, power), 0) : new Complex(0, Math.pow(-real, power));
         } else if (power >= 0) {
             double r = Math.pow(absdbl(), power);
             double angle = arg().toDouble();
             double theta = angle * power;
-            return Complex.of(r * Math.cos(theta), r * Math.sin(theta));
+            return Complex.ofRaw(r * Math.cos(theta), r * Math.sin(theta));
         } else { //n<0
             power = -power;
             double r = Math.pow(absdbl(), power);
             double theta = arg().toDouble() * power;
-            Complex c = Complex.of(r * Math.cos(theta), r * Math.sin(theta));
+            Complex c = Complex.ofRaw(r * Math.cos(theta), r * Math.sin(theta));
             return c.inv();
         }
     }
@@ -624,15 +781,15 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
         double b = getImag();
 
         if (b == 0) {
-            return Complex.of(1.0 / a);
+            return Complex.ofRaw(1.0 / a);
         }
 
         if (a == 0) {
-            return Complex.of(0, -1.0 / b);
+            return Complex.ofRaw(0, -1.0 / b);
         }
 
         double denom = a * a + b * b;
-        return Complex.of(a / denom, -b / denom);
+        return Complex.ofRaw(a / denom, -b / denom);
     }
 
     @Override
@@ -770,15 +927,15 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
     }
 
     public Complex mul(Complex c) {
-        return Complex.of(getReal() * c.getReal() - getImag() * c.getImag(), getReal() * c.getImag() + getImag() * c.getReal());
+        return Complex.ofRaw(getReal() * c.getReal() - getImag() * c.getImag(), getReal() * c.getImag() + getImag() * c.getReal());
     }
 
     public Complex plus(int c) {
-        return Complex.of(getReal() + c, getImag());
+        return Complex.ofRaw(getReal() + c, getImag());
     }
 
     public Complex plus(double c) {
-        return Complex.of(getReal() + c, getImag());
+        return Complex.ofRaw(getReal() + c, getImag());
     }
 
     @Override
@@ -790,7 +947,7 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
     }
 
     public Complex rdiv(double other) {
-        return Complex.of(other).div(this);
+        return Complex.ofRaw(other).div(this);
     }
 
     public Complex div(Complex other) {
@@ -798,25 +955,28 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
         double b = getImag();
         double c = other.getReal();
         double d = other.getImag();
-        double c2d2 = c * c + d * d;
-
-        return Complex.of(
-                (a * c + b * d) / c2d2,
-                (b * c - a * d) / c2d2
-        );
+        return divRaw(a, b, c, d);
         //return mul(c.inv());
     }
 
     public Complex rmul(double other) {
-        return Complex.of(other).mul(this);
+        return Complex.ofRaw(other).mul(this);
     }
 
     public Complex radd(double other) {
-        return Complex.of(other).plus(this);
+        return Complex.ofRaw(other).plus(this);
+    }
+
+    public Complex sub(Complex other) {
+        return Complex.ofRaw(getReal() - other.getReal(), getImag() - other.getImag());
+    }
+
+    public Complex add(Complex other) {
+        return Complex.ofRaw(getReal() + other.getReal(), getImag() + other.getImag());
     }
 
     public Complex rsub(double other) {
-        return Complex.of(other).minus(this);
+        return Complex.ofRaw(other).minus(this);
     }
 
     @Override
@@ -865,11 +1025,11 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
     }
 
     public Complex mul(int c) {
-        return Complex.of(getReal() * c, getImag() * c);
+        return Complex.ofRaw(getReal() * c, getImag() * c);
     }
 
     public Complex mul(double c) {
-        return Complex.of(getReal() * c, getImag() * c);
+        return Complex.ofRaw(getReal() * c, getImag() * c);
     }
 
     public Expr multiply(Expr c) {
@@ -915,11 +1075,11 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
     }
 
     public Complex div(int c) {
-        return Complex.of(getReal() / c, getImag() / c);
+        return Complex.ofRaw(getReal() / c, getImag() / c);
     }
 
     public Complex div(double c) {
-        return Complex.of(getReal() / c, getImag() / c);
+        return Complex.ofRaw(getReal() / c, getImag() / c);
     }
 
     @Override
@@ -938,7 +1098,7 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
     }
 
     public Complex sub(int c) {
-        return Complex.of(getReal() - c, getImag());
+        return Complex.ofRaw(getReal() - c, getImag());
     }
 
     //    public boolean isDDx() {
@@ -963,7 +1123,7 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
 //        return true;
 //    }
     public Complex sub(double c) {
-        return Complex.of(getReal() - c, getImag());
+        return Complex.ofRaw(getReal() - c, getImag());
     }
 
     //    @Override
@@ -986,18 +1146,18 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
     }
 
     public Complex neg() {
-        return Complex.of(-getReal(), -getImag());
+        return Complex.ofRaw(-getReal(), -getImag());
     }
 
     public Complex conj() {
-        return Complex.of(getReal(), -getImag());
+        return Complex.ofRaw(getReal(), -getImag());
     }
 
     public Complex cos() {
         if (getImag() == 0) {
-            return Complex.of(Maths.cos2(getReal()));
+            return Complex.ofRaw(Math.cos(getReal()));
         }
-        return Complex.of(Maths.cos2(getReal()) * Math.cosh(getImag()), -Maths.sin(getReal()) * Math.sinh(getImag()));
+        return Complex.ofRaw(Math.cos(getReal()) * Math.cosh(getImag()), -Math.sin(getReal()) * Math.sinh(getImag()));
     }
 
     public Complex cosh() {
@@ -1005,7 +1165,7 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
     }
 
     public Complex sin() {
-        return Complex.of(Math.sin(getReal()) * Math.cosh(getImag()), Math.cos(getReal()) * Math.sinh(getImag()));
+        return Complex.ofRaw(Math.sin(getReal()) * Math.cosh(getImag()), Math.cos(getReal()) * Math.sinh(getImag()));
     }
 
     public Complex sinh() {
@@ -1017,42 +1177,46 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
             return ONE;
         }
         if (isReal()) {
-            return Complex.of(Maths.sincard(getReal()));
+            return Complex.ofRaw(Math.sin(getReal()) / getReal());
         }
         return sin().div(this);
     }
 
     public Complex tan() {
-        return sin().div(cos());
+        if (getImag() == 0) {
+            return Complex.ofRaw(Math.tan(getReal()));
+        }
+        // tan z = -i tanh(iz), overflow-safe for large |Im z|
+        Complex t = tanhStable(-getImag(), getReal());
+        return Complex.ofRaw(t.getImag(), -t.getReal());
     }
 
     public Complex cotan() {
-        return cos().div(sin());
+        if (getImag() == 0) {
+            return Complex.ofRaw(1 / Math.tan(getReal()));
+        }
+        // cot z = i coth(iz)
+        Complex c = cothStable(-getImag(), getReal());
+        return Complex.ofRaw(-c.getImag(), c.getReal());
     }
 
     public Complex tanh() {
         if (getImag() == 0) {
-            return Complex.of(Math.tanh(getReal()));
+            return Complex.ofRaw(Math.tanh(getReal()));
         }
-        Complex eplus = exp();
-        Complex eminus = this.neg().exp();
-        return (eplus.minus(eminus)).div(eplus.plus(eminus));
-//        return sinh().divide(cosh());
+        return tanhStable(getReal(), getImag());
     }
 
     public Complex cotanh() {
         if (getImag() == 0) {
-            return Complex.of(1 / Math.tanh(getReal()));
+            return Complex.ofRaw(1 / Math.tanh(getReal()));
         }
-        Complex eplus = exp();
-        Complex eminus = this.neg().exp();
-        return (eplus.plus(eminus)).div(eplus.minus(eminus));
-//        return cosh().divide(sinh());
+        return cothStable(getReal(), getImag());
     }
 
     public Complex atan() {
         if (isReal()) {
-            return Complex.of(Math.atan(getReal()));
+            return Complex.ofRaw(Math.atan(getReal()));
         }
         return Complex.MINUS_HALF_I.mul(
                 ((I.minus(this)).div(I.plus(this))).log()
@@ -1067,53 +1231,28 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
     }
 
     public Complex acos() {
-        if (isReal()) {
-            return Complex.of(Math.acos(getReal()));
-        }
-        //wolfram : http://mathworld.wolfram.com/InverseCosine.html
-        // PI/2 + i ln (i *z + sqrt( 1-z2)
-        Complex z = this;
-        return z.mul(I).plus(ONE.minus(z.sqr()).sqrt()).log().mul(I).plus(HALF_PI);
-        // -i * ln(z+sqr(z+sqrt(z^2-1))
-//        return Complex.MINUS_I.mul(
-//
-//                (
-//                        this.add(
-//                                (this.sqr().sub(ONE)).sqrt()
-//                        ).log()
-//                )
-//        );
+        return acosRaw(getReal(), getImag());
     }
 
     public Complex asin() {
-        if (isReal()) {
-            return Complex.of(Math.asin(getReal()));
-        }
-        Complex z = this;
-        return z.mul(I).plus(ONE.minus(z.sqr()).sqrt()).log().mul(MINUS_I);
-//        return Complex.MINUS_I.mul(
-//
-//                (
-//                        (this.mul(I)
-//                                .add(
-//                                        (ONE.sub(this.sqr()))
-//                                                .sqrt()
-//                                )
-//                        ).log()
-//                )
-//
-//        );
+        return asinRaw(getReal(), getImag());
     }
 
     public Complex asinh() {
-        Complex z = this;
-        //z +sqrt(z^2-1)
-        return (z.plus((z.sqr().plus(ONE)).sqrt())).log();
+        return asinhRaw(getReal(), getImag());
     }
 
     public Complex acosh() {
-        Complex z = this;
-        return (z.plus((z.sqr().minus(ONE)).sqrt())).log();
+        return acoshRaw(getReal(), getImag());
+    }
+
+    /**
+     * Principal inverse hyperbolic tangent: 1/2 log((1+z)/(1-z)), C99 branch cuts.
+     * Real values: atanh(x) is real for |x|&lt;1, +-inf at x=+-1, and
+     * sign-based real part with imaginary part +pi/2 for |x|&gt;1.
+     */
+    public Complex atanh() {
+        return ONE.plus(this).div(ONE.minus(this)).log().mul(0.5);
     }
 
     @Override
@@ -1131,14 +1270,44 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
         return this;
     }
 
-    public Complex sqrt() {
-        if (getImag() == 0) {
-            return getReal() >= 0 ? Complex.of(Math.sqrt(getReal()), 0) : Complex.of(0, Math.sqrt(-getReal()));
-        } else {
-            double r = Math.sqrt(absdbl());
-            double theta = arg().toDouble() / 2;
-            return Complex.of(r * Math.cos(theta), r * Math.sin(theta));
+    /**
+     * tanh(x+iy) without overflow: for x&gt;=0, tanh z = (1-e)/(1+e) with e = exp(-2z) (|e|&lt;=1);
+     * odd symmetry for x&lt;0.
+     */
+    static Complex tanhStable(double x, double y) {
+        if (x < 0) {
+            return tanhStable(-x, -y).neg();
         }
+        double m = Math.exp(-2 * x);
+        double er = m * Math.cos(-2 * y);
+        double ei = m * Math.sin(-2 * y);
+        // (1-e)/(1+e)
+        double nr = 1 - er, ni = -ei, dr = 1 + er, di = ei;
+        double d = dr * dr + di * di;
+        return Complex.ofRaw((nr * dr + ni * di) / d, (ni * dr - nr * di) / d);
+    }
+
+    /** coth(x+iy) without overflow, same scheme as {@link #tanhStable}. */
+    static Complex cothStable(double x, double y) {
+        if (x < 0) {
+            return cothStable(-x, -y).neg();
+        }
+        double m = Math.exp(-2 * x);
+        double er = m * Math.cos(-2 * y);
+        double ei = m * Math.sin(-2 * y);
+        // (1+e)/(1-e)
+        double nr = 1 + er, ni = ei, dr = 1 - er, di = -ei;
+        double d = dr * dr + di * di;
+        return Complex.ofRaw((nr * dr + ni * di) / d, (ni * dr - nr * di) / d);
+    }
+
+    Complex asinGeneral() {
+        Complex z = this;
+        return z.mul(I).plus(ONE.minus(z.sqr()).sqrt()).log().mul(MINUS_I);
+    }
+
+    public Complex sqrt() {
+        return sqrtRaw(getReal(), getImag());
     }
 
     public Complex sqrt(int n) {
@@ -1150,7 +1319,7 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
     }
 
     public Complex log() {
-        return Complex.of(Math.log(absdbl()), Math.atan2(getImag(), getReal()));
+        return Complex.ofRaw(Math.log(absdbl()), Math.atan2(getImag(), getReal()));
     }
 
     public double dbl() {
@@ -1166,44 +1335,44 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
         double imag = getImag();
         double real = getReal();
         if (imag == 0) {
-            return Complex.of(Math.log10(real));
+            return Complex.ofRaw(Math.log10(real));
         }
-        return Complex.of(Math.log(absdbl()), Math.atan2(imag, real)).div(Math.log(10));
+        return Complex.ofRaw(Math.log(absdbl()), Math.atan2(imag, real)).div(Math.log(10));
     }
 
     public Complex abs() {
-        return Complex.of(Math.sqrt(getReal() * getReal() + getImag() * getImag()));
+        return Complex.ofRaw(Math.sqrt(getReal() * getReal() + getImag() * getImag()));
     }
 
     public Complex db() {
-        return Complex.of(Math.log10(absdbl()) * (10));
+        return Complex.ofRaw(Math.log10(absdbl()) * (10));
         //return log10().mul(10);
     }
 
     public Complex db2() {
-        return Complex.of(Math.log10(absdbl()) * (20));
+        return Complex.ofRaw(Math.log10(absdbl()) * (20));
         //return log10().mul(10);
     }
 
     public Complex imag() {
-        return Complex.of(getImag());
+        return Complex.ofRaw(getImag());
     }
 
     public Complex real() {
-        return Complex.of(getReal());
+        return Complex.ofRaw(getReal());
     }
 
     public Complex exp() {
         double e = Math.exp(getReal());
-        return Complex.of(e * Math.cos(getImag()), e * Math.sin(getImag()));
+        return Complex.ofRaw(e * Math.cos(getImag()), e * Math.sin(getImag()));
     }
 
     public Complex minus(Complex c) {
-        return Complex.of(getReal() - c.getReal(), getImag() - c.getImag());
+        return Complex.ofRaw(getReal() - c.getReal(), getImag() - c.getImag());
     }
 
     public Complex plus(Complex c) {
-        return Complex.of(getReal() + c.getReal(), getImag() + c.getImag());
+        return Complex.ofRaw(getReal() + c.getReal(), getImag() + c.getImag());
     }
 
     public Complex plus(DoubleExpr c) {
@@ -1516,12 +1685,7 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
         double b = getImag();
         double c = other.getReal();
         double d = other.getImag();
-        double c2d2 = c * c + d * d;
-
-        return Complex.of(
-                (a * c + b * d) / c2d2,
-                (b * c - a * d) / c2d2
-        );
+        return divRaw(a, b, c, d);
         //return mul(c.inv());
     }
 
@@ -1534,7 +1698,7 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
     }
 
     public Complex mul(MutableComplex c) {
-        return Complex.of(getReal() * c.getReal() - getImag() * c.getImag(), getReal() * c.getImag() + getImag() * c.getReal());
+        return Complex.ofRaw(getReal() * c.getReal() - getImag() * c.getImag(), getReal() * c.getImag() + getImag() * c.getReal());
     }
 
     public Complex subtract(Complex c) {
@@ -1546,7 +1710,7 @@ public abstract class Complex extends Number implements Normalizable, VectorSpac
     }
 
     public Complex minus(MutableComplex c) {
-        return Complex.of(getReal() - c.getReal(), getImag() - c.getImag());
+        return Complex.ofRaw(getReal() - c.getReal(), getImag() - c.getImag());
     }
 
     public boolean isOne() {

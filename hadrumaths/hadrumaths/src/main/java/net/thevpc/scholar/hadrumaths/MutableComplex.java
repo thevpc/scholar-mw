@@ -305,35 +305,27 @@ public class MutableComplex {
     public void div(double real, double imag) {
         double a = this.real;
         double b = this.imag;
-        double c2d2 = real * real + imag * imag;
-        this.real = (a * real + b * imag) / c2d2;
-        this.imag = (b * real - a * imag) / c2d2;
-//        return this;
-        //DevUtils.run(this::debug_check);
+        // Smith's algorithm: same result as (a*c + b*d)/(c2+d2), but no overflow for
+        // very large or very small |divisor|
+        if (Math.abs(real) >= Math.abs(imag)) {
+            double r = imag / real;
+            double den = real + imag * r;
+            this.real = (a + b * r) / den;
+            this.imag = (b - a * r) / den;
+        } else {
+            double r = real / imag;
+            double den = real * r + imag;
+            this.real = (a * r + b) / den;
+            this.imag = (b * r - a) / den;
+        }
     }
 
     public void div(MutableComplex other) {
-        double a = this.real;
-        double b = this.imag;
-        double c = other.real;
-        double d = other.imag;
-        double c2d2 = c * c + d * d;
-        this.real = (a * c + b * d) / c2d2;
-        this.imag = (b * c - a * d) / c2d2;
-//        return this;
-        //DevUtils.run(this::debug_check);
+        div(other.real, other.imag);
     }
 
     public void div(Complex other) {
-        double a = this.real;
-        double b = this.imag;
-        double c = other.getReal();
-        double d = other.getImag();
-        double c2d2 = c * c + d * d;
-        this.real = (a * c + b * d) / c2d2;
-        this.imag = (b * c - a * d) / c2d2;
-//        return this;
-        //DevUtils.run(this::debug_check);
+        div(other.getReal(), other.getImag());
     }
 
     public void add(double real) {
@@ -442,6 +434,34 @@ public class MutableComplex {
 //        return this;
     }
 
+    public void set(MutableComplex complex) {
+        this.real = complex.real;
+        this.imag = complex.imag;
+    }
+
+    /**
+     * in-place tanh(z) = (1 - e)/(1 + e) with e = exp(-2z); the mirrored form is used for
+     * Re z &lt; 0 so that exp() never overflows.
+     */
+    public void tanh() {
+        double x = real;
+        double y = imag;
+        boolean mirrored = x < 0;
+        if (mirrored) {
+            x = -x;
+            y = -y;
+        }
+        double m = Math.exp(-2 * x);
+        double er = m * Math.cos(-2 * y);
+        double ei = m * Math.sin(-2 * y);
+        double nr = 1 - er, ni = -ei, dr = 1 + er, di = ei;
+        double d = dr * dr + di * di;
+        double r = (nr * dr + ni * di) / d;
+        double i = (ni * dr - nr * di) / d;
+        this.real = mirrored ? -r : r;
+        this.imag = mirrored ? -i : i;
+    }
+
     public void setZero() {
         this.real = 0;
         this.imag = 0;
@@ -480,7 +500,7 @@ public class MutableComplex {
     public double sqrtDouble() {
         if (imag == 0) {
             if (real >= 0) {
-                return Maths.sqrt(real);
+                return Math.sqrt(real);
             } else {
                 return Double.NaN;
             }
@@ -492,14 +512,14 @@ public class MutableComplex {
     public void sqrt() {
         if (imag == 0) {
             if (real >= 0) {
-                this.real = Maths.sqrt(real);
+                this.real = Math.sqrt(real);
             } else {
-                set(0, Maths.sqrt(-real));
+                set(0, Math.sqrt(-real));
             }
         } else {
-            double r = Maths.sqrt(abs());
+            double r = Math.sqrt(abs());
             double theta = angle() / 2;
-            set(r * Maths.cos2(theta), r * Maths.sin2(theta));
+            set(r * Math.cos(theta), r * Math.sin(theta));
         }
 //        return this;
     }
@@ -511,7 +531,7 @@ public class MutableComplex {
     }
 
     public double abs() {
-        return Maths.sqrt(real * real + imag * imag);
+        return Math.sqrt(real * real + imag * imag);
     }
 
     public double angle() {
@@ -521,7 +541,7 @@ public class MutableComplex {
 //        }else if(imag==0){
 //            return real>=0?0:Maths.PI;
 //        }
-        return Maths.atan2(imag, real);
+        return Math.atan2(imag, real);
     }
 
     public void sqrt(int n) {
@@ -540,19 +560,19 @@ public class MutableComplex {
         } else if (power == -1) {
             inv();
 //        } else if (imag == 0) {
-//            return real >= 0 ? new Complex(Maths.pow(real, power), 0) : new Complex(0, Maths.pow(-real, power));
+//            return real >= 0 ? new Complex(Math.pow(real, power), 0) : new Complex(0, Math.pow(-real, power));
         } else if (power >= 0) {
-            double r = Maths.pow(abs(), power);
+            double r = Math.pow(abs(), power);
             double angle = angle();
             double theta = angle * power;
-            this.real = r * Maths.cos2(theta);
-            this.imag = r * Maths.sin2(theta);
+            this.real = r * Math.cos(theta);
+            this.imag = r * Math.sin(theta);
         } else { //n<0
             power = -power;
-            double r = Maths.pow(abs(), power);
+            double r = Math.pow(abs(), power);
             double theta = angle() * power;
-            this.real = r * Maths.cos2(theta);
-            this.imag = r * Maths.sin2(theta);
+            this.real = r * Math.cos(theta);
+            this.imag = r * Math.sin(theta);
             inv();
         }
 //        return this;
@@ -620,9 +640,9 @@ public class MutableComplex {
     }
 
     public void exp() {
-        double e = Maths.exp(real);
-        double r = e * Maths.cos2(imag);
-        double i = e * Maths.sin2(this.imag);
+        double e = Math.exp(real);
+        double r = e * Math.cos(imag);
+        double i = e * Math.sin(this.imag);
         this.real = r;
         this.imag = i;
         debug_check();
