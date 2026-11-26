@@ -29,7 +29,7 @@ public abstract  class Minus implements OperatorExpr {
 
             public Expr transform(Expr expression, ExpressionTransform transform) {
                 Minus e = (Minus) expression;
-                return Minus.of(ExpressionTransformFactory.transform(e.getChild(0), transform), ExpressionTransformFactory.transform(e.getChild(1), transform));
+                return Minus.of(ExpressionTransformFactory.transformStructure(e.getChild(0), transform), ExpressionTransformFactory.transformStructure(e.getChild(1), transform));
             }
         });
     }

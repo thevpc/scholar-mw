@@ -27,7 +27,7 @@ public abstract class RefDoubleToVector extends AbstractDoubleToVector {
 
             public Expr transform(Expr expression, ExpressionTransform transform) {
                 RefDoubleToVector e = (RefDoubleToVector) expression;
-                return (ExpressionTransformFactory.transform(e.object, transform));
+                return (ExpressionTransformFactory.transformStructure(e.object, transform));
             }
         });
     }

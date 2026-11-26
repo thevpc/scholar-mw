@@ -26,7 +26,7 @@ public abstract class RefDoubleToMatrix extends AbstractDoubleToMatrix {
 
             public Expr transform(Expr expression, ExpressionTransform transform) {
                 RefDoubleToMatrix e = (RefDoubleToMatrix) expression;
-                return (ExpressionTransformFactory.transform(e.object, transform));
+                return (ExpressionTransformFactory.transformStructure(e.object, transform));
             }
         });
     }

@@ -35,9 +35,9 @@ public abstract class Mul implements OperatorExpr {
 //                ExpressionTransform t = transform;
                 Expr[] e2 = new Expr[e.expressions.size()];
                 for (int i = 0; i < e2.length; i++) {
-                    e2[i] = ExpressionTransformFactory.transform(e.expressions.get(i), transform);
+                    e2[i] = ExpressionTransformFactory.transformStructure(e.expressions.get(i), transform);
                 }
-                return Maths.sum(e.expressions.toArray(new Expr[0]));
+                return Maths.prod(e2);
             }
         });
     }
@@ -347,7 +347,7 @@ class MulDoubleToComplex extends Mul implements DoubleToComplex {
 
     @Override
     public NElement toElement() {
-        return NElement.ofNamedObject("Rooftop");
+        return NElement.ofNamedObject("Mul");
     }
 
     @Override
@@ -437,7 +437,7 @@ class MulDoubleToVector extends Mul implements DoubleToVector {
     }
     @Override
     public NElement toElement() {
-        return NElement.ofNamedObject("Rooftop");
+        return NElement.ofNamedObject("Mul");
     }
 
     @Override
@@ -614,7 +614,7 @@ class MulDoubleToMatrix extends Mul implements DoubleToMatrix {
 
     @Override
     public NElement toElement() {
-        return NElement.ofNamedObject("Rooftop");
+        return NElement.ofNamedObject("Mul");
     }
 
     @Override

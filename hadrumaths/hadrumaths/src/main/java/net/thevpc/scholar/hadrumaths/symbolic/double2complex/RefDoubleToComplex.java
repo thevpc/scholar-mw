@@ -26,7 +26,7 @@ public abstract class RefDoubleToComplex implements DoubleToComplex {
 
             public Expr transform(Expr expression, ExpressionTransform transform) {
                 RefDoubleToComplex e = (RefDoubleToComplex) expression;
-                return (ExpressionTransformFactory.transform(e.object, transform));
+                return (ExpressionTransformFactory.transformStructure(e.object, transform));
             }
         });
     }

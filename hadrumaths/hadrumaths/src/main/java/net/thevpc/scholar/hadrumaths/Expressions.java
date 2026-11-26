@@ -23,7 +23,7 @@ public class Expressions {
     }
 
     public static <T extends Expr> T transform(Expr e, ExpressionTransform transform) {
-        return (T) getExpressionTransformer(e.getClass(), transform.getClass()).transform(e, transform);
+        return ExpressionTransformFactory.transform(e, transform);
     }
 
     public static <T extends Expr> T symmetric(Expr e, Axis axis, Domain value) {

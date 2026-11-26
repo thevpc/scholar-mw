@@ -31,7 +31,7 @@ public abstract class Reminder implements OperatorExpr {
 
             public Expr transform(Expr expression, ExpressionTransform transform) {
                 Reminder e = (Reminder) expression;
-                return Reminder.of(ExpressionTransformFactory.transform(e.getFirst(), transform), ExpressionTransformFactory.transform(e.getSecond(), transform));
+                return Reminder.of(ExpressionTransformFactory.transformStructure(e.getFirst(), transform), ExpressionTransformFactory.transformStructure(e.getSecond(), transform));
             }
         });
     }
@@ -42,7 +42,7 @@ public abstract class Reminder implements OperatorExpr {
 
     protected Reminder(Expr first, Expr second) {
         this.expressions = new Expr[]{first, second};
-        _domain = first.getDomain().expand(second.getDomain());
+        _domain = first.getDomain().intersect(second.getDomain());
     }
 
     @Override

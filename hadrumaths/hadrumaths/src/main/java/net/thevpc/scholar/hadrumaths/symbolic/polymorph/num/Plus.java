@@ -33,7 +33,7 @@ public abstract class Plus implements OperatorExpr {
                 Plus e = (Plus) expression;
                 Expr[] e2 = new Expr[e.expressions.size()];
                 for (int i = 0; i < e2.length; i++) {
-                    e2[i] = ExpressionTransformFactory.transform(e.expressions.get(i), transform);
+                    e2[i] = ExpressionTransformFactory.transformStructure(e.expressions.get(i), transform);
                 }
                 return Plus.of(e2);
             }

@@ -340,7 +340,11 @@ public class DefaultDoubleToVector extends AbstractDoubleToVector {
             updated[i] = s2;
         }
         if (changed) {
-            Expr e = Maths.vector(updated[0].toDC(), updated[0].toDC());
+            DoubleToComplex[] c2 = new DoubleToComplex[updated.length];
+            for (int i = 0; i < updated.length; i++) {
+                c2[i] = updated[i].toDC();
+            }
+            Expr e = new DefaultDoubleToVector(c2, components.length);
             e = ExprDefaults.copyProperties(this, e);
             return e;
         }

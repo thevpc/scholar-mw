@@ -27,7 +27,7 @@ public abstract class Neg implements OperatorExpr {
 
             public Expr transform(Expr expression, ExpressionTransform transform) {
                 Neg e = (Neg) expression;
-                return Neg.of(ExpressionTransformFactory.transform(e.getChild(0), transform));
+                return Neg.of(ExpressionTransformFactory.transformStructure(e.getChild(0), transform));
             }
         });
     }

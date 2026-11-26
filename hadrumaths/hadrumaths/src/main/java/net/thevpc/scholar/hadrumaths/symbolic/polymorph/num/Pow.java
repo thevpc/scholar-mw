@@ -29,7 +29,7 @@ public abstract class Pow implements OperatorExpr {
 
             public Expr transform(Expr expression, ExpressionTransform transform) {
                 Pow e = (Pow) expression;
-                return Pow.of(ExpressionTransformFactory.transform(e.getFirst(), transform), ExpressionTransformFactory.transform(e.getSecond(), transform));
+                return Pow.of(ExpressionTransformFactory.transformStructure(e.getFirst(), transform), ExpressionTransformFactory.transformStructure(e.getSecond(), transform));
             }
         });
     }

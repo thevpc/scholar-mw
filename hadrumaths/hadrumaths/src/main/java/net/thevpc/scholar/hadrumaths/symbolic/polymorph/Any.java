@@ -26,7 +26,7 @@ public abstract class Any implements ExprRef {
     static {
         ExpressionTransformFactory.setExpressionTransformer(Any.class, ExpressionTransform.class, (expression, transform) -> {
             Any e = (Any) expression;
-            return of(ExpressionTransformFactory.transform(e.object, transform));
+            return of(ExpressionTransformFactory.transformStructure(e.object, transform));
         });
     }
 

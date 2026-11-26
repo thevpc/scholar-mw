@@ -26,7 +26,7 @@ public abstract class RefDoubleToDouble extends AbstractDoubleToDouble {
 
             public Expr transform(Expr expression, ExpressionTransform transform) {
                 RefDoubleToDouble e = (RefDoubleToDouble) expression;
-                return (ExpressionTransformFactory.transform(e.getReference(), transform));
+                return (ExpressionTransformFactory.transformStructure(e.getReference(), transform));
             }
         });
     }
