@@ -424,7 +424,10 @@ public class RWGTransmissionLineDeembedder {
 
     /** total conductor width crossed by the cut at longitudinal coordinate c, within [tLo, tHi]. */
     private static double conductorWidthAt(double c, List<HTriangle> tris, double tLo, double tHi, boolean polY) {
-        double w = 0;
+        // Length of the union of the triangles' crossings, not their sum: on some meshes the
+        // RWG triangle set overlaps along a cut (a 2.46 mm Sheen feed summed to 3.04 mm), and a
+        // sum then stops the uniform-line walk at its first step.
+        List<double[]> spans = new ArrayList<>();
         for (HTriangle t : tris) {
             List<Double> xs = new ArrayList<>();
             intersectEdge(t.p1(), t.p2(), c, polY, xs);
@@ -435,8 +438,25 @@ public class RWGTransmissionLineDeembedder {
             }
             double a = Math.max(Collections.min(xs), tLo), b = Math.min(Collections.max(xs), tHi);
             if (b > a) {
-                w += b - a;
+                spans.add(new double[]{a, b});
             }
+        }
+        spans.sort((u, v) -> Double.compare(u[0], v[0]));
+        double w = 0;
+        double curA = Double.NaN, curB = Double.NaN;
+        for (double[] s : spans) {
+            if (Double.isNaN(curA) || s[0] > curB) {
+                if (!Double.isNaN(curA)) {
+                    w += curB - curA;
+                }
+                curA = s[0];
+                curB = s[1];
+            } else if (s[1] > curB) {
+                curB = s[1];
+            }
+        }
+        if (!Double.isNaN(curA)) {
+            w += curB - curA;
         }
         return w;
     }
