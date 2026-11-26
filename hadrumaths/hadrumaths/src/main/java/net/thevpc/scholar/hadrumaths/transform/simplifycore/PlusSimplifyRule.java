@@ -5,6 +5,8 @@
  */
 package net.thevpc.scholar.hadrumaths.transform.simplifycore;
 
+import net.thevpc.scholar.hadrumaths.DoubleExpr;
+
 import net.thevpc.nuts.reflect.NClassMap;
 import net.thevpc.scholar.hadrumaths.*;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleValue;
@@ -165,7 +167,7 @@ public class PlusSimplifyRule extends AbstractExpressionRewriterRule {
                 }
                 if (m1.isZero()) {
                     //
-                } else if (m1.equals(Complex.ONE)) {
+                } else if (m1.equals(Complex.ONE) || isOne(m1)) {
                     initialModified=true;
                     p2List.add(e1);
                 } else {
@@ -175,10 +177,16 @@ public class PlusSimplifyRule extends AbstractExpressionRewriterRule {
             }
 
             if (c.complex != null && !c.complex.isZero()) {
-                if (c.domain.isUnbounded1()) {
+                // keep a real sum real: emitting Complex here silently upgraded every
+                // simplified real expression to DOUBLE_COMPLEX (and broke toDD()).
+                if (c.complex.isReal()) {
+                    if (c.domain.isUnbounded1()) {
+                        p2List.add(Maths.expr(c.complex.getReal()));
+                    } else {
+                        p2List.add(Maths.expr(c.complex.getReal(), c.domain));
+                    }
+                } else if (c.domain.isUnbounded1()) {
                     p2List.add(c.complex.toComplex());
-                } else if (c.complex.isReal()) {
-                    p2List.add(Maths.expr(c.complex.getReal(), c.domain));
                 } else {
                     p2List.add(Maths.expr(c.complex.toComplex(), c.domain));
                 }
@@ -187,7 +195,7 @@ public class PlusSimplifyRule extends AbstractExpressionRewriterRule {
 
         switch (p2List.size()) {
             case 0:
-                return RewriteResult.bestEffort(Complex.ZERO);
+                return RewriteResult.bestEffort(ee.getType().isComplexOutput() ? Complex.ZERO : DoubleExpr.ZERO);
             case 1:
                 return RewriteResult.bestEffort(p2List.get(0));
             default: {
@@ -208,6 +216,19 @@ public class PlusSimplifyRule extends AbstractExpressionRewriterRule {
                 return RewriteResult.bestEffort(Plus.of(p2List.toArray(new Expr[0])));
             }
         }
+    }
+
+    /** true for any numeric representation of 1 (DoubleExpr(1) is not equals(Complex.ONE)) */
+    private static boolean isOne(Expr e) {
+        if (e instanceof NumberExpr) {
+            try {
+                Complex c = ((NumberExpr) e).toComplex();
+                return c.isReal() && c.getReal() == 1.0;
+            } catch (RuntimeException ex) {
+                return false;
+            }
+        }
+        return false;
     }
 
     private PlusAccumulator getAccumulator(Expr e) {

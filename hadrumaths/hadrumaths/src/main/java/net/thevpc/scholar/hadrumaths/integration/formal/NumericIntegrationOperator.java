@@ -61,7 +61,7 @@ public class NumericIntegrationOperator extends AbstractIntegrationOperator {
             List<Expr> subExpressions = f1opt.getChildren();
             double ret = 0;
             for (Expr subExpression : subExpressions) {
-                ret += evalDD(subExpression.toDD());
+                ret += evalDD(domain, subExpression.toDD());
             }
             return ret;
         } else {

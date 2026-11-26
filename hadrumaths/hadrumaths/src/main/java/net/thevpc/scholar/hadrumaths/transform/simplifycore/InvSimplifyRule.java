@@ -57,7 +57,7 @@ public class InvSimplifyRule extends AbstractExpressionRewriterRule {
         if (invExpr.isUnmodified()) {
             return RewriteResult.unmodified();
         }
-        return RewriteResult.bestEffort(Neg.of(value));
+        return RewriteResult.bestEffort(Inv.of(value));
     }
 
 

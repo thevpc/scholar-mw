@@ -56,11 +56,19 @@ public abstract class AbstractIntegrationOperator implements IntegrationOperator
 
     public Complex eval(Domain domain, Expr f1) {
         switch (f1.getType()) {
+            case DOUBLE_NBR:
+            case DOUBLE_EXPR:
             case DOUBLE_DOUBLE:
                 return Complex.of(evalDD(domain, f1.toDD()));
+            case COMPLEX_NBR:
+            case COMPLEX_EXPR:
             case DOUBLE_COMPLEX:
                 return evalDC(domain, f1.toDC());
+            case CVECTOR_NBR:
+            case CVECTOR_EXPR:
             case DOUBLE_CVECTOR:
+            case CMATRIX_NBR:
+            case CMATRIX_EXPR:
             case DOUBLE_CMATRIX:
                 return evalDM(domain, f1.toDM());
         }
