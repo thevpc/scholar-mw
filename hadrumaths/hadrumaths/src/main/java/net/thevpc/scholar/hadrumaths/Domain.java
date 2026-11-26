@@ -257,7 +257,7 @@ public abstract class Domain implements DoubleValue, DoubleToDouble, DoubleToDou
     public static Domain ofBounds(double xmin, double xmax, double ymin, double ymax) {
         if (xmin == Double.NEGATIVE_INFINITY && xmax == Double.POSITIVE_INFINITY && ymin == Double.NEGATIVE_INFINITY && ymax == Double.POSITIVE_INFINITY) {
             return FULLXY;
-        } else if ((xmin == 0 && xmax <= xmin) && (ymin == 0 && ymax <= ymin)) {
+        } else if (xmax <= xmin || ymax <= ymin) {
             return EMPTYXY;
         } else if (Double.isNaN(xmin) || Double.isNaN(xmax) || Double.isNaN(ymin) || Double.isNaN(ymax)) {
             throw new IllegalArgumentException("Invalid Domain bounds : NaN");
@@ -274,7 +274,7 @@ public abstract class Domain implements DoubleValue, DoubleToDouble, DoubleToDou
     public static Domain ofBounds(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax) {
         if (xmin == Double.NEGATIVE_INFINITY && xmax == Double.POSITIVE_INFINITY && ymin == Double.NEGATIVE_INFINITY && ymax == Double.POSITIVE_INFINITY && zmin == Double.NEGATIVE_INFINITY && zmax == Double.POSITIVE_INFINITY) {
             return FULLXYZ;
-        } else if ((xmin == 0 && xmax <= xmin) && (ymin == 0 && ymax <= ymin) && (zmin == 0 && zmax <= ymin)) {
+        } else if (xmax <= xmin || ymax <= ymin || zmax <= zmin) {
             return EMPTYXYZ;
         } else if (Double.isNaN(xmin) || Double.isNaN(xmax) || Double.isNaN(ymin) || Double.isNaN(ymax) || Double.isNaN(zmin) || Double.isNaN(zmax)) {
             throw new IllegalArgumentException("Invalid Domain bounds : NaN");
@@ -892,7 +892,7 @@ public abstract class Domain implements DoubleValue, DoubleToDouble, DoubleToDou
     }
 
     public Domain expand(double xmin, double xmax, double ymin, double ymax) {
-        return expand(xmin, xmax, ymin, xmax, 0, 0);
+        return expand(xmin, xmax, ymin, ymax, 0, 0);
     }
 
     private static double[] _expandPercent(double xmin, double xmax, float percent) {
@@ -909,7 +909,7 @@ public abstract class Domain implements DoubleValue, DoubleToDouble, DoubleToDou
             }
         } else {
             if (xmax == Double.POSITIVE_INFINITY) {
-                return new double[]{xmin - Math.abs(xmax) * percent,
+                return new double[]{xmin - Math.abs(xmin) * percent,
                      xmax};
             } else {
                 double w = xmax - xmin;
@@ -2006,7 +2006,7 @@ public abstract class Domain implements DoubleValue, DoubleToDouble, DoubleToDou
 
     @Override
     public boolean isZero() {
-        return false;
+        return isEmpty();
     }
 
     public boolean isNaN() {
@@ -2350,7 +2350,7 @@ public abstract class Domain implements DoubleValue, DoubleToDouble, DoubleToDou
 
     @Override
     public double toDouble() {
-        return 1;
+        return isEmpty() ? 0 : 1;
     }
 
     public HGeometry scale(Domain newDomain) {
@@ -2441,7 +2441,7 @@ public abstract class Domain implements DoubleValue, DoubleToDouble, DoubleToDou
                 throw new IllegalArgumentException("Invalid dimension");
             }
             case 2: {
-                return Domain.ofBounds(xmin(), xwidth(), newValue, ymax());
+                return Domain.ofBounds(xmin(), xmax(), newValue, ymax());
             }
             case 3: {
                 return Domain.ofBounds(xmin(), xmax(), newValue, ymax(), zmin(), zmax());

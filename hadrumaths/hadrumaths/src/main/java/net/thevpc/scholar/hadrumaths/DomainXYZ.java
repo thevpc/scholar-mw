@@ -124,12 +124,9 @@ final class DomainXYZ extends Domain {
     }
 
     public boolean contains(double x, double y, double z) {
-        return x >= xmin
-                && x < xmax
-                && y >= ymin
-                && y < ymax
-                && z >= zmin
-                && z < zmax;
+        return x >= xmin && x < xmax
+                && y >= ymin && y < ymax
+                && z >= zmin && z < zmax;
     }
 
 
@@ -267,11 +264,14 @@ final class DomainXYZ extends Domain {
                 double ymin = minMax[0];
                 double ymax = minMax[1];
                 int yu = (int) minMax[2];
-                Expressions.domainIntersectHelper(ymin, ymax, other.ymin(), other.ymax(), minMax);
-                if (xu == yu && xu==minMax[2] && xu == 1) {
+                Expressions.domainIntersectHelper(zmin, zmax, other.zmin(), other.zmax(), minMax);
+                double zmin = minMax[0];
+                double zmax = minMax[1];
+                int zu = (int) minMax[2];
+                if (xu == yu && yu == zu && zu == 1) {
                     return this;
                 }
-                return Domain.ofBounds(xmin,xmax,ymin, ymax, minMax[0], minMax[1]);
+                return Domain.ofBounds(xmin, xmax, ymin, ymax, zmin, zmax);
             }
         }
         throw new IllegalArgumentException("Unsupported domain " + other.dimension());

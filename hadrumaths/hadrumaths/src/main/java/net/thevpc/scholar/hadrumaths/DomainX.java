@@ -98,9 +98,7 @@ public final class DomainX extends Domain implements Cloneable {
     }
 
     public boolean contains(double x, double y, double z) {
-        return x >= xmin
-                && x < xmax
-                ;
+        return x >= xmin && x < xmax;
     }
 
 //    public int hashCode() {
