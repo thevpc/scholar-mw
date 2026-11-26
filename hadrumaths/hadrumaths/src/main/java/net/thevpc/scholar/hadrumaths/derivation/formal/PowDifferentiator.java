@@ -21,6 +21,12 @@ public class PowDifferentiator implements FunctionDifferentiator {
         Expr fd = d.derive(f, varIndex);
         Expr gd = d.derive(g, varIndex);
 
+        if (g.isNarrow(net.thevpc.scholar.hadrumaths.symbolic.ExprType.DOUBLE_NBR)) {
+            // constant exponent: g * f^(g-1) * f'  (the log form below is singular at f=0)
+            double gv = g.toDouble();
+            return prod(Maths.expr(gv), pow(f, Maths.expr(gv - 1.0)), fd);
+        }
+
         return mul(
                 pow(f, g),
                 add(

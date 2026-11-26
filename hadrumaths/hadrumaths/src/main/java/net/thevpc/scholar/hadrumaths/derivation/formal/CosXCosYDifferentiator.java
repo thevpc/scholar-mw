@@ -17,10 +17,12 @@ public class CosXCosYDifferentiator implements FunctionDifferentiator {
         CosXCosY c = (CosXCosY) f;
         switch (varIndex) {
             case X: {
-                return new CosXCosY(c.getAmp() * c.getA(), c.getA(), c.getB() - Maths.PI / 2, c.getC(), c.getD(), c.getDomain());
+                // d/dx amp*cos(ax+b)*cos(cy+d) = -amp*a*sin(ax+b)*cos(cy+d)
+                //                               = (-amp*a)*cos(ax+b-pi/2)*cos(cy+d)
+                return new CosXCosY(-c.getAmp() * c.getA(), c.getA(), c.getB() - Maths.PI / 2, c.getC(), c.getD(), c.getDomain());
             }
             case Y: {
-                return new CosXCosY(c.getAmp() * c.getC(), c.getA(), c.getB(), c.getC(), c.getD() - Maths.PI / 2, c.getDomain());
+                return new CosXCosY(-c.getAmp() * c.getC(), c.getA(), c.getB(), c.getC(), c.getD() - Maths.PI / 2, c.getDomain());
             }
         }
         return Maths.DZEROXY;

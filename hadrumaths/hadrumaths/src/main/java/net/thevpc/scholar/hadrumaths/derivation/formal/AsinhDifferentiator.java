@@ -1,5 +1,9 @@
 package net.thevpc.scholar.hadrumaths.derivation.formal;
 
+import net.thevpc.scholar.hadrumaths.DoubleExpr;
+
+import net.thevpc.scholar.hadrumaths.Maths;
+
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.Expr;
@@ -24,7 +28,7 @@ public class AsinhDifferentiator implements FunctionDifferentiator {
                         sqrt(
                                 add(
                                         sqr(a),
-                                        Complex.ONE
+                                        DoubleExpr.ONE
                                 )
                         )
                 ))

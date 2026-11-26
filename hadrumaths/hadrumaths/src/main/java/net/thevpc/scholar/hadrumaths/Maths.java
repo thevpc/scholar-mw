@@ -1584,8 +1584,19 @@ public final class Maths {
     }
 
     public static Expr derive(Expr f, Axis axis) {
+        boolean realInput = f.getType().isDoubleOutput();
         f = f.simplify();
-        return Config.getFunctionDerivatorManager().derive(f, axis).simplify();
+        Expr d = Config.getFunctionDerivatorManager().derive(f, axis).simplify();
+        if (realInput && !d.getType().isDoubleOutput()) {
+            // the derivative of a real function is real; simplification may still hand back a
+            // complex-typed node whose imaginary part is identically zero. Narrow it so that
+            // toDD() works (this is the difference between a usable and an unusable result).
+            net.thevpc.scholar.hadrumaths.symbolic.DoubleToComplex dc = d.toDC();
+            if (dc.getImagDD().isZero()) {
+                return dc.getRealDD();
+            }
+        }
+        return d;
     }
 
     public static boolean isReal(Expr e) {
@@ -1997,6 +2008,10 @@ public final class Maths {
         return v.asinh();
     }
 
+    public static ComplexVector atanh(ComplexVector v) {
+        return v.atanh();
+    }
+
     public static ComplexVector asin(ComplexVector v) {
         return v.asin();
     }
@@ -2103,6 +2118,10 @@ public final class Maths {
 
     public static ComplexMatrix asinh(ComplexMatrix v) {
         return v.asinh();
+    }
+
+    public static ComplexMatrix atanh(ComplexMatrix v) {
+        return v.atanh();
     }
 
     public static ComplexMatrix asin(ComplexMatrix v) {

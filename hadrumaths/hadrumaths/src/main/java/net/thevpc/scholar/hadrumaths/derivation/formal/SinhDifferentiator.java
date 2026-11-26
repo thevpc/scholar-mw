@@ -16,10 +16,11 @@ import static net.thevpc.scholar.hadrumaths.Maths.mul;
 public class SinhDifferentiator implements FunctionDifferentiator {
     public Expr derive(Expr f, Axis varIndex, FunctionDifferentiatorManager d) {
         Sinh c = (Sinh) f;
+        Expr a = c.getChild(0);
         return
                 mul(
-                        d.derive(f, varIndex),
-                        cosh(f)
+                        cosh(a),
+                        d.derive(a, varIndex)
                 );
     }
 }

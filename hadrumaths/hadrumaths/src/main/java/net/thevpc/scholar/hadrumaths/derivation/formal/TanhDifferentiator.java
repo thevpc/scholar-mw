@@ -1,5 +1,9 @@
 package net.thevpc.scholar.hadrumaths.derivation.formal;
 
+import net.thevpc.scholar.hadrumaths.DoubleExpr;
+
+import net.thevpc.scholar.hadrumaths.Maths;
+
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.Expr;
@@ -22,7 +26,7 @@ public class TanhDifferentiator implements FunctionDifferentiator {
                         d.derive(a, varIndex)
                         ,
                         minus(
-                                Complex.ONE,
+                                DoubleExpr.ONE,
                                 sqr(c)
                         )
                 )

@@ -1,5 +1,9 @@
 package net.thevpc.scholar.hadrumaths.derivation.formal;
 
+import net.thevpc.scholar.hadrumaths.DoubleExpr;
+
+import net.thevpc.scholar.hadrumaths.Maths;
+
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.Expr;
@@ -12,6 +16,6 @@ import net.thevpc.scholar.hadrumaths.derivation.FunctionDifferentiatorManager;
  */
 public class ParamExprDifferentiator implements FunctionDifferentiator {
     public Expr derive(Expr f, Axis varIndex, FunctionDifferentiatorManager d) {
-        return Complex.ZERO;
+        return DoubleExpr.ZERO;
     }
 }

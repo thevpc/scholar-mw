@@ -16,6 +16,6 @@ public class InvDifferentiator implements FunctionDifferentiator {
     public Expr derive(Expr f, Axis varIndex, FunctionDifferentiatorManager d) {
         Inv c = (Inv) f;
         Expr e = c.getChild(0);
-        return div(neg(d.derive(e, Axis.X)), mul(e, e));
+        return div(neg(d.derive(e, varIndex)), mul(e, e));
     }
 }

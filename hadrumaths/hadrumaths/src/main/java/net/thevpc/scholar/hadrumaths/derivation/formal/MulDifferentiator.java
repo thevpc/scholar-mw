@@ -1,5 +1,9 @@
 package net.thevpc.scholar.hadrumaths.derivation.formal;
 
+import net.thevpc.scholar.hadrumaths.DoubleExpr;
+
+import net.thevpc.scholar.hadrumaths.Maths;
+
 import net.thevpc.nuts.collections.NCollections;
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.Complex;
@@ -24,7 +28,7 @@ public class MulDifferentiator implements FunctionDifferentiator {
 
     public Expr deriveMul(List<Expr> children, Axis varIndex, FunctionDifferentiatorManager d) {
         if (children.size() == 0) {
-            return Complex.ZERO;
+            return DoubleExpr.ZERO;
         }
         if (children.size() == 1) {
             return d.derive(children.get(0), varIndex);

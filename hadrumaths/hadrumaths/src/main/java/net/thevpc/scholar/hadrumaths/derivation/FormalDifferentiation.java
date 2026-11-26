@@ -7,6 +7,7 @@ import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.Expr;
 import net.thevpc.scholar.hadrumaths.derivation.formal.*;
+import net.thevpc.scholar.hadrumaths.symbolic.double2double.Linear;
 import net.thevpc.scholar.hadrumaths.format.ObjectFormat;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToComplex;
 import net.thevpc.scholar.hadrumaths.symbolic.DoubleToVector;
@@ -45,6 +46,7 @@ public class FormalDifferentiation implements FunctionDifferentiatorManager {
         register(DoubleToVector.class, new DoubleToVectorDifferentiator());
         register(Exp.class, new ExpDifferentiator());
         register(Inv.class, new InvDifferentiator());
+        register(Linear.class, new LinearDifferentiator());
         register(Mul.class, new MulDifferentiator());
         register(Neg.class, new NegDifferentiator());
         register(DoubleParam.class, new ParamExprDifferentiator());

@@ -1,5 +1,9 @@
 package net.thevpc.scholar.hadrumaths.derivation.formal;
 
+import net.thevpc.scholar.hadrumaths.DoubleExpr;
+
+import net.thevpc.scholar.hadrumaths.Maths;
+
 import net.thevpc.scholar.hadrumaths.Axis;
 import net.thevpc.scholar.hadrumaths.Complex;
 import net.thevpc.scholar.hadrumaths.Expr;
@@ -17,10 +21,10 @@ public class AxisFunctionDifferentiator implements FunctionDifferentiator {
         Axis functionName = c.getAxis();
         if (functionName == varIndex) {
             if (c.getDomain().isUnbounded()) {
-                return Complex.ONE;
+                return DoubleExpr.ONE;
             }
             return c.getDomain();//Maths.expr(c.getDomain());
         }
-        return Complex.ZERO;
+        return DoubleExpr.ZERO;
     }
 }
